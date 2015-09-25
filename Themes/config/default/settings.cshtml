@@ -1,0 +1,26 @@
+@using System.Web.UI.HtmlControls
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
+
+
+<input id="moduleid" type="hidden" value="@Model.ModuleId" ></input>
+
+<div class="buttons editdata">
+    <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
+    <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
+</div>
+
+<div>
+    <div>
+        @DnnLabel("lblthemefolder","Settings.themefolder")
+        @FolderSelectList(Model,"genxml/dropdownlist/themefolder","/DesktopModules/NBright/NBrightMod/Themes"," ")
+    </div>
+
+    <div>
+        Ref: @Model.GetXmlProperty("genxml/hidden/modref")        
+    </div>
+    
+
+
+</div>
+

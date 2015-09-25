@@ -1,0 +1,30 @@
+[<tag id="resourcepath" type="meta" value="/DesktopModules/NBright/NBrightMod/App_LocalResources/" />]
+
+<!-- Load these scripts to use nbrightajax functions -->
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/nbrightajax.js"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightData/js/jquery.genxmlajax.js"></script>
+
+<!-- div section to pass param data to the server side ajax functions -->
+<div id="selectparams">
+    <input id="moduleid" type="hidden" value="{Url:ModuleId}" ></input>
+</div>
+
+<!-- div section to display ajax return -->
+<div id="settingsdata"></div>
+
+<script>
+    
+
+    $(document).ready(function () {
+
+        // get list of records via ajax:  NBrightMod_nbxget({command}, {div of data passed to server}, {return html to this div} )
+        NBrightMod_nbxget('getsettings', '#selectparams', '#settingsdata');
+
+        $('a[[id*="_cmdUpdate"]]').click(function () {
+            NBrightMod_nbxget('savesettings', '#settingsdata');
+        });
+
+    });
+
+
+</script>

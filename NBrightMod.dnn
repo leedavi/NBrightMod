@@ -1,0 +1,102 @@
+﻿<dotnetnuke type="Package" version="5.0">
+	<packages>
+		<package name="NBrightMod" type="Module" version="1.0.0">
+			<friendlyName>NBrightMod</friendlyName>
+			<description>NBrightMod is ....</description>
+			<iconFile />
+			<owner>
+				<name>David Lee</name>
+				<organization>NBright Project</organization>
+				<url>www.nbrightproject.com</url>
+				<email></email>
+			</owner>
+			<license>
+Copyright (c) 2015, NBrightProject
+All rights reserved.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+			</license>
+			<releaseNotes>
+
+Assemblies:
+
+NBrightMod
+
+
+NOTES:
+
+This module depends on the NBright template system.  It must be installed for this module to work. 
+
+			</releaseNotes>
+			<components>
+				<component type="ResourceFile">
+					<resourceFiles>
+						<basePath>DesktopModules\NBright\NBrightMod</basePath>
+						<resourceFile>
+							<name>NBrightResource.zip</name>
+						</resourceFile>
+					</resourceFiles>
+				</component>
+				<component type="Assembly">
+					<assemblies>
+						<assembly>
+							<path>bin</path>
+							<name>NBrightMod.dll</name>
+							<sourceFileName>NBrightMod.dll</sourceFileName>
+						</assembly>
+					</assemblies>
+				</component>
+				<component type="Module">
+					<desktopModule>
+						<moduleName>NBrightMod</moduleName>
+						<foldername>NBright/NBrightMod</foldername>
+						<businessControllerClass>Nevoweb.DNN.NBrightMod.Components.NBrightModController,NBrightMod</businessControllerClass>
+						<supportedFeatures>
+							<supportedFeature type="Portable" />
+						</supportedFeatures>
+						<moduleDefinitions>
+							<moduleDefinition>
+								<friendlyName>NBrightMod</friendlyName>
+								<defaultCacheTime>0</defaultCacheTime>
+								<moduleControls>
+									<moduleControl>
+										<controlKey />
+										<controlSrc>DesktopModules/NBright/NBrightMod/View.ascx</controlSrc>
+										<supportsPartialRendering>False</supportsPartialRendering>
+										<controlTitle />
+										<controlType>View</controlType>
+										<iconFile />
+										<helpUrl />
+										<supportsPopUps>False</supportsPopUps>
+										<viewOrder>0</viewOrder>
+									</moduleControl>
+									<moduleControl>
+										<controlKey>Edit</controlKey>
+										<controlSrc>DesktopModules/NBright/NBrightMod/Edit.ascx</controlSrc>
+										<supportsPartialRendering>False</supportsPartialRendering>
+										<controlTitle>Edit</controlTitle>
+										<controlType>Edit</controlType>
+										<iconFile />
+										<helpUrl />
+										<supportsPopUps>False</supportsPopUps>
+									</moduleControl>
+									<moduleControl>
+										<controlKey>Settings</controlKey>
+										<controlSrc>DesktopModules/NBright/NBrightMod/Settings.ascx</controlSrc>
+										<supportsPartialRendering>False</supportsPartialRendering>
+										<controlTitle>Settings</controlTitle>
+										<controlType>Admin</controlType>
+										<iconFile />
+										<helpUrl />
+										<supportsPopUps>False</supportsPopUps>
+									</moduleControl>								
+								</moduleControls>
+							</moduleDefinition>
+						</moduleDefinitions>
+					</desktopModule>
+				</component>
+
+			</components>
+		</package>	
+	</packages>
+</dotnetnuke>

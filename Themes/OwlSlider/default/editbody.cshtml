@@ -1,0 +1,43 @@
+
+<script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+
+<!-- Module specific css and js -->
+
+
+<!-- NBrightMod specific css and js -->
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/NBrightMod.js"></script>
+<link href="/DesktopModules/NBright/NBrightMod/Themes/config/css/NBrightMod.css" rel="stylesheet" />
+
+<!-- loading display to cover buttons, to stop multiple clicks -->
+<div id="loader" class="processing" style="display:none;"><i class="glyphicon glyphicon-cog"></i></div>
+
+<!-- Load these scripts to use nbrightajax functions -->
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/nbrightajax.js"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightData/js/jquery.genxmlajax.js"></script>
+
+<!-- Add nbright full standard version of bootstrap -->
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightData/bootstrap/js/bootstrap.min.js"></script>
+<link href="/DesktopModules/NBright/NBrightData/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+
+<!-- div section to pass param data to the server side ajax functions -->
+<div id="selectparams">
+    <input id="currentculture" type="hidden" value="{Url:language}" ></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
+    <input id="editlang" type="hidden" value="" ></input> <!-- culture code being edited -->
+    <input id="moduleid" type="hidden" value="{Url:mid}" ></input>
+    <input id="tabid" type="hidden" value="{Url:tabid}" ></input>
+    <input id="index" type="hidden" value="" ></input>
+    <input id="selecteditemid" type="hidden" value="" ></input> <!-- used as selected edit itemid -->
+    <input id="newitem" type="hidden" value="" ></input> <!-- used to hold "new" oken to create new record -->
+    <input id="selectedimages" type="hidden" value=""></input> <!-- list of images to be added (already uploaded) -->
+</div>
+
+<!-- this div is used as a recycle bin for undo JS-->
+<div id="recyclebin" style="display: none;"></div>
+
+<!-- hold url to exit edit and settings page -->
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid={Url:tabid}")"></input>
+
+<!-- div section to display ajax return -->
+<div id="editdata"></div>
+

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightCore", "..\..\..\..\..\..\Support\NBrightCore\NBrightCore.csproj", "{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightDNN", "..\..\..\..\..\..\Support\NBrightDNN\NBrightDNN.csproj", "{EC815D38-62CF-4B46-8177-CF40CE1AAB62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightMod", "NBrightMod.csproj", "{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

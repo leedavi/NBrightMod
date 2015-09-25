@@ -1,0 +1,54 @@
+@using System.Web.UI.HtmlControls
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
+
+<input id="moduleid" type="hidden" value="@Model.ModuleId" ></input>
+<div>
+    <div>
+        @DnnLabel("lblwidth","Settings.imgresize")@TextBox(Model,"genxml/textbox/imgresize","class='form-control' width='100px' maxlength='5' ","800")
+    </div>
+    <div>
+        @DnnLabel("lblwidth","Settings.width")@TextBox(Model,"genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","0")
+    </div>
+    <div>
+        @DnnLabel("lblheight", "Settings.height")@TextBox(Model, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "200")
+    </div>
+
+    <div>
+        @DnnLabel("lblitems", "Settings.items")@TextBox(Model, "genxml/textbox/items", "class='form-control' width='100px' maxlength='5' ", "1")
+    </div>
+
+    <div>
+        @DnnLabel("lblmargin", "Settings.margin")@TextBox(Model, "genxml/textbox/margin", "class='form-control' width='100px' maxlength='5' ", "0")
+    </div>
+
+    <div>
+        @DnnLabel("lblloop", "Settings.loop")@DropDownList(Model, "genxml/dropdownlist/loop", "true,false","true,false", "class='form-control' width='100px' ", "true")
+    </div>
+
+    <div>
+        @DnnLabel("lblcenter", "Settings.center")@DropDownList(Model, "genxml/dropdownlist/center", "true,false","true,false", "class='form-control' width='100px' ", "false")
+    </div>
+
+    <div>
+        @DnnLabel("lblautoplay", "Settings.autoplay")@DropDownList(Model, "genxml/dropdownlist/autoplay", "true,false","true,false", "class='form-control' width='100px' ", "true")
+    </div>
+
+    <div>
+        @DnnLabel("lblanimateout", "Settings.animateout")@DropDownList(Model, "genxml/dropdownlist/animateout", "false,bounce,flash,pulse,rubberBand,shake,swing,tada,wobble,jello,bounceIn,bounceInDown,bounceInLeft,bounceInRight,bounceInUp,bounceOut,bounceOutDown,bounceOutLeft,bounceOutRight,bounceOutUp,fadeIn,fadeInDown,fadeInDownBig,fadeInLeft,fadeInLeftBig,fadeInRight,fadeInRightBig,fadeInUp,fadeInUpBig,fadeOut,fadeOutDown,fadeOutDownBig,fadeOutLeft,fadeOutLeftBig,fadeOutRight,fadeOutRightBig,fadeOutUp,fadeOutUpBig,flip,flipInX,flipInY,flipOutX,flipOutY,lightSpeedIn,lightSpeedOut,rotateIn,rotateInDownLeft,rotateInDownRight,rotateInUpLeft,rotateInUpRight,rotateOut,rotateOutDownLeft,rotateOutDownRight,rotateOutUpLeft,rotateOutUpRight,slideInUp,slideInDown,slideInLeft,slideInRight,slideOutUp,slideOutDown,slideOutLeft,slideOutRight,zoomIn,zoomInDown,zoomInLeft,zoomInRight,zoomInUp,zoomOut,zoomOutDown,zoomOutLeft,zoomOutRight,zoomOutUp,hinge,rollIn,rollOut","false,bounce,flash,pulse,rubberBand,shake,swing,tada,wobble,jello,bounceIn,bounceInDown,bounceInLeft,bounceInRight,bounceInUp,bounceOut,bounceOutDown,bounceOutLeft,bounceOutRight,bounceOutUp,fadeIn,fadeInDown,fadeInDownBig,fadeInLeft,fadeInLeftBig,fadeInRight,fadeInRightBig,fadeInUp,fadeInUpBig,fadeOut,fadeOutDown,fadeOutDownBig,fadeOutLeft,fadeOutLeftBig,fadeOutRight,fadeOutRightBig,fadeOutUp,fadeOutUpBig,flip,flipInX,flipInY,flipOutX,flipOutY,lightSpeedIn,lightSpeedOut,rotateIn,rotateInDownLeft,rotateInDownRight,rotateInUpLeft,rotateInUpRight,rotateOut,rotateOutDownLeft,rotateOutDownRight,rotateOutUpLeft,rotateOutUpRight,slideInUp,slideInDown,slideInLeft,slideInRight,slideOutUp,slideOutDown,slideOutLeft,slideOutRight,zoomIn,zoomInDown,zoomInLeft,zoomInRight,zoomInUp,zoomOut,zoomOutDown,zoomOutLeft,zoomOutRight,zoomOutUp,hinge,rollIn,rollOut", "class='form-control' ", "false")
+    </div>
+    <div>
+        @DnnLabel("lblanimatein", "Settings.animatein")@DropDownList(Model, "genxml/dropdownlist/animatein", "false,bounce,flash,pulse,rubberBand,shake,swing,tada,wobble,jello,bounceIn,bounceInDown,bounceInLeft,bounceInRight,bounceInUp,bounceOut,bounceOutDown,bounceOutLeft,bounceOutRight,bounceOutUp,fadeIn,fadeInDown,fadeInDownBig,fadeInLeft,fadeInLeftBig,fadeInRight,fadeInRightBig,fadeInUp,fadeInUpBig,fadeOut,fadeOutDown,fadeOutDownBig,fadeOutLeft,fadeOutLeftBig,fadeOutRight,fadeOutRightBig,fadeOutUp,fadeOutUpBig,flip,flipInX,flipInY,flipOutX,flipOutY,lightSpeedIn,lightSpeedOut,rotateIn,rotateInDownLeft,rotateInDownRight,rotateInUpLeft,rotateInUpRight,rotateOut,rotateOutDownLeft,rotateOutDownRight,rotateOutUpLeft,rotateOutUpRight,slideInUp,slideInDown,slideInLeft,slideInRight,slideOutUp,slideOutDown,slideOutLeft,slideOutRight,zoomIn,zoomInDown,zoomInLeft,zoomInRight,zoomInUp,zoomOut,zoomOutDown,zoomOutLeft,zoomOutRight,zoomOutUp,hinge,rollIn,rollOut","false,bounce,flash,pulse,rubberBand,shake,swing,tada,wobble,jello,bounceIn,bounceInDown,bounceInLeft,bounceInRight,bounceInUp,bounceOut,bounceOutDown,bounceOutLeft,bounceOutRight,bounceOutUp,fadeIn,fadeInDown,fadeInDownBig,fadeInLeft,fadeInLeftBig,fadeInRight,fadeInRightBig,fadeInUp,fadeInUpBig,fadeOut,fadeOutDown,fadeOutDownBig,fadeOutLeft,fadeOutLeftBig,fadeOutRight,fadeOutRightBig,fadeOutUp,fadeOutUpBig,flip,flipInX,flipInY,flipOutX,flipOutY,lightSpeedIn,lightSpeedOut,rotateIn,rotateInDownLeft,rotateInDownRight,rotateInUpLeft,rotateInUpRight,rotateOut,rotateOutDownLeft,rotateOutDownRight,rotateOutUpLeft,rotateOutUpRight,slideInUp,slideInDown,slideInLeft,slideInRight,slideOutUp,slideOutDown,slideOutLeft,slideOutRight,zoomIn,zoomInDown,zoomInLeft,zoomInRight,zoomInUp,zoomOut,zoomOutDown,zoomOutLeft,zoomOutRight,zoomOutUp,hinge,rollIn,rollOut", "class='form-control' ", "false")
+    </div>
+    <div>
+        @DnnLabel("lblsmartspeed", "Settings.smartspeed")@TextBox(Model, "genxml/textbox/smartspeed", "class='form-control' width='100px' maxlength='5' ", "450")
+    </div>
+
+    <div>
+        Ref: @Model.GetXmlProperty("genxml/hidden/modref")        
+    </div>
+    
+
+
+</div>
+
