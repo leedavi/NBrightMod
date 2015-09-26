@@ -1,37 +1,44 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
+@{
+    var divid = "NBrightMod" + @Model.GetSetting("modref");
+    }
 
-<div id="NBrightMod[Settings:modref]" class="owl-carousel">
+<div id="@(divid)" class="owl-carousel">
 
-    @foreach (NBrightInfo x in Model)
-    {
-        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[[1]]/hidden/imageurl");
+        @foreach (NBrightInfo x in Model.List)
+        {
+        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
         <div class="item">
             @if (imageurl != "")
             {
-                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=[Settings:width]&h=[Settings:height]" alt="@x.GetXmlProperty("genxml/lang/genxml/textbox/title")"/>
+                var width = Model.GetSetting("width");
+                var height = Model.GetSetting("height");
+                var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)"/>
             }
             @if (!x.GetXmlPropertyBool("genxml/checkbox/hidedescription"))
             {
-                <span class="owl-carousel-caption">@HtmlOf(x, "genxml/lang/genxml/textbox/infodesc")</span>
+            <span class="owl-carousel-caption">@HtmlOf(x, "genxml/lang/genxml/textbox/infodesc")</span>
             }
         </div>
-    }
-</div>
+        }
+    </div>
 
-<script type="text/javascript">
-    $(window).load(function () {
+    <script type="text/javascript">
+        $(window).load(function () {
 
-        $('#NBrightMod[Settings:modref]').owlCarousel({
-            animateOut: '[Settings:animateout]',
-            animateIn: '[Settings:animatein]',
-            loop: [Settings:loop],
-            autoplay: [Settings:autoplay],
-            margin: [Settings:margin],
-            items: [Settings:items],
-            center: [Settings:center],
-            smartSpeed: [Settings:smartspeed]
+            $('#@(divid)').owlCarousel({
+                animateOut: '@Model.GetSetting("animateout")',
+                animateIn: '@Model.GetSetting("animatein")',
+                loop: @Model.GetSetting("loop"),
+            autoplay: @Model.GetSetting("autoplay"),
+            margin: @Model.GetSetting("margin"),
+            items: @Model.GetSetting("items"),
+            center: @Model.GetSetting("center"),
+            smartSpeed: @Model.GetSetting("smartspeed")
         });
 
-    });
-</script>
+        });
+    </script>

@@ -117,6 +117,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "getfolderimages":
                     strOut = GetFolderImages(context, true);
                     break;
+                case "savetheme":
+                    if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
+                    break;
             }
 
             #endregion
@@ -202,30 +205,7 @@ namespace Nevoweb.DNN.NBrightMod
                     var nbi = LocalUtils.GetSettings(moduleid);
                     if (nbi.ModuleId == 0) // new setting record
                     {
-
-                        var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
-                        var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
-                        Utils.CreateFolder(tempFolderMapPath);
-                        var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload";
-                        var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload";
-                        Utils.CreateFolder(uploadFolderMapPath);
-
-                        nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS", "NBrightMod");
-                        if (nbi == null)
-                        {
-                            nbi = new NBrightInfo(true); // populate empty XML so we can update nodes.
-                            nbi.GUIDKey = "NBrightMod";
-                            nbi.PortalId = PortalSettings.Current.PortalId;
-                            nbi.ModuleId = Convert.ToInt32(moduleid);
-                            nbi.TypeCode = "SETTINGS";
-                            nbi.Lang = "";
-                        }
-                        //rebuild xml
-                        nbi.ModuleId = Convert.ToInt32(moduleid);
-                        nbi.SetXmlProperty("genxml/tempfolder", tempFolder);
-                        nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
-                        nbi.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
-                        nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+                        nbi = CreateSettingsInfo(moduleid,nbi);
                     }
                     // get data passed back by ajax
                     var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
@@ -247,10 +227,7 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         nbi.RemoveXmlNode("genxml/dropdownlist/targetpagetabid");
                     }
-                    if (nbi.GetXmlProperty("genxml/hidden/modref") == "")
-                    {
-                        nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
-                    }
+                    if (nbi.GetXmlProperty("genxml/hidden/modref") == "") nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
                     objCtrl.Update(nbi);
 
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
@@ -264,6 +241,72 @@ namespace Nevoweb.DNN.NBrightMod
                 return ex.ToString();
             }
 
+        }
+
+        private String SaveTheme(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                if (Utils.IsNumeric(moduleid))
+                {
+                    // get DB record
+                    var nbi = LocalUtils.GetSettings(moduleid);
+                    if (nbi.ModuleId == 0) // new setting record
+                    {
+                        nbi = CreateSettingsInfo(moduleid, nbi);
+                    }
+                    if (nbi.ModuleId > 0) 
+                    {
+                        nbi.SetXmlProperty("genxml/dropdownlist/themefolder", ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder"));
+                        objCtrl.Update(nbi);
+                        LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                    }
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
+        private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo nbi)
+        {
+            var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
+            var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
+            Utils.CreateFolder(tempFolderMapPath);
+            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload";
+            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload";
+            Utils.CreateFolder(uploadFolderMapPath);
+
+            var objCtrl = new NBrightDataController();
+            nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS", "NBrightMod");
+            if (nbi == null)
+            {
+                nbi = new NBrightInfo(true); // populate empty XML so we can update nodes.
+                nbi.GUIDKey = "NBrightMod";
+                nbi.PortalId = PortalSettings.Current.PortalId;
+                nbi.ModuleId = Convert.ToInt32(moduleid);
+                nbi.TypeCode = "SETTINGS";
+                nbi.Lang = "";
+            }
+            //rebuild xml
+            nbi.ModuleId = Convert.ToInt32(moduleid);
+            nbi.SetXmlProperty("genxml/tempfolder", tempFolder);
+            nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
+            nbi.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
+            nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+            nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
+
+            return nbi;
         }
 
         private String GetData(HttpContext context, bool clearCache = false)
@@ -304,7 +347,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // Return list of items
                     var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", "", 0, 0, 0, 0, editlang);
-                    strOut = LocalUtils.RazorTemplRender("editlist.cshtml", moduleid, _lang + editlang, l, _lang);
+                    strOut = LocalUtils.RazorTemplRenderList("editlist.cshtml", moduleid, _lang + editlang, l, _lang);
                 }
 
                 // debug data out by writing out to file (REMOVE FOR PROUCTION)
@@ -569,7 +612,7 @@ namespace Nevoweb.DNN.NBrightMod
                             l.Add(nbi);
                             c += 1;
                         }
-                        if (l.Count > 0) strOut = LocalUtils.RazorTemplRender("imglist.cshtml", moduleid, _lang + editlang, l, _lang);
+                        if (l.Count > 0) strOut = LocalUtils.RazorTemplRenderList("imglist.cshtml", moduleid, _lang + editlang, l, _lang);
                     }
                 }
 
@@ -625,7 +668,7 @@ namespace Nevoweb.DNN.NBrightMod
                 }
 
 
-                if (imgl.Count > 0) strOut = LocalUtils.RazorTemplRender("imgselectlist.cshtml", moduleid, _lang, imgl, _lang);
+                if (imgl.Count > 0) strOut = LocalUtils.RazorTemplRenderList("imgselectlist.cshtml", moduleid, _lang, imgl, _lang);
 
                 return strOut;
 

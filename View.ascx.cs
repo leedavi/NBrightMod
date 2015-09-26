@@ -77,7 +77,7 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
             var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(ModuleId), "NBrightModDATA", "", "", 0, 0, 0, 0, Utils.GetCurrentCulture());
 
-            var strOut = LocalUtils.RazorTemplRender("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
+            var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();
             lit.Text = strOut;
             phData.Controls.Add(lit);

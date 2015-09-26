@@ -1,3 +1,5 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightRazor>
+@using NBrightDNN
 
 
 <!-- NBrightMod specific css and js -->
@@ -15,12 +17,16 @@
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightData/bootstrap/js/bootstrap.min.js"></script>
 <link href="/DesktopModules/NBright/NBrightData/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
+<!-- style for tabs in settings.cshtml -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
 <!-- div section to pass param data to the server side ajax functions -->
 <div id="selectparams">
-    <input id="currentculture" type="hidden" value="{Url:language}" ></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
+    <input id="currentculture" type="hidden" value="@Model.GetUrlParam("language")" ></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
     <input id="editlang" type="hidden" value="" ></input> <!-- culture code being edited -->
-    <input id="moduleid" type="hidden" value="{Url:mid}" ></input>
-    <input id="tabid" type="hidden" value="{Url:tabid}" ></input>
+    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" ></input>
+    <input id="tabid" type="hidden" value="@Model.GetUrlParam("tabid")" ></input>
     <input id="index" type="hidden" value="" ></input>
 </div>
 
@@ -28,7 +34,10 @@
 <div id="recyclebin" style="display: none;"></div>
 
 <!-- hold url to exit edit and settings page -->
-<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid={Url:tabid}")"></input>
+@{
+    var tabid = Model.GetUrlParam("tabid");
+}
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid)"></input>
 
 <!-- div section to display ajax return -->
 <div id="editdata"></div>

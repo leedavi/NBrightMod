@@ -1,26 +1,47 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
 @using System.Web.UI.HtmlControls
+@using NBrightDNN
+
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
 
 
-<input id="moduleid" type="hidden" value="@Model.ModuleId" ></input>
-
-<div class="buttons editdata">
-    <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
-    <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">@ResourceKey("Edit.theme")</a></li>
+        <li><a href="#tabs-2">@ResourceKey("Edit.import")</a></li>
+        <li><a href="#tabs-3">@ResourceKey("Edit.export")</a></li>
+    </ul>
+    <div id="tabs-1">
+        <div class="buttons editdata">
+            <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
+            <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
+        </div>
+        <div id="themedata">
+            @DnnLabel("lblthemefolder", "Settings.themefolder")
+            @FolderSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
+            <input id="moduleid" type="hidden" value="@info.ModuleId"></input>
+        </div>
+    </div>
+    <div id="tabs-2">
+        <div class="buttons importdata">
+            <button id="import" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-disk-save"></span>@ResourceKey("Edit.import")</button>
+            @CheckBox(info, "genxml/checkbox/themeimportportaldata", "ResourceKey:Edit.includeportaldata", "", true)
+        </div>
+    </div>
+    <div id="tabs-3">
+        <div class="buttons exportdata">
+            <button id="export" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-disk-open"></span>@ResourceKey("Edit.export")</button>
+            @CheckBox(info, "genxml/checkbox/themeexportportaldata", "ResourceKey:Edit.includeportaldata", "", true)
+        </div>
+    </div>
 </div>
 
-<div>
     <div>
-        @DnnLabel("lblthemefolder","Settings.themefolder")
-        @FolderSelectList(Model,"genxml/dropdownlist/themefolder","/DesktopModules/NBright/NBrightMod/Themes"," ")
+        Ref: @info.GetXmlProperty("genxml/hidden/modref")
     </div>
-
-    <div>
-        Ref: @Model.GetXmlProperty("genxml/hidden/modref")        
-    </div>
-    
-
-
-</div>
 

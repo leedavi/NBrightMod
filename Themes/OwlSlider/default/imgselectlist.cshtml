@@ -4,7 +4,7 @@
 
 <ul id="imageselectlistul" class="selectimages" >
     @{
-        foreach (var x in @Model)
+        foreach (var x in @Model.List)
         {
             <li class="imageselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")">
                 <div class="imagewrapper"><img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?w=50&h=0&src=@x.GetXmlProperty("genxml/hidden/imageurl")"/>

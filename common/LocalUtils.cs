@@ -11,14 +11,20 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using NBrightCore.common;
 using NBrightCore.render;
+using NBrightCore.TemplateEngine;
 using NBrightDNN;
 using NBrightDNN.render;
+using NBrightMod.render;
+using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 
 namespace NBrightMod.common
 {
 
     public static class LocalUtils
     {
+
 
         #region "functions"
 
@@ -37,9 +43,6 @@ namespace NBrightMod.common
                 // get standard module template
                 templ = templCtrl.GetTemplateData(templatename, lang);
             }
-
-            if (settings != null) templ = Utils.ReplaceSettingTokens(templ, settings);
-            templ = Utils.ReplaceUrlTokens(templ);
             return templ;
         }
 
@@ -77,7 +80,6 @@ namespace NBrightMod.common
             return rtnList;
         }
 
-
         public static Boolean CheckRights()
         {
             if (UserController.GetCurrentUserInfo().IsInRole("Manager") || UserController.GetCurrentUserInfo().IsInRole("Editor") || UserController.GetCurrentUserInfo().IsInRole("Administrators"))
@@ -114,7 +116,7 @@ namespace NBrightMod.common
         }
 
 
-        public static String RazorTemplRender(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang)
+        public static String RazorTemplRenderList(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang)
         {
             // do razor template
             var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString() + "*" + lang;
@@ -126,9 +128,11 @@ namespace NBrightMod.common
                 if (razorTempl != "")
                 {
                     if (!objList.Any()) objList.Add(new NBrightInfo(true));
-                    razorTempl = GenXmlFunctions.RenderRepeater(objList[0], razorTempl, "", "XMLData", "", settignInfo.ToDictionary(), null);
-                    var razorTemplateKey = "NBrightModKey" + razorTemplName + PortalSettings.Current.PortalId.ToString();
-                    razorTempl = RazorUtils.RazorRender(objList, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
+
+                    var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                    razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+
                     Utils.SetCache(cachekey, razorTempl);
                     var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
                     if (modCacheList == null) modCacheList = new List<String>();
@@ -146,14 +150,18 @@ namespace NBrightMod.common
             var razorTempl = (String)Utils.GetCache(cachekey);
             if (razorTempl == null)
             {
-                razorTempl = LocalUtils.GetTemplateData(razorTemplName, lang);
+                var settignInfo = GetSettings(moduleid);
+                razorTempl = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
                 if (razorTempl != "")
                 {
                     if (obj == null) obj = new NBrightInfo(true);
-                    var settignInfo = GetSettings(moduleid);
-                    razorTempl = GenXmlFunctions.RenderRepeater(obj, razorTempl, "", "XMLData", "", settignInfo.ToDictionary(), null);
                     var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
-                    razorTempl = RazorUtils.RazorRender(obj, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+
+                    var l = new List<object>();
+                    l.Add(obj);
+                    var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                    razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+
                     Utils.SetCache(cachekey, razorTempl);
                     var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
                     if (modCacheList == null) modCacheList = new List<String>();
@@ -163,6 +171,7 @@ namespace NBrightMod.common
             }
             return razorTempl;
         }
+
 
 
         public static void IncludePageHeaders(String moduleid, Page page, String moduleName)
@@ -181,6 +190,18 @@ namespace NBrightMod.common
             }
         }
 
+        public static String RazorRender(Object info, String razorTempl, String templateKey, Boolean debugMode = false)
+        {
+            // do razor test
+            var config = new TemplateServiceConfiguration();
+            config.Debug = debugMode;
+            config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
+            var service = RazorEngineService.Create(config);
+            Engine.Razor = service;
+
+            var result = Engine.Razor.RunCompile(razorTempl, templateKey, null, info);
+            return result;
+        }
 
 
         #endregion

@@ -186,4 +186,16 @@
   <data name="hidedescription.Text" xml:space="preserve">
     <value>Hide Description</value>
   </data>
+  <data name="export.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="import.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="includeportaldata.Text" xml:space="preserve">
+    <value>Include Portal Templates</value>
+  </data>
+  <data name="theme.Text" xml:space="preserve">
+    <value>Theme</value>
+  </data>
 </root>
