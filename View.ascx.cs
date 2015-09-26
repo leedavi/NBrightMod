@@ -51,10 +51,10 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // check we have settings
                     var settings = LocalUtils.GetSettings(ModuleId.ToString());
-                    if (settings.ModuleId == 0)
+                    if (settings.ModuleId == 0 || settings.GetXmlProperty("genxml/dropdownlist/themefolder") == "")
                     {
                         var lit = new Literal();
-                        var rtnValue = Localization.GetString("nosettings", "/DesktopModules/NBright/NBrightMod/App_LocalResources/View.ascx.resx", PortalSettings.Current, Utils.GetCurrentCulture(), true);
+                        var rtnValue = Localization.GetString("notheme", "/DesktopModules/NBright/NBrightMod/App_LocalResources/View.ascx.resx", PortalSettings.Current, Utils.GetCurrentCulture(), true);
                         lit.Text = rtnValue;
                         phData.Controls.Add(lit);
                     }

@@ -37,7 +37,7 @@ namespace NBrightMod.common
             var templCtrl = new NBrightCore.TemplateEngine.TemplateGetter(PortalSettings.Current.HomeDirectoryMapPath + "\\NBrightMod", controlMapPath, "Themes\\" + themeFolder, "");
             var templ = "";
             // get module specific template
-            if (settings != null) templ = templCtrl.GetTemplateData(settings["modref"] + templatename, lang);
+            if (settings != null && settings.ContainsKey("modref")) templ = templCtrl.GetTemplateData(settings["modref"] + templatename, lang);
             if (templ == "")
             {
                 // get standard module template

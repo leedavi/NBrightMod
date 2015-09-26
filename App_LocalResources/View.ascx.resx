@@ -126,6 +126,9 @@
   <data name="nosettings.Text" xml:space="preserve">
     <value>NO SETTINGS FOR THIS MODULE.  Enter the module settings and save.</value>
   </data>
+  <data name="notheme.Text" xml:space="preserve">
+    <value>NO THEME SELECTED.  Enter the module theme option and select a theme.</value>
+  </data>
   <data name="settings.Text" xml:space="preserve">
     <value>Settings</value>
   </data>

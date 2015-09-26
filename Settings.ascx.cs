@@ -55,7 +55,10 @@ namespace Nevoweb.DNN.NBrightMod
                 _templD = "settings.html";
 
                 // Get Display Body
-                var rpDataTempl = LocalUtils.GetTemplateData(_templD, Utils.GetCurrentCulture());
+                var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
+                var rpDataTempl = LocalUtils.GetTemplateData(_templD, Utils.GetCurrentCulture(), settings.ToDictionary());
+                if (settings != null) rpDataTempl = Utils.ReplaceSettingTokens(rpDataTempl, settings.ToDictionary());
+                rpDataTempl = Utils.ReplaceUrlTokens(rpDataTempl);
                 rpData.ItemTemplate = new GenXmlTemplate(rpDataTempl);
 
 
