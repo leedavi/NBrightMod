@@ -1,15 +1,17 @@
-@inherits NBrightMod.render.NBrightModRazorTokens<NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
 @using NBrightDNN
 
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
 
-<!-- NBrightMod specific css and js -->
-<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/Themes.js"></script>
-<link href="/DesktopModules/NBright/NBrightMod/Themes/config/css/NBrightMod.css" rel="stylesheet" />
+<script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
 
 <!-- loading display to cover buttons, to stop multiple clicks -->
 <div id="loader" class="processing" style="display:none;"><i class="glyphicon glyphicon-cog"></i></div>
 
 <!-- Load these scripts to use nbrightajax functions -->
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/NBrightMod.js"></script>
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/nbrightajax.js"></script>
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightData/js/jquery.genxmlajax.js"></script>
 
@@ -17,9 +19,8 @@
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightData/bootstrap/js/bootstrap.min.js"></script>
 <link href="/DesktopModules/NBright/NBrightData/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
-<!-- style for tabs in settings.cshtml -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
+<!-- Module specific css and js -->
+<link href="/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/css/NBrightMap.css" rel="stylesheet" />
 
 <!-- div section to pass param data to the server side ajax functions -->
 <div id="selectparams">
@@ -28,7 +29,8 @@
     <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" ></input>
     <input id="tabid" type="hidden" value="@Model.GetUrlParam("tabid")" ></input>
     <input id="index" type="hidden" value="" ></input>
-    <input id="razortemplate" type="hidden" value="config.settings.cshtml" ></input>
+    <input id="selecteditemid" type="hidden" value="" ></input> <!-- used as selected edit itemid -->
+    <input id="newitem" type="hidden" value="" ></input> <!-- used to hold "new" oken to create new record -->
 </div>
 
 <!-- this div is used as a recycle bin for undo JS-->
@@ -42,3 +44,4 @@
 
 <!-- div section to display ajax return -->
 <div id="editdata"></div>
+

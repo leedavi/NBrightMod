@@ -102,6 +102,7 @@
     <EmbeddedResource Include="App_LocalResources\Edit.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\View.ascx.resx" />
@@ -118,11 +119,12 @@
     </Content>
     <None Include="NBrightMod.dnn" />
     <Content Include="Themes\config\css\NBrightMod.css" />
+    <Content Include="Themes\config\default\settings.html" />
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
+    <Content Include="Themes\GoogleMap\css\NBrightMap.css" />
     <Content Include="Themes\OwlSlider\css\owl.carousel.css" />
-    <Content Include="Themes\OwlSlider\default\settings.html" />
     <Content Include="Themes\OwlSlider\js\owl.carousel.min.js" />
     <Content Include="View.ascx">
       <SubType>ASPXCodeBehind</SubType>
@@ -141,6 +143,12 @@
   <ItemGroup>
     <None Include="Themes\config\default\adminthemes.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
+    <None Include="Themes\GoogleMap\default\editbody.cshtml" />
+    <None Include="Themes\GoogleMap\default\editfields.cshtml" />
+    <None Include="Themes\GoogleMap\default\editlist.cshtml" />
+    <None Include="Themes\GoogleMap\default\pageheader.cshtml" />
+    <None Include="Themes\GoogleMap\default\settings.cshtml" />
+    <None Include="Themes\GoogleMap\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\editbody.cshtml" />
     <None Include="Themes\OwlSlider\default\editfields.cshtml" />
     <None Include="Themes\OwlSlider\default\editlist.cshtml" />
@@ -155,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
+    <Folder Include="Themes\GoogleMap\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

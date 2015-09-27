@@ -45,7 +45,8 @@ namespace Nevoweb.DNN.NBrightMod
                 base.OnLoad(e);
                 if (Page.IsPostBack == false)
                 {
-                    var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
+                    var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
+                    var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);

@@ -52,7 +52,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
 
-                _templD = "settings.html";
+                _templD = "config.settings.html";
 
                 // Get Display Body
                 var settings = LocalUtils.GetSettings(ModuleId.ToString(""));

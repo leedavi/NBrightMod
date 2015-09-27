@@ -167,7 +167,8 @@ namespace Nevoweb.DNN.NBrightMod
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
-
+                var razortemplate = ajaxInfo.GetXmlProperty("genxml/hidden/razortemplate");
+                if (razortemplate == "") razortemplate = "settings.cshtml";
                 if (moduleid == "") moduleid = "-1";
 
                 if (clearCache) LocalUtils.RazorClearCache(moduleid);
@@ -176,7 +177,7 @@ namespace Nevoweb.DNN.NBrightMod
                 // do edit field data if a itemid has been selected
                 var obj = LocalUtils.GetSettings(moduleid);
                 obj.ModuleId = Convert.ToInt32(moduleid); // assign for new records
-                strOut = LocalUtils.RazorTemplRender("settings.cshtml", moduleid, "settings", obj, _lang);
+                strOut = LocalUtils.RazorTemplRender(razortemplate, moduleid, "settings", obj, _lang);
 
                 return strOut;
 

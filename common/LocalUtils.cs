@@ -32,6 +32,12 @@ namespace NBrightMod.common
         {
             var themeFolder = "config";
             if (settings != null && settings.ContainsKey("themefolder")) themeFolder = settings["themefolder"];
+            var parseTemplName = templatename.Split('.');
+            if (parseTemplName.Count() == 3)
+            {
+                themeFolder = parseTemplName[0];
+                templatename = parseTemplName[1] + "." + parseTemplName[2];
+            }
 
             var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
             var templCtrl = new NBrightCore.TemplateEngine.TemplateGetter(PortalSettings.Current.HomeDirectoryMapPath + "\\NBrightMod", controlMapPath, "Themes\\" + themeFolder, "");
@@ -155,7 +161,7 @@ namespace NBrightMod.common
                 if (razorTempl != "")
                 {
                     if (obj == null) obj = new NBrightInfo(true);
-                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
+                    var razorTemplateKey = "NBrightModKey" + moduleid + settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
                     var l = new List<object>();
                     l.Add(obj);

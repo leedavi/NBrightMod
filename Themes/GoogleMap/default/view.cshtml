@@ -1,0 +1,123 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
+
+
+@{
+    var mapTypeControl = Model.GetSetting("maptypecontrol").ToLower();
+     var zoomControl = Model.GetSetting("mapzoomcontrol").ToLower();
+     var streetViewControl = Model.GetSetting("mapstreetcontrol").ToLower();
+    var modref = Model.GetSetting("modref");
+}
+
+<script language="javascript" type="text/javascript">
+    function initialize() {
+
+        var locations@(modref) = [
+        @{
+            var c = 1;
+            var startlat = "";
+            var startlong = "";
+            foreach (NBrightInfo x in @Model.List)
+            {
+                var captiontext = "";
+                if (!x.GetXmlPropertyBool("genxml/checkbox/hidecaption"))
+                {   
+                    captiontext = "<h4>" + x.GetXmlProperty("genxml/textbox/title") + "</h4>";
+                    if (x.GetXmlProperty("genxml/lang/genxml/textbox/infodesc") != "")
+                    {
+                        captiontext += "<p>" + @BreakOf(x,"genxml/lang/genxml/textbox/infodesc") + "</p>";
+                    }
+                    if (x.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
+                    {
+                        captiontext += "<br/><a href=\"" + x.GetXmlProperty("genxml/lang/genxml/textbox/externalhref") + "\" target=\"_blank\">" + x.GetXmlProperty("genxml/lang/genxml/textbox/linktext") + "</a>";                        
+                    }
+                    if (x.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
+                    {
+                        captiontext += "<br/><a href=\"" + @GetTabUrlByGuid(x, "/genxml/dropdownlist/linktab") + "\" target=\"_blank\">" + x.GetXmlProperty("genxml/lang/genxml/textbox/linktext") + "</a>";
+                    }
+                }
+                
+                var captiontextout = new RawString(captiontext);  // need to do this so output is in html format.
+                
+                <text>['@(captiontextout)', @(x.GetXmlProperty("genxml/textbox/lat")), @(x.GetXmlProperty("genxml/textbox/long")), '@(x.GetXmlProperty("genxml/textbox/icon"))'],</text>
+                if (c == 1)
+                {
+                    startlat = x.GetXmlProperty("genxml/textbox/lat");
+                    startlong = x.GetXmlProperty("genxml/textbox/long");
+                }
+                c += 1;
+            }
+        }
+         ];
+
+    var mapCanvas@(modref) = document.getElementById('map-canvas@(modref)');
+    var myLatlng@(modref) = new google.maps.LatLng(@(startlat),@(startlong));
+
+        var mapOptions@(modref) = {
+            zoom: @Model.GetSetting("zoom"),
+        center: myLatlng@(modref),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: @(mapTypeControl),
+        zoomControl: @(zoomControl),
+        streetViewControl: @(streetViewControl)
+        }
+
+    var map@(modref) = new google.maps.Map(mapCanvas@(modref), mapOptions@(modref));
+
+    var infowindow@(modref) = new google.maps.InfoWindow({
+        maxWidth: @Model.GetSetting("infowidth")
+    });
+
+    var markers@(modref) = new Array();
+       
+    // Add the markers and infowindows to the map
+    for (var i = 0; i < locations@(modref).length; i++) {  
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations@(modref)[i][1], locations@(modref)[i][2]),
+            map: map@(modref),
+            icon: locations@(modref)[i][3]
+        });
+
+    markers@(modref).push(marker);
+
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                if (locations@(modref)[i][0] != '') {
+                    infowindow@(modref).setContent(locations@(modref)[i][0]);
+                    infowindow@(modref).open(map@(modref), marker);                    
+                }
+            }
+    })(marker, i));
+      
+    }
+
+        function autoCenter@(modref)() {
+        //  Create a new viewpoint bound
+        var bounds@(modref) = new google.maps.LatLngBounds();
+        //  Go through each...
+        for (var i = 0; i < markers@(modref).length; i++) {  
+            bounds@(modref).extend(markers@(modref)[i].position);
+    }
+        //  Fit these bounds to the map
+            map@(modref).fitBounds(bounds@(modref));
+    }
+
+            if (locations@(modref).length > 1) autoCenter@(modref)();
+
+}
+
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<div id="map-canvas@(modref)" style="position:relative;width:@Model.GetSetting("width");height:@Model.GetSetting("height");"></div>
+

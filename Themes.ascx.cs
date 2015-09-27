@@ -45,7 +45,7 @@ namespace Nevoweb.DNN.NBrightMod
                 base.OnLoad(e);
                 if (Page.IsPostBack == false)
                 {
-                    var strOut = LocalUtils.RazorTemplRender("adminthemes.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
+                    var strOut = LocalUtils.RazorTemplRender("config.adminthemes.cshtml", ModuleId.ToString(""), "config" + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);
