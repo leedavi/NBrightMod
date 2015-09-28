@@ -23,15 +23,6 @@ namespace Nevoweb.DNN.NBrightMod.Base
             get { return (DotNetNuke.Framework.CDefault)this.Page; }
         }
 
-        protected override void OnInit(EventArgs e)
-        {
-
-            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod");
-
-            base.OnInit(e);
-
-        }
-
 
     }
 }

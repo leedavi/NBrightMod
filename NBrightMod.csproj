@@ -123,7 +123,6 @@
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
-    <Content Include="Themes\GoogleMap\css\NBrightMap.css" />
     <Content Include="Themes\OwlSlider\css\owl.carousel.css" />
     <Content Include="Themes\OwlSlider\js\owl.carousel.min.js" />
     <Content Include="View.ascx">
@@ -146,16 +145,16 @@
     <None Include="Themes\GoogleMap\default\editbody.cshtml" />
     <None Include="Themes\GoogleMap\default\editfields.cshtml" />
     <None Include="Themes\GoogleMap\default\editlist.cshtml" />
-    <None Include="Themes\GoogleMap\default\pageheader.cshtml" />
     <None Include="Themes\GoogleMap\default\settings.cshtml" />
     <None Include="Themes\GoogleMap\default\view.cshtml" />
+    <None Include="Themes\GoogleMap\default\viewpageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\editbody.cshtml" />
     <None Include="Themes\OwlSlider\default\editfields.cshtml" />
     <None Include="Themes\OwlSlider\default\editlist.cshtml" />
     <None Include="Themes\OwlSlider\default\imgselectlist.cshtml" />
-    <None Include="Themes\OwlSlider\default\pageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\settings.cshtml" />
     <None Include="Themes\OwlSlider\default\view.cshtml" />
+    <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
+    <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

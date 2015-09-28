@@ -181,6 +181,12 @@ function NBrightMod_nbxgetCompleted(e) {
             $('#selecteditemid').val($(this).attr("itemid")); // assign the sleected itemid, so the server knows what item is being edited
             NBrightMod_nbxget('getdata', '#selectparams', '#editdata'); // do ajax call to get edit form
         });
+        $('.itemup').click(function () {
+            moveUp($(this).parent().parent().parent().parent());
+        });
+        $('.itemdown').click(function () {
+            moveDown($(this).parent().parent().parent().parent());
+        });
 
         $('#exitedit').click(function () {
             window.location.href = $('#exiturl').val();
@@ -220,8 +226,8 @@ function moveUp(item) {
     var prev = item.prev();
     if (prev.length == 0)
         return;
-    prev.css('z-index', 999).css('position', 'relative').animate({ top: item.height() }, 250);
-    item.css('z-index', 1000).css('position', 'relative').animate({ top: '-' + prev.height() }, 300, function () {
+    prev.css('z-index', 999).css('position', 'relative').animate({ top: item.height() }, 1);
+    item.css('z-index', 1000).css('position', 'relative').animate({ top: '-' + prev.height() }, 1, function () {
         prev.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertBefore(prev);
@@ -231,8 +237,8 @@ function moveDown(item) {
     var next = item.next();
     if (next.length == 0)
         return;
-    next.css('z-index', 999).css('position', 'relative').animate({ top: '-' + item.height() }, 250);
-    item.css('z-index', 1000).css('position', 'relative').animate({ top: next.height() }, 300, function () {
+    next.css('z-index', 999).css('position', 'relative').animate({ top: '-' + item.height() }, 1);
+    item.css('z-index', 1000).css('position', 'relative').animate({ top: next.height() }, 1, function () {
         next.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertAfter(next);

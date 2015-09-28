@@ -9,18 +9,20 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
 
-
 @{
     var mapTypeControl = Model.GetSetting("maptypecontrol").ToLower();
-     var zoomControl = Model.GetSetting("mapzoomcontrol").ToLower();
-     var streetViewControl = Model.GetSetting("mapstreetcontrol").ToLower();
-    var modref = Model.GetSetting("modref");
+    var zoomControl = Model.GetSetting("mapzoomcontrol").ToLower();
+    var streetViewControl = Model.GetSetting("mapstreetcontrol").ToLower();
+    var info = (NBrightInfo)Model.List.First();
+    var modid = info.ModuleId.ToString("");
 }
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=@(info.Lang.Substring(0,2))"></script>
 
 <script language="javascript" type="text/javascript">
     function initialize() {
 
-        var locations@(modref) = [
+        var locations@(modid) = [
         @{
             var c = 1;
             var startlat = "";
@@ -29,7 +31,7 @@
             {
                 var captiontext = "";
                 if (!x.GetXmlPropertyBool("genxml/checkbox/hidecaption"))
-                {   
+                {
                     captiontext = "<h4>" + x.GetXmlProperty("genxml/textbox/title") + "</h4>";
                     if (x.GetXmlProperty("genxml/lang/genxml/textbox/infodesc") != "")
                     {
@@ -37,16 +39,16 @@
                     }
                     if (x.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
                     {
-                        captiontext += "<br/><a href=\"" + x.GetXmlProperty("genxml/lang/genxml/textbox/externalhref") + "\" target=\"_blank\">" + x.GetXmlProperty("genxml/lang/genxml/textbox/linktext") + "</a>";                        
+                        captiontext += "<br/><a href=\"" + x.GetXmlProperty("genxml/lang/genxml/textbox/externalhref") + "\" target=\"_blank\">" + x.GetXmlProperty("genxml/lang/genxml/textbox/linktext") + "</a>";
                     }
                     if (x.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
                     {
                         captiontext += "<br/><a href=\"" + @GetTabUrlByGuid(x, "/genxml/dropdownlist/linktab") + "\" target=\"_blank\">" + x.GetXmlProperty("genxml/lang/genxml/textbox/linktext") + "</a>";
                     }
                 }
-                
+
                 var captiontextout = new RawString(captiontext);  // need to do this so output is in html format.
-                
+
                 <text>['@(captiontextout)', @(x.GetXmlProperty("genxml/textbox/lat")), @(x.GetXmlProperty("genxml/textbox/long")), '@(x.GetXmlProperty("genxml/textbox/icon"))'],</text>
                 if (c == 1)
                 {
@@ -58,66 +60,73 @@
         }
          ];
 
-    var mapCanvas@(modref) = document.getElementById('map-canvas@(modref)');
-    var myLatlng@(modref) = new google.maps.LatLng(@(startlat),@(startlong));
+    var mapCanvas@(modid) = document.getElementById('map-canvas@(modid)');
+    var myLatlng@(modid) = new google.maps.LatLng(@(startlat),@(startlong));
 
-        var mapOptions@(modref) = {
+        var mapOptions@(modid) = {
             zoom: @Model.GetSetting("zoom"),
-        center: myLatlng@(modref),
+        center: myLatlng@(modid),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControl: @(mapTypeControl),
         zoomControl: @(zoomControl),
         streetViewControl: @(streetViewControl)
         }
 
-    var map@(modref) = new google.maps.Map(mapCanvas@(modref), mapOptions@(modref));
+    var map@(modid) = new google.maps.Map(mapCanvas@(modid), mapOptions@(modid));
 
-    var infowindow@(modref) = new google.maps.InfoWindow({
+    var infowindow@(modid) = new google.maps.InfoWindow({
         maxWidth: @Model.GetSetting("infowidth")
     });
 
-    var markers@(modref) = new Array();
-       
+    var markers@(modid) = new Array();
+
     // Add the markers and infowindows to the map
-    for (var i = 0; i < locations@(modref).length; i++) {  
+    for (var i = 0; i < locations@(modid).length; i++) {
         var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations@(modref)[i][1], locations@(modref)[i][2]),
-            map: map@(modref),
-            icon: locations@(modref)[i][3]
+            position: new google.maps.LatLng(locations@(modid)[i][1], locations@(modid)[i][2]),
+            map: map@(modid),
+            icon: locations@(modid)[i][3]
         });
 
-    markers@(modref).push(marker);
+    markers@(modid).push(marker);
 
     google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                if (locations@(modref)[i][0] != '') {
-                    infowindow@(modref).setContent(locations@(modref)[i][0]);
-                    infowindow@(modref).open(map@(modref), marker);                    
+                if (locations@(modid)[i][0] != '') {
+                    infowindow@(modid).setContent(locations@(modid)[i][0]);
+                    infowindow@(modid).open(map@(modid), marker);
                 }
             }
     })(marker, i));
-      
+
     }
 
-        function autoCenter@(modref)() {
+        function autoCenter@(modid)() {
         //  Create a new viewpoint bound
-        var bounds@(modref) = new google.maps.LatLngBounds();
+        var bounds@(modid) = new google.maps.LatLngBounds();
         //  Go through each...
-        for (var i = 0; i < markers@(modref).length; i++) {  
-            bounds@(modref).extend(markers@(modref)[i].position);
+        for (var i = 0; i < markers@(modid).length; i++) {
+            bounds@(modid).extend(markers@(modid)[i].position);
     }
         //  Fit these bounds to the map
-            map@(modref).fitBounds(bounds@(modref));
+            map@(modid).fitBounds(bounds@(modid));
     }
 
-            if (locations@(modref).length > 1) autoCenter@(modref)();
+            if (locations@(modid).length > 1) autoCenter@(modid)();
 
-}
+    }
 
 
 
 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 
-<div id="map-canvas@(modref)" style="position:relative;width:@Model.GetSetting("width");height:@Model.GetSetting("height");"></div>
+@{
+    var mapwidth = @Model.GetSetting("width");
+    if (!mapwidth.EndsWith("px") && !mapwidth.EndsWith("%")) mapwidth += "px";
+    var mapheight = @Model.GetSetting("height");
+    if (!mapheight.EndsWith("px") && !mapheight.EndsWith("%")) mapheight += "px";
+}
+
+<div id="map-canvas@(modid)" style="position:relative;width:@(mapwidth);height:@(mapheight);"></div>
 

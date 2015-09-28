@@ -42,10 +42,18 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region Event Handlers
 
+
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod","view");
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             try
             {
+
                 base.OnLoad(e);
                 if (Page.IsPostBack == false)
                 {
@@ -72,12 +80,17 @@ namespace Nevoweb.DNN.NBrightMod
 
         private void PageLoad()
         {
+            var settings = LocalUtils.GetSettings(ModuleId.ToString());
+
+            // preprocess razor template to get meta data for data select into cache.
+            var cachedlist = LocalUtils.RazorPreProcessTempl(settings.GetXmlProperty("genxml/dropdownlist/themefolder") + ".view.cshtml", ModuleId.ToString(""),Utils.GetCurrentCulture());
+            var orderby = "";
+            if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
             // get data list
             var objCtrl = new NBrightDataController();
-            var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(ModuleId), "NBrightModDATA", "", "", 0, 0, 0, 0, Utils.GetCurrentCulture());
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(ModuleId), "NBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
 
-            var settings = LocalUtils.GetSettings(ModuleId.ToString());
             var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();
             lit.Text = strOut;

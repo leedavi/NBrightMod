@@ -346,8 +346,13 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 else
                 {
+                    // preprocess razor template to get meta data for data select into cache.
+                    var cachedlist = LocalUtils.RazorPreProcessTempl("editlist.cshtml", moduleid, Utils.GetCurrentCulture());
+                    var orderby = "";
+                    if (cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
+
                     // Return list of items
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", "", 0, 0, 0, 0, editlang);
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, 0, 0, 0, 0, editlang);
                     strOut = LocalUtils.RazorTemplRenderList("editlist.cshtml", moduleid, _lang + editlang, l, _lang);
                 }
 

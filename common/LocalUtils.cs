@@ -9,6 +9,7 @@ using System.Web.UI;
 using System.Xml;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
+using DotNetNuke.Services.Exceptions;
 using NBrightCore.common;
 using NBrightCore.render;
 using NBrightCore.TemplateEngine;
@@ -178,20 +179,66 @@ namespace NBrightMod.common
             return razorTempl;
         }
 
+        /// <summary>
+        /// This method preprocesses the razor template, to add meta data required for selecting data into cache.
+        /// </summary>
+        /// <param name="fullTemplName">template name (Theme prefix is added from settings, if no theme prefix exists)</param>
+        /// <param name="moduleid"></param>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        public static Dictionary<String, String> RazorPreProcessTempl(String fullTemplName, String moduleid, String lang)
+        {
+            // see if we need to add theme to template name.
+            var settignInfo = GetSettings(moduleid);
+            var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            if (fullTemplName.Split('.').Length == 2) fullTemplName = theme + "." + fullTemplName;
+
+            // get cached data if there
+            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
+            if (cachedlist != null) return cachedlist;
+
+            // build cache data from template.
+            cachedlist = new Dictionary<String, String>();
+            var razorTempl = LocalUtils.GetTemplateData(fullTemplName, lang, settignInfo.ToDictionary());
+            if (razorTempl != "")
+            {
+                var obj = new NBrightInfo(true);
+                obj.Lang = lang;
+                obj.ModuleId = Convert.ToInt32(moduleid);
+                var l = new List<object>();
+                l.Add(obj);
+                var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                try
+                {
+                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                }
+                catch (Exception ex)
+                {
+                    // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
+                    Exceptions.LogException(ex);
+                }
+                cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
+            }
+            return cachedlist;
+        }
 
 
-        public static void IncludePageHeaders(String moduleid, Page page, String moduleName)
+
+        public static void IncludePageHeaders(String moduleid, Page page, String moduleName,String templateprefix = "")
         {
             if (!page.Items.Contains("nbrightinject")) page.Items.Add("nbrightinject", "");
-            if (!page.Items["nbrightinject"].ToString().Contains(moduleName + ","))
+            var settignInfo = GetSettings(moduleid);
+            var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            var fullTemplName = theme + "." + templateprefix + "pageheader.cshtml";
+            if (!page.Items["nbrightinject"].ToString().Contains(fullTemplName + "." + moduleName + ","))
             {
                 var nbi = new NBrightInfo();
                 nbi.Lang = Utils.GetCurrentCulture();
-                var razorTempl = RazorTemplRender("pageheader.cshtml", moduleid, Utils.GetCurrentCulture(), nbi, Utils.GetCurrentCulture());
+                var razorTempl = RazorTemplRender(fullTemplName, moduleid, Utils.GetCurrentCulture(), nbi, Utils.GetCurrentCulture());
                 if (razorTempl != "")
                 {
                     PageIncludes.IncludeTextInHeader(page, razorTempl);
-                    page.Items["nbrightinject"] = page.Items["nbrightinject"] + moduleName + ",";
+                    page.Items["nbrightinject"] = page.Items["nbrightinject"] + fullTemplName + "." + moduleName + ",";
                 }
             }
         }
