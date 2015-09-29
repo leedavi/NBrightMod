@@ -126,4 +126,7 @@
   <data name="themefolder.Text" xml:space="preserve">
     <value>Theme Folder</value>
   </data>
+  <data name="sourcedata.Text" xml:space="preserve">
+    <value>Data Source</value>
+  </data>
 </root>

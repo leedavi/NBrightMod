@@ -80,6 +80,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         private void PageLoad()
         {
+            var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
 
             // preprocess razor template to get meta data for data select into cache.
@@ -87,9 +88,16 @@ namespace Nevoweb.DNN.NBrightMod
             var orderby = "";
             if (cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
+            // get source moduleid
+            var sourcemodid = Convert.ToInt32(ModuleId);
+            if (settings.GUIDKey != settings.GetXmlProperty("genxml/dropdownlist/datasourceref") && settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != "")
+            {
+                var sourcesettings = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", settings.GetXmlProperty("genxml/dropdownlist/datasourceref"));
+                sourcemodid = sourcesettings.ModuleId;
+            }
+
             // get data list
-            var objCtrl = new NBrightDataController();
-            var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(ModuleId), "NBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
 
             var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();
@@ -107,8 +115,12 @@ namespace Nevoweb.DNN.NBrightMod
         {
             get
             {
+                var settings = LocalUtils.GetSettings(ModuleId.ToString());
                 var actions = new ModuleActionCollection();
-                actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
+                if (settings.GUIDKey == settings.GetXmlProperty("genxml/dropdownlist/datasourceref") || settings.GetXmlProperty("genxml/dropdownlist/datasourceref") == "")
+                {
+                    actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
+                }
                 actions.Add(GetNextActionID(), Localization.GetString("ModuleTheme", this.LocalResourceFile), "", "", "", EditUrl("themes"), false, SecurityAccessLevel.Admin, true, false);
                 return actions;
             }

@@ -98,46 +98,6 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-        private void SaveSettings()
-        {
-            try
-            {
-
-                var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
-                var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
-                Utils.CreateFolder(tempFolderMapPath);
-                var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload";
-                var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload";
-                Utils.CreateFolder(uploadFolderMapPath);
-
-                var objCtrl = new NBrightDataController();
-                var dataRecord = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, base.ModuleId, "SETTINGS", "NBrightMod");
-                if (dataRecord == null)
-                {
-                    dataRecord = new NBrightInfo(true); // populate empty XML so we can update nodes.
-                    dataRecord.GUIDKey = "NBrightMod";
-                    dataRecord.PortalId = PortalSettings.Current.PortalId;
-                    dataRecord.ModuleId = base.ModuleId;
-                    dataRecord.TypeCode = "SETTINGS";
-                    dataRecord.Lang = "";
-                }
-                //rebuild xml
-                dataRecord.ModuleId = base.ModuleId;
-                dataRecord.XMLData = GenXmlFunctions.GetGenXml(rpData);
-                dataRecord.SetXmlProperty("genxml/tempfolder", tempFolder);
-                dataRecord.SetXmlProperty("genxml/uploadfolder", uploadFolder);
-                dataRecord.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
-                dataRecord.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
-                objCtrl.Update(dataRecord);
-
-
-            }
-            catch (Exception exc)
-            {
-                Exceptions.ProcessModuleLoadException(this, exc);
-            }
-        }
-
 
         public override void UpdateSettings()
         {

@@ -1,15 +1,23 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml")
 
 @{
-    var divid = "NBrightMod" + @Model.GetSetting("modref");
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
     }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
 
 <div id="@(divid)" class="owl-carousel">
 
-        @foreach (NBrightInfo x in Model.List)
+    
+    @foreach (NBrightInfo x in Model.List)
         {
         var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
         <div class="item">

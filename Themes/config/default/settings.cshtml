@@ -22,8 +22,14 @@
             <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
         </div>
         <div id="themedata">
-            @DnnLabel("lblthemefolder", "Settings.themefolder")
-            @FolderSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
+            <div>
+                @DnnLabel("lblthemefolder", "Settings.themefolder")
+                @FolderSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
+            </div>
+            <div>
+                @DnnLabel("lblSourceData", "Settings.sourcedata")
+                @NBrightModSelectList(info, "genxml/dropdownlist/datasourceref", " ")
+            </div>
             <input id="moduleid" type="hidden" value="@info.ModuleId"></input>
         </div>
     </div>

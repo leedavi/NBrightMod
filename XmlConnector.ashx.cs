@@ -236,6 +236,7 @@ namespace Nevoweb.DNN.NBrightMod
                         nbi.RemoveXmlNode("genxml/dropdownlist/targetpagetabid");
                     }
                     if (nbi.GetXmlProperty("genxml/hidden/modref") == "") nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
+                    if (nbi.TextData == "") nbi.TextData = "NBrightMod";
                     objCtrl.Update(nbi);
 
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
@@ -266,13 +267,14 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // get DB record
                     var nbi = LocalUtils.GetSettings(moduleid);
+
                     if (nbi.ModuleId == 0) // new setting record
                     {
                         nbi = CreateSettingsInfo(moduleid, nbi);
                     }
-                    if (nbi.ModuleId > 0) 
+                    if (nbi.ModuleId > 0)
                     {
-                        nbi.SetXmlProperty("genxml/dropdownlist/themefolder", ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder"));
+                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context));
                         objCtrl.Update(nbi);
                         LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
                     }
@@ -296,11 +298,11 @@ namespace Nevoweb.DNN.NBrightMod
             Utils.CreateFolder(uploadFolderMapPath);
 
             var objCtrl = new NBrightDataController();
-            nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS", "NBrightMod");
+            nbi = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
             if (nbi == null)
             {
                 nbi = new NBrightInfo(true); // populate empty XML so we can update nodes.
-                nbi.GUIDKey = "NBrightMod";
+                nbi.GUIDKey = "";
                 nbi.PortalId = PortalSettings.Current.PortalId;
                 nbi.ModuleId = Convert.ToInt32(moduleid);
                 nbi.TypeCode = "SETTINGS";
@@ -312,8 +314,8 @@ namespace Nevoweb.DNN.NBrightMod
             nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
             nbi.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
             nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
-            nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
-
+            nbi.GUIDKey = Utils.GetUniqueKey(10);
+            nbi.SetXmlProperty("genxml/hidden/modref", nbi.GUIDKey);
             return nbi;
         }
 

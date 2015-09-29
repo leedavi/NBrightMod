@@ -93,6 +93,16 @@ namespace NBrightMod.common
             return rtnList;
         }
 
+        /// <summary>
+        /// Get the XML ajax returned data
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static String GetAjaxData(HttpContext context)
+        {
+            return HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+        }
+
         public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context)
         {
             var xmlAjaxData = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
@@ -136,11 +146,24 @@ namespace NBrightMod.common
             if (Utils.IsNumeric(moduleid))
             {
                 var objCtrl = new NBrightDataController();
-                var dataRecord = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS", "NBrightMod");
+                var dataRecord = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
                 if (dataRecord == null) dataRecord = new NBrightInfo(true);
                 return dataRecord;
             }
             return new NBrightInfo(true);
+        }
+
+        public static List<NBrightInfo> GetNBrightModList()
+        {
+            var rtnList = new List<NBrightInfo>();
+            // get template
+            var objCtrl = new NBrightDataController();
+            var dataList = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.TextData = 'NBrightMod'");
+            foreach (var nbi in dataList)
+            {
+                rtnList.Add(nbi);
+            }
+            return rtnList;
         }
 
         public static void RazorClearCache(String moduleid)
@@ -244,6 +267,7 @@ namespace NBrightMod.common
                 var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
                 try
                 {
+                    // do razor and cache preprocessmetadata
                     razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
                 }
                 catch (Exception ex)
@@ -251,7 +275,7 @@ namespace NBrightMod.common
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
+                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
             }
             return cachedlist;
         }
