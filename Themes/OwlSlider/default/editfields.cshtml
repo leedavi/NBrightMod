@@ -3,6 +3,7 @@
 @using System
 @using System.Web.UI.WebControls
 @using NBrightDNN
+
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
 
@@ -17,7 +18,7 @@
 
 @EditCultureSelect("flag-list", "selecteditlanguage")
 
-<div class="buttons editdata">
+<div class="buttons">
     <button id="return" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span>@ResourceKey("Edit.return")</button>
     <button id="delete" type="button" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span>@ResourceKey("Edit.delete")</button>
     <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>

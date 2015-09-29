@@ -56,7 +56,12 @@ namespace NBrightMod.common
         public static NBrightInfo GetAjaxFields(HttpContext context)
         {
             var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-            var xmlData = GenXmlFunctions.GetGenXmlByAjax(strIn, "");
+            return GetAjaxFields(strIn);
+        }
+
+        public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "")
+        {
+            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml);
             var objInfo = new NBrightInfo();
 
             objInfo.ItemID = -1;
@@ -65,7 +70,36 @@ namespace NBrightMod.common
             return objInfo;
         }
 
-        public static List<NBrightInfo> GetGenXmlListByAjax(string xmlAjaxData, string originalXml, string lang = "en-US", string xmlRootName = "genxml")
+        /// <summary>
+        /// Split ajax list return into List of ajax data strings
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<String> GetAjaxDataList(HttpContext context)
+        {
+            var rtnList = new List<String>();
+            var xmlAjaxData = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+            if (!String.IsNullOrEmpty(xmlAjaxData))
+            {
+                var xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xmlAjaxData);
+                var nodList = xmlDoc.SelectNodes("root/root");
+                if (nodList != null)
+                    foreach (XmlNode nod in nodList)
+                    {
+                        rtnList.Add(nod.OuterXml);
+                    }
+            }
+            return rtnList;
+        }
+
+        public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context)
+        {
+            var xmlAjaxData = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+            return GetGenXmlListByAjax(xmlAjaxData);
+        }
+
+        public static List<NBrightInfo> GetGenXmlListByAjax(String xmlAjaxData)
         {
             var rtnList = new List<NBrightInfo>();
             if (!String.IsNullOrEmpty(xmlAjaxData))
@@ -217,7 +251,7 @@ namespace NBrightMod.common
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
+                Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
             }
             return cachedlist;
         }

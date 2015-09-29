@@ -95,6 +95,12 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = SaveData(context);
                     }
                     break;
+                case "savelistdata":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = SaveListData(context);
+                    }
+                    break;
                 case "selectlang":
                     if (LocalUtils.CheckRights())
                     {
@@ -147,9 +153,10 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region "Methods"
 
-        private void SetContextLangauge(NBrightInfo ajaxInfo)
+        private void SetContextLangauge(NBrightInfo ajaxInfo = null)
         {
             // set langauge if we have it passed.
+            if (ajaxInfo == null) ajaxInfo = new NBrightInfo(true);
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
             if (lang != "") _lang = lang;
             // set the context  culturecode, so any DNN functions use the correct culture 
@@ -448,6 +455,56 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+        private String SaveListData(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+                var moduleid = "";
+                // get data passed back by ajax
+                var ajaxList = LocalUtils.GetAjaxDataList(context);
+                var lp = 1;
+                foreach (var ajaxData in ajaxList)
+                {
+                    var ajaxInfo = LocalUtils.GetAjaxFields(ajaxData);
+
+                    SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+                    var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
+                    moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                    var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+                    if (lang == "") lang = _lang;
+
+                    if (Utils.IsNumeric(itemid))
+                    {
+                        // get DB record
+                        var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                        if (nbi != null)
+                        {
+                            // update record with ajax data
+                            nbi.UpdateAjax(ajaxData);
+                            nbi.SetXmlProperty("genxml/hidden/sortrecordorder",lp.ToString("0000")); // always recalc custom sort field
+                            objCtrl.Update(nbi);
+
+                            // do langauge record
+                            nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                            nbi.UpdateAjax(ajaxData);
+                            objCtrl.Update(nbi);
+
+
+                        }
+                    }
+                    lp += 1;
+                }
+                if (moduleid != "") LocalUtils.RazorClearCache(moduleid);
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
         private String DeleteData(HttpContext context)
         {
             try
@@ -541,7 +598,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateimages");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml, "");
+                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));

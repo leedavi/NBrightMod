@@ -83,9 +83,9 @@ namespace Nevoweb.DNN.NBrightMod
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
 
             // preprocess razor template to get meta data for data select into cache.
-            var cachedlist = LocalUtils.RazorPreProcessTempl(settings.GetXmlProperty("genxml/dropdownlist/themefolder") + ".view.cshtml", ModuleId.ToString(""),Utils.GetCurrentCulture());
+            var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
             var orderby = "";
-            if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
+            if (cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
             // get data list
             var objCtrl = new NBrightDataController();

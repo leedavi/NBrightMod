@@ -18,6 +18,11 @@ function NBrightMod_nbxgetCompleted(e) {
         NBrightMod_nbxget('getdata', '#selectparams', '#editdata'); // do ajax call to get edit form
     }
 
+    if (e.cmd == 'savelistdata') {
+        // reload data, needed for after langauge switch
+        NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
+    }
+
     if (e.cmd == 'getdata') {
         // Action after getdata command
 
@@ -33,16 +38,17 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });
 
-        $('.editdata #savedata').click(function () {
+        $('#savedata').click(function () {
             NBrightMod_nbxget('savedata', '#editdata');
         });
 
-        $('.editdata #return').click(function() {
+
+        $('#return').click(function() {
             $('#selecteditemid').val('');
             NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
         });
 
-        $('.editdata #delete').click(function() {
+        $('#delete').click(function() {
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 
@@ -191,6 +197,16 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#exitedit').click(function () {
             window.location.href = $('#exiturl').val();
         });
+
+        $('#savelistdata').click(function () {
+            NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
+        });
+
+        $('.selecteditlistlanguage').click(function () {
+            $('#editlang').val($(this).attr('lang'));
+            NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
+        });
+
 
         $('#addnew').click(function () {
             $('.processing').show();
