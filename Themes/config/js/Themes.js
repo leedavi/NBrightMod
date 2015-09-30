@@ -22,6 +22,16 @@ function NBrightMod_nbxgetCompleted(e) {
         $('.editdata #exitedit').click(function() {
             window.location.href = $('#exiturl').val();
         });
+
+        $('#export').click(function () {
+            NBrightMod_nbxget('exporttheme', '#selectparams', '#returnfile');
+        });
+
+        $('#returnfile').change(function () {
+            window.location.href = '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&filename=' + $(this).text();
+        });
+
+
     }
     if (e.cmd == 'savetheme') {
         window.location.href = $('#exiturl').val();

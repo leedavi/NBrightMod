@@ -126,6 +126,23 @@ namespace Nevoweb.DNN.NBrightMod
                 case "savetheme":
                     if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
                     break;
+                case "exporttheme":
+                    if (LocalUtils.CheckRights())
+                    {
+                        // do export of theme
+                        strOut = "NBrightUpload\\SportsDirect_Case_Study.pdf";
+                    }
+                    break;
+                case "downloadfile":
+                    if (LocalUtils.CheckRights())
+                    {
+                        var fname = Utils.RequestQueryStringParam(context, "filename");
+                        var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
+                        var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + fname;
+                        if (downloadname == "") downloadname = fname.Split('\\').Last();
+                        Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                    }
+                    break;
             }
 
             #endregion
