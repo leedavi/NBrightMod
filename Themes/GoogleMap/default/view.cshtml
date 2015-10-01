@@ -10,6 +10,18 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
 
 @{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("maptypecontrol")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+}
+@if (msg != "")
+{
+    @(msg)
+}
+
+@{
     var mapTypeControl = Model.GetSetting("maptypecontrol").ToLower();
     var zoomControl = Model.GetSetting("mapzoomcontrol").ToLower();
     var streetViewControl = Model.GetSetting("mapstreetcontrol").ToLower();

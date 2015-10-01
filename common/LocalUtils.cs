@@ -191,7 +191,13 @@ namespace NBrightMod.common
                 razorTempl = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
                 if (razorTempl != "")
                 {
-                    if (!objList.Any()) objList.Add(new NBrightInfo(true));
+                    if (!objList.Any())
+                    {
+                        var obj = new NBrightInfo(true);
+                        obj.ModuleId = Convert.ToInt32(moduleid);
+                        obj.Lang = Utils.GetCurrentCulture();
+                        objList.Add(obj);
+                    }
                     var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
