@@ -198,4 +198,7 @@
   <data name="theme.Text" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="themelevel.Text" xml:space="preserve">
+    <value>Module level templates,Portal level templates</value>
+  </data>
 </root>

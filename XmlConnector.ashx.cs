@@ -127,19 +127,24 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
                     break;
                 case "exporttheme":
+                    if (LocalUtils.CheckRights()) strOut = DoThemeExport(context);
+                    break;
+                case "importtheme":
                     if (LocalUtils.CheckRights())
                     {
-                        // do export of theme
-                        strOut = "NBrightUpload\\SportsDirect_Case_Study.pdf";
+                        var fname = FileUpload(context, moduleid);
+                        strOut = DoThemeImport(fname);
+                        LocalUtils.RazorClearCache(moduleid);
                     }
                     break;
                 case "downloadfile":
                     if (LocalUtils.CheckRights())
                     {
                         var fname = Utils.RequestQueryStringParam(context, "filename");
+                        strOut = fname; // return this is error.
                         var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                         var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + fname;
-                        if (downloadname == "") downloadname = fname.Split('\\').Last();
+                        if (downloadname == "") downloadname = Path.GetFileName(fname);
                         Utils.ForceDocDownload(fpath, downloadname, context.Response);
                     }
                     break;
@@ -304,7 +309,7 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
         }
-
+        
         private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo nbi)
         {
             var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
@@ -597,6 +602,78 @@ namespace Nevoweb.DNN.NBrightMod
             return objInfo.XMLData;
         }
 
+        private String DoThemeExport(HttpContext context)
+        {
+            try
+            {
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+                if (theme != "")
+                {
+                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                    var themelevel = ajaxInfo.GetXmlProperty("genxml/radiobuttonlist/exportthemelevel");
+                    var level = "module";
+                    var themeFolderName = controlMapPath + "\\Themes\\" + theme;
+                    if (themelevel == "1")
+                    {
+                        level = "portal";
+                        themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                    }
+                    var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" +  theme + "_" + level + ".zip";
+
+                    DnnUtils.ZipFolder(themeFolderName, zipFile);
+                    
+                    return "NBrightTemp\\" + Path.GetFileName(zipFile);
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+
+        }
+
+        private String DoThemeImport(String zipFileMapPath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(zipFileMapPath))
+                {
+                    var s = Path.GetFileNameWithoutExtension(zipFileMapPath).Split('_');
+                    if (s.Count() == 4)
+                    {
+                        
+                        var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                        var level = s[3].ToLower();
+                        var theme = s[2];
+                        if (level == "module" || level == "portal")
+                        {
+                            var themeFolderName = controlMapPath + "\\Themes\\" + theme;
+                            if (level == "portal")
+                            {
+                                themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                                if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                                {
+                                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                                }
+                            }
+
+                            DnnUtils.UnZip(zipFileMapPath, themeFolderName);
+                            return "";
+                        }
+                    }
+                    return "ERROR: Invalid Theme File Name";
+                }
+                return "ERROR: Upload Failed";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+        }
 
         #endregion
 
@@ -925,62 +1002,23 @@ namespace Nevoweb.DNN.NBrightMod
         // Upload file to the server
         private String UploadFile(HttpContext context, String moduleid)
         {
-            var headers = context.Request.Headers;
-
-            if (string.IsNullOrEmpty(headers["X-File-Name"]))
-            {
-                return UploadWholeFile(context, moduleid);
-            }
-            else
-            {
-                return UploadPartialFile(headers["X-File-Name"], context, moduleid);
-            }
-        }
-
-        // Upload partial file
-        private String UploadPartialFile(string fileName, HttpContext context, String moduleid)
-        {
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            var modSettings = LocalUtils.GetSettings(moduleid);
-
-            if (context.Request.Files.Count != 1) throw new HttpRequestValidationException("Attempt to upload chunked file containing more than one fragment per request");
-            var inputStream = context.Request.Files[0].InputStream;
-            var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
-            if (ImgUtils.IsImageFile(Path.GetExtension(fileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
-
-            var fullName = uploadfolder.TrimEnd('\\') + "\\" + fileName;
-
-            using (var fs = new FileStream(fullName, FileMode.Append, FileAccess.Write))
-            {
-                var buffer = new byte[1024];
-
-                var l = inputStream.Read(buffer, 0, 1024);
-                while (l > 0)
-                {
-                    fs.Write(buffer, 0, l);
-                    l = inputStream.Read(buffer, 0, 1024);
-                }
-                fs.Flush();
-                fs.Close();
-            }
-            if (ImgUtils.IsImageFile(Path.GetExtension(fullName))) UpdateImage(fullName, _itemid, modSettings);
-            return "";
+            return UploadWholeFile(context, moduleid);
         }
 
         // Upload entire file
         private String UploadWholeFile(HttpContext context, String moduleid)
         {
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var modSettings = LocalUtils.GetSettings(moduleid);
-
             for (int i = 0; i < context.Request.Files.Count; i++)
             {
                 var file = context.Request.Files[i];
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
                 var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
+                if (File.Exists(fullfilename)) File.Delete(fullfilename);
                 file.SaveAs(fullfilename);
                 if (ImgUtils.IsImageFile(Path.GetExtension(fullfilename))) UpdateImage(fullfilename, _itemid, modSettings);
+                return fullfilename;
             }
             return "";
         }

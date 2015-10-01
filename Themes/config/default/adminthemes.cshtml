@@ -4,7 +4,6 @@
 
 <!-- NBrightMod specific css and js -->
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/Themes.js"></script>
-<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/jquery.fileDownload.js"></script>
 <link href="/DesktopModules/NBright/NBrightMod/Themes/config/css/NBrightMod.css" rel="stylesheet" />
 
 <!-- loading display to cover buttons, to stop multiple clicks -->
@@ -30,6 +29,10 @@
     <input id="tabid" type="hidden" value="@Model.GetUrlParam("tabid")" ></input>
     <input id="index" type="hidden" value="" ></input>
     <input id="razortemplate" type="hidden" value="config.settings.cshtml" ></input>
+</div>
+
+<div class="hiddenfile" style="display: none;">
+    <input type="file" id="docupload" name="docs[]" multiple accept="application/pdf" />
 </div>
 
 <!-- this div is used as a recycle bin for undo JS-->

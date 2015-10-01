@@ -86,7 +86,7 @@ namespace Nevoweb.DNN.NBrightMod
             // preprocess razor template to get meta data for data select into cache.
             var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
             var orderby = "";
-            if (cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
+            if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
             // get source moduleid
             var sourcemodid = Convert.ToInt32(ModuleId);

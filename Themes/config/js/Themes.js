@@ -24,18 +24,53 @@ function NBrightMod_nbxgetCompleted(e) {
         });
 
         $('#export').click(function () {
-            NBrightMod_nbxget('exporttheme', '#selectparams', '#returnfile');
+            NBrightMod_nbxget('exporttheme', '#editdata', '#returnfile');
         });
 
         $('#returnfile').change(function () {
-            window.location.href = '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&filename=' + $(this).text();
+            if ($(this).text().substr(0, 5) == "ERROR") {
+                $(this).show();
+            } else {
+                $(this).hide();
+                window.location.href = '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&filename=' + $(this).text();
+            }
         });
 
+        // ************ UPLOAD START ************
+        $('#import').click(function () {
+            $('#docupload').trigger('click');
+        });
+
+        $('#docupload').change(function () {
+            $('.processing').show();
+            var fileSelect = document.getElementById('docupload');
+            if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+                alert('The File APIs are not fully supported in this browser.');
+                return;
+            }
+            if (fileSelect.files.length >= 1) {
+                var files = fileSelect.files;
+                var formData = new FormData();
+                formData.append('docs[]', files[0], files[0].name);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=importtheme', true);
+                xhr.onload = function () {
+                    if (xhr.status != 200) {
+                        alert('An error occurred!');
+                    } else {
+                        location.reload();
+                    }
+                };
+                xhr.send(formData);
+            }
+        });
+        // ************ UPLOAD END ************
 
     }
     if (e.cmd == 'savetheme') {
         window.location.href = $('#exiturl').val();
     }
+
 
 }
 
