@@ -1,0 +1,25 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/Documents/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<div>
+    <div>
+        @DnnLabel("lbldisplaydownloadcount", "Settings.displaydownloadcount")@CheckBox(info, "genxml/checkbox/displaydownloadcount", "", "class='form-control'")
+    </div>
+
+
+    <div>
+        Ref: @info.GetXmlProperty("genxml/hidden/modref")        
+    </div>
+    
+
+
+</div>
+

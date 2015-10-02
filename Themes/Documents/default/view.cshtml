@@ -1,0 +1,36 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Documents.view.cshtml" + info.ModuleId)
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("displaydownloadcount")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
+
+<div id="@(divid)">
+
+    
+    @foreach (NBrightInfo x in Model.List)
+    {
+    var folderfilename = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
+    <div class="item">
+        @if (folderfilename != "")
+        {
+           <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(info.ItemID)&filename=@(folderfilename)'>@x.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+        }
+    </div>
+    }
+</div>
+
