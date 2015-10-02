@@ -1,8 +1,13 @@
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List[0];
+}
 
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.editlist.cshtml")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.editlist.cshtml" + info.ModuleId)
 
 @EditCultureSelect("flag-list", "selecteditlistlanguage")
 

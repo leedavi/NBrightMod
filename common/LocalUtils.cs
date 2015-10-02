@@ -257,7 +257,7 @@ namespace NBrightMod.common
             if (fullTemplName.Split('.').Length == 2) fullTemplName = theme + "." + fullTemplName;
 
             // get cached data if there
-            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
+            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName + moduleid);
             if (cachedlist != null) return cachedlist;
 
             // build cache data from template.
@@ -274,14 +274,14 @@ namespace NBrightMod.common
                 try
                 {
                     // do razor and cache preprocessmetadata
-                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName + moduleid, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
                 }
                 catch (Exception ex)
                 {
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
+                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName + moduleid);
             }
             return cachedlist;
         }
