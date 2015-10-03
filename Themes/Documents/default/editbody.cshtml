@@ -1,17 +1,22 @@
 
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/Documents/resx/")
+
+
 <!-- loading display to cover buttons, to stop multiple clicks -->
 <div id="loader" class="processing" style="display:none;"><i class="glyphicon glyphicon-cog"></i></div>
 
 <!-- div section to pass param data to the server side ajax functions -->
 <div id="selectparams">
-    <input id="lang" type="hidden" value="@Model.GetUrlParam("language")" ></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
+    <input id="lang" type="hidden" value="@Model.GetUrlParam("language")"/> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
     <input id="editlang" type="hidden" value="" ></input> <!-- culture code being edited -->
-    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" ></input>
-    <input id="tabid" type="hidden" value="@Model.GetUrlParam("tabid")" ></input>
-    <input id="index" type="hidden" value="" ></input>
-    <input id="selecteditemid" type="hidden" value="" ></input> <!-- used as selected edit itemid -->
-    <input id="newitem" type="hidden" value="" ></input> <!-- used to hold "new" oken to create new record -->
-    <input id="selecteddocs" type="hidden" value=""></input> <!-- list of images to be added (already uploaded) -->
+    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")"/>
+    <input id="tabid" type="hidden" value="@Model.GetUrlParam("tabid")"/>
+    <input id="index" type="hidden" value=""/>
+    <input id="selecteditemid" type="hidden" value=""/> <!-- used as selected edit itemid -->
+    <input id="newitem" type="hidden" value=""/> <!-- used to hold "new" oken to create new record -->
+    <input id="selectedfiles" type="hidden" value=""/> <!-- list of files to be added (already uploaded) -->
+    <input id="displayreturn" type="hidden" value="" /> <!-- LIST or DETAIL, so return display from file upload is correct -->
 </div>
 
 <!-- this div is used as a recycle bin for undo JS-->
@@ -25,4 +30,26 @@
 
 <!-- div section to display ajax return -->
 <div id="editdata"></div>
+
+<div id="overlay" class="web_dialog_overlay"></div>
+
+<div id="dialog" class="web_dialog">
+    <div class="buttons editdata">
+
+        <button id="canceladdfiles" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span> @ResourceKey("Edit.cancel")</button>
+        <button id="replaceselectedfiles" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
+        <button id="deleteselectedfiles" type="button" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus"></span> @ResourceKey("Edit.deleteselected")</button>
+        <button id="uploadfiles" type="button" class="btn btn-sm btn-success fileupload-button"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.upload")</button>
+
+    </div>
+
+    <div class="hiddenfile" style="display: none;">
+        <input type="file" id="fileupload" name="files[]" multiple />
+    </div>
+
+    <div class="fileinput">
+        <div id="fileselectlist" class="col-sm-12"></div>
+    </div>
+
+</div>
 

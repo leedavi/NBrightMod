@@ -2,12 +2,12 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Documents/resx/")
 
 
-<ul id="docselectlistul" class="selectdocs" >
+<ul id="fileselectlistul" class="selectfiles" >
     @{
         foreach (var x in @Model.List)
         {
-            <li class="docselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")">
-                <div class="docwrapper">@x.GetXmlProperty("genxml/hidden/docurl")
+            <li class="fileselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")">
+                <div class="filewrapper">@x.GetXmlProperty("genxml/hidden/docurl")
                     <span class="glyphicon glyphicon-plus @x.GetXmlProperty("genxml/hidden/name") " style="display: none;" ></span>
                 </div>
             </li>

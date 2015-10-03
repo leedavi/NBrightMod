@@ -128,21 +128,23 @@ namespace Nevoweb.DNN.NBrightMod
                 case "getfolderimages":
                     strOut = GetFolderImages(context, true);
                     break;
-                case "addselecteddocs":
+
+                case "addselectedfiles":
                     if (LocalUtils.CheckRights()) strOut = AddSelectedDocs(context);
                     break;
-                case "replaceselecteddocs":
+                case "replaceselectedfiles":
                     if (LocalUtils.CheckRights()) strOut = ReplaceSelectedDocs(context);
                     break;
-                case "deleteselecteddocs":
+                case "deleteselectedfiles":
                     if (LocalUtils.CheckRights()) strOut = DeleteSelectedDocs(context);
                     break;
-                case "getdocs":
+                case "getfiles":
                     strOut = GetDocs(context, true);
                     break;
-                case "getfolderdocs":
+                case "getfolderfiles":
                     strOut = GetFolderDocs(context, true);
                     break;
+
                 case "savetheme":
                     if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
                     break;
@@ -375,6 +377,8 @@ namespace Nevoweb.DNN.NBrightMod
                 var selecteditemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
+                var displayreturn = ajaxInfo.GetXmlProperty("genxml/hidden/displayreturn");
+
                 if (editlang == "") editlang = _lang;
 
                 if (moduleid == "") moduleid = "-1";
@@ -387,6 +391,9 @@ namespace Nevoweb.DNN.NBrightMod
                     selecteditemid = "new"; // return list on new record
                     AddNew(moduleid);
                 }
+
+                // removed selected itemid if we want to return to the list.
+                if (displayreturn.ToLower() == "list") selecteditemid = "";
 
                 if (Utils.IsNumeric(selecteditemid))
                 {
@@ -1206,7 +1213,7 @@ namespace Nevoweb.DNN.NBrightMod
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
-            var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selecteddocs");
+            var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
             var modSettings = LocalUtils.GetSettings(moduleid);
 
@@ -1240,7 +1247,7 @@ namespace Nevoweb.DNN.NBrightMod
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
-            var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selecteddocs");
+            var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
             var modSettings = LocalUtils.GetSettings(moduleid);
 

@@ -7,6 +7,9 @@ $(document).ready(function () {
     // get list of records via ajax:  NBrightMod_nbxget({command}, {div of data passed to server}, {return html to this div} )
     NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
 
+    // Attach file upload button events
+    ActivateFileUploadButtons();
+
 });
 
 $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
@@ -139,95 +142,11 @@ function NBrightMod_nbxgetCompleted(e) {
 
         // IMAGES - END
 
-        // DOCS - START
-
-        $('.docclick').click(function () {
-            $('.docinput').show();
-            $('#adddocs').show();
-            ShowDialog(true);
-        });
-
-        $('.docupload-button').click(function () {
-            $('#docupload').trigger('click');
-        });
-
-        $('#docupload').change(function () {
-            $('.processing').show();
-            var fileSelect = document.getElementById('docupload');
-
-            if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-                alert('The File APIs are not fully supported in this browser.');
-                return;
-            }
-
-            // Get the selected files from the input.
-            var files = fileSelect.files;
-
-            // Create a new FormData object.
-            var formData = new FormData();
-
-            // Loop through each of the selected files.
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                // Add the file to the request.
-                formData.append('docs[]', file, file.name);
-            }
-
-            // Set up the request.
-            var xhr = new XMLHttpRequest();
-            // Open the connection.
-            xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=fileupload&itemid=' + $('#itemid').val(), true);
-
-            // Set up a handler for when the request finishes.
-            xhr.onload = function () {
-                if (xhr.status != 200) {
-                    alert('An error occurred!');
-                } else {
-                    NBrightMod_nbxget('getdocs', '#selectparams', '#doclist');
-                    NBrightMod_nbxget('getfolderdocs', '#selectparams', '#docselectlist');
-                    $('#canceladddocs').trigger('click');
-                }
-            };
-
-            // Send the Data.
-            xhr.send(formData);
-
-        });
-
-        $('#canceladddocs').click(function () {
-            $('#docselectlist').hide();
-            $('#addselecteddocs').hide();
-            $('#deleteselecteddocs').hide();
-            $('#uploaddocs').hide();
-            $(this).hide();
-            $('#selecteddocs').val('');
-            HideDialog();
-            NBrightMod_nbxget('getdata', '#selectparams', '#editdata'); // do ajax call to get edit form
-        });
-
-        $('#addselecteddocs').click(function () {
-            NBrightMod_nbxget('addselecteddocs', '#selectparams', '#doclist');
-            HideDialog();
-        });
-
-        $('#replaceselecteddocs').click(function () {
-            NBrightMod_nbxget('replaceselecteddocs', '#selectparams', '#doclist');
-            HideDialog();
-        });
-
-        $('#deleteselecteddocs').click(function () {
-            NBrightMod_nbxget('deleteselecteddocs', '#selectparams', '#doclist');
-        });
-
-        // get the list of docs to display
-        NBrightMod_nbxget('getfolderdocs', '#selectparams', '#docselectlist');
-
-
-        // DOCS - END
-
-
+        ActivateFileLoader();
 
     }
+
+    ActivateFileReturn(e);
 
     //IMG ----------------------------------------------------------
     if (e.cmd == 'getfolderimages') {
@@ -253,38 +172,6 @@ function NBrightMod_nbxgetCompleted(e) {
     }
 
     //IMG ----------------------------------------------------------
-    //DOCS --------------------------------------------------
-
-    if (e.cmd == 'getfolderdocs') {
-        $('.docselectitem').click(function () {
-            if ($('.' + $(this).attr("name")).is(':visible')) {
-                $('.' + $(this).attr("name")).hide();
-                $('#selecteddocs').val($('#selecteddocs').val().replace($(this).attr("fname") + ',', ''));
-            } else {
-                $('.' + $(this).attr("name")).show();
-                var newf = $(this).attr("fname") + ',';
-                $('#selecteddocs').val($('#selecteddocs').val() + newf);
-            }
-        });
-    }
-
-    if (e.cmd == 'addselecteddocs') {
-        $('#canceladddocs').trigger('click');
-        NBrightMod_nbxget('getdocs', '#selectparams', '#doclist');
-    }
-    if (e.cmd == 'deleteselecteddocs') {
-        $('#selecteddocs').val('');
-        NBrightMod_nbxget('getfolderdocs', '#selectparams', '#docselectlist');
-    }
-
-    if (e.cmd == 'getdocs') {
-        $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent()); });
-        $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent()); });
-        $('.removedoc').click(function () { removeelement($(this).parent().parent()); });
-        $('#undodoc').click(function () { undoremove('.docitem', '#doclistul'); });
-    }
-
-    //DOCS --------------------------------------------------
 
     if (e.cmd == 'addnew') {
         $('#newitem').val(''); // clear item so if new was just created we don;t create another record
@@ -337,6 +224,20 @@ function NBrightMod_nbxgetCompleted(e) {
             $('#selecteditemid').val('');
             NBrightMod_nbxget('addnew', '#selectparams', '#editdata');
         });
+
+        ActivateFileLoader();
+
+        ////////////////////////////////////////////////
+        /// do image and do upload on list
+        ////////////////////////////////////////////////
+
+        $('.imagelistclick').click(function () {
+            $('.imageinput').show();
+            $('#addimages').show();
+            ShowDialog(true);
+        });
+        ////////////////////////////////////////////////
+
     }
 
 }
@@ -418,4 +319,126 @@ function HideDialog() {
 }
 
 
+function ActivateFileLoader() {
 
+    $('.filelistclick').click(function () {
+        $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
+        $('#displayreturn').val("list");
+        $('.fileinput').show();
+        $('#addfiles').show();
+        ShowDialog(true);
+    });
+
+    $('.fileclick').click(function () {
+        $('#displayreturn').val("detail");
+        $('.fileinput').show();
+        $('#addfiles').show();
+        ShowDialog(true);
+    });
+
+    // get the list of docs to display
+    NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+
+}
+
+function ActivateFileReturn(e) {
+    if (e.cmd == 'getfolderfiles') {
+        $('.fileselectitem').click(function () {
+            if ($('.' + $(this).attr("name")).is(':visible')) {
+                $('.' + $(this).attr("name")).hide();
+                $('#selectedfiles').val($('#selectedfiles').val().replace($(this).attr("fname") + ',', ''));
+            } else {
+                $('.' + $(this).attr("name")).show();
+                var newf = $(this).attr("fname") + ',';
+                $('#selectedfiles').val($('#selectedfiles').val() + newf);
+            }
+        });
+    }
+
+    if (e.cmd == 'addselectedfiles' || e.cmd == 'replaceselectedfiles') {
+        $('#canceladdfiles').trigger('click');
+        NBrightMod_nbxget('getfiles', '#selectparams', '#filelist');
+    }
+    if (e.cmd == 'deleteselectedfiles') {
+        $('#selectedfiles').val('');
+        NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+    }
+
+    if (e.cmd == 'getfiles') {
+        $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent()); });
+        $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent()); });
+        $('.removefile').click(function () { removeelement($(this).parent().parent()); });
+        $('#undofile').click(function () { undoremove('.fileitem', '#filelistul'); });
+    }
+
+}
+
+function ActivateFileUploadButtons() {
+    $('.fileupload-button').click(function () {
+        $('#fileupload').trigger('click');
+    });
+
+    $('#fileupload').change(function () {
+        $('.processing').show();
+        var fileSelect = document.getElementById('fileupload');
+
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+            alert('The File APIs are not fully supported in this browser.');
+            return;
+        }
+
+        // Get the selected files from the input.
+        var files = fileSelect.files;
+
+        // Create a new FormData object.
+        var formData = new FormData();
+
+        // Loop through each of the selected files.
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // Add the file to the request.
+            formData.append('files[]', file, file.name);
+        }
+
+        // Set up the request.
+        var xhr = new XMLHttpRequest();
+        // Open the connection.
+        xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=fileupload&itemid=' + $('#selecteditemid').val(), true);
+
+        // Set up a handler for when the request finishes.
+        xhr.onload = function () {
+            if (xhr.status != 200) {
+                alert('An error occurred!');
+            } else {
+                NBrightMod_nbxget('getfiles', '#selectparams', '#filelist');
+                NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+                $('#canceladdfiles').trigger('click');
+            }
+        };
+
+        // Send the Data.
+        xhr.send(formData);
+
+    });
+
+    $('#canceladdfiles').click(function () {
+        $('#selectedfiles').val('');
+        HideDialog();
+        NBrightMod_nbxget('getdata', '#selectparams', '#editdata'); // do ajax call to get edit form
+    });
+
+    $('#addselectedfiles').click(function () {
+        NBrightMod_nbxget('addselectedfiles', '#selectparams', '#filelist');
+        HideDialog();
+    });
+
+    $('#replaceselectedfiles').click(function () {
+        NBrightMod_nbxget('replaceselectedfiles', '#selectparams', '#filelist');
+        HideDialog();
+    });
+
+    $('#deleteselectedfiles').click(function () {
+        NBrightMod_nbxget('deleteselectedfiles', '#selectparams', '#filelist');
+    });
+
+}
