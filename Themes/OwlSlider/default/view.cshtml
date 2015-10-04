@@ -2,6 +2,8 @@
 @using System.Linq
 @using NBrightDNN
 
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
+
 @{
     var info = (NBrightInfo)Model.List.First();
 }
@@ -40,20 +42,29 @@
         </div>
         }
     </div>
-
+@if (Model.List.Count > 1)
+{
     <script type="text/javascript">
-        $(window).load(function () {
+        $(window).load(function() {
 
             $('#@(divid)').owlCarousel({
                 animateOut: '@Model.GetSetting("animateout")',
                 animateIn: '@Model.GetSetting("animatein")',
                 loop: @Model.GetSetting("loop"),
-            autoplay: @Model.GetSetting("autoplay"),
-            margin: @Model.GetSetting("margin"),
-            items: @Model.GetSetting("items"),
-            center: @Model.GetSetting("center"),
-            smartSpeed: @Model.GetSetting("smartspeed")
-        });
+                autoplay: @Model.GetSetting("autoplay"),
+                margin: @Model.GetSetting("margin"),
+                items: @Model.GetSetting("items"),
+                center: @Model.GetSetting("center"),
+                smartSpeed: @Model.GetSetting("smartspeed")
+            });
 
         });
     </script>
+}
+else
+{
+    if (Model.List.Count == 1)
+     {
+        <div>@ResourceKey("View.imgmessage")</div>     
+     }
+}

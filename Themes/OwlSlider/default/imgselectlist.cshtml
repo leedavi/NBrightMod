@@ -1,16 +1,18 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
 
 
-<ul id="imageselectlistul" class="selectimages" >
+<ul id="fileselectlistul" class="selectfiles" >
     @{
+        var lp = 1;
         foreach (var x in @Model.List)
         {
-            <li class="imageselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")">
+            <li class="fileselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")" selectorcount="@(lp)">
                 <div class="imagewrapper"><img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?w=50&h=0&src=@x.GetXmlProperty("genxml/hidden/imageurl")"/>
-                    <span class="glyphicon glyphicon-plus @x.GetXmlProperty("genxml/hidden/name") " style="display: none;" ></span>
+                    <span class="glyphicon glyphicon-plus fileselector@(lp)" style="display: none;" ></span>
                 </div>
             </li>
+            lp += 1;
         }
     }
 </ul>

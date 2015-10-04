@@ -28,7 +28,11 @@
     <div class="item">
         @if (folderfilename != "")
         {
-           <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(info.ItemID)&filename=@(folderfilename)'>@x.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=@(folderfilename)'>@x.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+            if (Model.GetSetting("displaydownloadcount") == "True")
+            {
+            <span>(@x.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
+            }
         }
     </div>
     }

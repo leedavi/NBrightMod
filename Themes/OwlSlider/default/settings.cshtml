@@ -49,6 +49,11 @@
     <div>
         @DnnLabel("lblsmartspeed", "Settings.smartspeed")@TextBox(info, "genxml/textbox/smartspeed", "class='form-control' width='100px' maxlength='5' ", "450")
     </div>
+       
+    <div style="display:none">
+        <!-- set flag so upload of files replaces the current selected -->
+        @CheckBox(info, "genxml/checkbox/replaceimages", "", "",true);
+    </div>
 
     <div>
         Ref: @info.GetXmlProperty("genxml/hidden/modref")        

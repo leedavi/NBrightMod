@@ -288,11 +288,11 @@ namespace NBrightMod.common
 
 
 
-        public static void IncludePageHeaders(String moduleid, Page page, String moduleName,String templateprefix = "")
+        public static void IncludePageHeaders(String moduleid, Page page, String moduleName,String templateprefix = "",String theme = "")
         {
             if (!page.Items.Contains("nbrightinject")) page.Items.Add("nbrightinject", "");
             var settignInfo = GetSettings(moduleid);
-            var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            if (theme == "") theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var fullTemplName = theme + "." + templateprefix + "pageheader.cshtml";
             if (!page.Items["nbrightinject"].ToString().Contains(fullTemplName + "." + moduleName + ","))
             {

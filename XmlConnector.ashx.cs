@@ -73,7 +73,7 @@ namespace Nevoweb.DNN.NBrightMod
                 case "savesettings":
                     if (LocalUtils.CheckRights()) strOut = SaveSettings(context);
                     break;
-                case "getdata":
+                case "getdetail":
                     strOut = GetData(context);
                     break;
                 case "getselectlangdata":
@@ -113,38 +113,21 @@ namespace Nevoweb.DNN.NBrightMod
                 case "fileupload":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
-                case "replaceselectedimages":
-                    if (LocalUtils.CheckRights()) strOut = ReplaceSelectedImages(context);
-                    break;
-                case "addselectedimages":
-                    if (LocalUtils.CheckRights()) strOut = AddSelectedImages(context);
-                    break;
-                case "deleteselectedimages":
-                    if (LocalUtils.CheckRights()) strOut = DeleteSelectedImages(context);
-                    break;
-                case "getimages":
-                    strOut = GetImages(context, true);
-                    break;
-                case "getfolderimages":
-                    strOut = GetFolderImages(context, true);
-                    break;
-
                 case "addselectedfiles":
-                    if (LocalUtils.CheckRights()) strOut = AddSelectedDocs(context);
+                    if (LocalUtils.CheckRights()) AddSelectedFiles(context);
                     break;
                 case "replaceselectedfiles":
-                    if (LocalUtils.CheckRights()) strOut = ReplaceSelectedDocs(context);
+                    if (LocalUtils.CheckRights()) ReplaceSelectedFiles(context);
                     break;
                 case "deleteselectedfiles":
-                    if (LocalUtils.CheckRights()) strOut = DeleteSelectedDocs(context);
+                    if (LocalUtils.CheckRights()) DeleteSelectedFiles(context);
                     break;
                 case "getfiles":
-                    strOut = GetDocs(context, true);
-                    break;
+                        strOut = GetFiles(context, true);
+                        break;
                 case "getfolderfiles":
-                    strOut = GetFolderDocs(context, true);
+                        strOut = GetFolderFiles(context, true);                    
                     break;
-
                 case "savetheme":
                     if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
                     break;
@@ -378,6 +361,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
                 var displayreturn = ajaxInfo.GetXmlProperty("genxml/hidden/displayreturn");
+                var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
 
                 if (editlang == "") editlang = _lang;
 
@@ -752,14 +736,12 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
-        private String GetImages(HttpContext context, bool clearCache = false)
+        private String GetImages(NBrightInfo ajaxInfo, bool clearCache = false)
         {
             try
             {
                 var objCtrl = new NBrightDataController();
                 var strOut = "";
-                //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
@@ -814,13 +796,11 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String GetFolderImages(HttpContext context, bool clearCache = false)
+        private String GetFolderImages(NBrightInfo ajaxInfo, bool clearCache = false)
         {
             try
             {
                 var strOut = "";
-                //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
@@ -865,10 +845,9 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String ReplaceSelectedImages(HttpContext context)
+        private String ReplaceSelectedImages(NBrightInfo ajaxInfo)
         {
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
 
             if (Utils.IsNumeric(itemid))
@@ -879,18 +858,16 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     dataRecord.RemoveXmlNode("genxml/imgs");
                     objCtrl.Update(dataRecord);
-                    AddSelectedImages(context);
+                    AddSelectedImages(ajaxInfo);
                 }
             }
             return "";
         }
 
-        private String AddSelectedImages(HttpContext context)
+        private String AddSelectedImages(NBrightInfo ajaxInfo)
         {
-            //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
-            var selectedimages = ajaxInfo.GetXmlProperty("genxml/hidden/selectedimages");
+            var selectedimages = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
             var modSettings = LocalUtils.GetSettings(moduleid);
 
@@ -916,12 +893,10 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
-        private String DeleteSelectedImages(HttpContext context)
+        private String DeleteSelectedImages(NBrightInfo ajaxInfo)
         {
-            //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
-            var selectedimages = ajaxInfo.GetXmlProperty("genxml/hidden/selectedimages");
+            var selectedimages = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
             var modSettings = LocalUtils.GetSettings(moduleid);
 
@@ -954,6 +929,17 @@ namespace Nevoweb.DNN.NBrightMod
                         if (imgResize == 0) imgResize = 800;
                         var imagepath = ResizeImage(imgmappath, modSettings, imgResize);
                         var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
+                        var replaceimages = modSettings.GetXmlPropertyBool("genxml/checkbox/replaceimages");
+                        if (replaceimages)
+                        {
+                            var objCtrl = new NBrightDataController();
+                            var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                            if (dataRecord != null)
+                            {
+                                dataRecord.RemoveXmlNode("genxml/imgs");
+                                objCtrl.Update(dataRecord);
+                            }
+                        }
                         AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath);
                     }
                 }
@@ -1058,14 +1044,12 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
-        private String GetDocs(HttpContext context, bool clearCache = false)
+        private String GetDocs(NBrightInfo ajaxInfo, bool clearCache = false)
         {
             try
             {
                 var objCtrl = new NBrightDataController();
                 var strOut = "";
-                //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
@@ -1121,13 +1105,11 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String GetFolderDocs(HttpContext context, bool clearCache = false)
+        private String GetFolderDocs(NBrightInfo ajaxInfo, bool clearCache = false)
         {
             try
             {
                 var strOut = "";
-                //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
@@ -1188,10 +1170,8 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String ReplaceSelectedDocs(HttpContext context)
+        private String ReplaceSelectedDocs(NBrightInfo ajaxInfo)
         {
-            //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
 
             if (Utils.IsNumeric(itemid))
@@ -1202,16 +1182,14 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     dataRecord.RemoveXmlNode("genxml/docs");
                     objCtrl.Update(dataRecord);
-                    AddSelectedDocs(context);
+                    AddSelectedDocs(ajaxInfo);
                 }
             }
             return "";
         }
 
-        private String AddSelectedDocs(HttpContext context)
+        private String AddSelectedDocs(NBrightInfo ajaxInfo)
         {
-            //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
             var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
@@ -1220,7 +1198,7 @@ namespace Nevoweb.DNN.NBrightMod
             if (Utils.IsNumeric(itemid))
             {
                 var allowedfiletypes = modSettings.GetXmlProperty("genxml/textbox/allowedfiletypes");
-                if (allowedfiletypes == "") allowedfiletypes = "pdf,zip";
+                if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
                 var flist = selecteddocs.Split(',');
                 var alreadyaddedlist = new List<String>();
@@ -1242,10 +1220,8 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
-        private String DeleteSelectedDocs(HttpContext context)
+        private String DeleteSelectedDocs(NBrightInfo ajaxInfo)
         {
-            //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
             var selecteddocs = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
@@ -1267,7 +1243,6 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
-
         private void UpdateDoc(String docmappath, String itemid, NBrightInfo modSettings)
         {
             if (Utils.IsNumeric(itemid))
@@ -1275,6 +1250,17 @@ namespace Nevoweb.DNN.NBrightMod
                 if (File.Exists(docmappath))
                 {
                     var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
+                    var replacedocs = modSettings.GetXmlPropertyBool("genxml/checkbox/replacedocs");
+                    if (replacedocs)
+                    {
+                        var objCtrl = new NBrightDataController();
+                        var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                        if (dataRecord != null)
+                        {
+                            dataRecord.RemoveXmlNode("genxml/docs");
+                            objCtrl.Update(dataRecord);
+                        }
+                    }
                     AddNewDoc(Convert.ToInt32(itemid), docurl, docmappath);
                 }
                 LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
@@ -1306,22 +1292,73 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemid);
-            if (dataRecord?.XMLDoc.SelectSingleNode("genxml/docs[./genxml/hidden/folderfilename='" + folderfilename + "']") != null)
+            if (dataRecord != null)
             {
-                if (dataRecord.XMLDoc.SelectSingleNode("genxml/data") == null) dataRecord.AddSingleNode("data","","genxml");
-                if (dataRecord.XMLDoc.SelectSingleNode("genxml/data/file[./folderfilename='" + folderfilename + "']") == null)
+                if (dataRecord.XMLDoc.SelectSingleNode("genxml/docs[./genxml/hidden/folderfilename='" + folderfilename + "']") != null)
                 {
-                    dataRecord.AddXmlNode("<file><folderfilename>" + folderfilename + "</folderfilename></file>","file","genxml/data");
+                    if (dataRecord.XMLDoc.SelectSingleNode("genxml/data") == null) dataRecord.AddSingleNode("data", "", "genxml");
+                    if (dataRecord.XMLDoc.SelectSingleNode("genxml/data/file[./folderfilename='" + folderfilename + "']") == null)
+                    {
+                        dataRecord.AddXmlNode("<file><folderfilename>" + folderfilename + "</folderfilename></file>", "file", "genxml/data");
+                    }
+                    var amt = dataRecord.GetXmlPropertyDouble("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount");
+                    amt = amt + amount;
+                    dataRecord.SetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount", amt.ToString("######"));
+                    objCtrl.Update(dataRecord);
                 }
-                var amt = dataRecord.GetXmlPropertyDouble("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount");
-                amt = amt + amount;
-                dataRecord.SetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount", amt.ToString("######"));
-                objCtrl.Update(dataRecord);
             }
         }
 
         #endregion
 
+        #region "file actions"
+
+        private String AddSelectedFiles(HttpContext context)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+
+            if (uploadtype == "image") return AddSelectedImages(ajaxInfo);
+            return AddSelectedDocs(ajaxInfo);
+        }
+
+        private String ReplaceSelectedFiles(HttpContext context)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+
+            if (uploadtype == "image") return ReplaceSelectedImages(ajaxInfo);
+            return ReplaceSelectedDocs(ajaxInfo);
+        }
+
+        private String DeleteSelectedFiles(HttpContext context)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+
+            if (uploadtype == "image") return DeleteSelectedImages(ajaxInfo);
+            return DeleteSelectedDocs(ajaxInfo);
+        }
+
+        private String GetFiles(HttpContext context, bool clearCache = false)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+
+            if (uploadtype == "image") return GetImages(ajaxInfo, clearCache);
+            return GetDocs(ajaxInfo, clearCache);
+        }
+
+        private String GetFolderFiles(HttpContext context, bool clearCache = false)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+
+            if (uploadtype == "image") return GetFolderImages(ajaxInfo, clearCache);
+            return GetFolderDocs(ajaxInfo, clearCache);
+        }
+
+        #endregion
 
         #region "fileupload"
 

@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="allowedfiletypes.Help" xml:space="preserve">
+    <value>CSV list of allowed file extensions e.g (pdf,zip).  blank is all files.</value>
+  </data>
+  <data name="allowedfiletypes.Text" xml:space="preserve">
+    <value>Allowed File Extensions</value>
+  </data>
   <data name="displaydownloadcount.Text" xml:space="preserve">
     <value>Display Download Count</value>
   </data>

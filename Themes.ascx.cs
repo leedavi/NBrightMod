@@ -41,7 +41,7 @@ namespace Nevoweb.DNN.NBrightMod
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "edit");
+            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "theme","config");
         }
 
         protected override void OnLoad(EventArgs e)

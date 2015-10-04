@@ -93,7 +93,16 @@ namespace Nevoweb.DNN.NBrightMod
             if (settings.GUIDKey != settings.GetXmlProperty("genxml/dropdownlist/datasourceref") && settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != "")
             {
                 var sourcesettings = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", settings.GetXmlProperty("genxml/dropdownlist/datasourceref"));
-                sourcemodid = sourcesettings.ModuleId;
+                if (sourcesettings == null)
+                {
+                    // source module may have been removed. so reset it.
+                    settings.SetXmlProperty("genxml/dropdownlist/datasourceref", "");
+                    objCtrl.Update(settings);
+                }
+                else
+                {
+                    sourcemodid = sourcesettings.ModuleId;                    
+                }
             }
 
             // get data list

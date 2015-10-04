@@ -144,9 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Themes\config\default\adminthemes.cshtml" />
+    <None Include="Themes\config\default\themepageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
     <None Include="Themes\Documents\default\editbody.cshtml" />
-    <None Include="Themes\Documents\default\editfields.cshtml" />
     <None Include="Themes\Documents\default\editlist.cshtml" />
     <None Include="Themes\Documents\default\editpageheader.cshtml" />
     <None Include="Themes\Documents\default\docselectlist.cshtml" />

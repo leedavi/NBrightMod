@@ -1,16 +1,19 @@
+@using System.Text.RegularExpressions
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Documents/resx/")
 
 
 <ul id="fileselectlistul" class="selectfiles" >
     @{
+        var lp = 1;
         foreach (var x in @Model.List)
         {
-            <li class="fileselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")">
+            <li class="fileselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")" selectorcount="@(lp)">
                 <div class="filewrapper">@x.GetXmlProperty("genxml/hidden/docurl")
-                    <span class="glyphicon glyphicon-plus @x.GetXmlProperty("genxml/hidden/name") " style="display: none;" ></span>
+                    <span class="glyphicon glyphicon-plus fileselector@(lp) " style="display: none;" ></span>
                 </div>
             </li>
+            lp += 1;
         }
     }
 </ul>

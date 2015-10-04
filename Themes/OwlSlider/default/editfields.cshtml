@@ -5,7 +5,7 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod//Themes/OwlSlider/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -66,25 +66,4 @@
 
     </div>
     </div>
-</div>
-
-<div id="overlay" class="web_dialog_overlay"></div>
-    
-<div id="dialog" class="web_dialog">
-    <div class="buttons editdata">
-
-        <button id="canceladdimages" type="button" class="btn btn-sm btn-default" ><span class="glyphicon glyphicon-triangle-left"></span> @ResourceKey("Edit.cancel")</button>
-        <button id="addselectedimages" type="button" class="btn btn-sm btn-success" ><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
-        <button id="deleteselectedimages" type="button" class="btn btn-sm btn-danger" ><span class="glyphicon glyphicon-minus"></span> @ResourceKey("Edit.deleteselected")</button>
-        <button id="uploadimages" type="button" class="btn btn-sm btn-success imageupload-button"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.upload")</button>
-
-    </div>
-    <div class="hiddenfile" style="display: none;">
-        <input type="file" id="imageupload" name="images[]" multiple/>
-    </div>
-       
-    <div class="imginput">
-        <div id="imageselectlist" class="col-sm-12"></div>
-    </div>
-    
 </div>
