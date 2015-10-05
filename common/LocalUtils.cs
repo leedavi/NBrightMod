@@ -143,7 +143,7 @@ namespace NBrightMod.common
         public static NBrightInfo GetSettings(String moduleid)
         {
             // get template
-            if (Utils.IsNumeric(moduleid))
+            if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
             {
                 var objCtrl = new NBrightDataController();
                 var dataRecord = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");

@@ -81,16 +81,6 @@ This module depends on the NBright template system.  It must be installed for th
 										<supportsPopUps>False</supportsPopUps>
 									</moduleControl>
 									<moduleControl>
-										<controlKey>Themes</controlKey>
-										<controlSrc>DesktopModules/NBright/NBrightMod/Themes.ascx</controlSrc>
-										<supportsPartialRendering>False</supportsPartialRendering>
-										<controlTitle>Theme</controlTitle>
-										<controlType>Edit</controlType>
-										<iconFile />
-										<helpUrl />
-										<supportsPopUps>False</supportsPopUps>
-									</moduleControl>
-									<moduleControl>
 										<controlKey>Settings</controlKey>
 										<controlSrc>DesktopModules/NBright/NBrightMod/Settings.ascx</controlSrc>
 										<supportsPartialRendering>False</supportsPartialRendering>

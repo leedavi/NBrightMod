@@ -70,6 +70,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "getsettings":
                     strOut = GetSettings(context);
                     break;
+                case "gettheme":
+                    strOut = GetSettings(context);
+                    break;                    
                 case "savesettings":
                     if (LocalUtils.CheckRights()) strOut = SaveSettings(context);
                     break;
@@ -623,7 +626,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
                     var themelevel = ajaxInfo.GetXmlProperty("genxml/radiobuttonlist/exportthemelevel");
-                    var level = "module";
+                    var level = "system";
                     var themeFolderName = controlMapPath + "\\Themes\\" + theme;
                     if (themelevel == "1")
                     {

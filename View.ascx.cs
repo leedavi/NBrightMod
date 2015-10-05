@@ -130,7 +130,6 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
-                actions.Add(GetNextActionID(), Localization.GetString("ModuleTheme", this.LocalResourceFile), "", "", "", EditUrl("themes"), false, SecurityAccessLevel.Admin, true, false);
                 return actions;
             }
         }

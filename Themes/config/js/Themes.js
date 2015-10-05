@@ -10,21 +10,14 @@ $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // ass
 
 function NBrightMod_nbxgetCompleted(e) {
 
-    if (e.cmd == 'getsettings') {
+    if (e.cmd == 'savetheme') {
+        NBrightMod_nbxget('getsettings', '#themedata', '#settingsdata');
+    }
+    if (e.cmd == 'gettheme') {
         // Action after getdata command
 
-        $(function () { $("#tabs").tabs(); });
-
-        $('.editdata #savedata').click(function () {
-            NBrightMod_nbxget('savetheme', '#themedata');
-        });
-
-        $('.editdata #exitedit').click(function() {
-            window.location.href = $('#exiturl').val();
-        });
-
         $('#export').click(function () {
-            NBrightMod_nbxget('exporttheme', '#editdata', '#returnfile');
+            NBrightMod_nbxget('exporttheme', '#nbrightmodsettings', '#returnfile');
         });
 
         $('#returnfile').change(function () {
@@ -67,10 +60,6 @@ function NBrightMod_nbxgetCompleted(e) {
         // ************ UPLOAD END ************
 
     }
-    if (e.cmd == 'savetheme') {
-        window.location.href = $('#exiturl').val();
-    }
-
 
 }
 

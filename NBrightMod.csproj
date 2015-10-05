@@ -65,13 +65,6 @@
     <Compile Include="common\LocalUtils.cs" />
     <Compile Include="Components\NBrightController.cs" />
     <Compile Include="render\NBrightModRazorTokens.cs" />
-    <Compile Include="Themes.ascx.cs">
-      <DependentUpon>Themes.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Themes.ascx.designer.cs">
-      <DependentUpon>Themes.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="Settings.ascx.cs">
       <DependentUpon>Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -111,9 +104,6 @@
     <EmbeddedResource Include="Themes\OwlSlider\resx\View.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Themes.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
     <Content Include="Settings.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -122,7 +112,6 @@
     </Content>
     <None Include="NBrightMod.dnn" />
     <Content Include="Themes\config\css\NBrightMod.css" />
-    <Content Include="Themes\config\default\settings.html" />
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
@@ -143,8 +132,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Themes\config\default\adminthemes.cshtml" />
-    <None Include="Themes\config\default\themepageheader.cshtml" />
+    <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
     <None Include="Themes\Documents\default\editbody.cshtml" />
     <None Include="Themes\Documents\default\editlist.cshtml" />

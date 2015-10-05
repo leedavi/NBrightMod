@@ -7,22 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Nevoweb.DNN.NBrightMod
-{
-
-
-    public partial class Settings
-    {
-
-        /// <summary>
-        /// rpData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rpData;
-
+namespace Nevoweb.DNN.NBrightMod {
+    
+    
+    public partial class Settings {
+        
         /// <summary>
         /// phData control.
         /// </summary>

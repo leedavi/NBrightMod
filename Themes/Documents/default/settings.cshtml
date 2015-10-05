@@ -8,7 +8,6 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
 <div>
     <div>
         @DnnLabel("lbldisplaydownloadcount", "Settings.displaydownloadcount")@CheckBox(info, "genxml/checkbox/displaydownloadcount", "", "class='form-control'")
@@ -21,12 +20,7 @@
     <div style="display:none">
         <!-- set flag so upload of files replaces the current selected -->
         @CheckBox(info, "genxml/checkbox/replacedocs", "", "",true);
-    </div>
-
-    <div>
-        Ref: @info.GetXmlProperty("genxml/hidden/modref")        
-    </div>
-    
+    </div>    
 
 
 </div>

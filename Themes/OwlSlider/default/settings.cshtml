@@ -8,7 +8,6 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
 <div>
     <div>
         @DnnLabel("lblimgresize", "Settings.imgresize")@TextBox(info, "genxml/textbox/imgresize","class='form-control' width='100px' maxlength='5' ","800")
@@ -54,11 +53,7 @@
         <!-- set flag so upload of files replaces the current selected -->
         @CheckBox(info, "genxml/checkbox/replaceimages", "", "",true);
     </div>
-
-    <div>
-        Ref: @info.GetXmlProperty("genxml/hidden/modref")        
-    </div>
-    
+ 
 
 
 </div>

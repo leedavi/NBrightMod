@@ -199,6 +199,6 @@
     <value>Theme</value>
   </data>
   <data name="themelevel.Text" xml:space="preserve">
-    <value>Module level templates,Portal level templates</value>
+    <value>System level templates,Portal level templates</value>
   </data>
 </root>

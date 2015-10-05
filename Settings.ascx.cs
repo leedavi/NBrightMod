@@ -40,37 +40,12 @@ namespace Nevoweb.DNN.NBrightMod
     public partial class Settings : ModuleSettingsBase
     {
 
-        private String _templD = "";
-
         #region Event Handlers
 
-        override protected void OnInit(EventArgs e)
+        protected override void OnInit(EventArgs e)
         {
-
             base.OnInit(e);
-
-            try
-            {
-
-                _templD = "config.settings.html";
-
-                // Get Display Body
-                var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
-                var rpDataTempl = LocalUtils.GetTemplateData(_templD, Utils.GetCurrentCulture(), settings.ToDictionary());
-                if (settings != null) rpDataTempl = Utils.ReplaceSettingTokens(rpDataTempl, settings.ToDictionary());
-                rpDataTempl = Utils.ReplaceUrlTokens(rpDataTempl);
-                rpData.ItemTemplate = new GenXmlTemplate(rpDataTempl);
-
-
-            }
-            catch (Exception exc)
-            {
-                var l = new Literal();
-                l.Text = exc.Message;
-                phData.Controls.Add(l);
-                // catch any error and allow processing to continue, output error.
-            }
-
+            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "settings", "config");
         }
 
         protected override void OnLoad(EventArgs e)
@@ -86,11 +61,12 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
-
                 var obj = LocalUtils.GetSettings(base.ModuleId.ToString());
-                var l = new List<object> { obj };
-                rpData.DataSource = l;
-                rpData.DataBind();
+                obj.ModuleId = base.ModuleId; // need to pass the moduleid here, becuase it doesn;t exists in url for settings and on new settings it needs it.
+                var strOut = LocalUtils.RazorTemplRender("config.settings.cshtml", ModuleId.ToString(""), "config" + Utils.GetCurrentCulture(), obj, Utils.GetCurrentCulture());
+                var lit = new Literal();
+                lit.Text = strOut;
+                phData.Controls.Add(lit);
             }
             catch (Exception exc)
             {
@@ -98,18 +74,6 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-
-        public override void UpdateSettings()
-        {
-            try
-            {
-                //SaveSettings();
-            }
-            catch (Exception exc)
-            {
-                Exceptions.ProcessModuleLoadException(this, exc);
-            }
-        }
 
         #endregion
 
