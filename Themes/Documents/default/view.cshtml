@@ -28,10 +28,15 @@
     <div class="item">
         @if (folderfilename != "")
         {
-            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=@(folderfilename)'>@x.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+            var displayname = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+            if (displayname == "")
+            {
+                displayname = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename");
+            }
+            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=@(folderfilename)'>@(displayname)</a>
             if (Model.GetSetting("displaydownloadcount") == "True")
             {
-            <span>(@x.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
+                <span>(@x.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
             }
         }
     </div>

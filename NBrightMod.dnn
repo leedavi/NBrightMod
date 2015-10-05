@@ -33,7 +33,7 @@ This module depends on the NBright template system.  It must be installed for th
 					<resourceFiles>
 						<basePath>DesktopModules\NBright\NBrightMod</basePath>
 						<resourceFile>
-							<name>NBrightResource.zip</name>
+							<name>NBrightMod_Resources.zip</name>
 						</resourceFile>
 					</resourceFiles>
 				</component>

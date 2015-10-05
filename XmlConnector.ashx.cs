@@ -1122,14 +1122,18 @@ namespace Nevoweb.DNN.NBrightMod
                 var modSettings = LocalUtils.GetSettings(moduleid);
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
                 var allowedfiletypes = modSettings.GetXmlProperty("genxml/textbox/allowedfiletypes");
-                if (allowedfiletypes == "") allowedfiletypes = "pdf,zip";
+                if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
 
                 FileInfo[] files;
                 DirectoryInfo dirInfo = new DirectoryInfo(uploadfolder);
                 if (allowedfiletypes == "*")
                 {
-                    files = dirInfo.GetFiles();
+                    var extensionArray = new HashSet<string>();
+                    extensionArray.Add(".jpg");
+                    extensionArray.Add(".png");
+                    HashSet<string> allowedExtensions = new HashSet<string>(extensionArray, StringComparer.OrdinalIgnoreCase);
+                    files = Array.FindAll(dirInfo.GetFiles(), f => !allowedExtensions.Contains(f.Extension));
                 }
                 else
                 {
@@ -1204,7 +1208,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var alreadyaddedlist = new List<String>();
                 foreach (var f in flist)
                 {
-                    if (allowedfiletypes == "*" || allowedfiletypeslist.Contains(Path.GetExtension(f).Replace(".", "").ToLower()))
+                    if ((allowedfiletypes == "*" || allowedfiletypeslist.Contains(Path.GetExtension(f).Replace(".", "").ToLower())) && f.Trim() != "")
                     {
                         var docpath = modSettings.GetXmlProperty("genxml/uploadfoldermappath").TrimEnd('\\') + "\\" + f;
                         var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);

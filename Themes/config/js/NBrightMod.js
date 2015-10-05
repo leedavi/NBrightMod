@@ -153,25 +153,14 @@ function undoremove(itemselector, destinationselector) {
     }
 }
 
-function ShowDialog(modal) {
-    $("#overlay").show();
-    $("#dialog").fadeIn(300);
-
-    if (modal) {
-        $("#overlay").unbind("click");
-    }
-    else {
-        $("#overlay").click(function (e) {
-            HideDialog();
-        });
-    }
-    $('#fileselectlist').show();
+function ShowFileOperation() {
+    $("#editdata").hide();
+    $("#fileoperation").show();
 }
 
-function HideDialog() {
-    $("#overlay").hide();
-    $("#dialog").fadeOut(300);
-    $('#fileselectlist').hide();
+function HideFileOperation() {
+    $("#editdata").show();
+    $("#fileoperation").hide();
 }
 
 
@@ -179,7 +168,6 @@ function ActivateFileLoader() {
 
 
     $('.filelistclick').click(function () {
-        $('#fileselectlist').hide();
         $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
         NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         $('#displayreturn').val("list");
@@ -189,7 +177,6 @@ function ActivateFileLoader() {
     });
 
     $('.fileclick').click(function () {
-        $('#fileselectlist').hide();
         NBrightMod_nbxget('savedata', '#editdata');
         $('#displayreturn').val("detail");
         $('#uploadtype').val("doc");
@@ -198,7 +185,6 @@ function ActivateFileLoader() {
     });
 
     $('.imagelistclick').click(function () {
-        $('#fileselectlist').hide();
         $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
         NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         $('#displayreturn').val("list");
@@ -208,7 +194,6 @@ function ActivateFileLoader() {
     });
 
     $('.imageclick').click(function () {
-        $('#fileselectlist').hide();
         NBrightMod_nbxget('savedata', '#editdata');
         $('#displayreturn').val("detail");
         $('#uploadtype').val("image");
@@ -217,7 +202,7 @@ function ActivateFileLoader() {
     });
 
     $('#fileselectlist').change(function () {
-        ShowDialog(true);
+        ShowFileOperation();
     });
 
 
@@ -226,6 +211,12 @@ function ActivateFileLoader() {
 function ActivateFileReturn(e) {
     if (e.cmd == 'getfolderfiles') {
         $('.fileselectitem').click(function () {
+            //if we have a allow1selection class on the file list then one 1 can be selected, so hide all.
+            if ($('.allow1selection')[0]) {
+                $('.allow1selection').hide();
+                $('#selectedfiles').val('');
+            }
+
             var find = '.fileselector' + $(this).attr("selectorcount");
             if ($(find).is(':visible')) {
                 $(find).hide();
@@ -304,7 +295,7 @@ function ActivateFileUploadButtons() {
 
     $('#canceladdfiles').click(function () {
         $('#selectedfiles').val('');
-        HideDialog();
+        HideFileOperation();
         if ($('#displayreturn').val() == 'list') {
             NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
         } else {
@@ -314,12 +305,12 @@ function ActivateFileUploadButtons() {
 
     $('#addselectedfiles').click(function () {
         NBrightMod_nbxget('addselectedfiles', '#selectparams', '#filelist');
-        HideDialog();
+        HideFileOperation();
     });
 
     $('#replaceselectedfiles').click(function () {
         NBrightMod_nbxget('replaceselectedfiles', '#selectparams', '#filelist');
-        HideDialog();
+        HideFileOperation();
     });
 
     $('#deleteselectedfiles').click(function () {
