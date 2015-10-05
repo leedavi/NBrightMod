@@ -294,7 +294,7 @@ namespace Nevoweb.DNN.NBrightMod
                     // get DB record
                     var nbi = LocalUtils.GetSettings(moduleid);
 
-                    if (nbi.ModuleId == 0) // new setting record
+                    if (nbi.ModuleId <= 0) // new setting record
                     {
                         nbi = CreateSettingsInfo(moduleid, nbi);
                     }
