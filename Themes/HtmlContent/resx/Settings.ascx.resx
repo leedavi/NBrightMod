@@ -117,46 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="height.Text" xml:space="preserve">
-    <value>Image Height</value>
-  </data>
-  <data name="width.Text" xml:space="preserve">
-    <value>Image Width</value>
-  </data>
-  <data name="thumbheight.Text" xml:space="preserve">
-    <value>Thumb Height</value>
-  </data>
-  <data name="thumbwidth.Text" xml:space="preserve">
-    <value>Thumb Width</value>
-  </data>
   <data name="imgresize.Text" xml:space="preserve">
-    <value>Image Resize</value>
+    <value>Image Resize (px)</value>
   </data>
-  <data name="basicjs.Text" xml:space="preserve">
-    <value>JS option for owl carousel</value>
-  </data>
-  <data name="autoplay.Text" xml:space="preserve">
-    <value>autoplay</value>
-  </data>
-  <data name="center.Text" xml:space="preserve">
-    <value>center</value>
-  </data>
-  <data name="items.Text" xml:space="preserve">
-    <value>items</value>
-  </data>
-  <data name="loop.Text" xml:space="preserve">
-    <value>loop</value>
-  </data>
-  <data name="margin.Text" xml:space="preserve">
-    <value>margin</value>
-  </data>
-  <data name="animatein.Text" xml:space="preserve">
-    <value>Animate In</value>
-  </data>
-  <data name="animateout.Text" xml:space="preserve">
-    <value>Animate Out</value>
-  </data>
-  <data name="smartspeed.Text" xml:space="preserve">
-    <value>Smart Speed</value>
+  <data name="imgresize.Help" xml:space="preserve">
+    <value>Image Resize (px)</value>
   </data>
 </root>

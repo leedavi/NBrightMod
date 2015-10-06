@@ -99,10 +99,10 @@
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\HtmlContent\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\HtmlContent\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\HtmlContent\resx\View.ascx.resx" />
-    <EmbeddedResource Include="Themes\OwlSlider\resx\Settings1.ascx.resx" />
+    <EmbeddedResource Include="Themes\OwlSlider\resx\View.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Settings.ascx">
