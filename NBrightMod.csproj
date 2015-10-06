@@ -99,9 +99,10 @@
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
-    <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\OwlSlider\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\HtmlContent\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\HtmlContent\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\HtmlContent\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\OwlSlider\resx\Settings1.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Settings.ascx">
@@ -115,6 +116,8 @@
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
+    <Content Include="Themes\HtmlContent\css\htmlcontent.css" />
+    <Content Include="Themes\HtmlContent\js\owl.carousel.min.js" />
     <Content Include="Themes\OwlSlider\css\owl.carousel.css" />
     <Content Include="Themes\OwlSlider\js\owl.carousel.min.js" />
     <Content Include="View.ascx">
@@ -147,6 +150,14 @@
     <None Include="Themes\GoogleMap\default\settings.cshtml" />
     <None Include="Themes\GoogleMap\default\view.cshtml" />
     <None Include="Themes\GoogleMap\default\viewpageheader.cshtml" />
+    <None Include="Themes\HtmlContent\default\editbody.cshtml" />
+    <None Include="Themes\HtmlContent\default\editfields.cshtml" />
+    <None Include="Themes\HtmlContent\default\editlist.cshtml" />
+    <None Include="Themes\HtmlContent\default\editpageheader.cshtml" />
+    <None Include="Themes\HtmlContent\default\imgselectlist.cshtml" />
+    <None Include="Themes\HtmlContent\default\settings.cshtml" />
+    <None Include="Themes\HtmlContent\default\view.cshtml" />
+    <None Include="Themes\HtmlContent\default\viewpageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\editpageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\editbody.cshtml" />
     <None Include="Themes\OwlSlider\default\editfields.cshtml" />

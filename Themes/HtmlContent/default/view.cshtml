@@ -1,0 +1,246 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
+@using System.Linq
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/resx/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "HtmlContent.view.cshtml" + info.ModuleId)
+
+
+
+    @helper imageindex(NBrightInfo x, String index)
+    {
+        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/hidden/imageurl");
+        var imgwidth = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/textbox/imgwidth");
+        var imgheight = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/textbox/imgheight");
+        var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
+        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + index + "]]/textbox/imagedesc");
+        var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + index + "]]/dropdownlist/imglinktab");
+
+        if (imageurl != "")
+        {
+            if (imglinktab != "")
+            {
+                @:{<a href="TEST" target="_blank">}
+            }
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)"/>
+            if (imglinktab != "")
+            {
+                @:{</a >}
+            }
+            if (showcaptions)
+            {
+                <div class="newspaper-imgcaption">@(caption)</div>
+            }
+        }
+    }
+
+    @helper imagedisplay(NBrightInfo x, String displaytype)
+    {
+        var imgList = x.XMLDoc.SelectNodes("genxml/imgs/genxml");
+        if (imgList != null)
+        {
+            var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
+            var c = 1;
+            foreach (XmlNode i in imgList)
+            {
+                var nbi = new NBrightInfo();
+                nbi.XMLData = i.OuterXml;
+
+                var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+                var imgwidth = nbi.GetXmlProperty("genxml/textbox/imgwidth");
+                var imgheight = nbi.GetXmlProperty("genxml/textbox/imgheight");
+                var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + c + "]]/textbox/imagedesc");
+                var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + c + "]]/dropdownlist/imglinktab");
+
+                if (imageurl != "")
+                {
+                    if ((displaytype == "vert") || ((c%2 != 0) && displaytype == "odd") || ((c%2 == 0) && displaytype == "even"))
+                    {
+                        if (imglinktab != "")
+                        {
+                            @:{<a href="TEST" target="_blank">}
+                        }
+                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />
+                    if (imglinktab != "")
+                    {
+                        @:{</a>}
+                    }
+                    if (showcaptions)
+                    {
+                            <div class="newspaper-imgcaption">@(caption)</div>
+                        }
+                    }
+                    if (displaytype == "hoz")
+                    {
+                        <div class="newspaper-imgdivfloatleft">
+                            <a href="javascript:void(0)">
+                                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)"/>
+                            </a>
+                            @if (showcaptions)
+                            {
+                                <div class="newspaper-imgcaption">@(caption)</div>
+                            }
+                        </div>
+                    }
+                }
+                c += 1;
+
+            }
+        }
+    }
+
+
+    @helper headersection(NBrightInfo x)
+    {
+        if ((x.GetXmlProperty("genxml/lang/genxml/textbox/heading") != "") && (!x.GetXmlPropertyBool("genxml/checkbox/hideheading")))
+        {
+            @HeadingOf(x.GetXmlProperty("genxml/lang/genxml/textbox/heading"), x.GetXmlProperty("genxml/dropdownlist/headingstyle"))
+        }
+    }
+
+    @helper textsection(NBrightInfo x)
+    {
+        if ((x.GetXmlProperty("genxml/lang/genxml/textbox/ckeditor1") != ""))
+        {
+            @HtmlOf(x, "genxml/lang/genxml/textbox/ckeditor1")
+        }
+        if ((x.GetXmlProperty("genxml/lang/genxml/textbox/simpletext") != ""))
+        {
+            <p>@BreakOf(x, "genxml/lang/genxml/textbox/simpletext")</p>
+        }
+    }
+
+
+
+
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+    var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
+
+<div>
+
+    @foreach (NBrightInfo x in Model.List)
+    {
+        // dummy record inject for empty list
+        if (@x.ItemID > 0)
+        {
+
+            if (@x.GetXmlProperty("genxml/editurl") != "")
+            {
+                <a href="@x.GetXmlProperty("genxml/editurl")">EDIT</a>
+            }
+
+
+            <div class="newspaper-wrapperdiv">
+
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 0)
+                {
+                    @headersection(x)
+                    @textsection(x)
+                }
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 1)
+                {
+                    <div class="newspaper-imgdivfloatleft">@imageindex(x, "1")</div>
+                    @headersection(x)
+                    @textsection(x)
+
+                }
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 2)
+                {
+                    <div class="newspaper-imgdivfloatright">@imageindex(x, "1")</div>
+                    @headersection(x)
+                    @textsection(x)
+
+                }
+
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 3)
+                {
+                    <div class="newspaper-imgdivfloatleft imageclick">@imageindex(x, "1")</div>
+                    <div class="newspaper-imgdivfloatright imageclick">@imageindex(x, "2")</div>
+                    @headersection(x)
+                    @textsection(x)
+                }
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 4)
+                {
+                    <div class="newspaper-center1">
+                        <div class="newspaper-center2">
+                            <div class="newspaper-imgdivtop">
+                                <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    @headersection(x)
+                    @textsection(x)
+                }
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 5)
+                {
+                    @headersection(x)
+                    @textsection(x)
+                    <div class="newspaper-center1">
+                        <div class="newspaper-center2">
+                            <div class="newspaper-imgdivbottom">
+                                <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                }
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 6)
+                {
+                    <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "vert")</div>
+                    <div class="newspaper-textdivcell">
+                        @headersection(x)
+                        @textsection(x)
+                    </div>
+                }
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 7)
+                {
+                    <div class="newspaper-textdivcell">
+                        @headersection(x)
+                        @textsection(x)
+                    </div>
+                    <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "vert")</div>
+                }
+
+                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 8)
+                {
+                    <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "odd")</div>
+                    <div class="newspaper-textdivcell">
+                        @headersection(x)
+                        @textsection(x)
+                    </div>
+                    <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "even")</div>
+                }
+
+            </div>
+            <div class="clearfix"></div>
+
+        }
+
+    }
+
+</div>
+
+

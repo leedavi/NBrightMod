@@ -1,0 +1,18 @@
+@using System.Linq
+@using NBrightDNN
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div>
+    <div>
+        @DnnLabel("lblimgresize", "Settings.imgresize")@TextBox(info, "genxml/textbox/imgresize", "class='form-control' maxlength='5'", "800")
+    </div>
+
+</div>
+ 
