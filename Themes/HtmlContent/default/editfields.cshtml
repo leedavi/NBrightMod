@@ -24,48 +24,57 @@
     <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
 </div>
 
-    @helper imageindex(String index)
-    {
-        var info = (NBrightInfo) Model.List.First();
-        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + index + "]/hidden/imageurl");
-
-        if (imageurl != "")
-        {
-            <a href="javascript:void(0)">
-                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=0"/>
-            </a>
-        }
-        else
-        {
-            <div style="background: #848D92; color: #000000; height: 50px;">@ResourceKey("Edit.clickhereimages")</div>
-        }
-
-    }
-
-
-
-<div class="row">
-<div class="col-xs-12 col-sm-12">
-    <div class="box">
-        
-        <div class="formrow">
-            <div class="imageclick">@imageindex("1")</div>
-            <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.upload")</button>
-
-        </div>
-
-        <div class="formrow">
-            <label>@ResourceKey("Edit.title")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>@TextBox(info, "genxml/lang/genxml/textbox/title")</div>
-        </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.infodesc")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div id="richtexteditor">
-                @CheckBox(info, "genxml/checkbox/hidedescription", "ResourceKey:Edit.hidedescription", "True")
-                @RichTextBox(info, "genxml/lang/genxml/textbox/infodesc", "")
+<div class="row headerinput">
+    <div class="form dnnForm">
+        <div class="form-group">
+            <div class="col-xs-12">
+                <label class="control-label">@ResourceKey("Edit.heading")</label><img class="Flags" src='/Images/Flags/@(info.Lang).gif' width='16px' />
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                @TextBox(info, "genxml/lang/genxml/textbox/heading", "width='300px' maxlength='250' class='form-control' ")
+            </div>
+            <div class="col-xs-6 col-sm-2">
+                @DropDownList(info, "genxml/dropdownlist/headingstyle", "h1,h2,h3", "H1,H2,H3", " class='form-control' ", "")
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                @CheckBox(info, "genxml/checkbox/hideheading", "hide", " class='dnnCheckbox'")
             </div>
         </div>
-
-    </div>
     </div>
 </div>
+
+
+<div class="row textinput">
+    @RadioButtonList(info, "genxml/radiobuttonlist/editortype", "0,1", "0,1", "", "0")
+    <hr />
+    <div id="simpletexteditor" style="display: none;">
+        <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/simpletext")</textarea>
+    </div>
+    <div id="richtexteditor">
+        @RichTextBox(info, "genxml/lang/genxml/textbox/ckeditor1", "")
+    </div>
+</div>
+
+
+<div class="row imginput">
+    <div class="form dnnForm">
+        <div class="form-group">
+            <div id="captionscheckbox" class="col-xs-12" style="display: none;">
+                @CheckBox(info, "genxml/checkbox/showcaptions", "[<tag type='valueof' resourcekey='Edit.showcaptions'/>]", " class='dnnCheckbox'")
+            </div>
+            <div id="imageselectlist" class="col-xs-12" style="display: none;"></div>
+            <div id="imagelist" class="col-xs-12"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row docinput">
+    <div class="form dnnForm">
+        <div class="form-group">
+            <div id="docselectlist" class="col-xs-12" style="display: none;"></div>
+            <div id="doclist" class="col-xs-12"></div>
+        </div>
+    </div>
+</div>
+
