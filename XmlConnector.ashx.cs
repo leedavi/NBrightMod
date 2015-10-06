@@ -478,6 +478,8 @@ namespace Nevoweb.DNN.NBrightMod
                         nbi.UpdateAjax(strIn);
                         objCtrl.Update(nbi);
 
+                        Utils.RemoveCache("dnnsearchindexflag" + moduleid);
+
                         LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
 
                     }

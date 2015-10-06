@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Xml;
 using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Search;
+using DotNetNuke.Services.Search.Entities;
 using NBrightCore.common;
 using NBrightDNN;
 using NBrightMod.common;
@@ -12,7 +15,7 @@ using NBrightMod.common;
 namespace Nevoweb.DNN.NBrightMod.Components
 {
 
-    public class NBrightModController : IPortable
+    public class NBrightModController : ModuleSearchBase, IPortable
     {
 
         #region Optional Interfaces
@@ -115,6 +118,118 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
             }
 
+        }
+
+        #endregion
+
+
+        #region ModuleSearchBase
+
+        public override IList<SearchDocument> GetModifiedSearchDocuments(ModuleInfo modInfo, DateTime beginDate)
+        {
+            var searchDocuments = new List<SearchDocument>();
+
+            var lastindexflag = false;
+            var objcache = Utils.GetCache("dnnsearchindexflag" + modInfo.ModuleID.ToString(""));
+            if (objcache != null) lastindexflag = (Boolean)objcache;
+
+            if (!lastindexflag)
+            {
+
+
+                // Get all the non-langauge data records.
+                var objCtrl = new NBrightDataController();
+
+                var culturecodeList = DnnUtils.GetCultureCodeList(modInfo.PortalID);
+                foreach (var lang in culturecodeList)
+                {
+                    var lstData = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATA"); // reset search list objects to non-langauge ones.
+                    string strContent = "";
+                    var modifiedDate = DateTime.Now;
+                    var searchTitle = modInfo.ModuleTitle;
+                    if (searchTitle == "") searchTitle = modInfo.ParentTab.TabName;
+
+                    // add lanaguge records to list to be indexed
+                    var lstDataLang = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATALANG", " and NB1.Lang = '" + lang + "' ");
+                    foreach (var obj in lstDataLang)
+                    {
+                        lstData.Add(obj);
+                    }
+
+                    foreach (var objContent in lstData)
+                    {
+                        //content is encoded in the Database so Decode before Indexing
+                        if (objContent.XMLDoc != null)
+                        {
+
+                            var xmlNods = objContent.XMLDoc.SelectNodes("genxml/textbox/*");
+                            if (xmlNods != null)
+                            {
+                                foreach (XmlNode xmlNod in xmlNods)
+                                {
+                                    if (xmlNod.Attributes != null && xmlNod.Attributes["datatype"] != null && xmlNod.Attributes["datatype"].InnerText == "html")
+                                        strContent += HttpUtility.HtmlDecode(xmlNod.InnerText) + " ";
+                                    else
+                                        strContent += xmlNod.InnerText + " ";
+                                }
+                            }
+                            var xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/searchtitle");
+                            if (xNod == null || xNod.InnerText.Trim() == "")
+                            {
+                                xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/title");
+                            }
+                            if (xNod != null && xNod.InnerText.Trim() != "") searchTitle = xNod.InnerText;
+                            if (objContent.ModifiedDate < modifiedDate) modifiedDate = objContent.ModifiedDate;
+                        }
+                    }
+
+                    if (strContent != "")
+                    {
+                        var description = strContent.Length <= 100 ? strContent : HtmlUtils.Shorten(strContent, 100, "...");
+
+                        var searchDoc = new SearchDocument
+                        {
+                            UniqueKey = modInfo.ModuleID.ToString() + "*" + lang,
+                            PortalId = modInfo.PortalID,
+                            Title = searchTitle,
+                            Description = description,
+                            Body = strContent,
+                            ModifiedTimeUtc = modifiedDate.ToUniversalTime(),
+                            CultureCode = lang
+                        };
+
+                        if (modInfo.Terms != null && modInfo.Terms.Count > 0)
+                        {
+                            searchDoc.Tags = CollectHierarchicalTags(modInfo.Terms);
+                        }
+
+                        searchDocuments.Add(searchDoc);
+                    }
+                }
+                Utils.SetCache("dnnsearchindexflag" + modInfo.ModuleID.ToString(""), true);
+            }
+
+
+            return searchDocuments;
+        }
+
+        private static List<string> CollectHierarchicalTags(List<Term> terms)
+        {
+            Func<List<Term>, List<string>, List<string>> collectTagsFunc = null;
+            collectTagsFunc = (ts, tags) =>
+            {
+                if (ts != null && ts.Count > 0)
+                {
+                    foreach (var t in ts)
+                    {
+                        tags.Add(t.Name);
+                        tags.AddRange(collectTagsFunc(t.ChildTerms, new List<string>()));
+                    }
+                }
+                return tags;
+            };
+
+            return collectTagsFunc(terms, new List<string>());
         }
 
         #endregion

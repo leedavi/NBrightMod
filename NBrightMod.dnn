@@ -53,6 +53,7 @@ This module depends on the NBright template system.  It must be installed for th
 						<businessControllerClass>Nevoweb.DNN.NBrightMod.Components.NBrightModController,NBrightMod</businessControllerClass>
 						<supportedFeatures>
 							<supportedFeature type="Portable" />
+							<supportedFeature type="Searchable" />
 						</supportedFeatures>
 						<moduleDefinitions>
 							<moduleDefinition>
