@@ -100,9 +100,9 @@
 
     @helper headersection(NBrightInfo x)
     {
-        if ((x.GetXmlProperty("genxml/lang/genxml/textbox/heading") != "") && (!x.GetXmlPropertyBool("genxml/checkbox/hideheading")))
+        if ((x.GetXmlProperty("genxml/lang/genxml/textbox/title") != "") && (!x.GetXmlPropertyBool("genxml/checkbox/hideheading")))
         {
-            @HeadingOf(x.GetXmlProperty("genxml/lang/genxml/textbox/heading"), x.GetXmlProperty("genxml/dropdownlist/headingstyle"))
+            @HeadingOf(x.GetXmlProperty("genxml/lang/genxml/textbox/title"), x.GetXmlProperty("genxml/dropdownlist/headingstyle"))
         }
     }
 
@@ -122,125 +122,125 @@
 
 
 
-@{
-    var msg = "";
-    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
-    {
-        msg = ResourceKey("View.nosettings").ToString();
-    }
-    var divid = "NBrightMod" + @Model.GetSetting("modref");
-}
-@(msg) 
-
-<div>
-
-    @foreach (NBrightInfo x in Model.List)
-    {
-        // dummy record inject for empty list
-        if (@x.ItemID > 0)
+    @{
+        var msg = "";
+        if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
         {
+            msg = ResourceKey("View.nosettings").ToString();
+        }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+    }
+    @(msg)
 
-            if (@x.GetXmlProperty("genxml/editurl") != "")
+    <div>
+
+        @foreach (NBrightInfo x in Model.List)
+        {
+            // dummy record inject for empty list
+            if (@x.ItemID > 0)
             {
-                <a href="@x.GetXmlProperty("genxml/editurl")">EDIT</a>
+
+                if (@x.GetXmlProperty("genxml/editurl") != "")
+                {
+                    <a href="@x.GetXmlProperty("genxml/editurl")">EDIT</a>
+                }
+
+
+                <div class="newspaper-wrapperdiv">
+
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 0)
+                    {
+                        @headersection(x)
+                        @textsection(x)
+                    }
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 1)
+                    {
+                        <div class="newspaper-imgdivfloatleft">@imageindex(x, "1")</div>
+                        @headersection(x)
+                        @textsection(x)
+
+                    }
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 2)
+                    {
+                        <div class="newspaper-imgdivfloatright">@imageindex(x, "1")</div>
+                        @headersection(x)
+                        @textsection(x)
+
+                    }
+
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 3)
+                    {
+                        <div class="newspaper-imgdivfloatleft imageclick">@imageindex(x, "1")</div>
+                        <div class="newspaper-imgdivfloatright imageclick">@imageindex(x, "2")</div>
+                        @headersection(x)
+                        @textsection(x)
+                    }
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 4)
+                    {
+                        <div class="newspaper-center1">
+                            <div class="newspaper-center2">
+                                <div class="newspaper-imgdivtop">
+                                    <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        @headersection(x)
+                        @textsection(x)
+                    }
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 5)
+                    {
+                        @headersection(x)
+                        @textsection(x)
+                        <div class="newspaper-center1">
+                            <div class="newspaper-center2">
+                                <div class="newspaper-imgdivbottom">
+                                    <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    }
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 6)
+                    {
+                        <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "vert")</div>
+                        <div class="newspaper-textdivcell">
+                            @headersection(x)
+                            @textsection(x)
+                        </div>
+                    }
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 7)
+                    {
+                        <div class="newspaper-textdivcell">
+                            @headersection(x)
+                            @textsection(x)
+                        </div>
+                        <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "vert")</div>
+                    }
+
+                    @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 8)
+                    {
+                        <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "odd")</div>
+                        <div class="newspaper-textdivcell">
+                            @headersection(x)
+                            @textsection(x)
+                        </div>
+                        <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "even")</div>
+                    }
+
+                </div>
+                <div class="clearfix"></div>
+
             }
-
-
-            <div class="newspaper-wrapperdiv">
-
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 0)
-                {
-                    @headersection(x)
-                    @textsection(x)
-                }
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 1)
-                {
-                    <div class="newspaper-imgdivfloatleft">@imageindex(x, "1")</div>
-                    @headersection(x)
-                    @textsection(x)
-
-                }
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 2)
-                {
-                    <div class="newspaper-imgdivfloatright">@imageindex(x, "1")</div>
-                    @headersection(x)
-                    @textsection(x)
-
-                }
-
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 3)
-                {
-                    <div class="newspaper-imgdivfloatleft imageclick">@imageindex(x, "1")</div>
-                    <div class="newspaper-imgdivfloatright imageclick">@imageindex(x, "2")</div>
-                    @headersection(x)
-                    @textsection(x)
-                }
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 4)
-                {
-                    <div class="newspaper-center1">
-                        <div class="newspaper-center2">
-                            <div class="newspaper-imgdivtop">
-                                <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    @headersection(x)
-                    @textsection(x)
-                }
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 5)
-                {
-                    @headersection(x)
-                    @textsection(x)
-                    <div class="newspaper-center1">
-                        <div class="newspaper-center2">
-                            <div class="newspaper-imgdivbottom">
-                                <div class="newspaper-imgdivfloatleft imageclick">@imagedisplay(x, "hoz")</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                }
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 6)
-                {
-                    <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "vert")</div>
-                    <div class="newspaper-textdivcell">
-                        @headersection(x)
-                        @textsection(x)
-                    </div>
-                }
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 7)
-                {
-                    <div class="newspaper-textdivcell">
-                        @headersection(x)
-                        @textsection(x)
-                    </div>
-                    <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "vert")</div>
-                }
-
-                @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 8)
-                {
-                    <div class="newspaper-imgdivcellleft imageclick">@imagedisplay(x, "odd")</div>
-                    <div class="newspaper-textdivcell">
-                        @headersection(x)
-                        @textsection(x)
-                    </div>
-                    <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "even")</div>
-                }
-
-            </div>
-            <div class="clearfix"></div>
 
         }
 
-    }
-
-</div>
+    </div>
 
 

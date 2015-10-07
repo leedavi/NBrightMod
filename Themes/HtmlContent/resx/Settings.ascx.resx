@@ -126,4 +126,7 @@
   <data name="hideheading.Text" xml:space="preserve">
     <value>Hide Heading</value>
   </data>
+  <data name="editortype.Text" xml:space="preserve">
+    <value>Editor,Simple Text</value>
+  </data>
 </root>
