@@ -117,7 +117,6 @@
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
     <Content Include="Themes\HtmlContent\css\htmlcontent.css" />
-    <Content Include="Themes\HtmlContent\js\owl.carousel.min.js" />
     <Content Include="Themes\OwlSlider\css\owl.carousel.css" />
     <Content Include="Themes\OwlSlider\js\owl.carousel.min.js" />
     <Content Include="View.ascx">
@@ -177,6 +176,7 @@
     <Folder Include="Themes\Documents\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
+    <Folder Include="Themes\HtmlContent\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
