@@ -150,6 +150,7 @@
     <None Include="Themes\GoogleMap\default\view.cshtml" />
     <None Include="Themes\GoogleMap\default\viewpageheader.cshtml" />
     <None Include="Themes\HtmlContent\default\editbody.cshtml" />
+    <None Include="Themes\HtmlContent\default\imagelist.cshtml" />
     <None Include="Themes\HtmlContent\default\editfields.cshtml" />
     <None Include="Themes\HtmlContent\default\editlist.cshtml" />
     <None Include="Themes\HtmlContent\default\editpageheader.cshtml" />

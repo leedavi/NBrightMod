@@ -85,6 +85,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "getlist":
                     strOut = GetData(context);
                     break;
+                case "getimagelist":
+                    strOut = GetData(context);
+                    break;
                 case "addnew":
                     if (LocalUtils.CheckRights()) strOut = GetData(context, true);
                     break;
@@ -379,25 +382,36 @@ namespace Nevoweb.DNN.NBrightMod
                     AddNew(moduleid);
                 }
 
-                // removed selected itemid if we want to return to the list.
-                if (displayreturn.ToLower() == "list") selecteditemid = "";
+                var strTemplate = "editlist.cshtml";
+                if (Utils.IsNumeric(selecteditemid)) strTemplate = "editfields.cshtml";
+
+
+                switch (displayreturn.ToLower())
+                {
+                    case "list":
+                        // removed selected itemid if we want to return to the list.
+                        strTemplate = "editlist.cshtml";
+                        selecteditemid = "";
+                        break;
+                }
+
 
                 if (Utils.IsNumeric(selecteditemid))
                 {
                     // do edit field data if a itemid has been selected
                     var obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
-                    strOut = LocalUtils.RazorTemplRender("editfields.cshtml", moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
+                    strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
                 }
                 else
                 {
                     // preprocess razor template to get meta data for data select into cache.
-                    var cachedlist = LocalUtils.RazorPreProcessTempl("editlist.cshtml", moduleid, Utils.GetCurrentCulture());
+                    var cachedlist = LocalUtils.RazorPreProcessTempl(strTemplate, moduleid, Utils.GetCurrentCulture());
                     var orderby = "";
                     if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
                     // Return list of items
                     var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, 0, 0, 0, 0, editlang);
-                    strOut = LocalUtils.RazorTemplRenderList("editlist.cshtml", moduleid, _lang + editlang, l, _lang);
+                    strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
                 }
 
                 // debug data out by writing out to file (REMOVE FOR PROUCTION)
@@ -713,7 +727,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
-                if (nbi != null && imgList.Count > 0)
+                if (nbi != null)
                 {
                     var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
                     // build xml for data records
@@ -875,6 +889,7 @@ namespace Nevoweb.DNN.NBrightMod
             var selectedimages = ajaxInfo.GetXmlProperty("genxml/hidden/selectedfiles");
             var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
             var modSettings = LocalUtils.GetSettings(moduleid);
+            var singlefile = ajaxInfo.GetXmlPropertyBool("genxml/hidden/singlefile");
 
             if (Utils.IsNumeric(itemid))
             {
@@ -888,7 +903,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
                         if (!alreadyaddedlist.Contains(imagepath))
                         {
-                            AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath, true);
+                            AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath, singlefile);
                             alreadyaddedlist.Add(imageurl);
                         }
                     }

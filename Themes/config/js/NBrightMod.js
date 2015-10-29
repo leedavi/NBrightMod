@@ -35,14 +35,14 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#displayreturn').val('detail');
 
         $('.selecteditlanguage').click(function () {
+            savedata()
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });
 
         $('#savedata').click(function () {
-            NBrightMod_nbxget('savedata', '#editdata');
+            savedata();
         });
-
 
         $('#return').click(function() {
             $('#selecteditemid').val('');
@@ -53,9 +53,15 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 
+        $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent().parent()); });
+        $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent().parent()); });
+            $('.removeimage').click(function () { removeelement($(this).parent().parent().parent().parent()); });
+            $('#undoimage').click(function () { undoremove('.imagedisplay', '#imagelist'); });
+
         ActivateFileLoader();
 
     }
+
 
     ActivateFileReturn(e);
 
@@ -114,6 +120,14 @@ function NBrightMod_nbxgetCompleted(e) {
 
     }
 
+}
+
+function savedata() {
+    var xmlrtn = $.fn.genxmlajaxitems('#imagelist', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    var xmlrtn2 = $.fn.genxmlajaxitems('#doclist', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    $('#xmlupdateimages').val(xmlrtn);
+    $('#xmlupdatedocs').val(xmlrtn2);
+    NBrightMod_nbxget('savedata', '#editdata');
 }
 
 function moveUp(item) {
@@ -177,7 +191,7 @@ function ActivateFileLoader() {
     });
 
     $('.fileclick').click(function () {
-        NBrightMod_nbxget('savedata', '#editdata');
+        savedata();
         $('#displayreturn').val("detail");
         $('#uploadtype').val("doc");
         $('.fileinput').show();
@@ -194,7 +208,7 @@ function ActivateFileLoader() {
     });
 
     $('.imageclick').click(function () {
-        NBrightMod_nbxget('savedata', '#editdata');
+        savedata();
         $('#displayreturn').val("detail");
         $('#uploadtype').val("image");
         $('.fileinput').show();
