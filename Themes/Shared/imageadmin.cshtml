@@ -1,0 +1,76 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<!-- START IMAGES -->
+
+<div class="row imagebuttons">
+    <div class="form dnnForm">
+        <div class="formrow">
+            <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.upload")</button>
+        </div>
+    </div>
+</div>
+
+    <div class="row imginput">
+        <div class="form dnnForm">
+            <div class="form-group">
+                <div id="captionscheckbox" class="col-xs-12" style="display: none;">
+                    @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " class='dnnCheckbox'")
+                </div>
+                <div id="imageselectlist" class="col-xs-12" style="display: none;"></div>
+                <div id="imagelist" class="col-xs-12">
+
+                    @{
+                        var imglp = 1;
+                        foreach (XmlNode imgNod in info.XMLDoc.SelectNodes("genxml/imgs/genxml"))
+                        {
+                            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+
+                            <div class="row imageitem">
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                <div class="form dnnForm">
+                                    <div class="form-group">
+                                        <div class="col-xs-3">
+                                            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" />
+                                        </div>
+                                        <div class="col-xs-9 col-sm-6">
+                                            <img class="Flags" src='/Images/Flags/@(info.Lang).gif' width='16px' />
+                                            @TextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " class='form-control' update='imglang' ")
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <button type="button" class="btn btn-sm sortelementUp" imageindex="@(imglp)"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <button type="button" class="btn btn-sm sortelementDown" imageindex="@(imglp)"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                                        </div>
+                                        <div class="col-xs-1 text-right">
+                                            <button type="button" class="btn btn-sm btn-danger removeimage" imageindex="@(imglp)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            imglp += 1;
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- END IMAGES -->

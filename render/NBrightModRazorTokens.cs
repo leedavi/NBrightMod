@@ -22,6 +22,7 @@ using NBrightDNN.render;
 using NBrightMod.common;
 using RazorEngine.Templating;
 using RazorEngine.Text;
+using System.IO;
 
 namespace NBrightMod.render
 {
@@ -56,6 +57,27 @@ namespace NBrightMod.render
             return new RawString(strOut);
         }
 
+        public IEncodedString RenderTemplate(String templateRelPath, NBrightRazor model)
+        {
+            var TemplateData = "";
+            var templatePath = HttpContext.Current.Server.MapPath(templateRelPath);
+            if (File.Exists(templatePath))
+            {
+                string inputLine;
+                var inputStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
+                var streamReader = new StreamReader(inputStream);
+
+                while ((inputLine = streamReader.ReadLine()) != null)
+                {
+                    TemplateData += inputLine + Environment.NewLine;
+                }
+                streamReader.Close();
+                inputStream.Close();
+            }
+
+                var strOut = LocalUtils.RazorRender(model, TemplateData, "", false);
+            return new RawString(strOut);
+        }
 
     }
 

@@ -166,6 +166,7 @@
     <None Include="Themes\OwlSlider\default\settings.cshtml" />
     <None Include="Themes\OwlSlider\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
+    <None Include="Themes\Shared\imageadmin.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>
