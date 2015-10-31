@@ -1,0 +1,32 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+
+<div class="row headerinput">
+    <div class="form dnnForm">
+        <div class="form-group">
+            <div class="col-xs-12">
+                <label class="control-label">@ResourceKey("Edit.heading")</label><img class="Flags" src='/Images/Flags/@(info.Lang).gif' width='16px' />
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                @TextBox(info, "genxml/lang/genxml/textbox/title", "width='300px' maxlength='250' class='form-control' ")
+            </div>
+            <div class="col-xs-6 col-sm-2">
+                @DropDownList(info, "genxml/dropdownlist/headingstyle", "h1,h2,h3", "H1,H2,H3", " class='form-control' ", "")
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                @CheckBox(info, "genxml/checkbox/hideheading", "ResourceKey:Settings.hideheading", " class='dnnCheckbox'")
+            </div>
+        </div>
+    </div>
+</div>

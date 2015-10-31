@@ -201,4 +201,7 @@
   <data name="themelevel.Text" xml:space="preserve">
     <value>System level templates,Portal level templates,Module Instance level templates</value>
   </data>
+  <data name="undo.Text" xml:space="preserve">
+    <value>Undo</value>
+  </data>
 </root>

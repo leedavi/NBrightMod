@@ -1,0 +1,75 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="xmlupdatedocs" type="hidden" value=""></input>
+
+<div class="row docbuttons">
+    <div class="form dnnForm">
+        <div class="formrow">
+            <button type="button" class="btn btn-sm btn-success fileclick"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.upload")</button>
+            <button id="undodoc" type="button" class="btn btn-sm btn-warning" style="display: none;"><span class="glyphicon glyphicon-minus"></span> @ResourceKey("Edit.undo")</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="row docinput">
+    <div class="form dnnForm">
+        <div class="form-group">
+            <div id="docselectlist" class="col-xs-12" style="display: none;"></div>
+            <div id="doclist" class="col-xs-12">
+
+
+                @{
+                    var doclp = 1;
+                    foreach (XmlNode imgNod in info.XMLDoc.SelectNodes("genxml/docs/genxml"))
+                    {
+                        var docurl = info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/docurl");
+
+                        <div class="row docitem">
+                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/ref", " update='docsave' ")
+                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/filename", " update='docsave' ")
+                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docurl", " update='docsave' ")
+                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docpath", " update='docsave' ")
+                            <div class="form dnnForm">
+                                <div class="form-group">
+                                    <div class="col-xs-3">
+                                        <div><a href="@(docurl)" target="_blank">@info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/filename")</a> </div>
+                                    </div>
+                                    <div class="col-xs-9 col-sm-6">
+                                        <img class="Flags" src='/images/Flags/@(info.Lang).gif' width='16px' />
+                                        @TextBox(info, "genxml/lang/genxml/docs/genxml[" + doclp + "]/textbox/docdesc", " class='form-control' update='doclang' ")
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-sm sortelementUp" docindex="@(doclp)"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-sm sortelementDown" docindex="@(doclp)"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                                    </div>
+                                    <div class="col-xs-1 text-right">
+                                        <button type="button" class="btn btn-sm btn-danger removedoc" docindex="@(doclp)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        doclp += 1;
+                    }
+                }
+
+
+            </div>
+        </div>
+    </div>
+</div>
+

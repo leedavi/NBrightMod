@@ -129,4 +129,10 @@
   <data name="sourcedata.Text" xml:space="preserve">
     <value>Data Source</value>
   </data>
+  <data name="editortype.Text" xml:space="preserve">
+    <value>Editor,Simple Text</value>
+  </data>
+  <data name="hideheading.Text" xml:space="preserve">
+    <value>Hide Heading</value>
+  </data>
 </root>

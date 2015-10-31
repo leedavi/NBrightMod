@@ -1,0 +1,45 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div class="row textinput">
+    @RadioButtonList(info, "genxml/radiobuttonlist/editortype", "0,1", "ResourceKey:Settings.editortype", "", "0")
+    <hr />
+    <div id="simpletexteditor" style="display: none;">
+        <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/simpletext")</textarea>
+    </div>
+    <div id="richtexteditor">
+        @RichTextBox(info, "genxml/lang/genxml/textbox/ckeditor1", "")
+    </div>
+</div>
+
+
+<script>
+
+        if ($("input[type='radio'][name='editortyperadio']:checked").val() == '0') {
+            $('#simpletexteditor').hide();
+            $('#richtexteditor').show();
+        } else {
+            $('#simpletexteditor').show();
+            $('#richtexteditor').hide();
+        }
+        $('input[type="radio"][name="editortyperadio"]').click(function () {
+            if ($(this).val() == '0') {
+                $('#simpletexteditor').hide();
+                $('#richtexteditor').show();
+            } else {
+                $('#simpletexteditor').show();
+                $('#richtexteditor').hide();
+            }
+        });
+
+</script>

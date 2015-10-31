@@ -56,7 +56,9 @@ function NBrightMod_nbxgetCompleted(e) {
         $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent().parent()); });
         $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent().parent()); });
             $('.removeimage').click(function () { removeelement($(this).parent().parent().parent().parent()); });
-            $('#undoimage').click(function () { undoremove('.imagedisplay', '#imagelist'); });
+            $('#undoimage').click(function () { undoremove('.imageitem', '#imagelist'); });
+            $('.removedoc').click(function () { removeelement($(this).parent().parent().parent().parent()); });
+            $('#undodoc').click(function () { undoremove('.docitem', '#doclist'); });
 
         ActivateFileLoader();
 
@@ -157,6 +159,7 @@ function removeelement(elementtoberemoved) {
         $('#recyclebin').append($(elementtoberemoved));
     } else { $(elementtoberemoved).remove(); }
     if ($(elementtoberemoved).hasClass('imageitem')) $('#undoimage').show();
+    if ($(elementtoberemoved).hasClass('docitem')) $('#undodoc').show();
 }
 function undoremove(itemselector, destinationselector) {
     if ($('#recyclebin').length > 0) {
@@ -164,6 +167,7 @@ function undoremove(itemselector, destinationselector) {
     }
     if ($('#recyclebin').children(itemselector).length == 0) {
         if (itemselector == '.imageitem') $('#undoimage').hide();
+        if (itemselector == '.docitem') $('#undodoc').hide();
     }
 }
 

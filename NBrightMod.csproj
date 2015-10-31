@@ -150,10 +150,10 @@
     <None Include="Themes\GoogleMap\default\view.cshtml" />
     <None Include="Themes\GoogleMap\default\viewpageheader.cshtml" />
     <None Include="Themes\HtmlContent\default\editbody.cshtml" />
-    <None Include="Themes\HtmlContent\default\imagelist.cshtml" />
     <None Include="Themes\HtmlContent\default\editfields.cshtml" />
     <None Include="Themes\HtmlContent\default\editlist.cshtml" />
     <None Include="Themes\HtmlContent\default\editpageheader.cshtml" />
+    <None Include="Themes\HtmlContent\default\imagelist.cshtml" />
     <None Include="Themes\HtmlContent\default\imgselectlist.cshtml" />
     <None Include="Themes\HtmlContent\default\settings.cshtml" />
     <None Include="Themes\HtmlContent\default\view.cshtml" />
@@ -166,6 +166,9 @@
     <None Include="Themes\OwlSlider\default\settings.cshtml" />
     <None Include="Themes\OwlSlider\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
+    <None Include="Themes\Shared\docsadmin.cshtml" />
+    <None Include="Themes\Shared\editortextadmin.cshtml" />
+    <None Include="Themes\Shared\headeradmin.cshtml" />
     <None Include="Themes\Shared\imageadmin.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
