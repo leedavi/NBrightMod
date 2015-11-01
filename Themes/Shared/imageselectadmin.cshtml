@@ -1,0 +1,21 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var lp = 1;
+    foreach (NBrightInfo x in Model.List)
+    {
+        <div class="fileselectitem imageselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")" selectorcount="@(lp)">
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?w=320&h=320&src=@x.GetXmlProperty("genxml/hidden/imageurl")" />
+            <div class="overlayicons"><span class="glyphicon glyphicon-ok-sign fileselector@(lp) " style="display: none;"></span></div>
+        </div>
+        lp += 1;
+    }
+}
+

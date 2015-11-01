@@ -117,6 +117,15 @@
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
     <Content Include="Themes\HtmlContent\css\htmlcontent.css" />
+    <Content Include="Themes\HtmlContent\img\Newspaper0.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper1.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper2.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper3.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper4.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper5.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper6.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper7.png" />
+    <Content Include="Themes\HtmlContent\img\Newspaper8.png" />
     <Content Include="Themes\OwlSlider\css\owl.carousel.css" />
     <Content Include="Themes\OwlSlider\js\owl.carousel.min.js" />
     <Content Include="View.ascx">
@@ -149,11 +158,11 @@
     <None Include="Themes\GoogleMap\default\settings.cshtml" />
     <None Include="Themes\GoogleMap\default\view.cshtml" />
     <None Include="Themes\GoogleMap\default\viewpageheader.cshtml" />
+    <None Include="Themes\HtmlContent\default\docselectlist.cshtml" />
     <None Include="Themes\HtmlContent\default\editbody.cshtml" />
     <None Include="Themes\HtmlContent\default\editfields.cshtml" />
     <None Include="Themes\HtmlContent\default\editlist.cshtml" />
     <None Include="Themes\HtmlContent\default\editpageheader.cshtml" />
-    <None Include="Themes\HtmlContent\default\imagelist.cshtml" />
     <None Include="Themes\HtmlContent\default\imgselectlist.cshtml" />
     <None Include="Themes\HtmlContent\default\settings.cshtml" />
     <None Include="Themes\HtmlContent\default\view.cshtml" />
@@ -167,9 +176,11 @@
     <None Include="Themes\OwlSlider\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
     <None Include="Themes\Shared\docsadmin.cshtml" />
+    <None Include="Themes\Shared\docselectadmin.cshtml" />
     <None Include="Themes\Shared\editortextadmin.cshtml" />
     <None Include="Themes\Shared\headeradmin.cshtml" />
     <None Include="Themes\Shared\imageadmin.cshtml" />
+    <None Include="Themes\Shared\imageselectadmin.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>

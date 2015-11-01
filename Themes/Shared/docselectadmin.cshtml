@@ -1,0 +1,24 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+
+<ul id="fileselectlistul" class="selectfiles" >
+    @{
+        var lp = 1;
+        foreach (NBrightInfo x in Model.List)
+        {
+            <li class="fileselectitem" fname="@x.GetXmlProperty("genxml/hidden/filename")" name="@x.GetXmlProperty("genxml/hidden/name")" selectorcount="@(lp)">
+                <div class="filewrapper">@x.GetXmlProperty("genxml/hidden/docurl")
+                    <span class="glyphicon glyphicon-plus fileselector@(lp) allow1selection" style="display: none;" ></span>
+                </div>
+            </li>
+            lp += 1;
+        }
+    }
+</ul>
