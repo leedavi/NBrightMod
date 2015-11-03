@@ -97,8 +97,41 @@
         }
     }
 
+@helper docdisplay(NBrightInfo x)
+{
+var docList = x.XMLDoc.SelectNodes("genxml/docs/genxml");
+if (docList != null)
+{
+    var c = 1;
+    foreach (XmlNode i in docList)
+    {
+        XmlNode docdescnod = x.XMLDoc.SelectSingleNode("genxml/lang/genxml/docs/genxml[" + c + "]/textbox/docdesc");
 
-    @helper headersection(NBrightInfo x)
+        var nbi = new NBrightInfo();
+        nbi.XMLData = i.OuterXml;
+        var displayname = "";
+        if (docdescnod != null)
+        {
+            displayname = docdescnod.InnerText;
+        }
+        if (displayname == "")
+        {
+            displayname = nbi.GetXmlProperty("genxml/hidden/filename");
+        }
+        <div>
+            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=NBrightUpload\@(nbi.GetXmlProperty("genxml/hidden/filename"))'>@(displayname)</a>            
+        </div>
+
+        c += 1;
+
+    }
+}
+}
+
+
+
+
+@helper headersection(NBrightInfo x)
     {
         if ((x.GetXmlProperty("genxml/lang/genxml/textbox/title") != "") && (!x.GetXmlPropertyBool("genxml/checkbox/hideheading")))
         {
@@ -236,6 +269,8 @@
 
                 </div>
                 <div class="clearfix"></div>
+
+                @docdisplay(x)
 
             }
 

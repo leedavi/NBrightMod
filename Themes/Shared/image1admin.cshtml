@@ -1,0 +1,54 @@
+﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="xmlupdateimages" type="hidden" value=""></input>
+
+<div class="row imagebuttons">
+    <div class="form dnnForm">
+        <div class="formrow">
+            <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.upload")</button>
+        </div>
+    </div>
+</div>
+
+    <div class="row imginput">
+        <div class="form dnnForm">
+            <div class="form-group">
+                <div id="captionscheckbox" class="col-xs-12" style="display: none;">
+                    @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " class='dnnCheckbox'")
+                </div>
+                <div id="imageselectlist" class="col-xs-12" style="display: none;"></div>
+                <div id="imagelist" class="col-xs-12">
+
+                    @{
+                        var imglp = 1;
+                            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+
+                            <div class="row imageitem">
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                <div class="form dnnForm">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+

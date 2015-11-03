@@ -177,8 +177,10 @@
     <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
     <None Include="Themes\Shared\docsadmin.cshtml" />
     <None Include="Themes\Shared\docselectadmin.cshtml" />
+    <None Include="Themes\Shared\editlistadmin.cshtml" />
     <None Include="Themes\Shared\editortextadmin.cshtml" />
     <None Include="Themes\Shared\headeradmin.cshtml" />
+    <None Include="Themes\Shared\image1admin.cshtml" />
     <None Include="Themes\Shared\imageadmin.cshtml" />
     <None Include="Themes\Shared\imageselectadmin.cshtml" />
     <None Include="XmlConnector.ashx" />
