@@ -186,6 +186,7 @@ if (docList != null)
                     {
                         @headersection(x)
                         @textsection(x)
+                        @docdisplay(x)
                     }
 
                     @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 1)
@@ -193,14 +194,14 @@ if (docList != null)
                         <div class="newspaper-imgdivfloatleft">@imageindex(x, "1")</div>
                         @headersection(x)
                         @textsection(x)
-
+                        @docdisplay(x)
                     }
                     @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 2)
                     {
                         <div class="newspaper-imgdivfloatright">@imageindex(x, "1")</div>
                         @headersection(x)
                         @textsection(x)
-
+                        @docdisplay(x)
                     }
 
 
@@ -210,6 +211,7 @@ if (docList != null)
                         <div class="newspaper-imgdivfloatright imageclick">@imageindex(x, "2")</div>
                         @headersection(x)
                         @textsection(x)
+                        @docdisplay(x)
                     }
 
                     @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 4)
@@ -224,12 +226,14 @@ if (docList != null)
                         <div class="clearfix"></div>
                         @headersection(x)
                         @textsection(x)
+                        @docdisplay(x)
                     }
 
                     @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 5)
                     {
                         @headersection(x)
                         @textsection(x)
+                        @docdisplay(x)
                         <div class="newspaper-center1">
                             <div class="newspaper-center2">
                                 <div class="newspaper-imgdivbottom">
@@ -246,6 +250,7 @@ if (docList != null)
                         <div class="newspaper-textdivcell">
                             @headersection(x)
                             @textsection(x)
+                            @docdisplay(x)
                         </div>
                     }
                     @if (x.GetXmlPropertyInt("genxml/radiobuttonlist/layout") == 7)
@@ -253,6 +258,7 @@ if (docList != null)
                         <div class="newspaper-textdivcell">
                             @headersection(x)
                             @textsection(x)
+                            @docdisplay(x)
                         </div>
                         <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "vert")</div>
                     }
@@ -263,14 +269,13 @@ if (docList != null)
                         <div class="newspaper-textdivcell">
                             @headersection(x)
                             @textsection(x)
+                            @docdisplay(x)
                         </div>
                         <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "even")</div>
                     }
 
                 </div>
                 <div class="clearfix"></div>
-
-                @docdisplay(x)
 
             }
 

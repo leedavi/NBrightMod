@@ -95,6 +95,8 @@
     <EmbeddedResource Include="App_LocalResources\Edit.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
@@ -145,6 +147,12 @@
   <ItemGroup>
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
+    <None Include="Themes\ContactForm\default\editbody.cshtml" />
+    <None Include="Themes\ContactForm\default\editfields.cshtml" />
+    <None Include="Themes\ContactForm\default\editlist.cshtml" />
+    <None Include="Themes\ContactForm\default\settings.cshtml" />
+    <None Include="Themes\ContactForm\default\view.cshtml" />
+    <None Include="Themes\ContactForm\default\viewpageheader.cshtml" />
     <None Include="Themes\Documents\default\editbody.cshtml" />
     <None Include="Themes\Documents\default\editlist.cshtml" />
     <None Include="Themes\Documents\default\editpageheader.cshtml" />
@@ -190,6 +198,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
+    <Folder Include="Themes\ContactForm\css\" />
+    <Folder Include="Themes\ContactForm\js\" />
     <Folder Include="Themes\Documents\css\" />
     <Folder Include="Themes\Documents\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
