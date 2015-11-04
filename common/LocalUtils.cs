@@ -203,11 +203,14 @@ namespace NBrightMod.common
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
                     razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
-                    Utils.SetCache(cachekey, razorTempl);
-                    var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
-                    if (modCacheList == null) modCacheList = new List<String>();
-                    if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
-                    Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                    if (cacheKey != "") // only cache if we have a key.
+                    {
+                        Utils.SetCache(cachekey, razorTempl);
+                        var modCacheList = (List<String>) Utils.GetCache("nbrightmodcache*" + moduleid);
+                        if (modCacheList == null) modCacheList = new List<String>();
+                        if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
+                        Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                    }
                 }
             }
             return razorTempl;
@@ -232,11 +235,14 @@ namespace NBrightMod.common
                     var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
                     razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
-                    Utils.SetCache(cachekey, razorTempl);
-                    var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
-                    if (modCacheList == null) modCacheList = new List<String>();
-                    if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
-                    Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                    if (cacheKey != "") // only cache if we have a key.
+                    {
+                        Utils.SetCache(cachekey, razorTempl);
+                        var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
+                        if (modCacheList == null) modCacheList = new List<String>();
+                        if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
+                        Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                    }
                 }
             }
             return razorTempl;

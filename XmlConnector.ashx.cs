@@ -158,6 +158,9 @@ namespace Nevoweb.DNN.NBrightMod
                         if (Utils.IsNumeric(itemid)) UpdateDownloadCount(Convert.ToInt32(itemid), fname, 1);
                         Utils.ForceDocDownload(fpath, downloadname, context.Response);
                     break;
+                case "sendemail":
+                        strOut = SendEmail(context);
+                    break;
             }
 
             #endregion
@@ -703,6 +706,99 @@ namespace Nevoweb.DNN.NBrightMod
                 return "ERROR: " + ex.ToString();
             }
         }
+
+        private String SendEmail(HttpContext context)
+        {
+            try
+            {
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+                if (lang == "") lang = _lang;
+                var clienttemplate = ajaxInfo.GetXmlProperty("genxml/hidden/clienttemplate");
+                if (clienttemplate == "") clienttemplate = "clientemail.cshtml";
+                var managertemplate = ajaxInfo.GetXmlProperty("genxml/hidden/managertemplate");
+                if (managertemplate == "") managertemplate = "managertemplate.cshtml";
+                var emailreturnmsg = ajaxInfo.GetXmlProperty("genxml/hidden/emailreturnmsg");
+                var clientemail = ajaxInfo.GetXmlProperty("genxml/textbox/clientemail");
+
+                var strOut = "ERROR - Email Unable to be sent";
+
+                if (Utils.IsNumeric(moduleid))
+                {
+                    var objCtrl = new NBrightDataController();
+
+                    var settings = LocalUtils.GetSettings(moduleid);
+                    var emailstosave = settings.GetXmlProperty("genxml/textbox/emailstosave");
+
+                    // get DB record
+                    var nbi = new NBrightInfo(true);
+                        // get data passed back by ajax
+                        var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+                        // update record with ajax data
+                        nbi.UpdateAjax(strIn);
+                        nbi.ModuleId = Convert.ToInt32(moduleid);
+                        nbi.TypeCode = "EMAILDATA";
+                    if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
+
+                    // do edit field data if a itemid has been selected
+                    var emailbody = LocalUtils.RazorTemplRender(managertemplate, moduleid, "", nbi, _lang);
+
+                    var emailarray = settings.GetXmlProperty("genxml/textbox/emailto").Split(',');
+                    var emailsubject = settings.GetXmlProperty("genxml/textbox/emailsubject");
+                    var emailfrom = settings.GetXmlProperty("genxml/textbox/emailfrom");
+                    var copytoclient = settings.GetXmlPropertyBool("genxml/checkbox/copytoclient");
+
+                    foreach (var email in emailarray)
+                    {
+                        if (!string.IsNullOrEmpty(email.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(email.Trim()))
+                        {
+                            // multiple attachments as csv with "|" seperator
+                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                            strOut = emailreturnmsg;
+                        }
+                    }
+
+                    if (copytoclient)
+                    {
+                        if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(clientemail.Trim()))
+                        {
+                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                        }
+                    }
+
+                    // Delete Extra unrequired email data
+                    if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
+                    {
+                        var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "EMAILDATA", "", " NB1.ModifiedDate");
+                        if (l.Count > Convert.ToInt32(emailstosave))
+                        {
+                            var c = 1;
+                            foreach (var i in l)
+                            {
+                                if (c > Convert.ToInt32(emailstosave))
+                                {
+                                    objCtrl.Delete(i.ItemID);
+                                }
+                                c += 1;
+                            }
+                        }
+                    }
+
+                }
+                return strOut;
+
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
 
         #endregion
 
@@ -1452,6 +1548,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         #endregion
 
+        
 
 
     }

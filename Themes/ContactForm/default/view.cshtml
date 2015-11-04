@@ -13,7 +13,33 @@
     var info = new NBrightInfo();
 }
 
-<div>
-    <label>@ResourceKey("View.name")</label>
-    <div>@TextBox(info, "genxml/textbox/name", "class='form-control'")</div>
+<div id="emailform@(Model.ModuleId)">
+
+    <input id="moduleid" type="hidden" value="@Model.ModuleId"></input>
+    <input id="lang" type="hidden" value="@Model.GetUrlParam("language")"></input>
+    <input id="emailreturnmsg" type="hidden" value="@ResourceKey("View.emailreturnmsg")"></input>
+
+    <div>
+        <label>@ResourceKey("View.name")</label>
+        <div>@TextBox(info, "genxml/textbox/name", "class='form-control'")</div>
+    </div>
+    <div>
+        <label>@ResourceKey("View.email")</label>
+        <div>@TextBox(info, "genxml/textbox/clientemail", "class='form-control'")</div>
+    </div>
+    <div>
+        @DnnLabel("lblmessage", "View.message")
+        <textarea rows="50" id="emailsendermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailsendermsg")</textarea>
+    </div>
+    <div class="buttons">
+        <button id="sendemail@(Model.ModuleId)" type="button">@ResourceKey("View.send")</button>
+    </div>
 </div>
+<div id="emailreturnmsg@(Model.ModuleId)"></div>
+
+
+<script>
+    $('#sendemail@(Model.ModuleId)').click(function () {
+        NBrightMod_nbxget('sendemail', '#emailform@(Model.ModuleId)', '#emailreturnmsg@(Model.ModuleId)');
+    });
+</script>

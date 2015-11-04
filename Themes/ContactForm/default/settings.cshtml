@@ -3,7 +3,7 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -12,36 +12,28 @@
 <input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
 <div>
     <div>
-        @DnnLabel("lblzoom","Settings.zoom")@DropDownList(info,"genxml/dropdownlist/zoom","0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22","0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22","class='form-control'","17")
+        @DnnLabel("lblemailsubject", "Settings.emailsubject")@TextBox(info, "genxml/textbox/emailsubject", "class='form-control' width='300px' ")
     </div>
     <div>
-        @DnnLabel("lblwidth","Settings.width")@TextBox(info,"genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","100%")
+        @DnnLabel("lblemailto","Settings.emailto")@TextBox(info,"genxml/textbox/emailto","class='form-control' width='300px' ")
     </div>
     <div>
-        @DnnLabel("lblheight","Settings.height")@TextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "400px")
+        @DnnLabel("lblemailfrom", "Settings.emailfrom")@TextBox(info, "genxml/textbox/emailfrom", "class='form-control' width='300px' ")
     </div>
     <div>
-        @DnnLabel("lblwidth","Settings.infowidth")@TextBox(info,"genxml/textbox/infowidth","class='form-control' width='100px' maxlength='5' ","160")
+        @DnnLabel("lblemailreceivermsg", "Settings.emailreceivermsg")
+        <textarea rows="50" id="emailreceivermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailreceivermsg")</textarea>
     </div>
     <div>
-        @DnnLabel("lblmaptypecontrol","Settings.maptypecontrol")@CheckBox(info,"genxml/checkbox/maptypecontrol","","",true)
+        @DnnLabel("lblcopytoclient", "Settings.copytoclient")@CheckBox(info, "genxml/checkbox/copytoclient", "", "", true)
     </div>
     <div>
-        @DnnLabel("lblmapzoomcontrol","Settings.mapzoomcontrol")@CheckBox(info,"genxml/checkbox/mapzoomcontrol","","",true)
+        @DnnLabel("lblemailsendermsg", "Settings.emailsendermsg")
+        <textarea rows="50" id="emailsendermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailsendermsg")</textarea>
     </div>
     <div>
-        @DnnLabel("lblmapstreetcontrol","Settings.mapstreetcontrol")@CheckBox(info,"genxml/checkbox/mapstreetcontrol","","",true)
+        @DnnLabel("lblemailstosave", "Settings.emailstosave")@TextBox(info, "genxml/textbox/emailstosave", "class='form-control' width='300px' ","50")
     </div>
-
-
-    <div>
-        @DnnLabel("lbldebugmode","Settings.lbldebugmode")@CheckBox(info,"genxml/checkbox/debugmode","","")
-    </div>
-    <div>
-        Ref: @info.GetXmlProperty("genxml/hidden/modref")        
-    </div>
-    
-
 
 </div>
 

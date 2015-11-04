@@ -8,6 +8,14 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "editlistadmin.cshtml" + info.ModuleId)
 
+@EditCultureSelect("flag-list", "selecteditlistlanguage")
+
+<div class="buttons">
+    <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
+    <button id="savelistdata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
+    <button id="addnew" type="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.addnew")</button>
+</div>
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12">
 		<div class="box">

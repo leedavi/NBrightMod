@@ -117,11 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="bcc.Text" xml:space="preserve">
-    <value>bcc</value>
+  <data name="copytoclient.Text" xml:space="preserve">
+    <value>Send Email Copy to Client</value>
   </data>
-  <data name="email.Text" xml:space="preserve">
-    <value>Email</value>
+  <data name="emailfrom.Text" xml:space="preserve">
+    <value>From Email</value>
   </data>
   <data name="emailreceivermsg.Text" xml:space="preserve">
     <value>You have been contacted</value>
@@ -129,7 +129,13 @@
   <data name="emailsendermsg.Text" xml:space="preserve">
     <value>Your message has been sent</value>
   </data>
-  <data name="fromemail.Text" xml:space="preserve">
-    <value>From Email</value>
+  <data name="emailstosave.Text" xml:space="preserve">
+    <value>Number of Emails to Archive</value>
+  </data>
+  <data name="emailsubject.Text" xml:space="preserve">
+    <value>Email Subject</value>
+  </data>
+  <data name="emailto.Text" xml:space="preserve">
+    <value>Send to Email</value>
   </data>
 </root>
