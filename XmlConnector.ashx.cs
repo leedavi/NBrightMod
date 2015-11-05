@@ -741,7 +741,7 @@ namespace Nevoweb.DNN.NBrightMod
                         // update record with ajax data
                         nbi.UpdateAjax(strIn);
                         nbi.ModuleId = Convert.ToInt32(moduleid);
-                        nbi.TypeCode = "EMAILDATA";
+                        nbi.TypeCode = "NBrightModDATA";
                     if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
 
                     // do edit field data if a itemid has been selected
@@ -773,7 +773,7 @@ namespace Nevoweb.DNN.NBrightMod
                     // Delete Extra unrequired email data
                     if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
                     {
-                        var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "EMAILDATA", "", " NB1.ModifiedDate");
+                        var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", " order by NB1.ModifiedDate");
                         if (l.Count > Convert.ToInt32(emailstosave))
                         {
                             var c = 1;

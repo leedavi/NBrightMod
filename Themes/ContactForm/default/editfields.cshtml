@@ -9,65 +9,21 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-<input id="itemid" type="hidden" value="@info.ItemID" ></input>
-<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
-<input id="lang" type="hidden" value="@info.Lang" ></input>
-
-@EditCultureSelect("flag-list", "selecteditlanguage")
-
 <div class="buttons editdata">
     <button id="return" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span>@ResourceKey("Edit.return")</button>
-    <button id="delete" type="button" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span>@ResourceKey("Edit.delete")</button>
-    <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
 </div>
 
-
-<div class="row">
-<div class="col-xs-12 col-sm-12">
-    <div class="box">
-
-        <div class="formrow">
-            <label>@ResourceKey("Edit.title")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>@TextBox(info, "genxml/lang/genxml/textbox/title")
-                 @CheckBox(info, "genxml/checkbox/hidecaption", "ResourceKey:Edit.hidetitle", "")
-            </div>
-        </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.lat")</label>
-            <div>@TextBox(info, "genxml/textbox/lat", "class='form-control'")</div>
-        </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.lat")</label>
-            <div>@TextBox(info, "genxml/textbox/long", "class='form-control'")</div>
-        </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.infodesc")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>
-                <textarea rows="2" cols="20" id="infodesc" class="form-control" update="lang" type="text" style="height:100px;">@info.GetXmlProperty("genxml/lang/genxml/textbox/infodesc")</textarea>
-            </div>
-        </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.icon")</label>
-            <div>@TextBox(info, "genxml/textbox/icon", "class='form-control'","http://maps.google.com/mapfiles/ms/icons/red-dot.png")</div>
-        </div>
-
-        <div class="formrow">
-            <label>@ResourceKey("Edit.link")</label>
-            @RadioButtonList(info,"genxml/radiobuttonlist/rbllink","0,1,2","ResourceKey:Edit.linktypecsv","","0")
-        </div>
-        <div class="formrow linktext" style="display:none;">
-            <label>@ResourceKey("Edit.linktext")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>@TextBox(info, "genxml/lang/genxml/textbox/linktext", "class='form-control'")</div>
-        </div>
-        <div class="formrow externallink" style="display:none;">
-            <label>@ResourceKey("Edit.linkhref")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>@TextBox(info, "genxml/lang/genxml/textbox/externalhref", "class='form-control'")</div>
-        </div>
-        <div class="formrow internallink" style="display:none;">
-            <label>@ResourceKey("Edit.linktab")</label>
-            <div>@TabSelectList(info,"genxml/dropdownlist/linktab","",true)</div>
-        </div>
-
+<div>
+    <div>
+        <label>@ResourceKey("View.name")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/name")</div>
     </div>
+    <div>
+        <label>@ResourceKey("View.email")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
+    </div>
+    <div>
+        <label>@ResourceKey("View.message")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/emailsendermsg")</div>
     </div>
 </div>

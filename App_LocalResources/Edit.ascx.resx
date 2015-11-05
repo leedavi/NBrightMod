@@ -204,4 +204,10 @@
   <data name="undo.Text" xml:space="preserve">
     <value>Undo</value>
   </data>
+  <data name="uploaddoc.Text" xml:space="preserve">
+    <value>Upload Document</value>
+  </data>
+  <data name="uploadimage.Text" xml:space="preserve">
+    <value>Upload Image</value>
+  </data>
 </root>

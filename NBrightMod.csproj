@@ -147,10 +147,12 @@
   <ItemGroup>
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
+    <None Include="Themes\ContactForm\default\manageremail.cshtml" />
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
     <None Include="Themes\ContactForm\default\editlist.cshtml" />
     <None Include="Themes\ContactForm\default\settings.cshtml" />
+    <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\view.cshtml" />
     <None Include="Themes\ContactForm\default\viewpageheader.cshtml" />
     <None Include="Themes\Documents\default\editbody.cshtml" />

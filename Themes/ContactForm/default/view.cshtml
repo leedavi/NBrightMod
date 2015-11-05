@@ -29,7 +29,7 @@
     </div>
     <div>
         @DnnLabel("lblmessage", "View.message")
-        <textarea rows="50" id="emailsendermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailsendermsg")</textarea>
+        <textarea rows="50" id="emailsendermsg" class="" update="save" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/textbox/emailsendermsg")</textarea>
     </div>
     <div class="buttons">
         <button id="sendemail@(Model.ModuleId)" type="button">@ResourceKey("View.send")</button>

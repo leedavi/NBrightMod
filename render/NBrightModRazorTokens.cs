@@ -115,6 +115,56 @@ namespace NBrightMod.render
             return new RawString(strOut);
         }
 
+        public IEncodedString EditButtons(String displaybuttonlist = "")
+        {
+            var strOut = "<div class='buttons'>";
+            var buttons = displaybuttonlist.Split(',');
+            foreach (var button in buttons)
+            {
+                if (button.ToLower() == "add" || button.ToLower() == "a")
+                {
+                    strOut += "<button id='addnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span> " + ResourceKey("Edit.addnew") + "</button>";
+                }
+                if (button.ToLower() == "savelist" || button.ToLower() == "sl")
+                {
+                    strOut += "<button id='savelistdata' type='button' class='btn btn-success'><span class='glyphicon glyphicon-save'></span> " + ResourceKey("Edit.save") + "</button>";
+                }
+                if (button.ToLower() == "save" || button.ToLower() == "s")
+                {
+                    strOut += "<button id='savedata' type='button' class='btn btn-success'><span class='glyphicon glyphicon-save'></span> " + ResourceKey("Edit.save") + "</button>";
+                }
+                if (button.ToLower() == "delete" || button.ToLower() == "d")
+                {
+                    strOut += "<button id='delete' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span> " + ResourceKey("Edit.delete") + "</button>";
+                }
+                if (button.ToLower() == "return" || button.ToLower() == "r")
+                {
+                    strOut += "<button id='return' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span> " + ResourceKey("Edit.return") + "</button>";
+                }
+                if (button.ToLower() == "exit" || button.ToLower() == "ex")
+                {
+                    strOut += "<button id='exitedit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span> " + ResourceKey("Edit.exit") + "</button>";
+                }
+                if (button.ToLower() == "uploadimage" )
+                {
+                    strOut += "<button type='button' class='btn btn-sm btn-success imageclick'><span class='glyphicon glyphicon-plus'></span> " + ResourceKey("Edit.uploadimage") + "</button>";
+                }
+                if (button.ToLower() == "uploaddoc")
+                {
+                    strOut += "<button type='button' class='btn btn-sm btn-success fileclick'><span class='glyphicon glyphicon-plus'></span> " + ResourceKey("Edit.uploaddoc") + "</button>";
+                }
+                if (button.ToLower() == "undo")
+                {
+                    strOut += "<button id='undodoc' type='button' class='btn btn-sm btn-warning' style='display: none;'><span class='glyphicon glyphicon-minus'></span> " + ResourceKey("Edit.undo") + "</button>";
+                }
+            }
+            strOut += "</div>";
+
+
+            return new RawString(strOut);
+        }
+
+
     }
 
 

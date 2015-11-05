@@ -1,5 +1,11 @@
-<script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+<script src="//cdn.ckeditor.com/4.5.4/standard/ckeditor.js"></script>
 
+<script>
+    $(document).ready(function () {
+        CKEDITOR.plugins.addExternal('colorbutton', '/DesktopModules/NBright/NBrightData/ckeditor/colorbutton/', 'plugin.js');
+    });
+
+</script>
 <!-- NBrightMod specific css and js -->
 <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/NBrightMod.js"></script>
 <link href="/DesktopModules/NBright/NBrightMod/Themes/config/css/NBrightMod.css" rel="stylesheet" />
