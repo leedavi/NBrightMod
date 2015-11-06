@@ -49,8 +49,8 @@
                                             <button type="button" class="btn btn-sm itemdown" itemid="@x.ItemID"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
                                         </div>
                                         <div class="col-xs-3">
-                                                <button type="button" class="btn btn-sm btn-success filelistclick" itemid="@x.ItemID"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.upload")</button>
-                                                <button type="button" class="btn btn-sm btn-danger deleteitemclick" itemid="@x.ItemID"><span class="glyphicon glyphicon-remove"></span>@ResourceKey("Edit.delete")</button>
+                                                <button type="button" class="btn btn-sm btn-success filelistclick" itemid="@x.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.upload")"><span class="glyphicon glyphicon-arrow-up"></span></button>
+                                                <button type="button" class="btn btn-sm btn-danger deleteitemclick" itemid="@x.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.delete")"><span class="glyphicon glyphicon-remove"></span></button>
                                         </div>
                                         <input id="itemid" type="hidden" value="@x.ItemID" />
                                         <input id="moduleid" type="hidden" value="@x.ModuleId" />

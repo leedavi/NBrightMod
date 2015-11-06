@@ -1,4 +1,4 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using System
 @using System.Web.UI.WebControls
@@ -11,15 +11,14 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-
 <div class="row headerinput">
     <div class="form dnnForm">
         <div class="form-group">
             <div class="col-xs-12">
-                <label class="control-label">@ResourceKey("Edit.heading")</label><img class="Flags" src='/Images/Flags/@(info.Lang).gif' width='16px' />
+                <label class="control-label">@ResourceKey("Edit.heading")</label>
             </div>
             <div class="col-xs-12 col-sm-6">
-                @TextBox(info, "genxml/lang/genxml/textbox/title", "width='300px' maxlength='250' class='form-control' ")
+                @NBrightTextBox(info, "genxml/lang/genxml/textbox/title", "width='300px' maxlength='250' ")
             </div>
             <div class="col-xs-6 col-sm-2">
                 @DropDownList(info, "genxml/dropdownlist/headingstyle", "h1,h2,h3", "H1,H2,H3", " class='form-control' ", "")

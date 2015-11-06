@@ -1,4 +1,4 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using NBrightDNN
 
@@ -17,11 +17,11 @@
 
 @EditCultureSelect("flag-list", "selecteditlanguage")
 
+@EditButtons("s,d,r")
 
-@EditButtons("r,d,s")
-
+<div class="panel panel-default"><div class="panel-body">
 @RadioButtonList(info, "genxml/radiobuttonlist/layout", "0,1,2,3,4,5,6,7,8", "<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper0.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper1.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper2.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper3.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper4.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper5.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper6.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper7.png'/>,<img src='/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/img/Newspaper8.png'/>", "class='NewspaperLayout'", "0")
-
+</div></div>
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/headeradmin.cshtml", Model)
 

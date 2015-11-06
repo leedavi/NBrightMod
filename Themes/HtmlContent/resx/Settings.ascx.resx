@@ -123,4 +123,7 @@
   <data name="imgresize.Help" xml:space="preserve">
     <value>Image Resize (px)</value>
   </data>
+  <data name="layout.Text" xml:space="preserve">
+    <value>Layout</value>
+  </data>
 </root>

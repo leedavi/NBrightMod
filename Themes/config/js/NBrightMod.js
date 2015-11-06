@@ -53,12 +53,11 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 
-        $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent().parent()); });
-        $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent().parent()); });
-            $('.removeimage').click(function () { removeelement($(this).parent().parent().parent().parent()); });
-            $('#undoimage').click(function () { undoremove('.imageitem', '#imagelist'); });
-            $('.removedoc').click(function () { removeelement($(this).parent().parent().parent().parent()); });
-            $('#undodoc').click(function () { undoremove('.docitem', '#doclist'); });
+        $('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent()); });
+        $('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent()); });
+        $('.removeelement').click(function () { removeelement($(this).parent().parent().parent()); });
+        $('#undoimage').click(function () { undoremove('.imageitem', '#imagelist'); });
+        $('#undodoc').click(function () { undoremove('.docitem', '#doclist'); });
 
         ActivateFileLoader();
 
@@ -81,23 +80,20 @@ function NBrightMod_nbxgetCompleted(e) {
         // assign event on data return, otherwise the elemet will not be there, so it can't bind the event
         $('.edititem').click(function () {
             $('.processing').show();
-            $('#selecteditemid').val($(this).attr("itemid")); // assign the sleected itemid, so the server knows what item is being edited
+            $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
             $('#displayreturn').val('detail');  // make sure we display the detail
             NBrightMod_nbxget('getdetail', '#selectparams', '#editdata'); // do ajax call to get edit form
         });
-        $('.itemup').click(function () {
-            moveUp($(this).parent().parent().parent().parent());
-        });
-        $('.itemdown').click(function () {
-            moveDown($(this).parent().parent().parent().parent());
-        });
+
+        $('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent()); });
+        $('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent()); });
 
         $('#exitedit').click(function () {
             window.location.href = $('#exiturl').val();
         });
 
         $('#savelistdata').click(function () {
-            NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
+            NBrightMod_nbxget('savelistdata', '#editdatalist > tbody', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         });
 
         $('.selecteditlistlanguage').click(function () {
@@ -125,8 +121,8 @@ function NBrightMod_nbxgetCompleted(e) {
 }
 
 function savedata() {
-    var xmlrtn = $.fn.genxmlajaxitems('#imagelist', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
-    var xmlrtn2 = $.fn.genxmlajaxitems('#doclist', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
     NBrightMod_nbxget('savedata', '#editdata');

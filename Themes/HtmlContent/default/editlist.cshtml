@@ -1,8 +1,14 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
+@{
+    var info = (NBrightInfo)Model.List[0];
+}
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 
+@EditCultureSelect("flag-list", "selecteditlistlanguage")
+
+@EditButtons("a,sl,ex")
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlistadmin.cshtml", Model)

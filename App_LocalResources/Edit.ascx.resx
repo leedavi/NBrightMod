@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="edit.Text" xml:space="preserve">
+    <value>Edit</value>
+  </data>
   <data name="addnew.Text" xml:space="preserve">
     <value>Add New</value>
   </data>
@@ -209,5 +212,32 @@
   </data>
   <data name="uploadimage.Text" xml:space="preserve">
     <value>Upload Image</value>
+  </data>
+  <data name="moveup.Text" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="movedown.Text" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="image.Text" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="file.Text" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="legend.Text" xml:space="preserve">
+    <value>Legend</value>
+  </data>
+  <data name="description.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="width.Text" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="height.Text" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="actions.Text" xml:space="preserve">
+    <value>Actions</value>
   </data>
 </root>

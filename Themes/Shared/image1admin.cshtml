@@ -1,4 +1,4 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using NBrightDNN
 
@@ -10,45 +10,49 @@
 
 <input id="xmlupdateimages" type="hidden" value=""></input>
 
-<div class="row imagebuttons">
-    <div class="form dnnForm">
-        <div class="formrow">
-            <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.upload")</button>
-        </div>
-    </div>
-</div>
+    <div class="imginput panel panel-default">
 
-    <div class="row imginput">
-        <div class="form dnnForm">
-            <div class="form-group">
-                <div id="captionscheckbox" class="col-xs-12" style="display: none;">
+    <div class="panel-heading">
+      <div class="buttons" style="float:right;">
+        <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-arrow-up"></span> @ResourceKey("Edit.upload")</button>
+      </div>
+      <h3 class="panel-title">Image(s)</h3>
+      <div class="clear"></div>
+    </div>
+    <div class="panel-body">
+
+                <div id="captionscheckbox" style="display: none;">
                     @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " class='dnnCheckbox'")
                 </div>
-                <div id="imageselectlist" class="col-xs-12" style="display: none;"></div>
-                <div id="imagelist" class="col-xs-12">
+
+                <div id="imageselectlist" style="display: none;"></div>
+
+                <div id="imagelist" class="table-responsive">
+
+                                <table class="table table-bordered">
+                                <tr>
+                                  <th>@ResourceKey("Edit.image")</th>
+                                  <th>@ResourceKey("Edit.legend")</th>
+                                </tr>
 
                     @{
                         var imglp = 1;
                             var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
 
-                            <div class="row imageitem">
-                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
-                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
-                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
-                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
-                                <div class="form dnnForm">
-                                    <div class="form-group">
-                                        <div class="col-xs-12">
-                                            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                  <tr class="imageitem">
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                  <td><img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" /></td>
+                                  <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
+                                  </tr>
 
                     }
 
+                              </table>
+
                 </div>
-            </div>
-        </div>
     </div>
 
+    </div>

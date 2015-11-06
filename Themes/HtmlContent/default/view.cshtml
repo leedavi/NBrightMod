@@ -165,7 +165,7 @@ if (docList != null)
     }
     @(msg)
 
-    <div>
+    <div class="newspaper-wrapper@(Model.GetSetting("columns"))col">
 
         @foreach (NBrightInfo x in Model.List)
         {
@@ -177,7 +177,6 @@ if (docList != null)
                 {
                     <a href="@x.GetXmlProperty("genxml/editurl")">EDIT</a>
                 }
-
 
                 <div class="newspaper-wrapperdiv">
 
@@ -274,8 +273,8 @@ if (docList != null)
                         <div class="newspaper-imgdivcellright imageclick">@imagedisplay(x, "even")</div>
                     }
 
-                </div>
                 <div class="clearfix"></div>
+                </div>
 
             }
 

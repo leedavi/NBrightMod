@@ -1,4 +1,4 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using System
 @using System.Web.UI.WebControls
@@ -17,8 +17,9 @@
     <div id="simpletexteditor" style="display: none;">
         <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/simpletext")</textarea>
     </div>
-    <div id="richtexteditor">
-        @RichTextBox(info, "genxml/lang/genxml/textbox/ckeditor1", "")
+    <div class="form-group">
+      <div id="richtexteditor">@RichTextBox(info, "genxml/lang/genxml/textbox/ckeditor1", "")</div>
+      <div class="well well-sm"><img src='/Images/Flags/@(info.Lang).gif' width='24px' /></div>
     </div>
 </div>
 
@@ -41,6 +42,5 @@
                 $('#richtexteditor').hide();
             }
         });
-
 
 </script>
