@@ -14,7 +14,6 @@ function NBrightMod_nbxget(cmd, selformdiv, target, selformitemdiv, appendreturn
     }
     else {
         values = $.fn.genxmlajaxitems(selformdiv, selformitemdiv);
-        alert(values);
     }
     var request = $.ajax({ type: "POST",
 		url: cmdupdate,
@@ -35,11 +34,14 @@ function NBrightMod_nbxget(cmd, selformdiv, target, selformitemdiv, appendreturn
 	            cmd: cmd
 	        });
 	    }
-	    $('.processing').hide('slow');
-	});
+	    if ((cmd != 'addselectedfiles') && (cmd != 'replaceselectedfiles')) {
+            $('.processing').hide('slow');
+        }
+    });
 
 	request.fail(function (jqXHR, textStatus) {
 		alert("Request failed: " + textStatus);
+		$('.processing').hide('slow');
 	});
 }
 

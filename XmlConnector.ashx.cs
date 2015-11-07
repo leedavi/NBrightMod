@@ -398,7 +398,6 @@ namespace Nevoweb.DNN.NBrightMod
                         break;
                 }
 
-
                 if (Utils.IsNumeric(selecteditemid))
                 {
                     // do edit field data if a itemid has been selected
@@ -1045,7 +1044,7 @@ namespace Nevoweb.DNN.NBrightMod
                         if (imgResize == 0) imgResize = 800;
                         var imagepath = ResizeImage(imgmappath, modSettings, imgResize);
                         var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
-                        var replaceimages = modSettings.GetXmlPropertyBool("genxml/checkbox/replaceimages");
+                        var replaceimages = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
                         if (replaceimages)
                         {
                             var objCtrl = new NBrightDataController();
@@ -1370,7 +1369,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (File.Exists(docmappath))
                 {
                     var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
-                    var replacedocs = modSettings.GetXmlPropertyBool("genxml/checkbox/replacedocs");
+                    var replacedocs = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
                     if (replacedocs)
                     {
                         var objCtrl = new NBrightDataController();

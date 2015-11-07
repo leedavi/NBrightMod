@@ -6,12 +6,12 @@
 }
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "editlistadmin.cshtml" + info.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", Model.GetSetting("preprocesskey"))
 
 <div class="table-responsive">
     <table id="editdatalist" class="table table-striped">
         <tbody>
-            <tr>
+            <tr fixedsort="true">
                 <th>Image</th>
                 <th>Title</th>
                 <th>Actions</th>

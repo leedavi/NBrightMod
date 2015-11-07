@@ -35,7 +35,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#displayreturn').val('detail');
 
         $('.selecteditlanguage').click(function () {
-            savedata()
+            savedata();
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });
@@ -130,8 +130,9 @@ function savedata() {
 
 function moveUp(item) {
     var prev = item.prev();
-    if (prev.length == 0)
-        return;
+    if (typeof $(item).attr("fixedsort") !== typeof undefined && $(item).attr("fixedsort") !== false) return;
+    if (typeof $(prev).attr("fixedsort") !== typeof undefined && $(prev).attr("fixedsort") !== false) return;
+    if (prev.length == 0) return;
     prev.css('z-index', 999).css('position', 'relative').animate({ top: item.height() }, 1);
     item.css('z-index', 1000).css('position', 'relative').animate({ top: '-' + prev.height() }, 1, function () {
         prev.css('z-index', '').css('top', '').css('position', '');
@@ -141,8 +142,9 @@ function moveUp(item) {
 }
 function moveDown(item) {
     var next = item.next();
-    if (next.length == 0)
-        return;
+    if (typeof $(item).attr("fixedsort") !== typeof undefined && $(item).attr("fixedsort") !== false) return;
+    if (typeof $(next).attr("fixedsort") !== typeof undefined && $(next).attr("fixedsort") !== false) return;
+    if (next.length == 0) return;
     next.css('z-index', 999).css('position', 'relative').animate({ top: '-' + item.height() }, 1);
     item.css('z-index', 1000).css('position', 'relative').animate({ top: next.height() }, 1, function () {
         next.css('z-index', '').css('top', '').css('position', '');
@@ -223,6 +225,7 @@ function ActivateFileLoader() {
 }
 
 function ActivateFileReturn(e) {
+
     if (e.cmd == 'getfolderfiles') {
         $('.fileselectitem').click(function () {
             //if we have a allow1selection class on the file list then one 1 can be selected, so hide all.
@@ -245,7 +248,8 @@ function ActivateFileReturn(e) {
 
     if (e.cmd == 'addselectedfiles' || e.cmd == 'replaceselectedfiles') {
         $('#canceladdfiles').trigger('click');
-        NBrightMod_nbxget('getfiles', '#selectparams', '#filelist');
+        // commented to stop the processing div from hiding to early (not sure why we need this call, so I commented it out)
+        //NBrightMod_nbxget('getfiles', '#selectparams', '#filelist');
     }
     if (e.cmd == 'deleteselectedfiles') {
         $('#selectedfiles').val('');
