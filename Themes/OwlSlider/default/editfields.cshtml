@@ -1,4 +1,4 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using NBrightDNN
 
@@ -15,32 +15,35 @@
 
 @EditCultureSelect("flag-list", "selecteditlanguage")
 
-<div class="buttons">
-    <button id="return" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span>@ResourceKey("Edit.return")</button>
-    <button id="delete" type="button" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span>@ResourceKey("Edit.delete")</button>
-    <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
-</div>
-
+@EditButtons("s,d,r")
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1admin.cshtml", Model)
-
 
 <div class="row">
 <div class="col-xs-12 col-sm-12">
     <div class="box">
         
-        <div class="formrow">
-            <label>@ResourceKey("Edit.title")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div>@TextBox(info, "genxml/lang/genxml/textbox/title")</div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.titleline1")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/title")</div>
         </div>
-        <div class="formrow">
-            <label>@ResourceKey("Edit.infodesc")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-            <div id="richtexteditor">
-                @CheckBox(info, "genxml/checkbox/hidedescription", "ResourceKey:Edit.hidedescription", "True")
-                @RichTextBox(info, "genxml/lang/genxml/textbox/infodesc", "")
-            </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.titleline2")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/title2")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.text")</label>
+            <div>@NBrightTextArea(info, "genxml/lang/genxml/textbox/text", "rows='4' ")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.linktext")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/linktext")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.sitepage")</label>
+            <div>DDL WEBSITE PAGE</div>
         </div>
 
     </div>
-    </div>
+</div>
 </div>

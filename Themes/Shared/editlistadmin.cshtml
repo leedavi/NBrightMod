@@ -3,6 +3,14 @@
 
 @{
     var info = (NBrightInfo)Model.List[0];
+
+    // see if we have defined action buttons from the list template
+    var actionbuttons = "e,ui,su,sd";
+    if (Model.GetSetting("actionbuttons") != "")
+    {
+        actionbuttons = Model.GetSetting("actionbuttons");
+    }
+
 }
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
@@ -36,7 +44,7 @@
                             </div>
                         </td>
                         <td>
-                            @IconButtons(info, "e,ui,su,sd")
+                            @IconButtons(x, actionbuttons)
                             <input id="itemid" type="hidden" value="@x.ItemID"/>
                             <input id="moduleid" type="hidden" value="@x.ModuleId"/>
                             <input id="lang" type="hidden" value="@x.Lang"/>

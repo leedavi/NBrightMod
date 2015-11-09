@@ -169,16 +169,6 @@ function undoremove(itemselector, destinationselector) {
     }
 }
 
-function ShowFileOperation() {
-    $("#editdata").hide();
-    $("#fileoperation").show();
-}
-
-function HideFileOperation() {
-    $("#editdata").show();
-    $("#fileoperation").hide();
-}
-
 
 function ActivateFileLoader() {
 
@@ -190,6 +180,7 @@ function ActivateFileLoader() {
         $('#uploadtype').val("doc");
         $('.fileinput').show();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+        $("#NBrightModModal").appendTo("body");
     });
 
     $('.fileclick').click(function () {
@@ -198,6 +189,7 @@ function ActivateFileLoader() {
         $('#uploadtype').val("doc");
         $('.fileinput').show();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+        $("#NBrightModModal").appendTo("body");
     });
 
     $('.imagelistclick').click(function () {
@@ -207,6 +199,7 @@ function ActivateFileLoader() {
         $('#uploadtype').val("image");
         $('.fileinput').show();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+        $("#NBrightModModal").appendTo("body");
     });
 
     $('.imageclick').click(function () {
@@ -215,10 +208,11 @@ function ActivateFileLoader() {
         $('#uploadtype').val("image");
         $('.fileinput').show();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+        $("#NBrightModModal").appendTo("body");
     });
 
     $('#fileselectlist').change(function () {
-        ShowFileOperation();
+        // may need to do something here to stop display of image and docs when switching.
     });
 
 
@@ -247,7 +241,7 @@ function ActivateFileReturn(e) {
     }
 
     if (e.cmd == 'addselectedfiles' || e.cmd == 'replaceselectedfiles') {
-        $('#canceladdfiles').trigger('click');
+        CancelAddFiles();
         // commented to stop the processing div from hiding to early (not sure why we need this call, so I commented it out)
         //NBrightMod_nbxget('getfiles', '#selectparams', '#filelist');
     }
@@ -302,7 +296,7 @@ function ActivateFileUploadButtons() {
             if (xhr.status != 200) {
                 alert('An error occurred!');
             } else {
-                $('#canceladdfiles').trigger('click');
+                CancelAddFiles();
             }
         };
 
@@ -311,28 +305,26 @@ function ActivateFileUploadButtons() {
 
     });
 
-    $('#canceladdfiles').click(function () {
-        $('#selectedfiles').val('');
-        HideFileOperation();
-        if ($('#displayreturn').val() == 'list') {
-            NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
-        } else {
-            NBrightMod_nbxget('getdetail', '#selectparams', '#editdata'); // do ajax call to get edit form
-        }
-    });
-
     $('#addselectedfiles').click(function () {
         NBrightMod_nbxget('addselectedfiles', '#selectparams', '#filelist');
-        HideFileOperation();
     });
 
     $('#replaceselectedfiles').click(function () {
         NBrightMod_nbxget('replaceselectedfiles', '#selectparams', '#filelist');
-        HideFileOperation();
     });
 
     $('#deleteselectedfiles').click(function () {
         NBrightMod_nbxget('deleteselectedfiles', '#selectparams', '#filelist');
     });
 
+}
+
+function CancelAddFiles() {
+    $('#fileselectclose').trigger('click');
+    $('#selectedfiles').val('');
+    if ($('#displayreturn').val() == 'list') {
+        NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
+    } else {
+        NBrightMod_nbxget('getdetail', '#selectparams', '#editdata'); // do ajax call to get edit form
+    }
 }

@@ -16,11 +16,11 @@
 <div class="docinput panel panel-default">
 
     <div class="panel-heading clearfix">
-      <div class="docbuttons pull-right">
-        <button type="button" class="btn btn-sm btn-success fileclick"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.add")</button>
-        <button id="undodoc" type="button" class="btn btn-sm btn-warning" style="display: none;"><span class="glyphicon glyphicon-minus"></span> @ResourceKey("Edit.undo")</button>
-      </div>
-      <span class="panel-title">@ResourceKey("Edit.documents")</span>
+        
+        @EditButtons("uploaddoc,undodoc", "docbuttons pull-right")
+
+
+        <span class="panel-title">@ResourceKey("Edit.documents")</span>
     </div>
     <div class="panel-body">
 

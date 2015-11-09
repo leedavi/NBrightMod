@@ -3,18 +3,14 @@
 
 @{
     var info = (NBrightInfo)Model.List[0];
+    Model.Settings.Add("actionbuttons", "e,su,sd,di");
 }
-
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
 
 @EditCultureSelect("flag-list", "selecteditlistlanguage")
 
-<div class="buttons">
-        <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
-        <button id="savelistdata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
-        <button id="addnew" type="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.addnew")</button>
-    </div>
+@EditButtons("a,sl,ex")
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlistadmin.cshtml", Model)

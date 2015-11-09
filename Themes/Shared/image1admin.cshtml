@@ -13,9 +13,9 @@
     <div class="imginput panel panel-default">
 
     <div class="panel-heading">
-      <div class="buttons" style="float:right;">
-        <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-arrow-up"></span> @ResourceKey("Edit.upload")</button>
-      </div>
+
+        @EditButtons("uploadimage", "imagebuttons pull-right")
+
       <h3 class="panel-title">Image(s)</h3>
       <div class="clear"></div>
     </div>
@@ -27,9 +27,9 @@
 
                 <div id="imageselectlist" style="display: none;"></div>
 
-                <div id="imagelist" class="table-responsive">
+                <div class="table-responsive">
 
-                                <table class="table table-bordered">
+                                <table id="imagelist" class="table table-bordered">
                                 <tr>
                                   <th>@ResourceKey("Edit.image")</th>
                                   <th>@ResourceKey("Edit.legend")</th>
@@ -40,11 +40,13 @@
                             var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
 
                                   <tr class="imageitem">
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
-                                  <td><img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" /></td>
+                                      <td>
+                                          @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref", " update='imgsave' ")
+                                          @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                          @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                          @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                          <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50"/>
+                                      </td>
                                   <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
                                   </tr>
 
@@ -56,3 +58,7 @@
     </div>
 
     </div>
+
+
+
+

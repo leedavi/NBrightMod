@@ -29,6 +29,38 @@ namespace NBrightMod.common
 
         #region "functions"
 
+        public static String AddNew(String moduleid)
+        {
+            if (!Utils.IsNumeric(moduleid)) moduleid = "-1";
+
+            var objCtrl = new NBrightDataController();
+            var nbi = new NBrightInfo(true);
+            nbi.PortalId = PortalSettings.Current.PortalId;
+            nbi.TypeCode = "NBrightModDATA";
+            nbi.ModuleId = Convert.ToInt32(moduleid);
+            nbi.ItemID = -1;
+            nbi.GUIDKey = "";
+            var itemId = objCtrl.Update(nbi);
+            nbi.ItemID = itemId;
+
+            foreach (var lang in DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId))
+            {
+                var nbi2 = new NBrightInfo(true);
+                nbi2.PortalId = PortalSettings.Current.PortalId;
+                nbi2.TypeCode = "NBrightModDATALANG";
+                nbi2.ModuleId = Convert.ToInt32(moduleid);
+                nbi2.ItemID = -1;
+                nbi2.Lang = lang;
+                nbi2.ParentItemId = itemId;
+                nbi2.GUIDKey = "";
+                nbi2.ItemID = objCtrl.Update(nbi2);
+            }
+
+            LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+
+            return nbi.ItemID.ToString("");
+        }
+
         public static String GetTemplateData(String templatename, String lang, Dictionary<String, String> settings = null)
         {
             var themeFolder = "config";

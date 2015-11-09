@@ -240,4 +240,7 @@
   <data name="actions.Text" xml:space="preserve">
     <value>Actions</value>
   </data>
+  <data name="browse.Text" xml:space="preserve">
+    <value>Browse</value>
+  </data>
 </root>

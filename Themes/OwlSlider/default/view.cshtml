@@ -22,12 +22,11 @@
 @(msg) 
 
 <div id="@(divid)" class="owl-carousel">
-
     
     @foreach (NBrightInfo x in Model.List)
         {
         var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
-        <div class="item">
+        <div class="slider-item">
             @if (imageurl != "")
             {
                 var width = Model.GetSetting("width");
@@ -35,13 +34,18 @@
                 var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
                 <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)"/>
             }
-            @if (!x.GetXmlPropertyBool("genxml/checkbox/hidedescription"))
-            {
-            <span class="owl-carousel-caption">@HtmlOf(x, "genxml/lang/genxml/textbox/infodesc")</span>
-            }
+            <div class="slider-caption">
+              <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
+              <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+              <p>@BreakOf(x, "genxml/lang/genxml/textbox/text")</p>
+              @if (info.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "") {
+              <a href="#" class="bigbutton">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
+              }
+            </div>
         </div>
         }
-    </div>
+
+</div>
 @if (Model.List.Count > 1)
 {
     <script type="text/javascript">
@@ -59,6 +63,7 @@
             });
 
         });
+
     </script>
 }
 else

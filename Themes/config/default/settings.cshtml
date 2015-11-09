@@ -37,6 +37,13 @@
                 @DnnLabel("lblSourceData", "Settings.sourcedata")
                 @NBrightModSelectList(info, "genxml/dropdownlist/datasourceref", " ")
             </div>
+            <div>
+                @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+                @{
+                    var settinguploadfolder = "images" + info.ModuleId.ToString("");
+                }
+                @TextBox(info, "genxml/textbox/settinguploadfolder","", settinguploadfolder)
+            </div>
         </div>
         <div class="buttons importdata">
             <button id="import" type="button" class="dnnSecondaryAction">@ResourceKey("Edit.import")</button>
@@ -52,24 +59,39 @@
     <div>
         Ref: @info.GetXmlProperty("genxml/hidden/modref")
     </div>
+    <div>
+        <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
+    </div>
 
-    <script>
-        $(document).ready(function () {
+        <script>
+            $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
 
-            @if (info.GetXmlProperty("genxml/dropdownlist/themefolder") != "")
+            $(document).ready(function () {
+
+                @if (info.GetXmlProperty("genxml/dropdownlist/themefolder") != "")
             {
                 @:NBrightMod_nbxget('gettheme', '#themedata', '#settingsdata');
-            }
-
-            $('a[id*="_cmdUpdate"]').click(function() {
-                NBrightMod_nbxget('savesettings', '#nbrightmodsettings');
+                            }
+                $('a[id*="_cmdUpdate"]').click(function () {
+                    NBrightMod_nbxget('savesettings', '#nbrightmodsettings');
+                });
+                $('#resetsettings').click(function () {
+                    NBrightMod_nbxget('resetsettings', '#nbrightmodsettings');                    
+                });
+                $('#themefolder').change(function () {
+                    NBrightMod_nbxget('savetheme', '#themedata');
+                });
             });
-            $('#themefolder').change(function() {
-                NBrightMod_nbxget('savetheme', '#themedata');
-            });
-        });
 
-    </script>
+            function NBrightMod_nbxgetCompleted(e) {
 
-</div>
+                if (e.cmd == 'resetsettings') {
+                    location.reload();
+                }
+            };
+
+
+        </script>
+
+    </div>
 

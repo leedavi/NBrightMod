@@ -16,11 +16,10 @@
     <div class="imginput panel panel-default">
 
     <div class="panel-heading clearfix">
-      <div class="imagebuttons pull-right">
-        <button type="button" class="btn btn-sm btn-success imageclick"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.add")</button>
-        <button id="undoimage" type="button" class="btn btn-sm btn-warning" style="display: none;"><span class="glyphicon glyphicon-minus"></span> @ResourceKey("Edit.undo")</button>
-      </div>
-      <span class="panel-title">@ResourceKey("Edit.images")</span>
+
+        @EditButtons("uploadimage,undoimage", "imagebuttons pull-right")
+
+        <span class="panel-title">@ResourceKey("Edit.images")</span>
     </div>
     <div class="panel-body">
 

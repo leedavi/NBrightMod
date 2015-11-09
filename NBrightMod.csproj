@@ -100,11 +100,19 @@
     <EmbeddedResource Include="Themes\Documents\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\FancyboxGallery\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\HtmlContent\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\SimpleArticlesSat\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\SimpleArticles\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\SimpleArticles\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\SimpleArticles\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Settings.ascx">
@@ -118,6 +126,14 @@
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
+    <Content Include="Themes\FancyboxGallery\css\jquery.fancybox.css" />
+    <Content Include="Themes\FancyboxGallery\img\blank.gif" />
+    <Content Include="Themes\FancyboxGallery\img\fancybox_loading%402x.gif" />
+    <Content Include="Themes\FancyboxGallery\img\fancybox_loading.gif" />
+    <Content Include="Themes\FancyboxGallery\img\fancybox_overlay.png" />
+    <Content Include="Themes\FancyboxGallery\img\fancybox_sprite%402x.png" />
+    <Content Include="Themes\FancyboxGallery\img\fancybox_sprite.png" />
+    <Content Include="Themes\FancyboxGallery\js\jquery.fancybox.pack.js" />
     <Content Include="Themes\HtmlContent\css\htmlcontent.css" />
     <Content Include="Themes\HtmlContent\img\Newspaper0.png" />
     <Content Include="Themes\HtmlContent\img\Newspaper1.png" />
@@ -162,6 +178,14 @@
     <None Include="Themes\Documents\default\settings.cshtml" />
     <None Include="Themes\Documents\default\view.cshtml" />
     <None Include="Themes\Documents\default\viewpageheader.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\editbody.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\editfields.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\editlist.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\editpageheader.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\imgselectlist.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\settings.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\view.cshtml" />
+    <None Include="Themes\FancyboxGallery\default\viewpageheader.cshtml" />
     <None Include="Themes\GoogleMap\default\editbody.cshtml" />
     <None Include="Themes\GoogleMap\default\editfields.cshtml" />
     <None Include="Themes\GoogleMap\default\editlist.cshtml" />
@@ -196,6 +220,22 @@
     <None Include="Themes\Shared\imageadmin.cshtml" />
     <None Include="Themes\Shared\imageselect1admin.cshtml" />
     <None Include="Themes\Shared\imageselectadmin.cshtml" />
+    <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
+    <None Include="Themes\SimpleArticlesSat\default\viewpageheader.cshtml" />
+    <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
+    <None Include="Themes\SimpleArticles\default\editfields.cshtml" />
+    <None Include="Themes\SimpleArticles\default\editlist.cshtml" />
+    <None Include="Themes\SimpleArticles\default\editpageheader.cshtml" />
+    <None Include="Themes\SimpleArticles\default\imgselectlist.cshtml" />
+    <None Include="Themes\SimpleArticles\default\settings.cshtml" />
+    <None Include="Themes\SimpleArticles\default\view.cshtml" />
+    <None Include="Themes\SimpleArticles\default\viewpageheader.cshtml" />
+    <None Include="Themes\SocialLinks\default\editbody.cshtml" />
+    <None Include="Themes\SocialLinks\default\editfields.cshtml" />
+    <None Include="Themes\SocialLinks\default\editlist.cshtml" />
+    <None Include="Themes\SocialLinks\default\settings.cshtml" />
+    <None Include="Themes\SocialLinks\default\view.cshtml" />
+    <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>

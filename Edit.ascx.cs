@@ -52,6 +52,24 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Page.IsPostBack == false)
                 {
                     var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
+
+                    #region "Single Page Edit"
+                    // if we have a singlepageedit theme then create/set the record itemid
+                    if (settings.GetXmlPropertyBool("genxml/hidden/singlepageedit"))
+                    {
+                        var singlepageitemid = settings.GetXmlProperty("genxml/hidden/singlepageitemid");
+                        if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""));
+                        if (Utils.IsNumeric(singlepageitemid))
+                        {
+                            settings.SetXmlProperty("genxml/hidden/singlepageitemid", singlepageitemid);
+                            var objCtrl = new NBrightDataController();
+                            objCtrl.Update(settings);
+                        }
+
+                    }
+
+                    #endregion
+
                     var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
                     var lit = new Literal();
                     lit.Text = strOut;

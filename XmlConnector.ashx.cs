@@ -76,6 +76,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "savesettings":
                     if (LocalUtils.CheckRights()) strOut = SaveSettings(context);
                     break;
+                case "resetsettings":
+                    if (LocalUtils.CheckRights()) strOut = ResetSettings(context);
+                    break;
                 case "getdetail":
                     strOut = GetData(context);
                     break;
@@ -248,6 +251,7 @@ namespace Nevoweb.DNN.NBrightMod
                     var nbi = LocalUtils.GetSettings(moduleid);
                     if (nbi.ModuleId == 0) // new setting record
                     {
+                        nbi.SetXmlProperty("genxml/textbox/uploadfolder", "images" + moduleid);
                         nbi = CreateSettingsInfo(moduleid,nbi);
                     }
                     // get data passed back by ajax
@@ -272,6 +276,23 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.GetXmlProperty("genxml/hidden/modref") == "") nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
                     if (nbi.TextData == "") nbi.TextData = "NBrightMod";
+
+                    // change for module upload folder (default to module specific)
+                    var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/settinguploadfolder");
+                    if (settingUploadFolder == "")
+                    {
+                        settingUploadFolder = "images" + moduleid;
+                        nbi.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
+                    }
+                    var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
+                    var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
+                    Utils.CreateFolder(uploadFolderMapPath);
+                    nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
+                    nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+
+
+
+                    // save settings
                     objCtrl.Update(nbi);
 
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
@@ -279,6 +300,33 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 return "";
 
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
+        private String ResetSettings(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
+                {
+                    // get DB record
+                    var nbi = LocalUtils.GetSettings(moduleid);
+                    if (nbi.ItemID > 0) objCtrl.Delete(nbi.ItemID);
+                    LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                }
+                return "";
             }
             catch (Exception ex)
             {
@@ -328,9 +376,16 @@ namespace Nevoweb.DNN.NBrightMod
             var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
             var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
-            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload";
-            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload";
+
+            var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/uploadfolder");
+            if (settingUploadFolder == "") settingUploadFolder = "images" + moduleid;
+            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
+            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
+
+            var uploadDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
+            var uploadDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
+            Utils.CreateFolder(uploadDocFolderMapPath);
 
             var objCtrl = new NBrightDataController();
             nbi = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
@@ -346,9 +401,11 @@ namespace Nevoweb.DNN.NBrightMod
             //rebuild xml
             nbi.ModuleId = Convert.ToInt32(moduleid);
             nbi.SetXmlProperty("genxml/tempfolder", tempFolder);
-            nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
             nbi.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
+            nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
             nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+            nbi.SetXmlProperty("genxml/uploaddocfolder", uploadDocFolder);
+            nbi.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
             nbi.GUIDKey = Utils.GetUniqueKey(10);
             nbi.SetXmlProperty("genxml/hidden/modref", nbi.GUIDKey);
             return nbi;
@@ -431,34 +488,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         private String AddNew(String moduleid)
         {
-            if (!Utils.IsNumeric(moduleid)) moduleid = "-1";
-
-            var objCtrl = new NBrightDataController();
-            var nbi = new NBrightInfo(true);
-            nbi.PortalId = PortalSettings.Current.PortalId;
-            nbi.TypeCode = "NBrightModDATA";
-            nbi.ModuleId = Convert.ToInt32(moduleid);
-            nbi.ItemID = -1;
-            nbi.GUIDKey = "";
-            var itemId = objCtrl.Update(nbi);
-            nbi.ItemID = itemId;
-
-            foreach (var lang in DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId))
-            {
-                var nbi2 = new NBrightInfo(true);
-                nbi2.PortalId = PortalSettings.Current.PortalId;
-                nbi2.TypeCode = "NBrightModDATALANG";
-                nbi2.ModuleId = Convert.ToInt32(moduleid);
-                nbi2.ItemID = -1;
-                nbi2.Lang = lang;
-                nbi2.ParentItemId = itemId;
-                nbi2.GUIDKey = "";
-                nbi2.ItemID = objCtrl.Update(nbi2);
-            }
-
-            LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
-
-            return nbi.ItemID.ToString("");
+            return LocalUtils.AddNew(moduleid);
         }
 
         private String SaveData(HttpContext context)
@@ -1043,6 +1073,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var imgResize = modSettings.GetXmlPropertyInt("genxml/textbox/imgresize");
                         if (imgResize == 0) imgResize = 800;
                         var imagepath = ResizeImage(imgmappath, modSettings, imgResize);
+
                         var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
                         var replaceimages = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
                         if (replaceimages)
@@ -1235,7 +1266,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (clearCache) LocalUtils.RazorClearCache(moduleid);
 
                 var modSettings = LocalUtils.GetSettings(moduleid);
-                var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
+                var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
                 var allowedfiletypes = modSettings.GetXmlProperty("genxml/textbox/allowedfiletypes");
                 if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
@@ -1266,7 +1297,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 foreach (var f in files)
                 {
-                    var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(f.FullName);
+                    var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(f.FullName);
                     var docref = Path.GetFileNameWithoutExtension(f.Name).Replace(" ", "-");
                     var nbi = new NBrightInfo(true);
                     nbi.SetXmlProperty("genxml/hidden/filename", f.Name);
@@ -1529,7 +1560,7 @@ namespace Nevoweb.DNN.NBrightMod
             for (int i = 0; i < context.Request.Files.Count; i++)
             {
                 var file = context.Request.Files[i];
-                var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
+                var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
                 var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
                 if (File.Exists(fullfilename)) File.Delete(fullfilename);

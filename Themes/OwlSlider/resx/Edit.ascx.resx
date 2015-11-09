@@ -117,37 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lat.Text" xml:space="preserve">
-    <value>Latitude</value>
+  <data name="titleline1.Text" xml:space="preserve">
+    <value>Titre ligne 1</value>
   </data>
-  <data name="long.Text" xml:space="preserve">
-    <value>Longitude</value>
+  <data name="titleline2.Text" xml:space="preserve">
+    <value>Titre ligne 2</value>
   </data>
-  <data name="hidetitle.Text" xml:space="preserve">
-    <value>Hide Caption</value>
-  </data>
-  <data name="link.Text" xml:space="preserve">
-    <value>Link</value>
-  </data>
-  <data name="linkhref.Text" xml:space="preserve">
-    <value>Link to external url</value>
-  </data>
-  <data name="linktab.Text" xml:space="preserve">
-    <value>Link to internal page</value>
+  <data name="text.Text" xml:space="preserve">
+    <value>Texte</value>
   </data>
   <data name="linktext.Text" xml:space="preserve">
-    <value>Link Text</value>
+    <value>Texte du lien</value>
   </data>
-  <data name="linktypecsv.Text" xml:space="preserve">
-    <value>None,External,Internal</value>
-  </data>
-  <data name="title.Text" xml:space="preserve">
-    <value>Title</value>
-  </data>
-  <data name="infodesc.Text" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="hidedescription.Text" xml:space="preserve">
-    <value>Hide Description</value>
+  <data name="sitepage.Text" xml:space="preserve">
+    <value>Page du site</value>
   </data>
 </root>
