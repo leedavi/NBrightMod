@@ -5,8 +5,12 @@ $(document).ready(function () {
     $('#editlang').val($('#selectparams #lang').val());
 
     // get list of records via ajax:  NBrightMod_nbxget({command}, {div of data passed to server}, {return html to this div} )
-    NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
-
+    // If we only have a single page edit then the selectitemid param will be set, so display the detail.
+    if ($('#selecteditemid').val() == "") {
+        NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
+    } else {
+        NBrightMod_nbxget('getdetail', '#selectparams', '#editdata');
+    }
     // Attach file upload button events
     ActivateFileUploadButtons();
 
@@ -47,6 +51,10 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#return').click(function() {
             $('#selecteditemid').val('');
             NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
+        });
+
+        $('#exitedit').click(function () {
+            window.location.href = $('#exiturl').val();
         });
 
         $('#delete').click(function() {
@@ -110,7 +118,7 @@ function NBrightMod_nbxgetCompleted(e) {
         });
 
         $('.deleteitemclick').click(function () {
-            $('#selecteditemid').val($(this).attr("itemid")); // assign the sleected itemid, so the server knows what item is being edited
+            $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 

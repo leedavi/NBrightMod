@@ -23,11 +23,6 @@
     <input id="uploadtype" type="hidden" value="" /> <!-- DOC or IMAGE, so file upload operation is correct -->
 </div>
 
-<div>
-    @Model.GetSetting("singlepageedit").ToLower()
-    @Model.GetSetting("singlepageitemid")
-</div>
-
 <!-- hold url to exit edit and settings page -->
 @{
     var tabid = Model.GetUrlParam("tabid");

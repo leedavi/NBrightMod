@@ -52,20 +52,46 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Page.IsPostBack == false)
                 {
                     var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
+                    var objCtrl = new NBrightDataController();
 
                     #region "Single Page Edit"
+                    // if we don;t have a editlist.cshtml, then it's a single page edit, so set the flag, otherwise cancel flag.
+                    var oldsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                    var listtemplate = LocalUtils.GetTemplateData("editlist.cshtml", Utils.GetCurrentCulture(), settings.ToDictionary());
+                    if (listtemplate == "")
+                        settings.SetXmlProperty("genxml/hidden/singlepageedit", "true");
+                    else
+                        settings.SetXmlProperty("genxml/hidden/singlepageedit", "false");
+
+                    var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+
+                    if (newsinglepageflag != oldsinglepageflag)
+                    {
+                        settings.SetXmlProperty("genxml/hidden/singlepageitemid", "");
+                        if (newsinglepageflag)
+                        {
+                            // check to see if we have existing record, if so use the first.
+                            var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
+                            if (l.Any())
+                            {
+                                var firstnbi = l.First();
+                                settings.SetXmlProperty("genxml/hidden/singlepageitemid", firstnbi.ItemID.ToString(""));
+                            }
+                        }
+                        // change in flag so need to save to DB
+                        objCtrl.Update(settings);
+                    }
+
                     // if we have a singlepageedit theme then create/set the record itemid
-                    if (settings.GetXmlPropertyBool("genxml/hidden/singlepageedit"))
+                    if (newsinglepageflag)
                     {
                         var singlepageitemid = settings.GetXmlProperty("genxml/hidden/singlepageitemid");
                         if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""));
                         if (Utils.IsNumeric(singlepageitemid))
                         {
                             settings.SetXmlProperty("genxml/hidden/singlepageitemid", singlepageitemid);
-                            var objCtrl = new NBrightDataController();
                             objCtrl.Update(settings);
                         }
-
                     }
 
                     #endregion

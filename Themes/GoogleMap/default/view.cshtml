@@ -30,13 +30,13 @@
     var info = (NBrightInfo)Model.List.First();
     var modid = info.ModuleId.ToString("");
     var lat = info.GetXmlProperty("genxml/textbox/lat");
-    var long = info.GetXmlProperty("genxml/textbox/long");
+    var longitude = info.GetXmlProperty("genxml/textbox/long");
 }
 
 <script language="javascript" type="text/javascript">
 function initialize() {
 
-  var myLatlng = new google.maps.LatLng(@(lat),@(long));
+  var myLatlng = new google.maps.LatLng(@(lat),@(longitude));
   var mapOptions = {
     zoom: @Model.GetSetting("zoom"),
     center: myLatlng,
@@ -56,6 +56,6 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
-</script>s
+</script>
 
 <div id="map-canvas" style="position:relative;width:@(mapwidth);height:@(mapheight);"></div>
