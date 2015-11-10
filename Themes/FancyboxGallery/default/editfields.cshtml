@@ -1,9 +1,9 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -15,14 +15,9 @@
 
 @EditCultureSelect("flag-list", "selecteditlanguage")
 
-<div class="buttons">
-    <button id="return" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span>@ResourceKey("Edit.return")</button>
-    <button id="delete" type="button" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span>@ResourceKey("Edit.delete")</button>
-    <button id="savedata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
-</div>
+@EditButtons("s,d,r")
 
-
-@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1admin.cshtml", Model)
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1-shared.cshtml", Model)
 
 
 <div class="row">

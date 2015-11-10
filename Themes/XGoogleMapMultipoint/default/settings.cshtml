@@ -21,6 +21,9 @@
         @DnnLabel("lblheight","Settings.height")@TextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "400px")
     </div>
     <div>
+        @DnnLabel("lblwidth","Settings.infowidth")@TextBox(info,"genxml/textbox/infowidth","class='form-control' width='100px' maxlength='5' ","160")
+    </div>
+    <div>
         @DnnLabel("lblmaptypecontrol","Settings.maptypecontrol")@CheckBox(info,"genxml/checkbox/maptypecontrol","","",true)
     </div>
     <div>
@@ -29,5 +32,16 @@
     <div>
         @DnnLabel("lblmapstreetcontrol","Settings.mapstreetcontrol")@CheckBox(info,"genxml/checkbox/mapstreetcontrol","","",true)
     </div>
+
+
+    <div>
+        @DnnLabel("lbldebugmode","Settings.lbldebugmode")@CheckBox(info,"genxml/checkbox/debugmode","","")
+    </div>
+    <div>
+        Ref: @info.GetXmlProperty("genxml/hidden/modref")        
+    </div>
+    
+
+
 </div>
 

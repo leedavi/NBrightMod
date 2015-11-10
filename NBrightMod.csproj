@@ -113,6 +113,7 @@
     <EmbeddedResource Include="Themes\SimpleArticles\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\SimpleArticles\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\XGoogleMapMultipoint\resx\Settings.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Settings.ascx">
@@ -209,17 +210,19 @@
     <None Include="Themes\OwlSlider\default\settings.cshtml" />
     <None Include="Themes\OwlSlider\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\viewpageheader.cshtml" />
-    <None Include="Themes\Shared\docsadmin.cshtml" />
-    <None Include="Themes\Shared\docselect1admin.cshtml" />
-    <None Include="Themes\Shared\docselectadmin.cshtml" />
-    <None Include="Themes\Shared\editbodyadmin.cshtml" />
-    <None Include="Themes\Shared\editlistadmin.cshtml" />
-    <None Include="Themes\Shared\editortextadmin.cshtml" />
-    <None Include="Themes\Shared\headeradmin.cshtml" />
-    <None Include="Themes\Shared\image1admin.cshtml" />
-    <None Include="Themes\Shared\imageadmin.cshtml" />
-    <None Include="Themes\Shared\imageselect1admin.cshtml" />
-    <None Include="Themes\Shared\imageselectadmin.cshtml" />
+    <None Include="Themes\Shared\docs-shared.cshtml" />
+    <None Include="Themes\Shared\docs1-shared.cshtml" />
+    <None Include="Themes\Shared\docselect-shared.cshtml" />
+    <None Include="Themes\Shared\docselect1-shared.cshtml" />
+    <None Include="Themes\Shared\editbody-shared.cshtml" />
+    <None Include="Themes\Shared\editlist-shared.cshtml" />
+    <None Include="Themes\Shared\editortext-shared.cshtml" />
+    <None Include="Themes\Shared\editpageheader-shared.cshtml" />
+    <None Include="Themes\Shared\header-shared.cshtml" />
+    <None Include="Themes\Shared\image-shared.cshtml" />
+    <None Include="Themes\Shared\image1-shared.cshtml" />
+    <None Include="Themes\Shared\imageselect-shared.cshtml" />
+    <None Include="Themes\Shared\imageselect1-shared.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\viewpageheader.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
@@ -236,6 +239,12 @@
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\editbody.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\editfields.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\editlist.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\settings.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\view.cshtml" />
+    <None Include="Themes\XGoogleMapMultipoint\default\viewpageheader.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>

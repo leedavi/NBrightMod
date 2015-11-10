@@ -4,12 +4,8 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
 
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + info.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + Model.ModuleId)
 
 @{
     var msg = "";
@@ -23,23 +19,23 @@
 
 <div id="@(divid)" class="owl-carousel">
     
-    @foreach (NBrightInfo x in Model.List)
+    @foreach (NBrightInfo infoitem in Model.List)
         {
-        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
         <div class="slider-item">
             @if (imageurl != "")
             {
                 var width = Model.GetSetting("width");
                 var height = Model.GetSetting("height");
-                var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
                 <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)"/>
             }
             <div class="slider-caption">
-              <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
-              <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
-              <p>@BreakOf(x, "genxml/lang/genxml/textbox/text")</p>
-              @if (info.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "") {
-              <a href="#" class="bigbutton">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
+              <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
+              <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+              <p>@BreakOf(infoitem, "genxml/lang/genxml/textbox/text")</p>
+              @if (infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "") {
+              <a href="#" class="bigbutton">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
               }
             </div>
         </div>
@@ -63,7 +59,6 @@
             });
 
         });
-
     </script>
 }
 else

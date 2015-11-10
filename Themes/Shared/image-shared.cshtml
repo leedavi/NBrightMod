@@ -1,0 +1,79 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="xmlupdateimages" type="hidden" value=""></input>
+
+    <div class="imginput panel panel-default">
+
+    <div class="panel-heading clearfix">
+	
+	@EditButtons("uploadimage,undoimage", "imagebuttons pull-right")
+
+	<span class="panel-title">@ResourceKey("Edit.images")</span>
+    </div>
+    <div class="panel-body">
+
+                <div id="captionscheckbox" style="display: none;">
+                  @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " class='dnnCheckbox'")
+                </div>
+
+                <div id="imageselectlist" style="display: none;"></div>
+
+                <div class="table-responsive">
+
+                    <table id="imagelist" class="table">
+                        <tbody>
+                                <tr>
+                                  <th>@ResourceKey("Edit.image")</th>
+                                  <th>@ResourceKey("Edit.alternativetext")</th>
+                                  <th>@ResourceKey("Edit.width")</th>
+                                  <th>@ResourceKey("Edit.height")</th>
+                                  <th>@ResourceKey("Edit.actions")</th>
+                                </tr>
+
+                    @{
+                        var imglp = 1;
+                        foreach (XmlNode imgNod in info.XMLDoc.SelectNodes("genxml/imgs/genxml"))
+                        {
+                            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+
+                                  <tr class="imageitem">
+                                  <td>
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                								  <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" />
+                								  </td>
+                                  <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
+                                  <td>@NBrightTextBox(info, "genxml/textbox/imgwidth", " update='imgsave' style='width:60px;' ","150")</td>
+                                  <td>@NBrightTextBox(info, "genxml/textbox/imgheight", " update='imgsave' style='width:60px;' ","0")</td>
+                                  <td>@IconButtons(info, "de,su,sd")</td>
+                                  </tr>
+
+                            imglp += 1;
+                        }
+                    }
+                        </tbody>
+                                </table>
+
+                </div>
+    </div>
+
+    </div>
+
+<script>
+
+$('[data-tooltip="tooltip"]').tooltip();
+
+</script>

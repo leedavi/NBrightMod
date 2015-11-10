@@ -45,42 +45,40 @@
 
 <!-- Modal File operation popup -->
 <div id="NBrightModModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
 
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">@ResourceKey("Edit.filemanager")</h4>
             </div>
             <div class="modal-body">
 
                 <div id="fileoperation">
                     <div class="buttons editdata">
-                        <div style="float: right;">
-                            <button id="uploadfiles" type="button" class="btn btn-success fileupload-button"><span class="glyphicon glyphicon-arrow-up"></span> @ResourceKey("Edit.upload")</button>
-                        </div>
-                        @if (Model.GetSetting("replacefiles") == "true")
-                        {
-                            <button id="replaceselectedfiles" type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
-                        }
-                        else
-                        {
-                            <button id="addselectedfiles" type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
-                        }
-                        <button id="deleteselectedfiles" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> @ResourceKey("Edit.deleteselected")</button>
+                      <button id="uploadfiles" type="button" class="btn btn-success fileupload-button"><span class="glyphicon glyphicon-arrow-up"></span> @ResourceKey("Edit.upload")</button>
+                      <button id="deleteselectedfiles" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> @ResourceKey("Edit.deleteselected")</button>
                     </div>
                     <div class="hiddenfile" style="display: none;">
-                        <input type="file" id="fileupload" name="files[]" multiple />
+                      <input type="file" id="fileupload" name="files[]" multiple />
                     </div>
                     <div class="fileinput">
-                        <div id="fileselectlist"></div>
+                      <div id="fileselectlist"></div>
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button id="fileselectclose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="fileselectclose" type="button" class="btn btn-default" data-dismiss="modal">@ResourceKey("Edit.close")</button>
+                @if (Model.GetSetting("replacefiles") == "true")
+                {
+                  <button id="replaceselectedfiles" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
+                }
+                else
+                {
+                  <button id="addselectedfiles" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> @ResourceKey("Edit.addselected")</button>
+                }
             </div>
         </div>
 
