@@ -1081,19 +1081,20 @@ namespace Nevoweb.DNN.NBrightMod
                         if (imgResize == 0) imgResize = 800;
                         var imagepath = ResizeImage(imgmappath, modSettings, imgResize);
 
-                        var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
-                        var replaceimages = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
-                        if (replaceimages)
-                        {
-                            var objCtrl = new NBrightDataController();
-                            var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
-                            if (dataRecord != null)
-                            {
-                                dataRecord.RemoveXmlNode("genxml/imgs");
-                                objCtrl.Update(dataRecord);
-                            }
-                        }
-                        AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath);
+                        // don;t update record with uploaded images
+                        //var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(imagepath);
+                        //var replaceimages = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
+                        //if (replaceimages)
+                        //{
+                        //    var objCtrl = new NBrightDataController();
+                        //    var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                        //    if (dataRecord != null)
+                        //    {
+                        //        dataRecord.RemoveXmlNode("genxml/imgs");
+                        //        objCtrl.Update(dataRecord);
+                        //    }
+                        //}
+                        //AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath);
                     }
                 }
                 LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
@@ -1406,19 +1407,20 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 if (File.Exists(docmappath))
                 {
-                    var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
-                    var replacedocs = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
-                    if (replacedocs)
-                    {
-                        var objCtrl = new NBrightDataController();
-                        var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
-                        if (dataRecord != null)
-                        {
-                            dataRecord.RemoveXmlNode("genxml/docs");
-                            objCtrl.Update(dataRecord);
-                        }
-                    }
-                    AddNewDoc(Convert.ToInt32(itemid), docurl, docmappath);
+                    // don;t update record with uploaded docs
+                    //var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
+                    //var replacedocs = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
+                    //if (replacedocs)
+                    //{
+                    //    var objCtrl = new NBrightDataController();
+                    //    var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                    //    if (dataRecord != null)
+                    //    {
+                    //        dataRecord.RemoveXmlNode("genxml/docs");
+                    //        objCtrl.Update(dataRecord);
+                    //    }
+                    //}
+                    //AddNewDoc(Convert.ToInt32(itemid), docurl, docmappath);
                 }
                 LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
             }
@@ -1564,6 +1566,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
                 if (File.Exists(fullfilename)) File.Delete(fullfilename);
                 file.SaveAs(fullfilename);
+
                 if (ImgUtils.IsImageFile(Path.GetExtension(fullfilename)))
                     UpdateImage(fullfilename, _itemid, modSettings);
                 else
