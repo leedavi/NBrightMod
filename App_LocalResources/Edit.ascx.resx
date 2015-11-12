@@ -160,7 +160,7 @@
     <value>Link Text</value>
   </data>
   <data name="linktypecsv.Text" xml:space="preserve">
-    <value>None,External,Internal</value>
+    <value>None,External,Internal,PDF</value>
   </data>
   <data name="title.Text" xml:space="preserve">
     <value>Title</value>
@@ -242,5 +242,8 @@
   </data>
   <data name="browse.Text" xml:space="preserve">
     <value>Browse</value>
+  </data>
+  <data name="close.Text" xml:space="preserve">
+    <value>Close</value>
   </data>
 </root>

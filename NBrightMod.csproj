@@ -104,6 +104,9 @@
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\LinksDownloads\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\LinksDownloads\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\LinksDownloads\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\HtmlContent\resx\Settings.ascx.resx" />
@@ -202,6 +205,12 @@
     <None Include="Themes\HtmlContent\default\settings.cshtml" />
     <None Include="Themes\HtmlContent\default\view.cshtml" />
     <None Include="Themes\HtmlContent\default\viewpageheader.cshtml" />
+    <None Include="Themes\LinksDownloads\default\docselectlist.cshtml" />
+    <None Include="Themes\LinksDownloads\default\editbody.cshtml" />
+    <None Include="Themes\LinksDownloads\default\editfields.cshtml" />
+    <None Include="Themes\LinksDownloads\default\editlist.cshtml" />
+    <None Include="Themes\LinksDownloads\default\editpageheader.cshtml" />
+    <None Include="Themes\LinksDownloads\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\editpageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\editbody.cshtml" />
     <None Include="Themes\OwlSlider\default\editfields.cshtml" />

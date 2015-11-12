@@ -274,6 +274,7 @@ function ActivateFileUploadButtons() {
 
     $('#fileupload').change(function () {
         $('.processing').show();
+        $('#fileselectlist').append('<div id="loader" class="processing"><i class="glyphicon glyphicon-cog"></i></div>');
         var fileSelect = document.getElementById('fileupload');
 
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
@@ -304,7 +305,8 @@ function ActivateFileUploadButtons() {
             if (xhr.status != 200) {
                 alert('An error occurred!');
             } else {
-                CancelAddFiles();
+                $('#selectedfiles').val('');
+                NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
             }
         };
 
@@ -322,6 +324,7 @@ function ActivateFileUploadButtons() {
     });
 
     $('#deleteselectedfiles').click(function () {
+        $('#fileselectlist').append('<div id="loader" class="processing"><i class="glyphicon glyphicon-cog"></i></div>');
         NBrightMod_nbxget('deleteselectedfiles', '#selectparams', '#filelist');
     });
 

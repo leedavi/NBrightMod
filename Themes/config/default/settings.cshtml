@@ -39,10 +39,7 @@
             </div>
             <div>
                 @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
-                @{
-                    var settinguploadfolder = "images" + info.ModuleId.ToString("");
-                }
-                @TextBox(info, "genxml/textbox/settinguploadfolder","", settinguploadfolder)
+                @TextBox(info, "genxml/textbox/settinguploadfolder")
             </div>
         </div>
         <div class="buttons importdata">

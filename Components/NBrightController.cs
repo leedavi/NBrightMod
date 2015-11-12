@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Web;
 using System.Xml;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Search;
 using DotNetNuke.Services.Search.Entities;
@@ -112,6 +114,59 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         nbi.FromXmlItem(xmlNod1.OuterXml);
                         nbi.PortalId = objModInfo.PortalID;
                         nbi.ModuleId = moduleId;
+
+                        //realign images
+                        var nodl = nbi.XMLDoc.SelectNodes("genxml/imgs/genxml");
+                        if (nodl != null)
+                        {
+                            var lp = 1;
+                            foreach (XmlNode xNod in nodl)
+                            {
+                                // image url
+                                var imgurlnod = xNod.SelectSingleNode("genxml/hidden/imageurl");
+                                if (imgurlnod != null && imgurlnod.InnerText != "")
+                                {
+                                    var imgurl = imgurlnod.InnerText;
+                                    imgurl = imgurl.Replace("NBrightUpload", "*");
+                                    var imgsplit = imgurl.Split('*');
+                                    if (imgsplit.Length == 2)
+                                    {
+                                        imgurl = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
+                                        var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
+                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl",imgurl);
+                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
+                                    }
+                                }
+                                lp += 1;
+                            }
+                        }
+
+                        //realign files
+                        var nodfl = nbi.XMLDoc.SelectNodes("genxml/files/genxml");
+                        if (nodfl != null)
+                        {
+                            var lp = 1;
+                            foreach (XmlNode xNod in nodfl)
+                            {
+                                // image url
+                                var fileurlnod = xNod.SelectSingleNode("genxml/hidden/fileurl");
+                                if (fileurlnod != null && fileurlnod.InnerText != "")
+                                {
+                                    var fileurl = fileurlnod.InnerText;
+                                    fileurl = fileurl.Replace("NBrightUpload", "*");
+                                    var filesplit = fileurl.Split('*');
+                                    if (filesplit.Length == 2)
+                                    {
+                                        fileurl = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
+                                        var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
+                                        nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
+                                        nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath", filepath);
+                                    }
+                                }
+                                lp += 1;
+                            }
+                        }
+
                         objCtrl.Update(nbi);
                     }
                 }
@@ -230,105 +285,6 @@ namespace Nevoweb.DNN.NBrightMod.Components
             };
 
             return collectTagsFunc(terms, new List<string>());
-        }
-
-        #endregion
-
-
-        #region ISearchable Members
-
-        /// -----------------------------------------------------------------------------
-        /// <summary>
-        ///   GetSearchItems implements the ISearchable Interface
-        /// </summary>
-        /// <remarks>
-        /// </remarks>
-        /// <param name = "modInfo">The ModuleInfo for the module to be Indexed</param>
-        /// <history>
-        /// </history>
-        /// -----------------------------------------------------------------------------
-        public SearchItemInfoCollection GetSearchItems(ModuleInfo modInfo)
-        {
-            var searchItemCollection = new SearchItemInfoCollection();
-            var settingsInfo = LocalUtils.GetSettings(modInfo.ModuleID.ToString());
-            if (settingsInfo != null)
-            {
-                var stopIndex = settingsInfo.GetXmlProperty("genxml/checkbox/stopdnnindex");
-                if (stopIndex.ToLower() != "true")
-                {
-                    // Get all the non-langauge data records.
-                    var objCtrl = new NBrightDataController();
-
-                    var culturecodeList = DnnUtils.GetCultureCodeList(modInfo.PortalID);
-                    foreach (var lang in culturecodeList)
-                    {
-                        var lstData = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATA"); // reset search list objects to non-langauge ones.
-                        string strContent = "";
-                        var modifiedDate = DateTime.Now;
-                        var searchTitle = modInfo.ParentTab.TabName;
-
-                        // add lanaguge records to list to be indexed
-                        var lstDataLang = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATALANG");
-                        foreach (var obj in lstDataLang)
-                        {
-                            lstData.Add(obj);
-                        }
-
-                        foreach (var objContent in lstData)
-                        {
-                            //content is encoded in the Database so Decode before Indexing
-                            if (objContent.XMLDoc != null)
-                            {
-                                var xmlNods = objContent.XMLDoc.SelectNodes("genxml/edt/*");
-                                if (xmlNods != null)
-                                {
-                                    foreach (XmlNode xmlNod in xmlNods)
-                                    {
-                                        strContent += HttpUtility.HtmlDecode(xmlNod.InnerText) + " ";
-                                    }
-                                }
-                                xmlNods = objContent.XMLDoc.SelectNodes("genxml/textbox/*");
-                                if (xmlNods != null)
-                                {
-                                    foreach (XmlNode xmlNod in xmlNods)
-                                    {
-                                        strContent += xmlNod.InnerText + " ";
-                                    }
-                                }
-                                var xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/searchtitle");
-                                if (xNod == null || xNod.InnerText.Trim() == "")
-                                {
-                                    xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/title");
-                                }
-                                if (xNod != null && xNod.InnerText.Trim() != "") searchTitle = xNod.InnerText;
-                                if (objContent.ModifiedDate < modifiedDate) modifiedDate = objContent.ModifiedDate;
-                            }
-                        }
-
-                        if (strContent != "")
-                        {
-                            //Get the description string
-                            var searchDescriptionLength = "100";
-                            string strDescription = HtmlUtils.Shorten(HtmlUtils.Clean(strContent, false), Convert.ToInt32(searchDescriptionLength), "...");
-
-                            var searchItem = new SearchItemInfo(searchTitle,
-                                                                strDescription,
-                                                                -1,
-                                                                modifiedDate,
-                                                                modInfo.ModuleID,
-                                                                lang,
-                                                                strContent,
-                                                                "",
-                                                                Null.NullInteger);
-                            searchItemCollection.Add(searchItem);
-                        }
-                    }
-
-                }
-            }
-
-            return searchItemCollection;
-
         }
 
         #endregion

@@ -152,14 +152,19 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "downloadfile":
-                        var fname = Utils.RequestQueryStringParam(context, "filename");
-                        strOut = fname; // return this is error.
+                        var fileindex = Utils.RequestQueryStringParam(context, "fileindex");
+                    var itemid = Utils.RequestQueryStringParam(context, "itemid");
+                    if (Utils.IsNumeric(itemid))
+                    {
+                        var objCtrl = new NBrightDataController();
+                        var nbi = objCtrl.GetData(Convert.ToInt32(itemid));
+                        var fpath = nbi.GetXmlProperty("genxml/docs/genxml[" + fileindex + "]/hidden/docpath");
                         var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
-                        var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + fname;
-                        if (downloadname == "") downloadname = Path.GetFileName(fname);
-                        var itemid = Utils.RequestQueryStringParam(context, "itemid");
-                        if (Utils.IsNumeric(itemid)) UpdateDownloadCount(Convert.ToInt32(itemid), fname, 1);
+                        if (downloadname == "") downloadname = Path.GetFileName(fpath);
+                        UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
                         Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                    }
+                    strOut = "";
                     break;
                 case "sendemail":
                         strOut = SendEmail(context);
@@ -373,12 +378,14 @@ namespace Nevoweb.DNN.NBrightMod
         
         private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo nbi)
         {
+            var modref = Utils.GetUniqueKey(10);
+
             var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
             var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
 
             var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/uploadfolder");
-            if (settingUploadFolder == "") settingUploadFolder = "images" + moduleid;
+            if (settingUploadFolder == "") settingUploadFolder = "images" + modref;
             var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
             var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
@@ -406,8 +413,8 @@ namespace Nevoweb.DNN.NBrightMod
             nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
             nbi.SetXmlProperty("genxml/uploaddocfolder", uploadDocFolder);
             nbi.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
-            nbi.GUIDKey = Utils.GetUniqueKey(10);
-            nbi.SetXmlProperty("genxml/hidden/modref", nbi.GUIDKey);
+            nbi.SetXmlProperty("genxml/hidden/modref", modref);
+            nbi.GUIDKey = modref;
             return nbi;
         }
 
@@ -1356,8 +1363,8 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     if ((allowedfiletypes == "*" || allowedfiletypeslist.Contains(Path.GetExtension(f).Replace(".", "").ToLower())) && f.Trim() != "")
                     {
-                        var docpath = modSettings.GetXmlProperty("genxml/uploadfoldermappath").TrimEnd('\\') + "\\" + f;
-                        var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
+                        var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
+                        var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
                         if (!alreadyaddedlist.Contains(docpath))
                         {
                             AddNewDoc(Convert.ToInt32(itemid), docurl, docpath);
@@ -1384,7 +1391,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     if (f != "")
                     {
-                        var docpath = modSettings.GetXmlProperty("genxml/uploadfoldermappath").TrimEnd('\\') + "\\" + f;
+                        var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
                         if (File.Exists(docpath)) File.Delete(docpath);
                     }
                 }
@@ -1399,7 +1406,7 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 if (File.Exists(docmappath))
                 {
-                    var docurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
+                    var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docmappath);
                     var replacedocs = (modSettings.GetXmlPropertyBool("genxml/checkbox/replacefiles") || modSettings.GetXmlPropertyBool("genxml/hidden/replacefiles"));
                     if (replacedocs)
                     {
@@ -1438,24 +1445,16 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-        private void UpdateDownloadCount(int itemid, String folderfilename, int amount = 1)
+        private void UpdateDownloadCount(int itemid, String fileindex, int amount = 1)
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemid);
             if (dataRecord != null)
             {
-                if (dataRecord.XMLDoc.SelectSingleNode("genxml/docs[./genxml/hidden/folderfilename='" + folderfilename + "']") != null)
-                {
-                    if (dataRecord.XMLDoc.SelectSingleNode("genxml/data") == null) dataRecord.AddSingleNode("data", "", "genxml");
-                    if (dataRecord.XMLDoc.SelectSingleNode("genxml/data/file[./folderfilename='" + folderfilename + "']") == null)
-                    {
-                        dataRecord.AddXmlNode("<file><folderfilename>" + folderfilename + "</folderfilename></file>", "file", "genxml/data");
-                    }
-                    var amt = dataRecord.GetXmlPropertyDouble("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount");
-                    amt = amt + amount;
-                    dataRecord.SetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount", amt.ToString("######"));
-                    objCtrl.Update(dataRecord);
-                }
+                var amt = dataRecord.GetXmlPropertyDouble("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount");
+                amt = amt + amount;
+                dataRecord.SetXmlProperty("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount", amt.ToString("######"));
+                objCtrl.Update(dataRecord);
             }
         }
 
@@ -1569,7 +1568,6 @@ namespace Nevoweb.DNN.NBrightMod
                     UpdateImage(fullfilename, _itemid, modSettings);
                 else
                     UpdateDoc(fullfilename, _itemid, modSettings);
-                return fullfilename;
             }
             return "";
         }
