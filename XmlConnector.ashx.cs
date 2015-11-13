@@ -531,6 +531,8 @@ namespace Nevoweb.DNN.NBrightMod
                         nbi.UpdateAjax(strIn);
                         objCtrl.Update(nbi);
 
+                        objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
+
                         Utils.RemoveCache("dnnsearchindexflag" + moduleid);
 
                         LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
@@ -582,6 +584,7 @@ namespace Nevoweb.DNN.NBrightMod
                             nbi.UpdateAjax(ajaxData);
                             objCtrl.Update(nbi);
 
+                            objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
 
                         }
                     }
