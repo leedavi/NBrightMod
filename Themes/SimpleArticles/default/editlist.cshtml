@@ -1,0 +1,16 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List[0];
+    // need to create a preprocess key so that metadata is cached against this template and not the sub-template called by @RenderTemplate
+    Model.Settings.Add("preprocesskey", Model.GetSetting("themefolder") + ".editlist.cshtml" + info.ModuleId);
+}
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@EditCultureSelect("flag-list", "selecteditlistlanguage")
+
+@EditButtons("a,sl,ex")
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlist-shared.cshtml", Model)

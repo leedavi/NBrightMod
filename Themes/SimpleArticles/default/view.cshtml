@@ -1,0 +1,50 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticles/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + info.ModuleId)
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
+
+<h1>Actualités</h1>
+<div class="simplearticles">
+    
+    @foreach (NBrightInfo x in Model.List)
+        {
+        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        <div class="simplearticlesdiv">
+        <div class="simplearticlesleft">
+        @if (imageurl != "")
+            {
+                var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=150&h=100" alt="@(title)" />
+            }
+        <p>
+        DATE<br />
+        @info.GetXmlProperty("genxml/lang/genxml/textbox/theme")
+        </p>
+        </div>
+        <div class="simplearticlesright">
+        <h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+        <p>@HtmlOf(x, "genxml/lang/genxml/textbox/infodesc")</p>
+        </div>
+        <div class="clearfix"></div>
+        </div>
+        }
+
+</div>

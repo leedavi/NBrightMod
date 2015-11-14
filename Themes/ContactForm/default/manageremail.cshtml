@@ -1,0 +1,29 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
+
+@{ 
+    var info = new NBrightInfo();
+}
+
+<div>
+    <div>
+        <label>@ResourceKey("View.name")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/name")</div>
+    </div>
+    <div>
+        <label>@ResourceKey("View.email")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
+    </div>
+    <div>
+        <label>@ResourceKey("View.message")</label>
+        <div>@info.GetXmlProperty("genxml/textbox/emailsendermsg")</div>
+    </div>
+</div>

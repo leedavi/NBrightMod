@@ -1,0 +1,75 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SocialLinks/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang" ></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s,d,r")
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+
+        <div class="formrow">
+            <label>@ResourceKey("Settings.facebook")</label>
+            <div>@TextBox(info, "genxml/textbox/facebook", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.twitter")</label>
+            <div>@TextBox(info, "genxml/textbox/twitter", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.linkedin")</label>
+            <div>@TextBox(info, "genxml/textbox/linkedin", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.googleplus")</label>
+            <div>@TextBox(info, "genxml/textbox/googleplus", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.youtube")</label>
+            <div>@TextBox(info, "genxml/textbox/youtube", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.dailymotion")</label>
+            <div>@TextBox(info, "genxml/textbox/dailymotion", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.flickr")</label>
+            <div>@TextBox(info, "genxml/textbox/flickr", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.picasa")</label>
+            <div>@TextBox(info, "genxml/textbox/picasa", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.viadeo")</label>
+            <div>@TextBox(info, "genxml/textbox/viadeo", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.vimeo")</label>
+            <div>@TextBox(info, "genxml/textbox/vimeok", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.tripadvisor")</label>
+            <div>@TextBox(info, "genxml/textbox/tripadvisor", "class='form-control'")</div>
+        </div>
+        <div class="formrow">
+            <label>@ResourceKey("Settings.rss")</label>
+            <div>@TextBox(info, "genxml/textbox/rss", "class='form-control'")</div>
+        </div>
+
+    </div>
+    </div>
+</div>

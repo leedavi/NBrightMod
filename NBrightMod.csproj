@@ -102,7 +102,9 @@
     <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\GoogleMap\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Settings.ascx.resx" />
@@ -167,12 +169,12 @@
   <ItemGroup>
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
-    <None Include="Themes\ContactForm\default\manageremail.cshtml" />
+    <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
     <None Include="Themes\ContactForm\default\editlist.cshtml" />
+    <None Include="Themes\ContactForm\default\manageremail.cshtml" />
     <None Include="Themes\ContactForm\default\settings.cshtml" />
-    <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\view.cshtml" />
     <None Include="Themes\ContactForm\default\viewpageheader.cshtml" />
     <None Include="Themes\Documents\default\editbody.cshtml" />

@@ -1,0 +1,54 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.view.cshtml" + info.ModuleId)
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
+
+<h1>@ResourceKey("View.gallery")</h1>
+
+<div id="@(divid)" class="gallery">
+
+    @foreach (NBrightInfo x in Model.List)
+        {
+        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        if (imageurl != "")
+        {
+        var width = Model.GetSetting("width");
+        var height = Model.GetSetting("height");
+        var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+        <a class="fancybox" rel="group" title="@(title)" href="@(imageurl)">
+        <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
+        </a>
+        }
+        }
+
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+			$('.fancybox').fancybox({
+			tpl: {
+				closeBtn : '<a title="@ResourceKey("View.close")" class="fancybox-item fancybox-close" href="javascript:;"></a>',
+				next     : '<a title="@ResourceKey("View.next")" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
+				prev     : '<a title="@ResourceKey("View.previous")" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+			}
+    });
+});
+</script>

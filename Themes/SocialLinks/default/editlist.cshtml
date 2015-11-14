@@ -1,0 +1,17 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List[0];
+    Model.Settings.Add("actionbuttons", "e,su,sd,di");
+}
+
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SocialLinks/resx/")
+
+@EditCultureSelect("flag-list", "selecteditlistlanguage")
+
+@EditButtons("sl,a,ex")
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlist-shared.cshtml", Model)

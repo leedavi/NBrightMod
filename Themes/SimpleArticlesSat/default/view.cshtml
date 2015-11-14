@@ -1,0 +1,33 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticlesSat/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + info.ModuleId)
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg) 
+
+<h2>@ResourceKey("View.news")</h2>
+<p>
+    
+    @foreach (NBrightInfo x in Model.List)
+        {
+        @:DATE - @info.GetXmlProperty("genxml/lang/genxml/textbox/title")<br />
+        <a href="/actualités.aspx">@ResourceKey("View.knowmore")</a>
+        }
+
+</p>
