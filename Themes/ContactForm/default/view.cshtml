@@ -13,33 +13,46 @@
     var info = new NBrightInfo();
 }
 
-<div id="emailform@(Model.ModuleId)">
+<h2>@ResourceKey("View.contact")</h2>
+
+<div id="emailform@(Model.ModuleId)" class="contactform">
 
     <input id="moduleid" type="hidden" value="@Model.ModuleId"></input>
     <input id="lang" type="hidden" value="@Model.GetUrlParam("language")"></input>
     <input id="emailreturnmsg" type="hidden" value="@ResourceKey("View.emailreturnmsg")"></input>
 
-    <div>
-        <label>@ResourceKey("View.name")</label>
-        <div>@TextBox(info, "genxml/textbox/name", "class='form-control'")</div>
+    <div class="contactformfields">
+      <div class="cf-rbl">@RadioButtonList(info,"genxml/radiobuttonlist/rbllink","1,2","ResourceKey:View.app","","1")</div>
+      <label>@ResourceKey("View.name")</label>
+      <div>@TextBox(info, "genxml/textbox/name")</div>
+      <label>@ResourceKey("View.tel")</label>
+      <div>@TextBox(info, "genxml/textbox/tel")</div>
+      <label>@ResourceKey("View.email")</label>
+      <div class="requiredfield">@TextBox(info, "genxml/textbox/clientemail")</div>
+      <label>@ResourceKey("View.message")</label>
+      <div><textarea rows="4" id="emailsendermsg" update="save" type="text">@info.GetXmlProperty("genxml/textbox/emailsendermsg")</textarea></div>
     </div>
-    <div>
-        <label>@ResourceKey("View.email")</label>
-        <div>@TextBox(info, "genxml/textbox/clientemail", "class='form-control'")</div>
-    </div>
-    <div>
-        @DnnLabel("lblmessage", "View.message")
-        <textarea rows="50" id="emailsendermsg" class="" update="save" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/textbox/emailsendermsg")</textarea>
-    </div>
-    <div class="buttons">
-        <button id="sendemail@(Model.ModuleId)" type="button">@ResourceKey("View.send")</button>
-    </div>
-</div>
-<div id="emailreturnmsg@(Model.ModuleId)"></div>
 
+    <button id="sendemail@(Model.ModuleId)" type="button" class="bigbutton">@ResourceKey("View.send")</button>
+
+    <div id="emailreturnmsg@(Model.ModuleId)"></div>
+
+    <div id="spinner@(Model.ModuleId)" class="spinner" style="display: none;">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+
+</div>
 
 <script>
     $('#sendemail@(Model.ModuleId)').click(function () {
         NBrightMod_nbxget('sendemail', '#emailform@(Model.ModuleId)', '#emailreturnmsg@(Model.ModuleId)');
+        $('#sendemail@(Model.ModuleId)').hide();
+        $('#spinner@(Model.ModuleId)').show();
+    });
+
+    $('#emailreturnmsg@(Model.ModuleId)').change(function () {
+        $('#spinner@(Model.ModuleId)').hide();
     });
 </script>

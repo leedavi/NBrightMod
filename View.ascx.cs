@@ -87,6 +87,8 @@ namespace Nevoweb.DNN.NBrightMod
             var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
             var orderby = "";
             if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
+            var filter = "";
+            if (cachedlist != null && cachedlist.ContainsKey("filter")) filter = cachedlist["filter"];
 
             // get source moduleid
             var sourcemodid = Convert.ToInt32(ModuleId);
@@ -106,7 +108,7 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
             // get data list
-            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
 
             var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();

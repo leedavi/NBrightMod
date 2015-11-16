@@ -17,12 +17,12 @@
 
     @helper imageindex(NBrightInfo x, String index)
     {
-        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/hidden/imageurl");
-        var imgwidth = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/textbox/imgwidth");
-        var imgheight = x.GetXmlProperty("genxml/imgs/genxml[[" + index + "]]/textbox/imgheight");
+        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/hidden/imageurl");
+        var imgwidth = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/textbox/imgwidth");
+        var imgheight = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/textbox/imgheight");
         var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
-        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + index + "]]/textbox/imagedesc");
-        var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + index + "]]/dropdownlist/imglinktab");
+        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/textbox/imagedesc");
+        var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/dropdownlist/imglinktab");
 
         if (imageurl != "")
         {
@@ -57,8 +57,8 @@
                 var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
                 var imgwidth = nbi.GetXmlProperty("genxml/textbox/imgwidth");
                 var imgheight = nbi.GetXmlProperty("genxml/textbox/imgheight");
-                var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + c + "]]/textbox/imagedesc");
-                var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[[" + c + "]]/dropdownlist/imglinktab");
+                var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/textbox/imagedesc");
+                var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/dropdownlist/imglinktab");
 
                 if (imageurl != "")
                 {

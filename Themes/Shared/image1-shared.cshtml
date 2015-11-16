@@ -33,6 +33,14 @@
                                 <tr>
                                   <th>@ResourceKey("Edit.image")</th>
                                   <th>@ResourceKey("Edit.alternativetext")</th>
+                                    @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                                    {
+                                        <th>@ResourceKey("Edit.width")</th>
+                                    }
+                                    @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                                    {
+                                        <th>@ResourceKey("Edit.height")</th>
+                                    }
                                 </tr>
 
                     @{
@@ -47,6 +55,14 @@
                                   @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
                                   <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" /></td>
                                   <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
+                                      @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                                      {
+                                          <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgwidth", " update='imgsave' style='width:60px;' ", "150")</td>
+                                      }
+                                      @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                                      {
+                                          <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgheight", " update='imgsave' style='width:60px;' ", "0")</td>
+                                      }
                                   </tr>
 
                     }

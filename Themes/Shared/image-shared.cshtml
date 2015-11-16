@@ -29,45 +29,57 @@
 
                 <div id="imageselectlist" style="display: none;"></div>
 
-                <div class="table-responsive">
+        <div class="table-responsive">
 
-                    <table id="imagelist" class="table">
-                        <tbody>
-                                <tr>
-                                  <th>@ResourceKey("Edit.image")</th>
-                                  <th>@ResourceKey("Edit.alternativetext")</th>
-                                  <th>@ResourceKey("Edit.width")</th>
-                                  <th>@ResourceKey("Edit.height")</th>
-                                  <th>@ResourceKey("Edit.actions")</th>
-                                </tr>
-
-                    @{
-                        var imglp = 1;
-                        foreach (XmlNode imgNod in info.XMLDoc.SelectNodes("genxml/imgs/genxml"))
-                        {
-                            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
-
-                                  <tr class="imageitem">
-                                  <td>
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
-                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
-                								  <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" />
-                								  </td>
-                                  <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
-                                  <td>@NBrightTextBox(info, "genxml/textbox/imgwidth", " update='imgsave' style='width:60px;' ","150")</td>
-                                  <td>@NBrightTextBox(info, "genxml/textbox/imgheight", " update='imgsave' style='width:60px;' ","0")</td>
-                                  <td>@IconButtons(info, "de,su,sd")</td>
-                                  </tr>
-
-                            imglp += 1;
-                        }
+            <table id="imagelist" class="table">
+                <tbody>
+                <tr>
+                    <th>@ResourceKey("Edit.image")</th>
+                    <th>@ResourceKey("Edit.alternativetext")</th>
+                    @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                    {
+                        <th>@ResourceKey("Edit.width")</th>
                     }
-                        </tbody>
-                                </table>
+                    @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                    {
+                        <th>@ResourceKey("Edit.height")</th>
+                    }
+                    <th>@ResourceKey("Edit.actions")</th>
+                </tr>
 
-                </div>
+                @{
+                    var imglp = 1;
+                    foreach (XmlNode imgNod in info.XMLDoc.SelectNodes("genxml/imgs/genxml"))
+                    {
+                        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+
+                        <tr class="imageitem">
+                            <td>
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50"/>
+                            </td>
+                            <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
+                            @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                            {
+                                <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgwidth", " update='imgsave' style='width:60px;' ", "150")</td>
+                            }
+                            @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                            {
+                                <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgheight", " update='imgsave' style='width:60px;' ", "0")</td>
+                            }
+                            <td>@IconButtons(info, "de,su,sd")</td>
+                        </tr>
+
+                        imglp += 1;
+                    }
+                }
+                </tbody>
+            </table>
+
+        </div>
     </div>
 
     </div>

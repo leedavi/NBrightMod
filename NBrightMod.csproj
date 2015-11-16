@@ -95,6 +95,7 @@
     <EmbeddedResource Include="App_LocalResources\Edit.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Edit.ascx.resx" />
@@ -132,6 +133,8 @@
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
+    <Content Include="Themes\ContactForm\css\defaultform.css" />
+    <Content Include="Themes\ContactForm\css\flatform.css" />
     <Content Include="Themes\FancyboxGallery\css\jquery.fancybox.css" />
     <Content Include="Themes\FancyboxGallery\img\blank.gif" />
     <Content Include="Themes\FancyboxGallery\img\fancybox_loading%402x.gif" />
@@ -169,6 +172,12 @@
   <ItemGroup>
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
+    <None Include="Themes\ContactDetails\default\editbody.cshtml" />
+    <None Include="Themes\ContactDetails\default\editfields.cshtml" />
+    <None Include="Themes\ContactDetails\default\editpageheader.cshtml" />
+    <None Include="Themes\ContactDetails\default\settings.cshtml" />
+    <None Include="Themes\ContactDetails\default\view.cshtml" />
+    <None Include="Themes\ContactDetails\default\viewpageheader.cshtml" />
     <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
@@ -263,7 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
-    <Folder Include="Themes\ContactForm\css\" />
     <Folder Include="Themes\ContactForm\js\" />
     <Folder Include="Themes\Documents\css\" />
     <Folder Include="Themes\Documents\js\" />

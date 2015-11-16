@@ -760,7 +760,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var clienttemplate = ajaxInfo.GetXmlProperty("genxml/hidden/clienttemplate");
                 if (clienttemplate == "") clienttemplate = "clientemail.cshtml";
                 var managertemplate = ajaxInfo.GetXmlProperty("genxml/hidden/managertemplate");
-                if (managertemplate == "") managertemplate = "managertemplate.cshtml";
+                if (managertemplate == "") managertemplate = "manageremail.cshtml";
                 var emailreturnmsg = ajaxInfo.GetXmlProperty("genxml/hidden/emailreturnmsg");
                 var clientemail = ajaxInfo.GetXmlProperty("genxml/textbox/clientemail");
 
@@ -805,7 +805,8 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(clientemail.Trim()))
                         {
-                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                            var clientemailbody = LocalUtils.RazorTemplRender(clienttemplate, moduleid, "", nbi, _lang);
+                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, clientemailbody, "", "HTML", "", "", "", "");
                         }
                     }
 

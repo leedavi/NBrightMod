@@ -27,6 +27,9 @@
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editortext-shared.cshtml", Model)
 
+@{
+    Model.Settings.Add("imglistcolumns", "w,h");
+}
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image-shared.cshtml", Model)
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/docs-shared.cshtml", Model)

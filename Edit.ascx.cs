@@ -41,6 +41,20 @@ namespace Nevoweb.DNN.NBrightMod
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
+            //check if we have a skinsrc, if not add it and reload. NOTE: Where just asking for a infinate loop here, but DNN7.2 doesn't leave much option.
+            const string skinSrcAdmin = "?SkinSrc=%2fDesktopModules%2fNBright%2fNBrightData%2fSkins%2fNBrightModAdmin%2fNormal";
+            if (Utils.RequestParam(Context, "SkinSrc") == "")
+            {
+                var itemid = Utils.RequestParam(Context, "itemid");
+                if (Utils.IsNumeric(itemid))
+                    Response.Redirect(EditUrl("itemid", itemid, Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
+                else
+                    Response.Redirect(EditUrl(Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
+
+                Context.ApplicationInstance.CompleteRequest(); // do this to stop iis throwing error
+            }
+
             LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "edit");
         }
 

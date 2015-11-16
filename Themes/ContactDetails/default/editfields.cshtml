@@ -1,0 +1,81 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactDetails/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang" ></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s,ex")
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+
+        <div class="form-group">
+            <label>@ResourceKey("Edit.company")</label>
+            @NBrightTextBox(info, "genxml/textbox/company")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.address")</label>
+            @NBrightTextBox(info, "genxml/textbox/address1")
+            @NBrightTextBox(info, "genxml/textbox/address2")
+            @NBrightTextBox(info, "genxml/textbox/address3")
+            @NBrightTextBox(info, "genxml/textbox/address4")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.tel")</label>
+            @NBrightTextBox(info, "genxml/textbox/tel")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.tel2")</label>
+            @NBrightTextBox(info, "genxml/textbox/tel2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.fax")</label>
+            @NBrightTextBox(info, "genxml/textbox/fax")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.email")</label>
+            @NBrightTextBox(info, "genxml/textbox/email")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contact1")</label>
+            @NBrightTextBox(info, "genxml/textbox/contact1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contactport")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactport1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contactemail")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactemail1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contact2")</label>
+            @NBrightTextBox(info, "genxml/textbox/contact2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contactport")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactport2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.contactemail")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactemail2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.extrainfos")</label>
+            <div>@NBrightTextArea(info, "genxml/lang/genxml/textbox/extrainfos", "rows='4' ")</div>
+        </div>
+    </div>
+    </div>
+</div>

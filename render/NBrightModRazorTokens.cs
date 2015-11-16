@@ -176,7 +176,7 @@ namespace NBrightMod.render
             {
                 if (button.ToLower() == "edit" || button.ToLower() == "e")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-primary edititem' itemid='" + info.ItemID + "' data-toggle='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.edit") + "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-primary edititem' itemid='" + info.ItemID + "' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.edit") + "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "uploadimage" || button.ToLower() == "ui")
                 {
@@ -184,15 +184,15 @@ namespace NBrightMod.render
                 }
                 if (button.ToLower() == "sortup" || button.ToLower() == "su")
                 {
-                    strOut += "<button type='button' class='btn btn-sm sortelementUp' data-toggle='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.moveup") + "'><span class='glyphicon glyphicon-arrow-up' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm sortelementUp' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.moveup") + "'><span class='glyphicon glyphicon-arrow-up' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "sortdown" || button.ToLower() == "sd")
                 {
-                    strOut += "<button type='button' class='btn btn-sm sortelementDown' data-toggle='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.movedown") + "'><span class='glyphicon glyphicon-arrow-down' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm sortelementDown' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.movedown") + "'><span class='glyphicon glyphicon-arrow-down' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "deleteelement" || button.ToLower() == "de")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-danger removeelement' data-toggle='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-danger removeelement' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "uploaddoc" || button.ToLower() == "ud")
                 {
@@ -200,7 +200,7 @@ namespace NBrightMod.render
                 }
                 if (button.ToLower() == "deleteitem" || button.ToLower() == "di")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-danger deleteitemclick' itemid='" + info.ItemID + "' data-toggle='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-danger deleteitemclick' itemid='" + info.ItemID + "' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove'></span></button>";
                 }
             }
             strOut += "</div>";

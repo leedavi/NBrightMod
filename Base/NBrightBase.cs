@@ -20,9 +20,8 @@ namespace Nevoweb.DNN.NBrightMod.Base
 
         public DotNetNuke.Framework.CDefault BasePage
         {
-            get { return (DotNetNuke.Framework.CDefault)this.Page; }
+            get { return (DotNetNuke.Framework.CDefault) this.Page; }
         }
-
 
     }
 }
