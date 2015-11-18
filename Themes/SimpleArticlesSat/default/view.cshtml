@@ -3,30 +3,15 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticlesSat/resx/")
-
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + info.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml" + Model.ModuleId)
 
-@{
-    var msg = "";
-    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
-    {
-        msg = ResourceKey("View.nosettings").ToString();
-    }
-        var divid = "NBrightMod" + @Model.GetSetting("modref");
-}
-@(msg) 
-
-<h2>@ResourceKey("View.news")</h2>
+<h4>@ResourceKey("View.news")</h4>
 <p>
     
-    @foreach (NBrightInfo x in Model.List)
+    @foreach (NBrightInfo infoitem in Model.List)
         {
-        @:DATE - @info.GetXmlProperty("genxml/lang/genxml/textbox/title")<br />
+        <div>@infoitem.GetXmlProperty("genxml/textbox/eventdate") - @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</div>
         <a href="/actualités.aspx">@ResourceKey("View.knowmore")</a>
         }
 

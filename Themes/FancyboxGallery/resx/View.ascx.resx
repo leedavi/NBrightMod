@@ -129,4 +129,7 @@
   <data name="previous.Text" xml:space="preserve">
     <value>Previous</value>
   </data>
+  <data name="viewgallery.Text" xml:space="preserve">
+    <value>View gallery</value>
+  </data>
 </root>

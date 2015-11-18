@@ -9,21 +9,37 @@
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
 
-@{ 
+@{
     var info = (NBrightInfo)Model.List.First();
 }
 
-<div>
-    <div>
-        <label>@ResourceKey("View.name")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/name")</div>
-    </div>
-    <div>
-        <label>@ResourceKey("View.email")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
-    </div>
-    <div>
-        <label>@ResourceKey("View.message")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/emailsendermsg")</div>
-    </div>
-</div>
+<style>
+body {margin:20px;color:#595959;font-size:14px;font-family:Segoe UI, Arial, Helvetica;line-height:18px;}
+h2 {font-size:30px;color:#242a31;line-height:30px;font-family:Segoe UI, Arial, Helvetica;}
+.datatable {margin:20px 0;border:none;}
+.datatable th {padding:10px 20px;background:#f7f7f7;}
+.datatable td {padding:10px 20px;}
+</style>
+
+<h2>Contact</h2>
+<table class="datatable" border="0" cellspacing="2" cellpadding="0">
+<tr>
+<th align="right"><label>@ResourceKey("View.name")</label></th>
+<td>
+@ResourceKey("View.app" + info.GetXmlProperty("genxml/radiobuttonlist/rblapp"))
+@info.GetXmlProperty("genxml/textbox/name")
+</td>
+</tr>
+<tr>
+<th align="right"><label>@ResourceKey("View.tel")</label></th>
+<td>@info.GetXmlProperty("genxml/textbox/tel")</td>
+</tr>
+<tr>
+<th align="right"><label>@ResourceKey("View.email")</label></th>
+<td>@info.GetXmlProperty("genxml/textbox/clientemail")</td>
+</tr>
+<tr>
+<th align="right"><label>@ResourceKey("View.message")</label></th>
+<td>@info.GetXmlProperty("genxml/textbox/emailsendermsg")</td>
+</tr>
+</table>

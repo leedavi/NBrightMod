@@ -766,68 +766,78 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strOut = "ERROR - Email Unable to be sent";
 
-                if (Utils.IsNumeric(moduleid))
+                if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(clientemail.Trim()))
                 {
-                    var objCtrl = new NBrightDataController();
+                    if (Utils.IsNumeric(moduleid))
+                    {
+                        var objCtrl = new NBrightDataController();
 
-                    var settings = LocalUtils.GetSettings(moduleid);
-                    var emailstosave = settings.GetXmlProperty("genxml/textbox/emailstosave");
+                        var settings = LocalUtils.GetSettings(moduleid);
+                        var emailstosave = settings.GetXmlProperty("genxml/textbox/emailstosave");
 
-                    // get DB record
-                    var nbi = new NBrightInfo(true);
+                        // get DB record
+                        var nbi = new NBrightInfo(true);
                         // get data passed back by ajax
                         var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
                         // update record with ajax data
                         nbi.UpdateAjax(strIn);
                         nbi.ModuleId = Convert.ToInt32(moduleid);
                         nbi.TypeCode = "NBrightModDATA";
-                    if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
+                        if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
 
-                    // do edit field data if a itemid has been selected
-                    var emailbody = LocalUtils.RazorTemplRender(managertemplate, moduleid, "", nbi, _lang);
+                        // do edit field data if a itemid has been selected
+                        var emailbody = LocalUtils.RazorTemplRender(managertemplate, moduleid, "", nbi, _lang);
 
-                    var emailarray = settings.GetXmlProperty("genxml/textbox/emailto").Split(',');
-                    var emailsubject = settings.GetXmlProperty("genxml/textbox/emailsubject");
-                    var emailfrom = settings.GetXmlProperty("genxml/textbox/emailfrom");
-                    var copytoclient = settings.GetXmlPropertyBool("genxml/checkbox/copytoclient");
+                        var emailarray = settings.GetXmlProperty("genxml/textbox/emailto").Split(',');
+                        var emailsubject = settings.GetXmlProperty("genxml/textbox/emailsubject");
+                        var emailfrom = settings.GetXmlProperty("genxml/textbox/emailfrom");
+                        var copytoclient = settings.GetXmlPropertyBool("genxml/checkbox/copytoclient");
 
-                    foreach (var email in emailarray)
-                    {
-                        if (!string.IsNullOrEmpty(email.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(email.Trim()))
+                        foreach (var email in emailarray)
                         {
-                            // multiple attachments as csv with "|" seperator
-                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
-                            strOut = emailreturnmsg;
-                        }
-                    }
-
-                    if (copytoclient)
-                    {
-                        if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(clientemail.Trim()))
-                        {
-                            var clientemailbody = LocalUtils.RazorTemplRender(clienttemplate, moduleid, "", nbi, _lang);
-                            DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, clientemailbody, "", "HTML", "", "", "", "");
-                        }
-                    }
-
-                    // Delete Extra unrequired email data
-                    if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
-                    {
-                        var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", " order by NB1.ModifiedDate");
-                        if (l.Count > Convert.ToInt32(emailstosave))
-                        {
-                            var c = 1;
-                            foreach (var i in l)
+                            if (!string.IsNullOrEmpty(email.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(email.Trim()))
                             {
-                                if (c > Convert.ToInt32(emailstosave))
+                                // multiple attachments as csv with "|" seperator
+                                DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                                strOut = emailreturnmsg;
+                            }
+                        }
+
+                        // Delete Extra unrequired email data
+                        if (Utils.IsEmail(emailfrom.Trim()))
+                        {
+                            if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
+                            {
+                                var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", " order by NB1.ModifiedDate");
+                                if (l.Count > Convert.ToInt32(emailstosave))
                                 {
-                                    objCtrl.Delete(i.ItemID);
+                                    var c = 1;
+                                    foreach (var i in l)
+                                    {
+                                        if (c > Convert.ToInt32(emailstosave))
+                                        {
+                                            objCtrl.Delete(i.ItemID);
+                                        }
+                                        c += 1;
+                                    }
                                 }
-                                c += 1;
+                            }
+                        }
+
+                        if (copytoclient)
+                        {
+                            if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(clientemail.Trim()))
+                            {
+                                var clientemailbody = LocalUtils.RazorTemplRender(clienttemplate, moduleid, "", nbi, _lang);
+                                DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, clientemailbody, "", "HTML", "", "", "", "");
                             }
                         }
                     }
-
+                }
+                else
+                {
+                    var invalidemailmsg = ajaxInfo.GetXmlProperty("genxml/hidden/invalidemailmsg");
+                    strOut = invalidemailmsg;
                 }
                 return strOut;
 

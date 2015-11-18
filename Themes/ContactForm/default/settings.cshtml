@@ -21,15 +21,7 @@
         @DnnLabel("lblemailfrom", "Settings.emailfrom")@TextBox(info, "genxml/textbox/emailfrom", "class='form-control' width='300px' ")
     </div>
     <div>
-        @DnnLabel("lblemailreceivermsg", "Settings.emailreceivermsg")
-        <textarea rows="50" id="emailreceivermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailreceivermsg")</textarea>
-    </div>
-    <div>
         @DnnLabel("lblcopytoclient", "Settings.copytoclient")@CheckBox(info, "genxml/checkbox/copytoclient", "", "", true)
-    </div>
-    <div>
-        @DnnLabel("lblemailsendermsg", "Settings.emailsendermsg")
-        <textarea rows="50" id="emailsendermsg" class="" update="lang" type="text" style="height: 250px; width: 100%">@info.GetXmlProperty("genxml/lang/genxml/textbox/emailsendermsg")</textarea>
     </div>
     <div>
         @DnnLabel("lblemailstosave", "Settings.emailstosave")@TextBox(info, "genxml/textbox/emailstosave", "class='form-control' width='300px' ","50")

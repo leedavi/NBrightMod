@@ -33,7 +33,7 @@
         @if (infoitem.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 3)
         {
 			  var fileurl = "/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=" + infoitem.ItemID + "&fileindex=1";
-			  <a href='@(fileurl)' target="_blank">@infoitem.GetXmlProperty("genxml/lang/genxml/docs/genxml[1]/textbox/docdesc")</a>
+			  <a href='@(fileurl)'>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
         }
         </li>
         }

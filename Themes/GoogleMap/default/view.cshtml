@@ -29,14 +29,14 @@
     var streetViewControl = Model.GetSetting("mapstreetcontrol").ToLower();
     var info = (NBrightInfo)Model.List.First();
     var modid = info.ModuleId.ToString("");
-    var lat = info.GetXmlProperty("genxml/textbox/lat");
+    var latitude = info.GetXmlProperty("genxml/textbox/lat");
     var longitude = info.GetXmlProperty("genxml/textbox/long");
 }
 
 <script language="javascript" type="text/javascript">
 function initialize() {
 
-  var myLatlng = new google.maps.LatLng(@(lat),@(longitude));
+  var myLatlng = new google.maps.LatLng(@(latitude),@(longitude));
   var mapOptions = {
     zoom: @Model.GetSetting("zoom"),
     center: myLatlng,

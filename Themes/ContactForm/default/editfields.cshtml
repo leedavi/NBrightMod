@@ -1,29 +1,44 @@
-﻿@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
 @using System.Linq
+@using DotNetNuke.Services.Scheduling
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
 }
 
-<div class="buttons editdata">
-    <button id="return" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-triangle-left"></span>@ResourceKey("Edit.return")</button>
-</div>
+@EditButtons("r")
 
-<div>
-    <div>
-        <label>@ResourceKey("View.name")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/name")</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+        <div class="form-group">
+            <label>@ResourceKey("Edit.date")</label>
+            <div>@info.ModifiedDate</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("View.name")</label>
+            <div>
+              @ResourceKey("View.app" + info.GetXmlProperty("genxml/radiobuttonlist/rblapp"))
+              @info.GetXmlProperty("genxml/textbox/name")
+            </div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("View.tel")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/tel")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("View.email")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("View.message")</label>
+            <div>@BreakOf(info,"genxml/textbox/emailsendermsg")</div>
+        </div>
     </div>
-    <div>
-        <label>@ResourceKey("View.email")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
-    </div>
-    <div>
-        <label>@ResourceKey("View.message")</label>
-        <div>@info.GetXmlProperty("genxml/textbox/emailsendermsg")</div>
-    </div>
+</div>
 </div>

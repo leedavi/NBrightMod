@@ -123,4 +123,7 @@
   <data name="knowmore.Text" xml:space="preserve">
     <value>En savoir plus</value>
   </data>
+  <data name="viewgallery.Text" xml:space="preserve">
+    <value>Voir la galerie</value>
+  </data>
 </root>

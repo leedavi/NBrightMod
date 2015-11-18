@@ -141,4 +141,13 @@
   <data name="send.Text" xml:space="preserve">
     <value>Envoyer</value>
   </data>
+  <data name="app1.Text" xml:space="preserve">
+    <value>M.</value>
+  </data>
+  <data name="app2.Text" xml:space="preserve">
+    <value>Mme</value>
+  </data>
+  <data name="invalidemailmsg.Text" xml:space="preserve">
+    <value>You have entered an Invalid Email Address.</value>
+  </data>
 </root>

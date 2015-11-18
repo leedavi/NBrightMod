@@ -27,3 +27,7 @@
 .overlayicons {position: absolute;right: 5%;top: 5%;z-index: 1000;}
 .docselect {float:right;}
 .form-control{margin-bottom: inherit;}
+
+/* Forms */
+.nbm-checkbox label {padding-left:6px;font-weight:normal;}
+.nbm-rbl label {padding-left:6px;font-weight:normal;margin-right:10px;}

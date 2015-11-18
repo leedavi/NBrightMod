@@ -11,19 +11,9 @@
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.view.cshtml" + info.ModuleId)
 
-@{
-    var msg = "";
-    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
-    {
-        msg = ResourceKey("View.nosettings").ToString();
-    }
-        var divid = "NBrightMod" + @Model.GetSetting("modref");
-}
-@(msg) 
-
 <h1>@ResourceKey("View.gallery")</h1>
 
-<div id="@(divid)" class="gallery">
+<div class="gallery">
 
     @foreach (NBrightInfo x in Model.List)
         {

@@ -3,6 +3,7 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticles/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -25,7 +26,7 @@
         </div>
         <div class="formrow">
             <label>@ResourceKey("Edit.link")</label>
-            @RadioButtonList(info,"genxml/radiobuttonlist/rbllink","0,1,2,3","ResourceKey:Edit.linktypecsv","","0")
+            <div class="nbm-rbl">@RadioButtonList(info,"genxml/radiobuttonlist/rbllink","0,1,2,3","ResourceKey:Edit.linktypecsv","","0")</div>
         </div>
         <div class="formrow internallink" style="display:none;">
             <label>@ResourceKey("Edit.linktab")</label>

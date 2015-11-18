@@ -130,6 +130,7 @@
     </Content>
     <None Include="NBrightMod.dnn" />
     <Content Include="Themes\config\css\NBrightMod.css" />
+    <Content Include="Themes\config\js\jquery.validate.min.js" />
     <Content Include="Themes\config\js\nbrightajax.js" />
     <Content Include="Themes\config\js\Themes.js" />
     <Content Include="Themes\config\js\NBrightMod.js" />
@@ -182,6 +183,7 @@
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
     <None Include="Themes\ContactForm\default\editlist.cshtml" />
+    <None Include="Themes\ContactForm\default\editpageheader.cshtml" />
     <None Include="Themes\ContactForm\default\manageremail.cshtml" />
     <None Include="Themes\ContactForm\default\settings.cshtml" />
     <None Include="Themes\ContactForm\default\view.cshtml" />

@@ -1,22 +1,23 @@
 /* FLAT FORM */
 .contactform {margin:12px 0;max-width:260px;}
 .contactform * {-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
-.contactformfields input[type=text] {margin-bottom:3px;border:none;height:40px;padding-left:10px;background:#f7f7f7;color:#666666;font:inherit;}
-.contactformfields input[type=text]:focus {background:#eaeaea;}
+.contactformfields input[type=text], .contactformfields input[type=email] {margin-bottom:3px;border:none;height:40px;padding-left:10px;background:#f7f7f7;color:#666666;font:inherit;}
+.contactformfields input[type=text]:focus, .contactformfields input[type=email]:focus {background:#eaeaea;}
 .contactformfields textarea {margin-bottom:6px;border:none;padding:10px;background:#f7f7f7;color:#666666;font:inherit;}
-.contactformfields input[type=text], .contactformfields textarea {width:100%;}
+.contactformfields input[type=text], .contactformfields input[type=email], .contactformfields textarea {width:100%;}
 .cf-rbl {margin-bottom:3px;}
-.requiredfield {position:relative;}
-.requiredfield span {position:absolute;top:12px;right:10px;text-indent:-9000px;display:block;width:16px;height:16px;background:url(../img/invalid.png) no-repeat;}
-.formerror {color:#d45252 !important;background:url(../img/asterisk.png) no-repeat center left;padding-left:16px;}
-/* overwrite default.css */
-.dnnLabel {
-    display: block;
-    float: none;
-    width: auto;
-    padding-right: 0;
-    margin-right: 0;
-    text-align: left;
+.requiredfield input[type=text], .requiredfield input[type=email], .requiredfield textarea {background:#f7f7f7 url("../img/asterisk.png") no-repeat 98% center;}
+
+/* JQuery Validate */
+input.error {
+  background: #ffd9d9 !important;
+}
+label.error {
+  background: url("../img/invalid.png") no-repeat 0 1px;
+  color: #b81900;
+  font-size: 14px;
+  line-height: 14px;
+  padding-left: 21px;
 }
 
 /* Loading */
