@@ -110,6 +110,7 @@
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\Links\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\HtmlContent\resx\Settings.ascx.resx" />
@@ -195,6 +196,7 @@
     <None Include="Themes\Documents\default\settings.cshtml" />
     <None Include="Themes\Documents\default\view.cshtml" />
     <None Include="Themes\Documents\default\viewpageheader.cshtml" />
+    <None Include="Themes\FancyboxGallerySat\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editbody.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editfields.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editlist.cshtml" />
@@ -224,6 +226,12 @@
     <None Include="Themes\LinksDownloads\default\editlist.cshtml" />
     <None Include="Themes\LinksDownloads\default\editpageheader.cshtml" />
     <None Include="Themes\LinksDownloads\default\view.cshtml" />
+    <None Include="Themes\Links\default\editbody.cshtml" />
+    <None Include="Themes\Links\default\editfields.cshtml" />
+    <None Include="Themes\Links\default\editlist.cshtml" />
+    <None Include="Themes\Links\default\editpageheader.cshtml" />
+    <None Include="Themes\Links\default\view.cshtml" />
+    <None Include="Themes\OwlSliderSat\default\view.cshtml" />
     <None Include="Themes\OwlSlider\default\editpageheader.cshtml" />
     <None Include="Themes\OwlSlider\default\editbody.cshtml" />
     <None Include="Themes\OwlSlider\default\editfields.cshtml" />
@@ -257,7 +265,7 @@
     <None Include="Themes\SimpleArticles\default\viewpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\editbody.cshtml" />
     <None Include="Themes\SocialLinks\default\editfields.cshtml" />
-    <None Include="Themes\SocialLinks\default\editlist.cshtml" />
+    <None Include="Themes\SocialLinks\default\editpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />

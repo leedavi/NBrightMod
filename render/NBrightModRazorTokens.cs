@@ -180,7 +180,7 @@ namespace NBrightMod.render
                 }
                 if (button.ToLower() == "uploadimage" || button.ToLower() == "ui")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-success imagelistclick' itemid='" + info.ItemID + "' data-toggle='modal' data-target='#NBrightModModal' data-placement='top' data-original-title='" + ResourceKey("Edit.browse") + "'><span class='glyphicon glyphicon-folder-open' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-success imagelistclick'  data-tooltip='tooltip' itemid='" + info.ItemID + "' data-toggle='modal' data-target='#NBrightModModal' data-placement='top' data-original-title='" + ResourceKey("Edit.browse") + "'><span class='glyphicon glyphicon-folder-open' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "sortup" || button.ToLower() == "su")
                 {
@@ -192,11 +192,11 @@ namespace NBrightMod.render
                 }
                 if (button.ToLower() == "deleteelement" || button.ToLower() == "de")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-danger removeelement' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-danger removeelement' itemid='" + info.ItemID + "' data-tooltip='tooltip' data-placement='top' data-original-title='" + ResourceKey("Edit.delete") + "'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>";
                 }
                 if (button.ToLower() == "uploaddoc" || button.ToLower() == "ud")
                 {
-                    strOut += "<button type='button' class='btn btn-sm btn-success filelistclick' itemid='" + info.ItemID + "' data-toggle='modal' data-target='#NBrightModModal' data-placement='top' data-original-title='" + ResourceKey("Edit.browse") + "'><span class='glyphicon glyphicon-folder-open'></span></button>";
+                    strOut += "<button type='button' class='btn btn-sm btn-success filelistclick'  data-tooltip='tooltip' itemid='" + info.ItemID + "' data-toggle='modal' data-target='#NBrightModModal' data-placement='top' data-original-title='" + ResourceKey("Edit.browse") + "'><span class='glyphicon glyphicon-folder-open'></span></button>";
                 }
                 if (button.ToLower() == "deleteitem" || button.ToLower() == "di")
                 {

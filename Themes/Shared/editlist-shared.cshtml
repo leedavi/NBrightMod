@@ -15,6 +15,9 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", Model.GetSetting("preprocesskey"))
 
+<!-- Required to keep track of itemid selected oon list for ajax action, NBrightMod.js will insert the select itemid into this field -->
+<input id="selecteddeleteid" type="hidden" value="" />
+
 <div class="table-responsive">
     <table id="editdatalist" class="table table-striped">
         <tbody>

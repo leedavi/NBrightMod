@@ -1,0 +1,34 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Links/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang" ></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s,d,r")
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12">
+    <div class="box">
+        <div class="form-group">
+            <label>@ResourceKey("Edit.title")</label>
+            @NBrightTextBox(info, "genxml/lang/genxml/textbox/title")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Edit.URL")</label>
+            @NBrightTextBox(info, "genxml/textbox/url")
+            <div class="nbm-checkbox">@CheckBox(info,"genxml/checkbox/newwindow","ResourceKey:Edit.notnewwindow","")</div>
+        </div>
+    </div>
+  </div>
+</div>

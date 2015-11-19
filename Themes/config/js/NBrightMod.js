@@ -75,7 +75,8 @@ function NBrightMod_nbxgetCompleted(e) {
     ActivateFileReturn(e);
 
     if (e.cmd == 'deleterecord') {
-        $('#selecteditemid').val(''); // clear sleecteditemid, it now doesn;t exists.
+        $('#selecteddeleteid').val(''); // clear, it now doesn;t exists.
+        $('#selecteditemid').val(''); // clear, it now doesn;t exists.
         // relist after delete
         NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
     }
@@ -118,7 +119,7 @@ function NBrightMod_nbxgetCompleted(e) {
         });
 
         $('.deleteitemclick').click(function () {
-            $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
+            $('#selecteddeleteid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being deleted
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 

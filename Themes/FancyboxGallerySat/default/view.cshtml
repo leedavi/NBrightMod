@@ -1,0 +1,34 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallerySat.view.cshtml" + info.ModuleId)
+
+<h4>@ResourceKey("View.gallery")</h4>
+
+<div class="gallerysat">
+
+    @foreach (NBrightInfo infoitem in Model.List)
+        {
+        var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        if (imageurl != "")
+        {
+        var width = Model.GetSetting("width");
+        var height = Model.GetSetting("height");
+        var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
+        <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=88&h=57" alt="@(title)" />
+        }
+        }
+
+<div class="clearfix"></div>
+
+<a href="/galerie.aspx">@ResourceKey("View.viewgallery")</a>
+
+</div>

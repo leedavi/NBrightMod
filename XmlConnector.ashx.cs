@@ -610,7 +610,8 @@ namespace Nevoweb.DNN.NBrightMod
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
-                var selecteditemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
+                var selecteddeleteid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteddeleteid");
+                if (Utils.IsNumeric(selecteddeleteid)) itemid = selecteddeleteid;
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
                 if (editlang == "") editlang = _lang;

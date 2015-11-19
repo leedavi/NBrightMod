@@ -1,0 +1,31 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Links/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Links.view.cshtml" + info.ModuleId)
+
+<h2>@ResourceKey("Edit.usefullinks")</h2>
+
+<ul>
+    
+    @foreach (NBrightInfo infoitem in Model.List)
+    {
+        var URL = infoitem.GetXmlProperty("genxml/textbox/url");
+        if (infoitem.GetXmlPropertyBool("genxml/checkbox/newwindow"))
+        {
+            <li><a href="@(URL)">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a></li>
+        }
+        else
+        {
+            <li><a href="@(URL)" target="_blank">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a></li>
+        }
+    }
+
+</ul>
