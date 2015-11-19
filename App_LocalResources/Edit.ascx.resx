@@ -258,4 +258,7 @@
   <data name="alternativetext.Text" xml:space="preserve">
     <value>Alternative text</value>
   </data>
+  <data name="saveexit.Text" xml:space="preserve">
+    <value>Save and Exit</value>
+  </data>
 </root>

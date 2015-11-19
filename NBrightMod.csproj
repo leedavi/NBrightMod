@@ -196,6 +196,7 @@
     <None Include="Themes\Documents\default\settings.cshtml" />
     <None Include="Themes\Documents\default\view.cshtml" />
     <None Include="Themes\Documents\default\viewpageheader.cshtml" />
+    <None Include="Themes\FancyboxGallerySat\default\settings.cshtml" />
     <None Include="Themes\FancyboxGallerySat\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editbody.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editfields.cshtml" />

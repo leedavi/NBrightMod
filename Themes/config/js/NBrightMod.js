@@ -29,7 +29,8 @@ function NBrightMod_nbxgetCompleted(e) {
         }
     }
 
-    if (e.cmd == 'savelistdata') {
+    if (e.cmd == 'savelistdata' || e.cmd == 'savedataexit') {
+        $('#selecteditemid').val('');
         // reload data, needed for after langauge switch
         NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
     }
@@ -46,6 +47,10 @@ function NBrightMod_nbxgetCompleted(e) {
 
         $('#savedata').click(function () {
             savedata();
+        });
+
+        $('#savedataexit').click(function () {
+            savedataexit();
         });
 
         $('#return').click(function() {
@@ -137,6 +142,14 @@ function savedata() {
     NBrightMod_nbxget('savedata', '#editdata');
 }
 
+function savedataexit() {
+    var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    $('#xmlupdateimages').val(xmlrtn);
+    $('#xmlupdatedocs').val(xmlrtn2);
+    NBrightMod_nbxget('savedataexit', '#editdata');
+}
+
 function moveUp(item) {
     var prev = item.prev();
     if (typeof $(item).attr("fixedsort") !== typeof undefined && $(item).attr("fixedsort") !== false) return;
@@ -188,6 +201,7 @@ function ActivateFileLoader() {
         $('#displayreturn').val("list");
         $('#uploadtype').val("doc");
         $('.fileinput').show();
+        $('#fileselectlist').children().remove();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
         $("#NBrightModModal").appendTo("body");
     });
@@ -197,6 +211,7 @@ function ActivateFileLoader() {
         $('#displayreturn').val("detail");
         $('#uploadtype').val("doc");
         $('.fileinput').show();
+        $('#fileselectlist').children().remove();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
         $("#NBrightModModal").appendTo("body");
     });
@@ -207,6 +222,7 @@ function ActivateFileLoader() {
         $('#displayreturn').val("list");
         $('#uploadtype').val("image");
         $('.fileinput').show();
+        $('#fileselectlist').children().remove();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
         $("#NBrightModModal").appendTo("body");
     });
@@ -216,6 +232,7 @@ function ActivateFileLoader() {
         $('#displayreturn').val("detail");
         $('#uploadtype').val("image");
         $('.fileinput').show();
+        $('#fileselectlist').children().remove();
         NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
         $("#NBrightModModal").appendTo("body");
     });

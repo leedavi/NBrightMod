@@ -141,4 +141,10 @@
   <data name="uploadfolder.Text" xml:space="preserve">
     <value>Upload Folder</value>
   </data>
+  <data name="returnlimit.Help" xml:space="preserve">
+    <value>Number of records to display</value>
+  </data>
+  <data name="returnlimit.Text" xml:space="preserve">
+    <value>Return Limit</value>
+  </data>
 </root>

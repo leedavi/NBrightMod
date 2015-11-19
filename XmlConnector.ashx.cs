@@ -105,6 +105,15 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = SaveData(context);
                     }
                     break;
+                case "savedataexit":
+                    if (LocalUtils.CheckRights())
+                    {
+                        SaveImages(context);
+                        SaveDocs(context);
+                        SaveData(context);
+                        strOut = "";
+                    }
+                    break;
                 case "savelistdata":
                     if (LocalUtils.CheckRights())
                     {

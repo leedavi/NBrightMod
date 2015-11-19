@@ -34,14 +34,14 @@ function NBrightMod_nbxget(cmd, selformdiv, target, selformitemdiv, appendreturn
 	            cmd: cmd
 	        });
 	    }
-	    if ((cmd != 'addselectedfiles') && (cmd != 'replaceselectedfiles')) {
-            $('.processing').hide('slow');
+	    if ((cmd != 'addselectedfiles') && (cmd != 'replaceselectedfiles') && (cmd != 'deleterecord') && (cmd != 'savedataexit')) {
+            $('.processing').hide();
         }
     });
 
 	request.fail(function (jqXHR, textStatus) {
 		alert("Request failed: " + textStatus);
-		$('.processing').hide('slow');
+		$('.processing').hide();
 	});
 }
 

@@ -108,7 +108,13 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
             // get data list
-            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
+            var returnLimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
+            var pageSize = settings.GetXmlPropertyInt("genxml/textbox/pagesize");
+            var pgnum = Utils.RequestQueryStringParam(Request, "pgnum");
+            var pageNumber = 0;
+            if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
+
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
 
             var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();

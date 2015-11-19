@@ -133,6 +133,10 @@ namespace NBrightMod.render
                 {
                     strOut += "<button id='savedata' type='button' class='btn btn-success'><span class='glyphicon glyphicon-save'></span> " + ResourceKey("Edit.save") + "</button>";
                 }
+                if (button.ToLower() == "saveexit" || button.ToLower() == "sx")
+                {
+                    strOut += "<button id='savedataexit' type='button' class='btn btn-success'><span class='glyphicon glyphicon-save'></span> " + ResourceKey("Edit.saveexit") + "</button>";
+                }
                 if (button.ToLower() == "delete" || button.ToLower() == "d")
                 {
                     strOut += "<button id='delete' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span> " + ResourceKey("Edit.delete") + "</button>";
