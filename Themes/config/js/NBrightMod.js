@@ -29,9 +29,12 @@ function NBrightMod_nbxgetCompleted(e) {
         }
     }
 
-    if (e.cmd == 'savelistdata' || e.cmd == 'savedataexit') {
+    if (e.cmd == 'savelistdata') {
+        NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
+    }
+
+    if (e.cmd == 'savedataexit') {
         $('#selecteditemid').val('');
-        // reload data, needed for after langauge switch
         NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
     }
 
