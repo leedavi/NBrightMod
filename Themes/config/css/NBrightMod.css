@@ -13,6 +13,7 @@
 .NBM .form-group {overflow: hidden;}/* Shouldn't need this but do */
 .align_right {text-align:right;}
 .buttons {margin-bottom:20px;}
+.buttons, .actionbuttons {white-space:nowrap;}
 .buttons button, .actionbuttons button {margin:0 5px 0 0;}
 .NewspaperLayout img {margin:0 10px 0 3px;}
 
