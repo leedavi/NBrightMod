@@ -174,12 +174,15 @@ namespace NBrightMod.common
 
         public static NBrightInfo GetSettings(String moduleid)
         {
+            var rtnCache = Utils.GetCache("nbrightmodsettings*" + moduleid);
+            if (rtnCache != null) return (NBrightInfo)rtnCache;
             // get template
             if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
             {
                 var objCtrl = new NBrightDataController();
                 var dataRecord = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
                 if (dataRecord == null) dataRecord = new NBrightInfo(true);
+                Utils.SetCache("nbrightmodsettings*" + moduleid, dataRecord);
                 return dataRecord;
             }
             return new NBrightInfo(true);
@@ -295,7 +298,7 @@ namespace NBrightMod.common
             if (fullTemplName.Split('.').Length == 2) fullTemplName = theme + "." + fullTemplName;
 
             // get cached data if there
-            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName + moduleid);
+            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  // NOTE: preprocess doesn't use moduleid
             if (cachedlist != null) return cachedlist;
 
             // build cache data from template.
@@ -312,14 +315,16 @@ namespace NBrightMod.common
                 try
                 {
                     // do razor and cache preprocessmetadata
-                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName + moduleid, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    // if we have no preprocess items, we don;t want to run this again, so put the empty dic into cache.
+                    if (cachedlist.Count == 0) Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
                 }
                 catch (Exception ex)
                 {
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName + moduleid);
+                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
             }
             return cachedlist;
         }
