@@ -112,6 +112,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     {
                         var nbi = new NBrightInfo();
                         nbi.FromXmlItem(xmlNod1.OuterXml);
+                        nbi.ItemID = -1; // new item
                         nbi.PortalId = objModInfo.PortalID;
                         nbi.ModuleId = moduleId;
 
@@ -164,6 +165,18 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                     }
                                 }
                                 lp += 1;
+                            }
+                        }
+
+                        // get new GUIDKey for settings records
+                        if (nbi.TypeCode == "SETTINGS")
+                        {
+                            // check to seee if it exists, we only want to give a new modref if we have a duplicate. (Clones in the same portal)
+                            if (objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", nbi.GUIDKey) != null)
+                            {
+                                var gid = Utils.GetUniqueKey();
+                                nbi.GUIDKey = gid;
+                                nbi.SetXmlProperty("genxml/hidden/modref", gid);
                             }
                         }
 
