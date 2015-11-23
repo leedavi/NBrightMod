@@ -9,7 +9,7 @@
 }
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.view.cshtml" + info.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.view.cshtml", Model.ModuleId.ToString(""))
 
 <h1>@ResourceKey("View.gallery")</h1>
 

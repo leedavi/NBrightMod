@@ -11,7 +11,7 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "HtmlContent.view.cshtml" + info.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "HtmlContent.view.cshtml", Model.ModuleId.ToString(""))
 
 
 

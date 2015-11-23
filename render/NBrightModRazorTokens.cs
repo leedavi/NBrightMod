@@ -60,6 +60,7 @@ namespace NBrightMod.render
         public IEncodedString RenderTemplate(String templateRelPath, NBrightRazor model)
         {
             var TemplateData = "";
+            var strOut = "";
             var templatePath = HttpContext.Current.Server.MapPath(templateRelPath);
             if (File.Exists(templatePath))
             {
@@ -73,9 +74,18 @@ namespace NBrightMod.render
                 }
                 streamReader.Close();
                 inputStream.Close();
+
+                if (TemplateData.Contains("AddPreProcessMetaData("))
+                {
+                    // do razor and cache preprocessmetadata
+                    // Use the filename to link the preprocess data in cache, this shoud have been past as the param on the @AddPreProcessMetaData razor token in hte template.
+                    var razorTempl = LocalUtils.RazorRender(model, TemplateData, "preprocessmetadata" + Path.GetFileName(templatePath), false);
+                }
+
+                strOut = LocalUtils.RazorRender(model, TemplateData, "", false);
+
             }
 
-                var strOut = LocalUtils.RazorRender(model, TemplateData, "", false);
             return new RawString(strOut);
         }
 

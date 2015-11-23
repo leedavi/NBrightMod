@@ -2,12 +2,11 @@
 @using NBrightDNN
 @{
     var info = (NBrightInfo)Model.List[0];
-    // need to create a preprocess key so that metadata is cached against this template and not the sub-template called by @RenderTemplate
-    Model.Settings.Add("preprocesskey", Model.GetSetting("themefolder") + ".editlist.cshtml" + info.ModuleId);
     Model.Settings.Add("actionbuttons", "e,su,sd,di");
 }
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "LinksDownloads.editlist.cshtml", Model.ModuleId.ToString(""))
 
 @EditCultureSelect("flag-list", "selecteditlistlanguage")
 

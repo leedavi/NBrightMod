@@ -4,7 +4,7 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticlesSat/resx/")
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml" + Model.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
 
 <h4>@ResourceKey("View.news")</h4>
 <p>

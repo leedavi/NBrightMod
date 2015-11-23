@@ -5,7 +5,7 @@
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/OwlSlider/resx/")
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml" + Model.ModuleId)
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "OwlSlider.view.cshtml", Model.ModuleId.ToString(""))
 
 @{
     var msg = "";

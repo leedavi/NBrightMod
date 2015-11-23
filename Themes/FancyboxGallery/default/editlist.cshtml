@@ -9,6 +9,7 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGalery/resx/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.editlist.cshtml", Model.ModuleId.ToString(""))
 
 @EditCultureSelect("flag-list", "selecteditlistlanguage")
 

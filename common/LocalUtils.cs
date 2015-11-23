@@ -182,7 +182,11 @@ namespace NBrightMod.common
                 var objCtrl = new NBrightDataController();
                 var dataRecord = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
                 if (dataRecord == null) dataRecord = new NBrightInfo(true);
-                Utils.SetCache("nbrightmodsettings*" + moduleid, dataRecord);
+                if (dataRecord.TypeCode == "SETTINGS")
+                {
+                    // only add to cache if we have a valid settings record, LocalUtils.IncludePageHeaders may be called before the creation of the settings.
+                    Utils.SetCache("nbrightmodsettings*" + moduleid, dataRecord);
+                }
                 return dataRecord;
             }
             return new NBrightInfo(true);
@@ -297,14 +301,16 @@ namespace NBrightMod.common
             var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             if (fullTemplName.Split('.').Length == 2) fullTemplName = theme + "." + fullTemplName;
 
+            fullTemplName = fullTemplName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
+
             // get cached data if there
-            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  // NOTE: preprocess doesn't use moduleid
+            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  
             if (cachedlist != null) return cachedlist;
 
             // build cache data from template.
             cachedlist = new Dictionary<String, String>();
             var razorTempl = LocalUtils.GetTemplateData(fullTemplName, lang, settignInfo.ToDictionary());
-            if (razorTempl != "")
+            if (razorTempl != "" && razorTempl.Contains("AddPreProcessMetaData("))
             {
                 var obj = new NBrightInfo(true);
                 obj.Lang = lang;
@@ -324,7 +330,7 @@ namespace NBrightMod.common
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
+                cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
             }
             return cachedlist;
         }
