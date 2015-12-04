@@ -252,7 +252,6 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
-                var objCtrl = new NBrightDataController();
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
@@ -265,7 +264,6 @@ namespace Nevoweb.DNN.NBrightMod
                     var nbi = LocalUtils.GetSettings(moduleid);
                     if (nbi.ModuleId == 0) // new setting record
                     {
-                        nbi.SetXmlProperty("genxml/textbox/uploadfolder", "images" + moduleid);
                         nbi = CreateSettingsInfo(moduleid,nbi);
                     }
                     // get data passed back by ajax
@@ -291,11 +289,10 @@ namespace Nevoweb.DNN.NBrightMod
                     if (nbi.GetXmlProperty("genxml/hidden/modref") == "") nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
                     if (nbi.TextData == "") nbi.TextData = "NBrightMod";
 
-                    // change for module upload folder (default to module specific)
                     var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/settinguploadfolder");
                     if (settingUploadFolder == "")
                     {
-                        settingUploadFolder = "images" + moduleid;
+                        settingUploadFolder = "images";
                         nbi.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
                     }
                     var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
@@ -304,10 +301,13 @@ namespace Nevoweb.DNN.NBrightMod
                     nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
                     nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
 
-
-
-                    // save settings
-                    objCtrl.Update(nbi);
+                    var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                    foreach (var curcode in cultureList)
+                    {
+                        var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
+                        nbi.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
+                    }
+                    LocalUtils.UpdateSettings(nbi);
 
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
 
@@ -336,7 +336,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
                 {
                     // get DB record
-                    var nbi = LocalUtils.GetSettings(moduleid);
+                    var nbi = LocalUtils.GetSettings(moduleid,false);
                     if (nbi.ItemID > 0) objCtrl.Delete(nbi.ItemID);
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
                 }
@@ -385,46 +385,17 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
         
-        private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo nbi)
+        private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo settings)
         {
             var modref = Utils.GetUniqueKey(10);
-
-            var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
-            var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
-            Utils.CreateFolder(tempFolderMapPath);
-
-            var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/uploadfolder");
-            if (settingUploadFolder == "") settingUploadFolder = "images" + modref;
-            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
-            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
-            Utils.CreateFolder(uploadFolderMapPath);
-
-            var uploadDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
-            var uploadDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
-            Utils.CreateFolder(uploadDocFolderMapPath);
-
-            var objCtrl = new NBrightDataController();
-            nbi = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
-            if (nbi == null)
-            {
-                nbi = new NBrightInfo(true); // populate empty XML so we can update nodes.
-                nbi.GUIDKey = "";
-                nbi.PortalId = PortalSettings.Current.PortalId;
-                nbi.ModuleId = Convert.ToInt32(moduleid);
-                nbi.TypeCode = "SETTINGS";
-                nbi.Lang = "";
-            }
             //rebuild xml
-            nbi.ModuleId = Convert.ToInt32(moduleid);
-            nbi.SetXmlProperty("genxml/tempfolder", tempFolder);
-            nbi.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
-            nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
-            nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
-            nbi.SetXmlProperty("genxml/uploaddocfolder", uploadDocFolder);
-            nbi.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
-            nbi.SetXmlProperty("genxml/hidden/modref", modref);
-            nbi.GUIDKey = modref;
-            return nbi;
+            settings = LocalUtils.CreateRequiredUploadFolders(settings);
+            settings.PortalId = PortalSettings.Current.PortalId;
+            settings.ModuleId = Convert.ToInt32(moduleid);
+            settings.TypeCode = "SETTINGS";
+            settings.Lang = "";
+            settings.GUIDKey = modref;
+            return settings;
         }
 
         private String GetData(HttpContext context, bool clearCache = false)
@@ -546,6 +517,15 @@ namespace Nevoweb.DNN.NBrightMod
 
                         LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
 
+                        // clear any razor db cache
+                        var settings = LocalUtils.GetSettings(moduleid);
+                        var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                        foreach (var curcode in cultureList)
+                        {
+                            var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
+                            settings.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
+                        }
+                        LocalUtils.UpdateSettings(settings);
                     }
                 }
                 return "";
@@ -599,7 +579,19 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     lp += 1;
                 }
-                if (moduleid != "") LocalUtils.RazorClearCache(moduleid);
+                if (moduleid != "")
+                {
+                    LocalUtils.RazorClearCache(moduleid);
+                    // clear any razor db cache
+                    var settings = LocalUtils.GetSettings(moduleid);
+                    var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                    foreach (var curcode in cultureList)
+                    {
+                        var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
+                        settings.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
+                    }
+                    LocalUtils.UpdateSettings(settings);
+                }
                 return "";
             }
             catch (Exception ex)

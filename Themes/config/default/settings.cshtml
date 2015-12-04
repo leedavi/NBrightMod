@@ -28,7 +28,7 @@
 
     <div>
         <div id="themedata">
-            <input id="moduleid" type="hidden" value="@info.ModuleId" />
+            <input id="moduleid" type="hidden" value="@info.ModuleId"/>
             <div>
                 @DnnLabel("lblthemefolder", "Settings.themefolder")
                 @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
@@ -41,7 +41,16 @@
                 @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
                 @TextBox(info, "genxml/textbox/settinguploadfolder")
             </div>
+            <div>
+                @DnnLabel("lblDBcache", "Settings.dbcache")
+                @CheckBox(info, "genxml/checkbox/dbcache", "", "", true)
+            </div>
+            <div>
+                <br/>
+                @ResourceKey("Settings.dbcachemsg")
+            </div>
         </div>
+        <hr/>
         <div class="buttons importdata">
             <button id="import" type="button" class="dnnSecondaryAction">@ResourceKey("Edit.import")</button>
         </div>

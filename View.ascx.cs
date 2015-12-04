@@ -82,41 +82,57 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
+            var dbcache = settings.GetXmlPropertyBool("genxml/checkbox/dbcache");
 
-            // preprocess razor template to get meta data for data select into cache.
-            var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
-            var orderby = "";
-            if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
-            var filter = "";
-            if (cachedlist != null && cachedlist.ContainsKey("filter")) filter = cachedlist["filter"];
+            var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
+            var strOut = "";
+            if (dbcache) strOut = settings.GetXmlProperty("genxml/" + dbcachedatakey);
 
-            // get source moduleid
-            var sourcemodid = Convert.ToInt32(ModuleId);
-            if (settings.GUIDKey != settings.GetXmlProperty("genxml/dropdownlist/datasourceref") && settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != "")
+            if (strOut == "") // check if we already have a DB razor cache
             {
-                var sourcesettings = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", settings.GetXmlProperty("genxml/dropdownlist/datasourceref"));
-                if (sourcesettings == null)
+
+                // preprocess razor template to get meta data for data select into cache.
+                var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
+                var orderby = "";
+                if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
+                var filter = "";
+                if (cachedlist != null && cachedlist.ContainsKey("filter")) filter = cachedlist["filter"];
+
+                // get source moduleid
+                var sourcemodid = Convert.ToInt32(ModuleId);
+                if (settings.GUIDKey != settings.GetXmlProperty("genxml/dropdownlist/datasourceref") && settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != "")
                 {
-                    // source module may have been removed. so reset it.
-                    settings.SetXmlProperty("genxml/dropdownlist/datasourceref", "");
-                    objCtrl.Update(settings);
+                    var sourcesettings = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", settings.GetXmlProperty("genxml/dropdownlist/datasourceref"));
+                    if (sourcesettings == null)
+                    {
+                        // source module may have been removed. so reset it.
+                        settings.SetXmlProperty("genxml/dropdownlist/datasourceref", "");
+                        LocalUtils.UpdateSettings(settings);
+                    }
+                    else
+                    {
+                        sourcemodid = sourcesettings.ModuleId;
+                    }
                 }
-                else
+
+                // get data list
+                var returnLimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
+                var pageSize = settings.GetXmlPropertyInt("genxml/textbox/pagesize");
+                var pgnum = Utils.RequestQueryStringParam(Request, "pgnum");
+                var pageNumber = 0;
+                if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
+
+                var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
+                strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
+
+                if (dbcache)
                 {
-                    sourcemodid = sourcesettings.ModuleId;                    
+                    // save razor compiled output to DB cache, for performace
+                    settings.SetXmlProperty("genxml/" + dbcachedatakey, strOut);
+                    LocalUtils.UpdateSettings(settings);
                 }
             }
 
-            // get data list
-            var returnLimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
-            var pageSize = settings.GetXmlPropertyInt("genxml/textbox/pagesize");
-            var pgnum = Utils.RequestQueryStringParam(Request, "pgnum");
-            var pageNumber = 0;
-            if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
-
-            var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
-
-            var strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
             var lit = new Literal();
             lit.Text = strOut;
             phData.Controls.Add(lit);

@@ -147,4 +147,10 @@
   <data name="returnlimit.Text" xml:space="preserve">
     <value>Return Limit</value>
   </data>
+  <data name="dbcache.Text" xml:space="preserve">
+    <value>Razor Output Cache</value>
+  </data>
+  <data name="dbcachemsg.Text" xml:space="preserve">
+    <value>Razor Compile Cache will save the compiled razor output to the DB, this will only work for static content.  For dynamic content which must change each time the page is refreshed (e.g. username, userid), this option needs to be turned off.</value>
+  </data>
 </root>

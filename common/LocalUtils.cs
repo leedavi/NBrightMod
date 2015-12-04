@@ -172,10 +172,21 @@ namespace NBrightMod.common
             return false;
         }
 
-        public static NBrightInfo GetSettings(String moduleid)
+        public static void UpdateSettings(NBrightInfo settings)
+        {
+            // get template
+            if (settings.ModuleId > 0)
+            {
+                var objCtrl = new NBrightDataController();
+                objCtrl.Update(settings);
+                Utils.RemoveCache("nbrightmodsettings*" + settings.ModuleId.ToString(""));
+            }
+        }
+
+        public static NBrightInfo GetSettings(String moduleid,Boolean useCache = true)
         {
             var rtnCache = Utils.GetCache("nbrightmodsettings*" + moduleid);
-            if (rtnCache != null) return (NBrightInfo)rtnCache;
+            if (rtnCache != null && useCache) return (NBrightInfo)rtnCache;
             // get template
             if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
             {
@@ -369,6 +380,31 @@ namespace NBrightMod.common
             return result;
         }
 
+        public static NBrightInfo CreateRequiredUploadFolders(NBrightInfo settings)
+        {
+            var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
+            var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
+            Utils.CreateFolder(tempFolderMapPath);
+
+            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/uploadfolder");
+            if (settingUploadFolder == "") settingUploadFolder = "images";
+            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
+            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
+            Utils.CreateFolder(uploadFolderMapPath);
+
+            var uploadDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
+            var uploadDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
+            Utils.CreateFolder(uploadDocFolderMapPath);
+
+            settings.SetXmlProperty("genxml/tempfolder", tempFolder);
+            settings.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
+            settings.SetXmlProperty("genxml/uploadfolder", uploadFolder);
+            settings.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+            settings.SetXmlProperty("genxml/uploaddocfolder", uploadDocFolder);
+            settings.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
+
+            return settings;
+        }
 
         #endregion
 

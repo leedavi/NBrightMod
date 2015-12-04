@@ -44,31 +44,17 @@ namespace Nevoweb.DNN.NBrightMod.Components
             if (objModInfo != null)
             {
                 var portalId = objModInfo.PortalID;
-                var objTabCtrl = new TabController();
                 var objCtrl = new NBrightDataController();
                 var l = objCtrl.GetList(portalId, ModuleId, "NBrightModDATA");
                 foreach (var nbi in l)
                 {
-                    if (Utils.IsNumeric(nbi.GUIDKey))
-                    {
-                        var tabInfo = objTabCtrl.GetTab(Convert.ToInt32(nbi.GUIDKey), portalId, true);
-                        if (tabInfo != null)
-                        {
-                            xmlOut += nbi.ToXmlItem();
-                        }
-                    }
+                    nbi.GUIDKey = nbi.ItemID.ToString(""); // set the GUIDKey to the current itemid, so we can relink lang record on import.
+                    xmlOut += nbi.ToXmlItem();
                 }
                 var l2 = objCtrl.GetList(portalId, ModuleId, "NBrightModDATALANG");
                 foreach (var nbi in l2)
                 {
-                    if (Utils.IsNumeric(nbi.GUIDKey))
-                    {
-                        var tabInfo = objTabCtrl.GetTab(Convert.ToInt32(nbi.GUIDKey), portalId, true);
-                        if (tabInfo != null)
-                        {
                             xmlOut += nbi.ToXmlItem();
-                        }
-                    }
                 }
 
                 var settingsInfo = LocalUtils.GetSettings(ModuleId.ToString());
@@ -172,16 +158,36 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         if (nbi.TypeCode == "SETTINGS")
                         {
                             // check to seee if it exists, we only want to give a new modref if we have a duplicate. (Clones in the same portal)
+                            // Imported settings may have duplicate guidkey in other portals, this is so data source option still works.
                             if (objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", nbi.GUIDKey) != null)
                             {
                                 var gid = Utils.GetUniqueKey();
                                 nbi.GUIDKey = gid;
                                 nbi.SetXmlProperty("genxml/hidden/modref", gid);
                             }
+
+                            // set new upload paths
+                            nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
+
                         }
 
                         objCtrl.Update(nbi);
                     }
+
+                }
+
+                // realign the language records
+                var link1 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleId, "NBrightModDATA");
+                foreach (var nbi in link1)
+                {
+                    var link2 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleId, "NBrightModDATALANG", " and NB1.parentitemid = " + nbi.GUIDKey);
+                    foreach (var nbi2 in link2)
+                    {
+                        nbi2.ParentItemId = nbi.ItemID;
+                        objCtrl.Update(nbi2);
+                    }
+                    nbi.GUIDKey = "";
+                    objCtrl.Update(nbi);
                 }
 
             }
