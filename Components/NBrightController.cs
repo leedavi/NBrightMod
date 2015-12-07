@@ -88,6 +88,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
             var objModInfo = objModCtrl.GetModule(moduleId, Null.NullInteger, true);
             if (objModInfo != null)
             {
+
                 // import All records
                 xmlDoc.LoadXml(content);
 
@@ -165,6 +166,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                 nbi.GUIDKey = gid;
                                 nbi.SetXmlProperty("genxml/hidden/modref", gid);
                             }
+                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", "");  // clear singlepageitemid, this will always change on import and needs to be reset.
 
                             // set new upload paths
                             nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
@@ -189,6 +191,20 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     nbi.GUIDKey = "";
                     objCtrl.Update(nbi);
                 }
+
+                // reset setting data for import
+                var settings = LocalUtils.GetSettings(moduleId.ToString(""), false);
+                if (settings != null)
+                {
+                    var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                    if (newsinglepageflag && link1.Count > 0)
+                    {
+                        // set single item to first item in list.
+                        settings.SetXmlProperty("genxml/hidden/singlepageitemid", link1[0].ItemID.ToString(""));
+                        objCtrl.Update(settings);
+                    }
+                }
+
 
             }
 

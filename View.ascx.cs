@@ -86,7 +86,7 @@ namespace Nevoweb.DNN.NBrightMod
 
             var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
             var strOut = "";
-            if (dbcache) strOut = settings.GetXmlProperty("genxml/" + dbcachedatakey);
+            //if (dbcache) strOut = settings.GetXmlProperty("genxml/" + dbcachedatakey);
 
             if (strOut == "") // check if we already have a DB razor cache
             {
@@ -127,9 +127,11 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (dbcache)
                 {
+                    // DB caching has been removed for now, the CDATA wrapper does not work on saving to the settings record and hence we get an invliad XML record.
+
                     // save razor compiled output to DB cache, for performace
-                    settings.SetXmlProperty("genxml/" + dbcachedatakey, strOut);
-                    LocalUtils.UpdateSettings(settings);
+                    //settings.SetXmlProperty("genxml/" + dbcachedatakey, strOut);
+                    //LocalUtils.UpdateSettings(settings);
                 }
             }
 
