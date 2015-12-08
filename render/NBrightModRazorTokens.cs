@@ -50,7 +50,10 @@ namespace NBrightMod.render
                 else
                     s = "";
                 var modInfo = DnnUtils.GetModuleinfo(tItem.ModuleId);
-                strOut += "    <option value='" + tItem.GetXmlProperty("genxml/hidden/modref") + "' " + s + ">" + tItem.GetXmlProperty("genxml/hidden/modref") + " : " + modInfo.ModuleTitle + "</option>";
+                if (modInfo != null) // might happen if invalid module data is imported
+                {
+                    strOut += "    <option value='" + tItem.GetXmlProperty("genxml/hidden/modref") + "' " + s + ">" + tItem.GetXmlProperty("genxml/hidden/modref") + " : " + modInfo.ModuleTitle + "</option>";
+                }
             }
             strOut += "</select>";
 

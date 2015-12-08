@@ -19,6 +19,7 @@ using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
 using DotNetNuke.Entities.Tabs;
+using DotNetNuke.UI.WebControls;
 
 namespace Nevoweb.DNN.NBrightMod
 {
@@ -271,6 +272,18 @@ namespace Nevoweb.DNN.NBrightMod
                     // update record with ajax data
                     nbi.UpdateAjax(strIn);
 
+                    // look for datasource moduleid and use xrefitemid to persist it, this is so we can clear cache of satelite modules.
+                    var datasourceref = nbi.GetXmlProperty("genxml/dropdownlist/datasourceref");
+                    if (datasourceref != nbi.GUIDKey && datasourceref != "")
+                    {
+                        var objCtrl = new NBrightDataController();
+                        var satnbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", datasourceref);
+                        if (satnbi != null)
+                        {
+                            nbi.XrefItemId = satnbi.ItemID;
+                        }
+                    }
+
 
                     // check for special processing on guidkeys (unique key persists on export/import)
                     if (nbi.GetXmlProperty("genxml/dropdownlist/targetpage") != "")
@@ -301,15 +314,13 @@ namespace Nevoweb.DNN.NBrightMod
                     nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
                     nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
 
-                    var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
-                    foreach (var curcode in cultureList)
-                    {
-                        var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
-                        nbi.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
-                    }
                     LocalUtils.UpdateSettings(nbi);
 
                     LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+
+                    LocalUtils.RazorClearSateliteCache(nbi.ModuleId.ToString(""));
+
+                    LocalUtils.ValidateModuleData();
 
                 }
                 return "";
@@ -504,11 +515,13 @@ namespace Nevoweb.DNN.NBrightMod
                         var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
                         // update record with ajax data
                         nbi.UpdateAjax(strIn);
+                        nbi.TextData = ""; // clear any output DB caching
                         objCtrl.Update(nbi);
 
                         // do langauge record
                         nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
                         nbi.UpdateAjax(strIn);
+                        nbi.TextData = ""; // clear any output DB caching
                         objCtrl.Update(nbi);
 
                         objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
@@ -517,15 +530,8 @@ namespace Nevoweb.DNN.NBrightMod
 
                         LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
 
-                        // clear any razor db cache
-                        var settings = LocalUtils.GetSettings(moduleid);
-                        var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
-                        foreach (var curcode in cultureList)
-                        {
-                            var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
-                            settings.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
-                        }
-                        LocalUtils.UpdateSettings(settings);
+                        LocalUtils.RazorClearSateliteCache(nbi.ModuleId.ToString(""));
+
                     }
                 }
                 return "";
@@ -574,7 +580,6 @@ namespace Nevoweb.DNN.NBrightMod
                             objCtrl.Update(nbi);
 
                             objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
-
                         }
                     }
                     lp += 1;
@@ -582,15 +587,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (moduleid != "")
                 {
                     LocalUtils.RazorClearCache(moduleid);
-                    // clear any razor db cache
-                    var settings = LocalUtils.GetSettings(moduleid);
-                    var cultureList = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
-                    foreach (var curcode in cultureList)
-                    {
-                        var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
-                        settings.SetXmlProperty("genxml/" + dbcachedatakey, ""); // clear razor output cache on save 
-                    }
-                    LocalUtils.UpdateSettings(settings);
+                    LocalUtils.RazorClearSateliteCache(moduleid);
                 }
                 return "";
             }

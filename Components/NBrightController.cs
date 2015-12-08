@@ -88,7 +88,6 @@ namespace Nevoweb.DNN.NBrightMod.Components
             var objModInfo = objModCtrl.GetModule(moduleId, Null.NullInteger, true);
             if (objModInfo != null)
             {
-
                 // import All records
                 xmlDoc.LoadXml(content);
 
@@ -102,6 +101,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         nbi.ItemID = -1; // new item
                         nbi.PortalId = objModInfo.PortalID;
                         nbi.ModuleId = moduleId;
+
+                        var objPortal = PortalController.Instance.GetPortal(objModInfo.PortalID);
 
                         //realign images
                         var nodl = nbi.XMLDoc.SelectNodes("genxml/imgs/genxml");
@@ -119,9 +120,9 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                     var imgsplit = imgurl.Split('*');
                                     if (imgsplit.Length == 2)
                                     {
-                                        imgurl = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
+                                        imgurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
                                         var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
-                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl",imgurl);
+                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", imgurl);
                                         nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
                                     }
                                 }
@@ -145,7 +146,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                     var filesplit = fileurl.Split('*');
                                     if (filesplit.Length == 2)
                                     {
-                                        fileurl = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
+                                        fileurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
                                         var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
                                         nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
                                         nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath", filepath);
@@ -158,15 +159,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         // get new GUIDKey for settings records
                         if (nbi.TypeCode == "SETTINGS")
                         {
-                            // check to seee if it exists, we only want to give a new modref if we have a duplicate. (Clones in the same portal)
-                            // Imported settings may have duplicate guidkey in other portals, this is so data source option still works.
-                            if (objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "SETTINGS", nbi.GUIDKey) != null)
-                            {
-                                var gid = Utils.GetUniqueKey();
-                                nbi.GUIDKey = gid;
-                                nbi.SetXmlProperty("genxml/hidden/modref", gid);
-                            }
-                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", "");  // clear singlepageitemid, this will always change on import and needs to be reset.
+                            nbi.UserId = -1; // flag to indicate a import has been done, used to trigger LocalUtils.ValidateModuleData
+                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", ""); // clear singlepageitemid, this will always change on import and needs to be reset.
 
                             // set new upload paths
                             nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
@@ -179,10 +173,10 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 }
 
                 // realign the language records
-                var link1 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleId, "NBrightModDATA");
+                var link1 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATA");
                 foreach (var nbi in link1)
                 {
-                    var link2 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleId, "NBrightModDATALANG", " and NB1.parentitemid = " + nbi.GUIDKey);
+                    var link2 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATALANG", " and NB1.parentitemid = " + nbi.GUIDKey);
                     foreach (var nbi2 in link2)
                     {
                         nbi2.ParentItemId = nbi.ItemID;
@@ -204,7 +198,6 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         objCtrl.Update(settings);
                     }
                 }
-
 
             }
 

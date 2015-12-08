@@ -229,6 +229,20 @@ namespace NBrightMod.common
             }
         }
 
+        public static void RazorClearSateliteCache(String moduleid)
+        {
+            var settings = GetSettings(moduleid);
+
+            // clear satelite module cache
+            var objCtrl = new NBrightDataController();
+            var dataList = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.XrefItemId = " + settings.ItemID);
+            foreach (var nbi in dataList)
+            {
+                RazorClearCache(nbi.ModuleId.ToString(""));
+            }
+
+        }
+
 
         public static String RazorTemplRenderList(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang)
         {
@@ -382,18 +396,20 @@ namespace NBrightMod.common
 
         public static NBrightInfo CreateRequiredUploadFolders(NBrightInfo settings)
         {
-            var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
-            var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
+            var objPortal = PortalController.Instance.GetPortal(settings.PortalId);
+
+            var tempFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
+            var tempFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
 
             var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/uploadfolder");
             if (settingUploadFolder == "") settingUploadFolder = "images";
-            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
-            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
+            var uploadFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
+            var uploadFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
 
-            var uploadDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
-            var uploadDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
+            var uploadDocFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
+            var uploadDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
             settings.SetXmlProperty("genxml/tempfolder", tempFolder);
@@ -404,6 +420,64 @@ namespace NBrightMod.common
             settings.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
 
             return settings;
+        }
+
+        /// <summary>
+        /// do any validation of data required.  
+        /// </summary>
+        public static void ValidateModuleData()
+        {
+            var objCtrl = new NBrightDataController();
+
+            // check for invalid records and remove
+            var modList = LocalUtils.GetNBrightModList();
+            foreach (var tItem in modList)
+            {
+                var modInfo = DnnUtils.GetModuleinfo(tItem.ModuleId);
+                if (modInfo == null) // might happen if invalid module data is imported
+                {
+                    var l1 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "NBrightModDATA");
+                    foreach (var i in l1)
+                    {
+                        objCtrl.Delete(i.ItemID);
+                    }
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "NBrightModDATALANG");
+                    foreach (var i in l2)
+                    {
+                        objCtrl.Delete(i.ItemID);
+                    }
+                    var l3 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "SETTINGS");
+                    foreach (var i in l3)
+                    {
+                        objCtrl.Delete(i.ItemID);
+                    }
+
+                }
+                else
+                {
+                    LocalUtils.RazorClearCache(tItem.ModuleId.ToString(""));
+                }
+                // clear any setting cache
+                Utils.RemoveCache("nbrightmodsettings*" + tItem.ModuleId.ToString(""));
+            }
+
+
+            // realign module satelite link + plus clear import flag
+            var allSettings = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS"," and NB1.userid = -1");
+            foreach (var nbi in allSettings)
+            {
+                if (nbi.UserId == -1) // flag to indicate import of module has been done.
+                {
+                    nbi.UserId = 0;
+                    if (nbi.XrefItemId > 0)
+                    {
+                        var datasource = objCtrl.GetByGuidKey(nbi.PortalId, -1, "SETTINGS", nbi.GetXmlProperty("genxml/dropdownlist/datasourceref"));
+                        if (datasource != null) nbi.XrefItemId = datasource.ItemID;
+                    }
+                    objCtrl.Update(nbi);
+                }
+            }
+
         }
 
         #endregion
