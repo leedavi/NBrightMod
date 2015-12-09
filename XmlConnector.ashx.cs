@@ -299,7 +299,19 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         nbi.RemoveXmlNode("genxml/dropdownlist/targetpagetabid");
                     }
-                    if (nbi.GetXmlProperty("genxml/hidden/modref") == "") nbi.SetXmlProperty("genxml/hidden/modref", Utils.GetUniqueKey(10));
+                    if (nbi.GetXmlProperty("genxml/hidden/modref") == "")
+                    {
+                        if (nbi.GUIDKey != "")
+                        {
+                            nbi.SetXmlProperty("genxml/hidden/modref", nbi.GUIDKey);
+                        }
+                        else
+                        {
+                            var gid = Utils.GetUniqueKey(10);
+                            nbi.SetXmlProperty("genxml/hidden/modref", gid);
+                            nbi.GUIDKey = gid;
+                        }
+                    }
                     if (nbi.TextData == "") nbi.TextData = "NBrightMod";
 
                     var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/settinguploadfolder");

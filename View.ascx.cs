@@ -60,7 +60,7 @@ namespace Nevoweb.DNN.NBrightMod
                     // check we have settings
                     var settings = LocalUtils.GetSettings(ModuleId.ToString());
 
-                    // check iof we have new import
+                    // check if we have new import
                     if (UserInfo.IsSuperUser && settings.UserId == -1)
                     {
                         LocalUtils.ValidateModuleData();

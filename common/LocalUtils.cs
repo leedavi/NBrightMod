@@ -319,14 +319,14 @@ namespace NBrightMod.common
         /// <param name="moduleid"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public static Dictionary<String, String> RazorPreProcessTempl(String fullTemplName, String moduleid, String lang)
+        public static Dictionary<String, String> RazorPreProcessTempl(String TemplName, String moduleid, String lang)
         {
             // see if we need to add theme to template name.
             var settignInfo = GetSettings(moduleid);
             var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-            if (fullTemplName.Split('.').Length == 2) fullTemplName = theme + "." + fullTemplName;
+            if (TemplName.Split('.').Length == 2) TemplName = theme + "." + TemplName;
 
-            fullTemplName = fullTemplName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
+            var fullTemplName = TemplName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
 
             // get cached data if there
             var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  
@@ -334,7 +334,7 @@ namespace NBrightMod.common
 
             // build cache data from template.
             cachedlist = new Dictionary<String, String>();
-            var razorTempl = LocalUtils.GetTemplateData(fullTemplName, lang, settignInfo.ToDictionary());
+            var razorTempl = LocalUtils.GetTemplateData(TemplName, lang, settignInfo.ToDictionary());
             if (razorTempl != "" && razorTempl.Contains("AddPreProcessMetaData("))
             {
                 var obj = new NBrightInfo(true);
@@ -347,6 +347,10 @@ namespace NBrightMod.common
                 {
                     // do razor and cache preprocessmetadata
                     razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+
+                    // IMPORTANT: The AddPreProcessMetaData token will add any meta data to the cache list, we must get that list back into the cachedlist var.
+                    cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
+
                     // if we have no preprocess items, we don;t want to run this again, so put the empty dic into cache.
                     if (cachedlist.Count == 0) Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
                 }
@@ -355,7 +359,6 @@ namespace NBrightMod.common
                     // Only log exception, could be a error because of missing data.  Thge preprocessing doesn't care.
                     Exceptions.LogException(ex);
                 }
-                cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);
             }
             return cachedlist;
         }
@@ -402,7 +405,7 @@ namespace NBrightMod.common
             var tempFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
 
-            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/uploadfolder");
+            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
             if (settingUploadFolder == "") settingUploadFolder = "images";
             var uploadFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
             var uploadFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
@@ -412,11 +415,11 @@ namespace NBrightMod.common
             var uploadDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
-            settings.SetXmlProperty("genxml/tempfolder", tempFolder);
+            settings.SetXmlProperty("genxml/tempfolder", "/" + tempFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
-            settings.SetXmlProperty("genxml/uploadfolder", uploadFolder);
+            settings.SetXmlProperty("genxml/uploadfolder", "/" + uploadFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
-            settings.SetXmlProperty("genxml/uploaddocfolder", uploadDocFolder);
+            settings.SetXmlProperty("genxml/uploaddocfolder", "/" + uploadDocFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
 
             return settings;
@@ -472,9 +475,13 @@ namespace NBrightMod.common
                     if (nbi.XrefItemId > 0)
                     {
                         var datasource = objCtrl.GetByGuidKey(nbi.PortalId, -1, "SETTINGS", nbi.GetXmlProperty("genxml/dropdownlist/datasourceref"));
-                        if (datasource != null) nbi.XrefItemId = datasource.ItemID;
+                        if (datasource != null)
+                            nbi.XrefItemId = datasource.ItemID;
+                        else
+                            nbi.XrefItemId = 0;
                     }
-                    objCtrl.Update(nbi);
+                    var nbisave = CreateRequiredUploadFolders(nbi);
+                    objCtrl.Update(nbisave);
                 }
             }
 
