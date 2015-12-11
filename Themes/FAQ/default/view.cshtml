@@ -1,0 +1,36 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/FAQ/resx/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FAQ.view.cshtml", Model.ModuleId.ToString(""))
+
+<h1>@ResourceKey("View.faq")</h1>
+
+<div id="accordion">
+
+@foreach (NBrightInfo infoitem in Model.List)
+{
+    <div class="accordion-header">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/question")</div>
+    <div class="accordion-content" style="display: none;">@HtmlOf(infoitem, "genxml/lang/genxml/textbox/answer")</div>
+    <hr />
+}
+
+</div>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    $('#accordion').accordion({
+    header: ".accordion-header",
+    heightStyle: "content",
+    collapsible: true,
+active: false
+});
+});
+</script>
+<style>
+    .accordion-header {
+        cursor: pointer;
+    }
+</style>

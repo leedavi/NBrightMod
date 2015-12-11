@@ -178,6 +178,14 @@ namespace NBrightMod.common
             if (settings.ModuleId > 0)
             {
                 var objCtrl = new NBrightDataController();
+
+                if (settings.GetXmlPropertyBool("genxml/checkbox/resetvalidationflag"))
+                {
+                    LocalUtils.ResetValidationFlag();
+                    settings.SetXmlProperty("genxml/checkbox/resetvalidationflag", "False");
+                    settings.UserId = -1; // make sure we save the reset flag on this module.
+                }
+
                 objCtrl.Update(settings);
                 Utils.RemoveCache("nbrightmodsettings*" + settings.ModuleId.ToString(""));
             }
@@ -425,6 +433,21 @@ namespace NBrightMod.common
             return settings;
         }
 
+
+        /// <summary>
+        /// do any validation of data required.  
+        /// </summary>
+        public static void ResetValidationFlag()
+        {
+            var objCtrl = new NBrightDataController();
+            var allSettings = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS");
+            foreach (var nbi in allSettings)
+            {
+                nbi.UserId = -1;
+                objCtrl.Update(nbi);
+            }
+        }
+
         /// <summary>
         /// do any validation of data required.  
         /// </summary>
@@ -480,10 +503,25 @@ namespace NBrightMod.common
                         else
                             nbi.XrefItemId = 0;
                     }
+
+                    // realign singlepage itemid
+                    if (nbi.GetXmlPropertyBool("genxml/hidden/singlepageedit") && nbi.GetXmlPropertyInt("genxml/hidden/singlepageitemid") > 0)
+                    {
+                        var datasource = objCtrl.GetByType(nbi.PortalId, nbi.ModuleId, "NBrightModDATA");
+                        if (datasource != null)
+                        {
+                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", datasource.ItemID.ToString(""));
+                        }
+                    }
+
                     var nbisave = CreateRequiredUploadFolders(nbi);
                     objCtrl.Update(nbisave);
+
+
                 }
             }
+
+
 
         }
 

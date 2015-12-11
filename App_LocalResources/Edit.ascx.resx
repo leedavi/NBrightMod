@@ -142,7 +142,7 @@
     <value>Hide Caption</value>
   </data>
   <data name="URL.Text" xml:space="preserve">
-    <value>URL</value>
+    <value>URL (http://www.mylink.com)</value>
   </data>
   <data name="link.Text" xml:space="preserve">
     <value>Link</value>
@@ -154,7 +154,7 @@
     <value>Page of the website</value>
   </data>
   <data name="linkhref.Text" xml:space="preserve">
-    <value>URL</value>
+    <value>URL (http://www.mylink.com)</value>
   </data>
   <data name="linkpdf.Text" xml:space="preserve">
     <value>PDF</value>

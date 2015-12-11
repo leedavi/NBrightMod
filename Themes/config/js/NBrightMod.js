@@ -53,7 +53,13 @@ function NBrightMod_nbxgetCompleted(e) {
         });
 
         $('#savedataexit').click(function () {
-            savedataexit();
+            $('#savedata').trigger("click");
+            $('#exitedit').trigger("click");
+        });
+
+        $('#savedatareturn').click(function () {
+            $('#savedata').trigger("click");
+            $('#return').trigger("click");
         });
 
         $('#return').click(function() {
@@ -62,6 +68,7 @@ function NBrightMod_nbxgetCompleted(e) {
         });
 
         $('#exitedit').click(function () {
+            $('.processing').show();
             window.location.href = $('#exiturl').val();
         });
 
@@ -106,6 +113,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent()); });
 
         $('#exitedit').click(function () {
+            $('.processing').show();
             window.location.href = $('#exiturl').val();
         });
 
@@ -143,14 +151,6 @@ function savedata() {
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
     NBrightMod_nbxget('savedata', '#editdata');
-}
-
-function savedataexit() {
-    var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
-    var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
-    $('#xmlupdateimages').val(xmlrtn);
-    $('#xmlupdatedocs').val(xmlrtn2);
-    NBrightMod_nbxget('savedataexit', '#editdata');
 }
 
 function moveUp(item) {

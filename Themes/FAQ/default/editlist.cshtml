@@ -1,0 +1,74 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/FAQ/resx/")
+
+
+@{
+    var info = (NBrightInfo)Model.List[0];
+}
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FAQ.editlist.cshtml", Model.ModuleId.ToString(""))
+
+@EditCultureSelect("flag-list", "selecteditlistlanguage")
+
+@EditButtons("a,sl,ex")
+
+
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+@{
+
+    // see if we have defined action buttons from the list template
+    var actionbuttons = "e,su,sd";
+    if (Model.GetSetting("actionbuttons") != "")
+    {
+        actionbuttons = Model.GetSetting("actionbuttons");
+    }
+
+}
+
+
+<!-- Required to keep track of itemid selected on list for ajax action, NBrightMod.js will insert the select itemid into this field -->
+<input id="selecteddeleteid" type="hidden" value="" />
+
+<div class="table-responsive">
+    <table id="editdatalist" class="table table-striped">
+        <tbody>
+            <tr>
+                <th>@ResourceKey("Edit.Question")</th>
+                <th>@ResourceKey("Edit.actions")</th>
+            </tr>
+            @foreach (NBrightInfo infoitem in Model.List)
+            {
+                // dummy record inject for empty list
+                if (@infoitem.ItemID > 0)
+                {
+                    <tr class="datalistitem">
+                        <td>
+                            <div class="input-group">
+                                @TextBox(infoitem, "genxml/lang/genxml/textbox/question", "class='form-control'")
+                                <span class="input-group-addon"><img src='/Images/Flags/@(infoitem.Lang).gif' width='24px' /></span>
+                            </div>
+                        </td>
+                        <td>
+                            @IconButtons(infoitem, actionbuttons)
+                            <input id="itemid" type="hidden" value="@infoitem.ItemID" />
+                            <input id="moduleid" type="hidden" value="@infoitem.ModuleId" />
+                            <input id="lang" type="hidden" value="@infoitem.Lang" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+$('[data-tooltip="tooltip"]').tooltip();
+
+</script>

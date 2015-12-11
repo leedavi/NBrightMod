@@ -41,6 +41,7 @@
                 @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
                 @TextBox(info, "genxml/textbox/settinguploadfolder")
             </div>
+            <!--
             <div>
                 @DnnLabel("lblDBcache", "Settings.dbcache")
                 @CheckBox(info, "genxml/checkbox/dbcache", "", "", true)
@@ -49,6 +50,14 @@
                 <br/>
                 @ResourceKey("Settings.dbcachemsg")
             </div>
+            -->
+
+            <div>
+                @DnnLabel("lblresetvalidationflag", "Settings.resetvalidationflag")
+                @CheckBox(info, "genxml/checkbox/resetvalidationflag", "", "", false)
+            </div>
+            
+
         </div>
         <hr/>
         <div class="buttons importdata">

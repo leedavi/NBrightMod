@@ -15,43 +15,64 @@
 
 <a href="javascript:void(0)" id="toTop" class="bigbutton backtotop">@ResourceKey("Settings.top")</a>
 <h4>@ResourceKey("Settings.followus")</h4>
-<div class="socialicons">
 
-@if (info.GetXmlProperty("genxml/textbox/facebook") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/facebook")" class="facebookicon" target="_blank">Facebook</a>
+@{
+    var socialclass = "socialicons";
+    if (Model.GetSetting("whiteversion") == "True")
+    {
+        socialclass = "socialicons socialicons-w";
+    }
 }
-@if (info.GetXmlProperty("genxml/textbox/twitter") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/twitter")" class="twittericon" target="_blank">Twitter</a>
+
+<div class="@(socialclass)">
+
+    @if (info.GetXmlProperty("genxml/textbox/facebook") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/facebook")" class="facebookicon" target="_blank">Facebook</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/linkedin") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/linkedin")" class="linkedinicon" target="_blank">LinkedIn</a>
+@if (info.GetXmlProperty("genxml/textbox/twitter") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/twitter")" class="twittericon" target="_blank">Twitter</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/googleplus") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/googleplus")" class="googleplusicon" target="_blank">GooglePlus</a>
+@if (info.GetXmlProperty("genxml/textbox/linkedin") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/linkedin")" class="linkedinicon" target="_blank">LinkedIn</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/youtube") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/youtube")" class="youtubeicon" target="_blank">YouTube</a>
+@if (info.GetXmlProperty("genxml/textbox/googleplus") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/googleplus")" class="googleplusicon" target="_blank">GooglePlus</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/dailymotion") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/dailymotion")" class="dailymotionicon" target="_blank">DailyMotion</a>
+@if (info.GetXmlProperty("genxml/textbox/youtube") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/youtube")" class="youtubeicon" target="_blank">YouTube</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/flickr") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/flickr")" class="flickricon" target="_blank">Flickr</a>
+@if (info.GetXmlProperty("genxml/textbox/dailymotion") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/dailymotion")" class="dailymotionicon" target="_blank">DailyMotion</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/picasa") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/picasa")" class="picasaicon" target="_blank">Picasa</a>
+@if (info.GetXmlProperty("genxml/textbox/flickr") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/flickr")" class="flickricon" target="_blank">Flickr</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/viadeo") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/viadeo")" class="viadeoicon" target="_blank">Viadeo</a>
+@if (info.GetXmlProperty("genxml/textbox/picasa") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/picasa")" class="picasaicon" target="_blank">Picasa</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/vimeo") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/vimeo")" class="vimeoicon" target="_blank">Vimeo</a>
+@if (info.GetXmlProperty("genxml/textbox/viadeo") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/viadeo")" class="viadeoicon" target="_blank">Viadeo</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/tripadvisor") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/tripadvisor")" class="tripadvisoricon" target="_blank">TripAdvisor</a>
+@if (info.GetXmlProperty("genxml/textbox/vimeo") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/vimeo")" class="vimeoicon" target="_blank">Vimeo</a>
 }
-@if (info.GetXmlProperty("genxml/textbox/rss") != "") {
-<a href="@info.GetXmlProperty("genxml/textbox/rss")" class="rssicon" target="_blank">RSS</a>
+@if (info.GetXmlProperty("genxml/textbox/tripadvisor") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/tripadvisor")" class="tripadvisoricon" target="_blank">TripAdvisor</a>
+}
+@if (info.GetXmlProperty("genxml/textbox/rss") != "")
+{
+    <a href="@info.GetXmlProperty("genxml/textbox/rss")" class="rssicon" target="_blank">RSS</a>
 }
 
 <div class="clearfix"></div>

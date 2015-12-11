@@ -7,7 +7,7 @@
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
 @AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
 
-<h1>Actualités</h1>
+<h1>@ResourceKey("View.news")</h1>
 <div class="simplearticles">
     
     @foreach (NBrightInfo infoitem in Model.List)

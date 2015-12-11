@@ -34,7 +34,7 @@ function NBrightMod_nbxget(cmd, selformdiv, target, selformitemdiv, appendreturn
 	            cmd: cmd
 	        });
 	    }
-	    if ((cmd != 'addselectedfiles') && (cmd != 'replaceselectedfiles') && (cmd != 'deleterecord') && (cmd != 'savedataexit')) {
+	    if ((cmd != 'addselectedfiles') && (cmd != 'replaceselectedfiles') && (cmd != 'deleterecord') && (cmd != 'savedataexit') && (cmd != 'savedatareturn')) {
             $('.processing').hide();
         }
     });

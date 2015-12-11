@@ -106,15 +106,6 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = SaveData(context);
                     }
                     break;
-                case "savedataexit":
-                    if (LocalUtils.CheckRights())
-                    {
-                        SaveImages(context);
-                        SaveDocs(context);
-                        SaveData(context);
-                        strOut = "";
-                    }
-                    break;
                 case "savelistdata":
                     if (LocalUtils.CheckRights())
                     {
@@ -478,8 +469,11 @@ namespace Nevoweb.DNN.NBrightMod
                     var orderby = "";
                     if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
+                    var settings = LocalUtils.GetSettings(moduleid);
+
                     // Return list of items
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, 0, 0, 0, 0, editlang);
+                    var returnlimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
                     strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
                 }
 

@@ -7,12 +7,10 @@
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
 
 <h4>@ResourceKey("View.news")</h4>
-<p>
-    
-    @foreach (NBrightInfo infoitem in Model.List)
-        {
-        <div>@infoitem.GetXmlProperty("genxml/textbox/eventdate") - @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</div>
-        <a href="/actualités.aspx">@ResourceKey("View.knowmore")</a>
-        }
 
-</p>
+@foreach (NBrightInfo infoitem in Model.List)
+{
+<p>@infoitem.GetXmlProperty("genxml/textbox/eventdate") - @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</p>
+}
+
+<p><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.knowmore")</a></p>

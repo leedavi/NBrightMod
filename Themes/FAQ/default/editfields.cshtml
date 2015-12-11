@@ -3,7 +3,7 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/GoogleMap/resx/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FAQ/resx/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -15,25 +15,20 @@
 
 @EditCultureSelect("flag-list", "selecteditlanguage")
 
-@EditButtons("sx,s,ex")
+@EditButtons("sr,s,d,r")
 
 <div class="row">
 <div class="col-xs-12 col-sm-12">
     <div class="box">
-
         <div class="form-group">
-            <label>@ResourceKey("Edit.reference")</label>
-            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/title")</div>
+            <label>@ResourceKey("Edit.Question")</label>
+            @NBrightTextBox(info, "genxml/lang/genxml/textbox/question")
         </div>
         <div class="form-group">
-            <label>@ResourceKey("Edit.latitude")</label>
-            <div>@NBrightTextBox(info, "genxml/textbox/lat")</div>
+            <label>@ResourceKey("Edit.Answer")</label>
+            <div id="richtexteditor">@RichTextBox(info, "genxml/lang/genxml/textbox/answer", "")</div>
+            <div class="well well-sm"><img src='/Images/Flags/@(info.Lang).gif' width='24px' /></div>
         </div>
-        <div class="form-group">
-            <label>@ResourceKey("Edit.longitude")</label>
-            <div>@NBrightTextBox(info, "genxml/textbox/long")</div>
-        </div>
-
     </div>
     </div>
 </div>
