@@ -11,11 +11,13 @@
         actionbuttons = Model.GetSetting("actionbuttons");
     }
 
+    // need to create a preprocess key so that metadata is cached against this template and not the sub-template called by @RenderTemplate
+    Model.Settings.Add("preprocesskey", Model.GetSetting("themefolder") + ".editlist.cshtml" + Model.ModuleId);
 }
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.ModifiedDate DESC ", Model.GetSetting("themefolder") + ".editlist.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.ModifiedDate desc", Model.GetSetting("preprocesskey"))
 
 @EditButtons("ex")
 
