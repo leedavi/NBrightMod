@@ -27,8 +27,6 @@
         }
         }
 
-<div class="clearfix"></div>
-
-<a href="/galerie.aspx">@ResourceKey("View.viewgallery")</a>
+<div class="clearfix"><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.viewgallery")</a></div>
 
 </div>

@@ -156,4 +156,7 @@
   <data name="resetvalidationflag.Text" xml:space="preserve">
     <value>Run Portal Data Validation</value>
   </data>
+  <data name="sourcepage.Text" xml:space="preserve">
+    <value>Source Page</value>
+  </data>
 </root>

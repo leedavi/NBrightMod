@@ -8,3 +8,8 @@
 @{
     var info = (NBrightInfo)Model.List.First();
 }
+
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<div>
+  @DnnLabel("lblwhiteversion","Settings.whiteversion")@CheckBox(info,"genxml/checkbox/whiteversion","","",true)
+</div>
