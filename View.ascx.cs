@@ -90,10 +90,10 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
             var dbcache = settings.GetXmlPropertyBool("genxml/checkbox/dbcache");
+            var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
 
-            var dbcachedatakey = "dbcachedata" + Utils.GetCurrentCulture();
             var strOut = "";
-            //if (dbcache) strOut = settings.GetXmlProperty("genxml/" + dbcachedatakey);
+            if (dbcache && !debug) strOut = LocalUtils.GetDatabaseCache(PortalSettings.Current.PortalId,ModuleId,Utils.GetCurrentCulture());
 
             if (strOut == "") // check if we already have a DB razor cache
             {
@@ -132,13 +132,10 @@ namespace Nevoweb.DNN.NBrightMod
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
                 strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
 
-                if (dbcache)
+                if (dbcache && !debug)
                 {
-                    // DB caching has been removed for now, the CDATA wrapper does not work on saving to the settings record and hence we get an invliad XML record.
-
                     // save razor compiled output to DB cache, for performace
-                    //settings.SetXmlProperty("genxml/" + dbcachedatakey, strOut);
-                    //LocalUtils.UpdateSettings(settings);
+                    LocalUtils.SetDatabaseCache(PortalSettings.Current.PortalId, ModuleId, Utils.GetCurrentCulture(), strOut);
                 }
             }
 

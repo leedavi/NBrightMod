@@ -211,6 +211,48 @@ namespace NBrightMod.common
             return new NBrightInfo(true);
         }
 
+        public static String GetDatabaseCache(int portalid, int moduleid, String lang, int userid = -1, Boolean useCache = true)
+        {
+            var rtnCache = Utils.GetCache("nbrightdatabasecache*" + moduleid.ToString("") + lang + userid.ToString(""));
+            if (rtnCache != null && useCache) return (String)rtnCache;
+            var objCtrl = new NBrightDataController();
+            var dataRecord = objCtrl.GetByType(portalid, moduleid, "NBrightModCACHE", userid.ToString(""), lang);
+            if (dataRecord != null) return dataRecord.TextData;
+            return "";
+        }
+
+        public static void SetDatabaseCache(int portalid, int moduleid, String lang, String cachedata, int userid = -1)
+        {
+            var objCtrl = new NBrightDataController();
+            var dataRecord = objCtrl.GetByType(portalid, moduleid, "NBrightModCACHE", userid.ToString(""), lang);
+            if (dataRecord == null)
+            {
+                dataRecord = new NBrightInfo(true);
+                dataRecord.TypeCode = "NBrightModCACHE";
+                dataRecord.UserId = userid;
+                dataRecord.Lang = lang;
+                dataRecord.ModuleId = moduleid;
+                dataRecord.PortalId = portalid;
+            }
+            dataRecord.TextData = cachedata;
+            objCtrl.Update(dataRecord);
+            Utils.SetCache("nbrightdatabasecache*" + moduleid.ToString("") + lang + userid.ToString(""), dataRecord.TextData);
+        }
+
+        public static void ClearDatabaseCache(int portalid, int moduleid)
+        {
+            // clear database module cache
+            var objCtrl = new NBrightDataController();
+            var dataList = objCtrl.GetList(portalid, moduleid, "NBrightModCACHE");
+            foreach (var nbi in dataList)
+            {
+                nbi.TextData = "";
+                objCtrl.Update(nbi);
+                Utils.RemoveCache("nbrightdatabasecache*" + moduleid.ToString("") + nbi.Lang + nbi.UserId.ToString(""));
+            }
+
+        }
+
         public static List<NBrightInfo> GetNBrightModList()
         {
             var rtnList = new List<NBrightInfo>();
@@ -224,6 +266,7 @@ namespace NBrightMod.common
             return rtnList;
         }
 
+
         public static void RazorClearCache(String moduleid)
         {
             // do razor template
@@ -234,6 +277,11 @@ namespace NBrightMod.common
                 {
                     Utils.RemoveCache(cachekey);
                 }
+            }
+
+            if (Utils.IsNumeric(moduleid))
+            {
+                ClearDatabaseCache(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid));
             }
         }
 
