@@ -43,10 +43,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\bin\NBrightCore.dll</HintPath>
     </Reference>
-    <Reference Include="NBrightDNN, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\NBrightDNN.dll</HintPath>
-    </Reference>
     <Reference Include="RazorEngine, Version=3.7.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\bin\RazorEngine.dll</HintPath>
@@ -306,19 +302,24 @@
     <Folder Include="Themes\GoogleMap\js\" />
     <Folder Include="Themes\HtmlContent\js\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Support\nbrightdnn\NBrightDNN.csproj">
+      <Project>{ec815d38-62cf-4b46-8177-cf40ce1aab62}</Project>
+      <Name>NBrightDNN</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetFileName)" "..\..\..\..\..\bin\$(TargetFileName)"
 
- copy "$(AssemblyName).pdb" "..\..\..\..\..\bin\$(AssemblyName).pdb"
+copy "$(AssemblyName).pdb" "..\..\..\..\..\bin\$(AssemblyName).pdb"
 
-copy "NBrightCore.dll" "..\..\..\..\..\bin\NBrightCore.dll"
-
-copy "NBrightCore.pdb" "..\..\..\..\..\bin\NBrightCore.pdb"
 
 copy "NBrightDNN.dll" "..\..\..\..\..\bin\NBrightDNN.dll"
-
 copy "NBrightDNN.pdb" "..\..\..\..\..\bin\NBrightDNN.pdb"
+copy "NBrightCore.dll" "..\..\..\..\..\bin\NBrightCore.dll"
+
+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

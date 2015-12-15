@@ -45,20 +45,27 @@ namespace NBrightMod.common
 
             foreach (var lang in DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId))
             {
-                var nbi2 = new NBrightInfo(true);
-                nbi2.PortalId = PortalSettings.Current.PortalId;
-                nbi2.TypeCode = "NBrightModDATALANG";
-                nbi2.ModuleId = Convert.ToInt32(moduleid);
-                nbi2.ItemID = -1;
-                nbi2.Lang = lang;
-                nbi2.ParentItemId = itemId;
-                nbi2.GUIDKey = "";
-                nbi2.ItemID = objCtrl.Update(nbi2);
+                var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang);
             }
 
             LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
 
             return nbi.ItemID.ToString("");
+        }
+
+        public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang)
+        {
+            var objCtrl = new NBrightDataController();
+            var nbi2 = new NBrightInfo(true);
+            nbi2.PortalId = PortalSettings.Current.PortalId;
+            nbi2.TypeCode = "NBrightModDATALANG";
+            nbi2.ModuleId = moduleid;
+            nbi2.ItemID = -1;
+            nbi2.Lang = lang;
+            nbi2.ParentItemId = parentItemId;
+            nbi2.GUIDKey = "";
+            nbi2.ItemID = objCtrl.Update(nbi2);
+            return nbi2;
         }
 
         public static String GetTemplateData(String templatename, String lang, Dictionary<String, String> settings = null)
@@ -217,7 +224,7 @@ namespace NBrightMod.common
             if (rtnCache != null && useCache) return (String)rtnCache;
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.GetByType(portalid, moduleid, "NBrightModCACHE", userid.ToString(""), lang);
-            if (dataRecord != null) return dataRecord.TextData;
+            if (dataRecord != null && dataRecord.Lang == lang) return dataRecord.TextData; 
             return "";
         }
 
@@ -225,7 +232,7 @@ namespace NBrightMod.common
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.GetByType(portalid, moduleid, "NBrightModCACHE", userid.ToString(""), lang);
-            if (dataRecord == null)
+            if (dataRecord == null || dataRecord.Lang != lang) 
             {
                 dataRecord = new NBrightInfo(true);
                 dataRecord.TypeCode = "NBrightModCACHE";
@@ -561,6 +568,55 @@ namespace NBrightMod.common
                             nbi.SetXmlProperty("genxml/hidden/singlepageitemid", datasource.ItemID.ToString(""));
                         }
                     }
+
+                    // update any image paths
+                    var datalist = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATA");
+                    foreach (var datasource in datalist)
+                    {
+                        var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
+                        if (imgList != null)
+                        {
+                            var lp = 1;
+                            var upd = false;
+                            foreach (var xnod in imgList)
+                            {
+                                var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
+                                if (relPath != "")
+                                {
+                                    var imgMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
+                                    datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgMapPath);
+                                    upd = true;
+                                }
+                                lp += 1;
+                            }
+                            if (upd) objCtrl.Update(datasource);
+                        }
+                    }
+
+                    //update language data records.
+                    var datalist2 = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATALANG");
+                    foreach (var datasource in datalist2)
+                    {
+                        var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
+                        if (imgList != null)
+                        {
+                            var lp = 1;
+                            var upd = false;
+                            foreach (var xnod in imgList)
+                            {
+                                var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
+                                if (relPath != "")
+                                {
+                                    var imgMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
+                                    datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgMapPath);
+                                    upd = true;
+                                }
+                                lp += 1;
+                            }
+                            if (upd) objCtrl.Update(datasource);
+                        }
+                    }
+
 
                     var nbisave = CreateRequiredUploadFolders(nbi);
                     objCtrl.Update(nbisave);

@@ -460,6 +460,17 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // do edit field data if a itemid has been selected
                     var obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
+                    if (obj != null)
+                    {
+                        // check we have a base data record, if so create langauge record.
+                        var lnode = obj.XMLDoc.SelectSingleNode("genxml/lang");
+                        if (lnode == null)
+                        {
+                            LocalUtils.CreateLangaugeDataRecord(obj.ItemID, Convert.ToInt32(moduleid), editlang);
+                            obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
+                        }
+                    }
+
                     strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
                 }
                 else
@@ -474,6 +485,21 @@ namespace Nevoweb.DNN.NBrightMod
                     // Return list of items
                     var returnlimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
                     var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                    if (l.Any())
+                    {
+                        // check we have a base data recxord, if so create langauge record.
+                        foreach (var nbi in l)
+                        {
+                            var lnode = nbi.XMLDoc.SelectSingleNode("genxml/lang");
+                            if (lnode == null)
+                            {
+                                LocalUtils.CreateLangaugeDataRecord(nbi.ItemID, Convert.ToInt32(moduleid), editlang);
+                            }
+                        }
+                        l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+
+                    }
+
                     strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
                 }
 
