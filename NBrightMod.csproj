@@ -50,6 +50,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -183,7 +184,6 @@
     <None Include="Themes\ContactDetails\default\editpageheader.cshtml" />
     <None Include="Themes\ContactDetails\default\settings.cshtml" />
     <None Include="Themes\ContactDetails\default\view.cshtml" />
-    <None Include="Themes\ContactDetails\default\viewpageheader.cshtml" />
     <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
@@ -199,7 +199,6 @@
     <None Include="Themes\Documents\default\docselectlist.cshtml" />
     <None Include="Themes\Documents\default\settings.cshtml" />
     <None Include="Themes\Documents\default\view.cshtml" />
-    <None Include="Themes\Documents\default\viewpageheader.cshtml" />
     <None Include="Themes\FancyboxGallerySat\default\settings.cshtml" />
     <None Include="Themes\FancyboxGallerySat\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editbody.cshtml" />
@@ -268,7 +267,6 @@
     <None Include="Themes\FAQ\default\editpageheader.cshtml" />
     <None Include="Themes\FAQ\default\settings.cshtml" />
     <None Include="Themes\FAQ\default\view.cshtml" />
-    <None Include="Themes\FAQ\default\viewpageheader.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\settings.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
@@ -278,13 +276,11 @@
     <None Include="Themes\SimpleArticles\default\imgselectlist.cshtml" />
     <None Include="Themes\SimpleArticles\default\settings.cshtml" />
     <None Include="Themes\SimpleArticles\default\view.cshtml" />
-    <None Include="Themes\SimpleArticles\default\viewpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\editbody.cshtml" />
     <None Include="Themes\SocialLinks\default\editfields.cshtml" />
     <None Include="Themes\SocialLinks\default\editpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
-    <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editbody.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editfields.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editlist.cshtml" />

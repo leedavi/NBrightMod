@@ -4,12 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.UI;
 using System.Xml;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Services.Exceptions;
+using DotNetNuke.UI.UserControls;
 using NBrightCore.common;
 using NBrightCore.render;
 using NBrightCore.TemplateEngine;
@@ -48,7 +50,7 @@ namespace NBrightMod.common
                 var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang);
             }
 
-            LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+            LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
 
             return nbi.ItemID.ToString("");
         }
@@ -172,7 +174,7 @@ namespace NBrightMod.common
 
         public static Boolean CheckRights()
         {
-            if (UserController.GetCurrentUserInfo().IsInRole("Manager") || UserController.GetCurrentUserInfo().IsInRole("Editor") || UserController.GetCurrentUserInfo().IsInRole("Administrators"))
+            if (UserController.Instance.GetCurrentUserInfo().IsInRole("Manager") || UserController.Instance.GetCurrentUserInfo().IsInRole("Editor") || UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators"))
             {
                 return true;
             }
@@ -260,6 +262,48 @@ namespace NBrightMod.common
 
         }
 
+
+        public static Object GetRazorCache(String cacheKey)
+        {
+            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
+            {
+                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
+                // ********************************************************************
+                var cache = System.Runtime.Caching.MemoryCache.Default;
+                return (string)cache.Get(cacheKey);
+                // ********************************************************************
+            }
+            return Utils.GetCache(cacheKey);
+        }
+
+        public static void SetRazorCache(String cacheKey, String cachedata, string moduleid)
+        {
+            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
+            {
+                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
+                // ********************************************************************
+                var cache = System.Runtime.Caching.MemoryCache.Default;
+                CacheItemPolicy policy = new CacheItemPolicy();
+                policy.AbsoluteExpiration = DateTimeOffset.Now.AddHours(1.0);
+                cache.Add(cacheKey, cachedata, policy);
+
+                var modCacheList = (List<String>)GetRazorCache("nbrightmodcache*" + moduleid);
+                if (modCacheList == null) modCacheList = new List<String>();
+                if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
+                cache.Add("nbrightmodcache*" + moduleid, modCacheList, policy);
+                // ********************************************************************
+            }
+            else
+            {
+                Utils.SetCache(cacheKey, cachedata);
+                var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
+                if (modCacheList == null) modCacheList = new List<String>();
+                if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
+                Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+            }
+
+        }
+
         public static List<NBrightInfo> GetNBrightModList()
         {
             var rtnList = new List<NBrightInfo>();
@@ -274,15 +318,32 @@ namespace NBrightMod.common
         }
 
 
-        public static void RazorClearCache(String moduleid)
+        public static void ClearRazorCache(String moduleid)
         {
-            // do razor template
-            var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
-            if (modCacheList != null)
+            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
             {
-                foreach (var cachekey in modCacheList)
+                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
+                // ********************************************************************
+                var cache = System.Runtime.Caching.MemoryCache.Default;
+                var modCacheList = (List<String>)GetRazorCache("nbrightmodcache*" + moduleid);
+                if (modCacheList != null)
                 {
-                    Utils.RemoveCache(cachekey);
+                    foreach (var cachekey in modCacheList)
+                    {
+                        cache.Remove(cachekey);
+                    }
+                }
+                // ********************************************************************
+            }
+            else
+            {
+                var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
+                if (modCacheList != null)
+                {
+                    foreach (var cachekey in modCacheList)
+                    {
+                        Utils.RemoveCache(cachekey);
+                    }
                 }
             }
 
@@ -292,7 +353,7 @@ namespace NBrightMod.common
             }
         }
 
-        public static void RazorClearSateliteCache(String moduleid)
+        public static void ClearRazorSateliteCache(String moduleid)
         {
             var settings = GetSettings(moduleid);
 
@@ -301,7 +362,7 @@ namespace NBrightMod.common
             var dataList = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.XrefItemId = " + settings.ItemID);
             foreach (var nbi in dataList)
             {
-                RazorClearCache(nbi.ModuleId.ToString(""));
+                ClearRazorCache(nbi.ModuleId.ToString(""));
             }
 
         }
@@ -311,12 +372,12 @@ namespace NBrightMod.common
         {
             // do razor template
             var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString() + "*" + lang;
-            var razorTempl = (String)Utils.GetCache(cachekey);
+            var razorTempl = GetRazorCache(cachekey);
             if (razorTempl == null)
             {
                 var settignInfo = GetSettings(moduleid);
-                razorTempl = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
-                if (razorTempl != "")
+                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
+                if (razorTempl2 != "")
                 {
                     if (!objList.Any())
                     {
@@ -328,31 +389,28 @@ namespace NBrightMod.common
                     var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
-                        Utils.SetCache(cachekey, razorTempl);
-                        var modCacheList = (List<String>) Utils.GetCache("nbrightmodcache*" + moduleid);
-                        if (modCacheList == null) modCacheList = new List<String>();
-                        if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
-                        Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                        SetRazorCache(cachekey, razorTemplOut,moduleid);
                     }
+                    return razorTemplOut;
                 }
             }
-            return razorTempl;
+            return (String)razorTempl;
         }
 
         public static String RazorTemplRender(String razorTemplName, String moduleid, String cacheKey, NBrightInfo obj, String lang)
         {
             // do razor template
             var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString();
-            var razorTempl = (String)Utils.GetCache(cachekey);
+            var razorTempl = GetRazorCache(cachekey);
             if (razorTempl == null)
             {
                 var settignInfo = GetSettings(moduleid);
-                razorTempl = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
-                if (razorTempl != "")
+                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
+                if (razorTempl2 != "")
                 {
                     if (obj == null) obj = new NBrightInfo(true);
                     var razorTemplateKey = "NBrightModKey" + moduleid + settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + razorTemplName + PortalSettings.Current.PortalId.ToString();
@@ -360,19 +418,16 @@ namespace NBrightMod.common
                     var l = new List<object>();
                     l.Add(obj);
                     var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    razorTempl = RazorRender(modRazor, razorTempl, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
-                        Utils.SetCache(cachekey, razorTempl);
-                        var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
-                        if (modCacheList == null) modCacheList = new List<String>();
-                        if (!modCacheList.Contains(cachekey)) modCacheList.Add(cachekey);
-                        Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+                        SetRazorCache(cachekey, razorTemplOut,moduleid);
                     }
+                    return razorTemplOut;
                 }
             }
-            return razorTempl;
+            return (String)razorTempl;
         }
 
         /// <summary>
@@ -382,14 +437,14 @@ namespace NBrightMod.common
         /// <param name="moduleid"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public static Dictionary<String, String> RazorPreProcessTempl(String TemplName, String moduleid, String lang)
+        public static Dictionary<String, String> RazorPreProcessTempl(String templName, String moduleid, String lang)
         {
             // see if we need to add theme to template name.
             var settignInfo = GetSettings(moduleid);
             var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-            if (TemplName.Split('.').Length == 2) TemplName = theme + "." + TemplName;
+            if (templName.Split('.').Length == 2) templName = theme + "." + templName;
 
-            var fullTemplName = TemplName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
+            var fullTemplName = templName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
 
             // get cached data if there
             var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  
@@ -397,7 +452,7 @@ namespace NBrightMod.common
 
             // build cache data from template.
             cachedlist = new Dictionary<String, String>();
-            var razorTempl = LocalUtils.GetTemplateData(TemplName, lang, settignInfo.ToDictionary());
+            var razorTempl = LocalUtils.GetTemplateData(templName, lang, settignInfo.ToDictionary());
             if (razorTempl != "" && razorTempl.Contains("AddPreProcessMetaData("))
             {
                 var obj = new NBrightInfo(true);
@@ -536,7 +591,7 @@ namespace NBrightMod.common
                 }
                 else
                 {
-                    LocalUtils.RazorClearCache(tItem.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorCache(tItem.ModuleId.ToString(""));
                 }
                 // clear any setting cache
                 Utils.RemoveCache("nbrightmodsettings*" + tItem.ModuleId.ToString(""));

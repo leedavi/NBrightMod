@@ -149,7 +149,7 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         var fname1 = FileUpload(context, moduleid);
                         strOut = DoThemeImport(fname1);
-                        LocalUtils.RazorClearCache(moduleid);
+                        LocalUtils.ClearRazorCache(moduleid);
                     }
                     break;
                 case "downloadfile":
@@ -222,7 +222,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (razortemplate == "") razortemplate = "settings.cshtml";
                 if (moduleid == "") moduleid = "-1";
 
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
 
                 // do edit field data if a itemid has been selected
@@ -319,9 +319,9 @@ namespace Nevoweb.DNN.NBrightMod
 
                     LocalUtils.UpdateSettings(nbi);
 
-                    LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
 
-                    LocalUtils.RazorClearSateliteCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
 
                     LocalUtils.ValidateModuleData();
 
@@ -352,7 +352,7 @@ namespace Nevoweb.DNN.NBrightMod
                     // get DB record
                     var nbi = LocalUtils.GetSettings(moduleid,false);
                     if (nbi.ItemID > 0) objCtrl.Delete(nbi.ItemID);
-                    LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                 }
                 return "";
             }
@@ -387,7 +387,7 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         nbi.UpdateAjax(LocalUtils.GetAjaxData(context));
                         objCtrl.Update(nbi);
-                        LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                        LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                     }
                 }
                 return "";
@@ -434,7 +434,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (moduleid == "") moduleid = "-1";
 
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
 
                 if (newitem == "new")
@@ -560,9 +560,9 @@ namespace Nevoweb.DNN.NBrightMod
 
                         Utils.RemoveCache("dnnsearchindexflag" + moduleid);
 
-                        LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                        LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
 
-                        LocalUtils.RazorClearSateliteCache(nbi.ModuleId.ToString(""));
+                        LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
 
                     }
                 }
@@ -618,8 +618,8 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 if (moduleid != "")
                 {
-                    LocalUtils.RazorClearCache(moduleid);
-                    LocalUtils.RazorClearSateliteCache(moduleid);
+                    LocalUtils.ClearRazorCache(moduleid);
+                    LocalUtils.ClearRazorSateliteCache(moduleid);
                 }
                 return "";
             }
@@ -651,7 +651,7 @@ namespace Nevoweb.DNN.NBrightMod
                     // delete DB record
                     objCtrl.Delete(Convert.ToInt32(itemid));
 
-                    LocalUtils.RazorClearCache(moduleid);
+                    LocalUtils.ClearRazorCache(moduleid);
 
                 }
                 return "";
@@ -926,7 +926,7 @@ namespace Nevoweb.DNN.NBrightMod
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/imgs", "genxml");
                         objCtrl.Update(nbilang);
                     }
-                    LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                 }
             }
             return "";
@@ -947,7 +947,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (moduleid == "") moduleid = "-1";
 
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
                 if (Utils.IsNumeric(itemid))
                 {
@@ -1004,7 +1004,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
                 if (editlang == "") editlang = _lang;
                 if (moduleid == "") moduleid = "-1";
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
                 var modSettings = LocalUtils.GetSettings(moduleid);
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploadfoldermappath");
@@ -1085,7 +1085,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                     }
                 }
-                LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
+                LocalUtils.ClearRazorCache(modSettings.ModuleId.ToString(""));
             }
             return "";
         }
@@ -1142,7 +1142,7 @@ namespace Nevoweb.DNN.NBrightMod
                         //AddNewImage(Convert.ToInt32(itemid), imageurl, imagepath);
                     }
                 }
-                LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
+                LocalUtils.ClearRazorCache(modSettings.ModuleId.ToString(""));
             }
         }
 
@@ -1237,7 +1237,7 @@ namespace Nevoweb.DNN.NBrightMod
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/docs", "genxml");
                         objCtrl.Update(nbilang);
                     }
-                    LocalUtils.RazorClearCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                 }
             }
             return "";
@@ -1258,7 +1258,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (moduleid == "") moduleid = "-1";
 
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
                 if (Utils.IsNumeric(itemid))
                 {
@@ -1316,7 +1316,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
                 if (editlang == "") editlang = _lang;
                 if (moduleid == "") moduleid = "-1";
-                if (clearCache) LocalUtils.RazorClearCache(moduleid);
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
                 var modSettings = LocalUtils.GetSettings(moduleid);
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
@@ -1418,7 +1418,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                     }
                 }
-                LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
+                LocalUtils.ClearRazorCache(modSettings.ModuleId.ToString(""));
             }
             return "";
         }
@@ -1442,7 +1442,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                 }
             }
-            LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
+            LocalUtils.ClearRazorCache(modSettings.ModuleId.ToString(""));
             return "";
         }
 
@@ -1467,7 +1467,7 @@ namespace Nevoweb.DNN.NBrightMod
                     //}
                     //AddNewDoc(Convert.ToInt32(itemid), docurl, docmappath);
                 }
-                LocalUtils.RazorClearCache(modSettings.ModuleId.ToString(""));
+                LocalUtils.ClearRazorCache(modSettings.ModuleId.ToString(""));
             }
         }
 
