@@ -42,6 +42,17 @@ namespace Nevoweb.DNN.NBrightMod
         {
             base.OnInit(e);
 
+            // refresh view by clearing all cache, and redirtect back to view 
+            if (Utils.RequestParam(Context, "refreshview") == "1" && Request.ApplicationPath != null)
+            {
+                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
+                Utils.RemoveCache("dnnsearchindexflag" + ModuleId);
+                LocalUtils.ClearRazorCache(ModuleId.ToString(""));
+                LocalUtils.ClearRazorSateliteCache(ModuleId.ToString(""));
+                Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + "&language=" + Utils.RequestParam(Context, "language"), true);
+            }
+
+
             //check if we have a skinsrc, if not add it and reload. NOTE: Where just asking for a infinate loop here, but DNN7.2 doesn't leave much option.
             const string skinSrcAdmin = "?SkinSrc=%2fDesktopModules%2fNBright%2fNBrightData%2fSkins%2fNBrightModAdmin%2fNormal";
             if (Utils.RequestParam(Context, "SkinSrc") == "")

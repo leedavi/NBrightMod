@@ -82,7 +82,7 @@ namespace NBrightMod.common
             }
 
             var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-            var templCtrl = new NBrightCore.TemplateEngine.TemplateGetter(PortalSettings.Current.HomeDirectoryMapPath + "\\NBrightMod", controlMapPath, "Themes\\" + themeFolder, "");
+            var templCtrl = new NBrightCore.TemplateEngine.TemplateGetter(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod", controlMapPath, "Themes\\" + themeFolder, "");
             var templ = "";
             // get module specific template
             if (settings != null && settings.ContainsKey("modref")) templ = templCtrl.GetTemplateData(settings["modref"] + templatename, lang);
@@ -270,7 +270,7 @@ namespace NBrightMod.common
                 // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
                 // ********************************************************************
                 var cache = System.Runtime.Caching.MemoryCache.Default;
-                return (string)cache.Get(cacheKey);
+                return cache.Get(cacheKey);
                 // ********************************************************************
             }
             return Utils.GetCache(cacheKey);

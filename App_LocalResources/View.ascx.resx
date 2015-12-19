@@ -129,6 +129,9 @@
   <data name="notheme.Text" xml:space="preserve">
     <value>NO THEME SELECTED.  Enter the module theme option and select a theme.</value>
   </data>
+  <data name="Refresh.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
   <data name="settings.Text" xml:space="preserve">
     <value>Settings</value>
   </data>

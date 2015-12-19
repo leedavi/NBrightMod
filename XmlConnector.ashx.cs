@@ -165,7 +165,18 @@ namespace Nevoweb.DNN.NBrightMod
                         UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
                         Utils.ForceDocDownload(fpath, downloadname, context.Response);
                     }
-                    strOut = "";
+                    else
+                    {
+                        var filename = Utils.RequestQueryStringParam(context, "filename");
+                        if (filename != "")
+                        {
+                            var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + filename;
+                            var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
+                            if (downloadname == "") downloadname = Path.GetFileName(fpath);
+                            Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                        }
+                    }
+                    strOut = "File Download Error, unable to find download fileindex or filename params";
                     break;
                 case "sendemail":
                         strOut = SendEmail(context);
