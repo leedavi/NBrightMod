@@ -66,7 +66,7 @@ namespace Nevoweb.DNN.NBrightMod
             switch (paramCmd)
             {
                 case "test":
-                    strOut = "<root>" + UserController.GetCurrentUserInfo().Username + "</root>";
+                    strOut = "<root>" + UserController.Instance.GetCurrentUserInfo().Username + "</root>";
                     break;
                 case "getsettings":
                     strOut = GetSettings(context);

@@ -17,7 +17,7 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.ModifiedDate desc", Model.GetSetting("preprocesskey"))
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.ModifiedDate desc", Model.GetSetting("preprocesskey"),Model.ModuleId.ToString(""))
 
 @EditButtons("ex")
 
