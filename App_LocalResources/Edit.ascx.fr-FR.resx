@@ -261,4 +261,7 @@
   <data name="saveexit.Text" xml:space="preserve">
     <value>Enregistrer et quitter</value>
   </data>
+  <data name="Processing.Text" xml:space="preserve">
+    <value>Traitement, veuillez patienter...</value>
+  </data>
 </root>

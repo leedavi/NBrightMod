@@ -220,6 +220,7 @@ namespace NBrightMod.common
             return new NBrightInfo(true);
         }
 
+        [Obsolete("Not used anymore", true)]
         public static String GetDatabaseCache(int portalid, int moduleid, String lang, int userid = -1, Boolean useCache = true)
         {
             var rtnCache = Utils.GetCache("nbrightdatabasecache*" + moduleid.ToString("") + lang + userid.ToString(""));
@@ -230,6 +231,7 @@ namespace NBrightMod.common
             return "";
         }
 
+        [Obsolete("Not used anymore", true)]
         public static void SetDatabaseCache(int portalid, int moduleid, String lang, String cachedata, int userid = -1)
         {
             var objCtrl = new NBrightDataController();
@@ -248,6 +250,7 @@ namespace NBrightMod.common
             Utils.SetCache("nbrightdatabasecache*" + moduleid.ToString("") + lang + userid.ToString(""), dataRecord.TextData);
         }
 
+        [Obsolete("Not used anymore", true)] // gives performace issues.
         public static void ClearDatabaseCache(int portalid, int moduleid)
         {
             // clear database module cache
@@ -349,7 +352,7 @@ namespace NBrightMod.common
 
             if (Utils.IsNumeric(moduleid))
             {
-                ClearDatabaseCache(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid));
+                //ClearDatabaseCache(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid));
             }
         }
 

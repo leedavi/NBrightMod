@@ -52,17 +52,20 @@ function NBrightMod_nbxgetCompleted(e) {
             savedata();
         });
 
-        $('#savedataexit').click(function () {
+        $('#savedataexit').click(function (e) {
+            e.preventDefault();
+            $('#savedreturnaction').val('exit'); // set flag to exit on save of data
             $('#savedata').trigger("click");
-            $('#exitedit').trigger("click");
         });
 
-        $('#savedatareturn').click(function () {
+        $('#savedatareturn').click(function (e) {
+            e.preventDefault();
+            $('#savedreturnaction').val('return'); // set flag to return on save of data
             $('#savedata').trigger("click");
-            $('#return').trigger("click");
         });
 
         $('#return').click(function() {
+            $('.processing').show();
             $('#selecteditemid').val('');
             NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
         });
@@ -143,6 +146,20 @@ function NBrightMod_nbxgetCompleted(e) {
 
     }
 
+    // check if save has been done!
+    $('#savereturn').change(function () {
+        if ($('#savedreturnaction').val() == "exit") {
+            $('#savedreturnaction').val('');
+            $('#exitedit').trigger("click");
+        }
+        if ($('#savedreturnaction').val() == "return") {
+            $('#savedreturnaction').val('');
+            $('#return').trigger("click");
+        }
+    });
+
+
+
 }
 
 function savedata() {
@@ -150,7 +167,7 @@ function savedata() {
     var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
-    NBrightMod_nbxget('savedata', '#editdata');
+    NBrightMod_nbxget('savedata', '#editdata','#savereturn');
 }
 
 function moveUp(item) {
@@ -197,8 +214,10 @@ function undoremove(itemselector, destinationselector) {
 
 function ActivateFileLoader() {
 
-
     $('.filelistclick').click(function () {
+        $('#fileoperation').hide();
+        $('#fileprocessingmsg').show();
+
         $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
         NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         $('#displayreturn').val("list");
@@ -210,6 +229,9 @@ function ActivateFileLoader() {
     });
 
     $('.fileclick').click(function () {
+        $('#fileoperation').hide();
+        $('#fileprocessingmsg').show();
+
         savedata();
         $('#displayreturn').val("detail");
         $('#uploadtype').val("doc");
@@ -220,6 +242,9 @@ function ActivateFileLoader() {
     });
 
     $('.imagelistclick').click(function () {
+        $('#fileoperation').hide();
+        $('#fileprocessingmsg').show();
+
         $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
         NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         $('#displayreturn').val("list");
@@ -231,6 +256,9 @@ function ActivateFileLoader() {
     });
 
     $('.imageclick').click(function () {
+        $('#fileoperation').hide();
+        $('#fileprocessingmsg').show();
+
         savedata();
         $('#displayreturn').val("detail");
         $('#uploadtype').val("image");
@@ -244,6 +272,11 @@ function ActivateFileLoader() {
         // may need to do something here to stop display of image and docs when switching.
     });
 
+    // Only show file operation when the file list has been loaded
+    $('#fileselectlist').change(function() {
+         $('#fileoperation').show();
+         $('#fileprocessingmsg').hide();
+    });
 
 }
 
@@ -267,6 +300,7 @@ function ActivateFileReturn(e) {
                 $('#selectedfiles').val($('#selectedfiles').val() + newf);
             }
         });
+
     }
 
     if (e.cmd == 'addselectedfiles' || e.cmd == 'replaceselectedfiles') {

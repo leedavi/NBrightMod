@@ -89,15 +89,14 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
-            var dbcache = settings.GetXmlPropertyBool("genxml/checkbox/dbcache");
             var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
 
             var strOut = "";
-            if (dbcache && !debug) strOut = LocalUtils.GetDatabaseCache(PortalSettings.Current.PortalId,ModuleId,Utils.GetCurrentCulture());
+            var cacheKey = "nbrightmodview*" + PortalSettings.Current.PortalId + "*" + ModuleId + "*" + Utils.GetCurrentCulture();
+            if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey);
 
-            if (strOut == "") // check if we already have a DB razor cache
+            if (String.IsNullOrWhiteSpace(strOut)) // check if we already have razor cache
             {
-
                 // preprocess razor template to get meta data for data select into cache.
                 var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
                 var orderby = "";
@@ -132,10 +131,10 @@ namespace Nevoweb.DNN.NBrightMod
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
                 strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
 
-                if (dbcache && !debug)
+                if (!debug)
                 {
-                    // save razor compiled output to DB cache, for performace
-                    LocalUtils.SetDatabaseCache(PortalSettings.Current.PortalId, ModuleId, Utils.GetCurrentCulture(), strOut);
+                    // save razor compiled output, for performace
+                    LocalUtils.SetRazorCache(cacheKey, strOut,ModuleId.ToString(""));
                 }
             }
 
