@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="notnewwindow.Text" xml:space="preserve">
-    <value>Do not open in new window</value>
+    <value>Ne pas ouvrir dans une nouvelle fenêtre</value>
   </data>
   <data name="usefullinks.Text" xml:space="preserve">
-    <value>Usefull links</value>
+    <value>Liens utiles</value>
   </data>
 </root>

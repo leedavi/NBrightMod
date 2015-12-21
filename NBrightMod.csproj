@@ -105,6 +105,7 @@
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
@@ -118,6 +119,7 @@
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\Links\resx\Edit.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\Links\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\OwlSlider\resx\Settings.ascx.resx" />
