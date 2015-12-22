@@ -60,12 +60,6 @@ namespace Nevoweb.DNN.NBrightMod
                     // check we have settings
                     var settings = LocalUtils.GetSettings(ModuleId.ToString());
 
-                    // check if we have new import
-                    if (UserInfo.IsSuperUser && settings.UserId == -1)
-                    {
-                        LocalUtils.ValidateModuleData();
-                    }
-
                     if (settings.ModuleId == 0 || settings.GetXmlProperty("genxml/dropdownlist/themefolder") == "")
                     {
                         var lit = new Literal();
@@ -159,7 +153,9 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
+
                 actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
+                actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
                 return actions;
             }
         }

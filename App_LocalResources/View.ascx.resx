@@ -135,4 +135,7 @@
   <data name="settings.Text" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="Tools.Text" xml:space="preserve">
+    <value>Tools</value>
+  </data>
 </root>

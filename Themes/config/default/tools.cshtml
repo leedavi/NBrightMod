@@ -1,0 +1,51 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System.Web.UI.HtmlControls
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var tabid = Model.GetUrlParam("tabid");
+}
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + "&language=" + @Model.GetUrlParam("language"))"></input>
+
+<div id="nbrightmodtools">
+
+    <div id="nbrightmodtoolsdata">
+        <div>
+            <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
+        </div>
+
+            @EditButtons("ex")
+
+    </div>
+
+    <div id="toolsmsg"></div>
+
+        <script>
+            $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
+
+            $(document).ready(function () {
+                $('#doportalvalidation').click(function () {
+                    NBrightMod_nbxget('doportalvalidation', '#toolsmsg');
+                });
+
+                // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
+                $('#exitedit').click(function () {
+                    window.location.href = $('#exiturl').val();
+                });
+
+            });
+
+            function NBrightMod_nbxgetCompleted(e) {
+
+                if (e.cmd == 'resetsettings') {
+                    location.reload();
+                }
+            };
+
+
+        </script>
+</div>
+

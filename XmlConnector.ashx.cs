@@ -181,6 +181,14 @@ namespace Nevoweb.DNN.NBrightMod
                 case "sendemail":
                         strOut = SendEmail(context);
                     break;
+                case "doportalvalidation":
+                    if (LocalUtils.CheckRights())
+                    {
+                        LocalUtils.ResetValidationFlag();
+                        LocalUtils.ValidateModuleData();
+                        strOut = "Portal Validation Ativated";
+                    }
+                    break;                    
             }
 
             #endregion

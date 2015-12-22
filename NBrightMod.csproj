@@ -69,6 +69,13 @@
     </Compile>
     <Compile Include="common\LocalUtils.cs" />
     <Compile Include="Components\NBrightController.cs" />
+    <Compile Include="Tools.ascx.cs">
+      <DependentUpon>Tools.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Tools.ascx.designer.cs">
+      <DependentUpon>Tools.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="render\NBrightModRazorTokens.cs" />
     <Compile Include="Settings.ascx.cs">
       <DependentUpon>Settings.ascx</DependentUpon>
@@ -139,6 +146,9 @@
     <EmbeddedResource Include="Themes\XGoogleMapMultipoint\resx\Settings.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Tools.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Settings.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -178,6 +188,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Themes\config\default\toolspageheader.cshtml" />
+    <None Include="Themes\config\default\tools.cshtml" />
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
     <None Include="Themes\ContactDetailsSat\default\view.cshtml" />

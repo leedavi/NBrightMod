@@ -159,4 +159,7 @@
   <data name="sourcepage.Text" xml:space="preserve">
     <value>Source Page</value>
   </data>
+  <data name="doportalvalidation.Text" xml:space="preserve">
+    <value>Do Portal Validation</value>
+  </data>
 </root>
