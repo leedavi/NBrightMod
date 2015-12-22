@@ -15,57 +15,66 @@
     }
         var divid = "NBrightMod" + @Model.GetSetting("modref");
 }
-@(msg) 
+@(msg)
 
-<div id="@(divid)" class="owl-carousel">
-    
-    @foreach (NBrightInfo infoitem in Model.List)
+<div class="owl-wrapper">
+    <div id="@(divid)" class="owl-carousel">
+
+        @{
+            var lp = 1;
+        }
+        @foreach (NBrightInfo infoitem in Model.List)
         {
-        var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
-        <div class="slider-item">
-            @if (imageurl != "")
-            {
-                var width = Model.GetSetting("width");
-                var height = Model.GetSetting("height");
-                var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
-                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)"/>
-            }
-            <div class="slider-caption">
-              <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
-              <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
-              <p>@BreakOf(infoitem, "genxml/lang/genxml/textbox/text")</p>
-              @if (infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "") {
-                var tabddl = @GetTabUrlByGuid(infoitem, "/genxml/dropdownlist/linktab");
-                <a href="@(tabddl)" class="bigbutton">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
-              }
+            var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+            <div class="slider-item">
+                @if (imageurl != "")
+                {
+                    var width = Model.GetSetting("width");
+                    var height = Model.GetSetting("height");
+                    var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                    <img class="owl-lazy" src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" data-src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
+                }
+                <div class="slider-caption">
+                    <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
+                    <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+                    <p>@BreakOf(infoitem, "genxml/lang/genxml/textbox/text")</p>
+                    @if (infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "")
+                    {
+                        var tabddl = @GetTabUrlByGuid(infoitem, "/genxml/dropdownlist/linktab");
+                        <a href="@(tabddl)" class="bigbutton">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
+                    }
+                </div>
             </div>
-        </div>
+
+            lp+=1;
         }
 
+    </div>
 </div>
-@if (Model.List.Count > 1)
-{
-    <script type="text/javascript">
-        $(window).load(function() {
+    @if (Model.List.Count > 1)
+    {
+        <script type="text/javascript">
+            $(window).load(function() {
 
-            $('#@(divid)').owlCarousel({
-                animateOut: '@Model.GetSetting("animateout")',
-                animateIn: '@Model.GetSetting("animatein")',
-                loop: @Model.GetSetting("loop"),
-                autoplay: @Model.GetSetting("autoplay"),
-                margin: @Model.GetSetting("margin"),
-                items: @Model.GetSetting("items"),
-                center: @Model.GetSetting("center"),
-                smartSpeed: @Model.GetSetting("smartspeed")
+                $('#@(divid)').owlCarousel({
+                    animateOut: '@Model.GetSetting("animateout")',
+                    animateIn: '@Model.GetSetting("animatein")',
+                    loop: @Model.GetSetting("loop"),
+                    autoplay: @Model.GetSetting("autoplay"),
+                    margin: @Model.GetSetting("margin"),
+                    items: @Model.GetSetting("items"),
+                    center: @Model.GetSetting("center"),
+                    smartSpeed: @Model.GetSetting("smartspeed"),
+                    lazyLoad : true
+                    });
+
             });
-
-        });
-    </script>
-}
-else
-{
-    if (Model.List.Count == 1)
-     {
-        <div>@ResourceKey("View.imgmessage")</div>     
-     }
-}
+        </script>
+    }
+    else
+    {
+        if (Model.List.Count == 1)
+        {
+            <div>@ResourceKey("View.imgmessage")</div>
+        }
+    }
