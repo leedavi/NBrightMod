@@ -63,7 +63,7 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 var obj = LocalUtils.GetSettings(base.ModuleId.ToString());
                 obj.ModuleId = base.ModuleId; // need to pass the moduleid here, becuase it doesn;t exists in url for settings and on new settings it needs it.
-                var strOut = LocalUtils.RazorTemplRender("config.settings.cshtml", ModuleId.ToString(""), "config" + Utils.GetCurrentCulture(), obj, Utils.GetCurrentCulture());
+                var strOut = LocalUtils.RazorTemplRender("config.settings.cshtml", ModuleId.ToString(""), "config" + Utils.GetCurrentCulture(), obj, Utils.GetCurrentCulture(), obj.GetXmlPropertyBool("genxml/checkbox/debugmode"));
                 var lit = new Literal();
                 lit.Text = strOut;
                 phData.Controls.Add(lit);

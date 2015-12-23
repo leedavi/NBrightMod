@@ -188,7 +188,27 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ValidateModuleData();
                         strOut = "Portal Validation Ativated";
                     }
-                    break;                    
+                    break;
+                case "createtemplate":
+                    if (LocalUtils.CheckRights())
+                    {
+                        CreatePortalTemplates(context);
+                        strOut = "OK";
+                    }
+                    break;
+                case "gettemplatemenu":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = GetTemplateMenu(context);
+                    }
+                    break;
+                case "savetemplatedata":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = SaveTemplateMenu(context);
+                    }
+                    break;
+
             }
 
             #endregion
@@ -382,6 +402,8 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+
+
         private String SaveTheme(HttpContext context)
         {
             try
@@ -534,6 +556,151 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
         }
+
+        private String GetTemplateMenu(HttpContext context)
+        {
+            var strOut = "";
+            //get uploaded params
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+            var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
+            var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+            var razortemplname = "config.edittheme.cshtml";
+            var templfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
+
+            var templData = new NBrightInfo(true);
+            var razorTempl2 = LocalUtils.GetTemplateData(templfilename, editlang, new Dictionary<string, string>());
+            if (razorTempl2 != "")
+            {
+                templData.SetXmlProperty("genxml/templtext", razorTempl2);
+                strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
+            }
+
+            return strOut;
+        }
+
+        private String SaveTemplateMenu(HttpContext context)
+        {
+            //get uploaded params
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+            var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
+            var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+            var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
+
+            var simpletext = ajaxInfo.GetXmlProperty("genxml/textbox/simpletext");
+
+            if (simpletext != "")
+            {
+                var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\default";
+                Utils.CreateFolder(fldrDefault);
+
+                File.WriteAllText(fldrDefault + "\\" + templfilename, simpletext);
+            }
+            return "OK";
+        }
+
+        private String CreatePortalTemplates(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+                var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+                var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
+                var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+
+
+                if (updatetype == "new" && newname != "" && themefolder != "")
+                {
+                    // create folders (if required)
+                    var fldrRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname;
+                    Utils.CreateFolder(fldrRoot);
+                    var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname + "\\default";
+                    Utils.CreateFolder(fldrDefault);
+                    var fldrResx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname + "\\resx";
+                    Utils.CreateFolder(fldrResx);
+                    var fldrJs = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname + "\\js";
+                    Utils.CreateFolder(fldrJs);
+                    var fldrCss = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname + "\\css";
+                    Utils.CreateFolder(fldrCss);
+
+                    var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
+                    SimpleFileCopy(sourceRoot, fldrDefault);
+                    sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+                    SimpleFileCopy(sourceRoot, fldrResx);
+                    sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
+                    SimpleFileCopy(sourceRoot, fldrJs);
+                    sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
+                    SimpleFileCopy(sourceRoot, fldrCss);
+                }
+
+                if (updatetype == "edit" && themefolder != "")
+                {
+                    // create folders (if required)
+                    var fldrRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder;
+                    Utils.CreateFolder(fldrRoot);
+                    var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\default";
+                    Utils.CreateFolder(fldrDefault);
+                    var fldrResx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                    Utils.CreateFolder(fldrResx);
+                    var fldrJs = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+                    Utils.CreateFolder(fldrJs);
+                    var fldrCss = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
+                    Utils.CreateFolder(fldrCss);
+                }
+
+                return "OK";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
+
+        private void SimpleFileCopy(String sourcePath, String targetPath)
+        {
+            // To copy a folder's contents to a new location:
+            // Create a new target folder, if necessary.
+            if (!System.IO.Directory.Exists(targetPath))
+            {
+                System.IO.Directory.CreateDirectory(targetPath);
+            }
+
+            // To copy all the files in one directory to another directory.
+            // Get the files in the source folder. (To recursively iterate through
+            // all subfolders under the current directory, see
+            // "How to: Iterate Through a Directory Tree.")
+            // Note: Check for target path was performed previously
+            //       in this code example.
+            if (System.IO.Directory.Exists(sourcePath))
+            {
+                string[] files = System.IO.Directory.GetFiles(sourcePath);
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string s in files)
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    var fileName = System.IO.Path.GetFileName(s);
+                    var destFile = System.IO.Path.Combine(targetPath, fileName);
+                    System.IO.File.Copy(s, destFile, true);
+                }
+            }
+        }
+
+
 
         private String AddNew(String moduleid)
         {

@@ -205,7 +205,7 @@
     <value>Thème</value>
   </data>
   <data name="themelevel.Text" xml:space="preserve">
-    <value>Templates niveau Système,Templates niveau Portail,Templates niveau Module</value>
+    <value>Portail,Module Instance</value>
   </data>
   <data name="undo.Text" xml:space="preserve">
     <value>Annuler</value>

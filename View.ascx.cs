@@ -123,7 +123,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
 
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
-                strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture());
+                strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture(), debug);
 
                 if (!debug)
                 {
@@ -154,8 +154,9 @@ namespace Nevoweb.DNN.NBrightMod
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
 
-                actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
-                actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
+                actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
+                actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "action_source.gif", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
+                actions.Add(GetNextActionID(), Localization.GetString("ThemeManager", this.LocalResourceFile), "", "", "manage-icn.png", EditUrl("ThemeManager"), false, SecurityAccessLevel.Admin, true, false);
                 return actions;
             }
         }

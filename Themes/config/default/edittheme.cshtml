@@ -1,0 +1,21 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="lang" type="hidden" value="@info.Lang"></input>
+
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s")
+
+<div id="simpletexteditor">
+    <textarea rows="50" id="simpletext" class="" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
+</div>
+

@@ -371,12 +371,12 @@ namespace NBrightMod.common
         }
 
 
-        public static String RazorTemplRenderList(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang)
+        public static String RazorTemplRenderList(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang, Boolean debug = false)
         {
             // do razor template
             var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString() + "*" + lang;
             var razorTempl = GetRazorCache(cachekey);
-            if (razorTempl == null)
+            if (razorTempl == null || debug)
             {
                 var settignInfo = GetSettings(moduleid);
                 var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
@@ -404,12 +404,12 @@ namespace NBrightMod.common
             return (String)razorTempl;
         }
 
-        public static String RazorTemplRender(String razorTemplName, String moduleid, String cacheKey, NBrightInfo obj, String lang)
+        public static String RazorTemplRender(String razorTemplName, String moduleid, String cacheKey, NBrightInfo obj, String lang, Boolean debug = false)
         {
             // do razor template
             var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString();
             var razorTempl = GetRazorCache(cachekey);
-            if (razorTempl == null)
+            if (razorTempl == null || debug)
             {
                 var settignInfo = GetSettings(moduleid);
                 var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());

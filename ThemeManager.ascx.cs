@@ -33,7 +33,7 @@ namespace Nevoweb.DNN.NBrightMod
     /// The ViewNBrightGen class displays the content
     /// </summary>
     /// -----------------------------------------------------------------------------
-    public partial class Tools : Base.NBrightModBase
+    public partial class ThemeManager : Base.NBrightModBase
     {
 
         #region Event Handlers
@@ -55,7 +55,7 @@ namespace Nevoweb.DNN.NBrightMod
                 Context.ApplicationInstance.CompleteRequest(); // do this to stop iis throwing error
             }
 
-            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "tools", "config");
+            LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod", "thememanager", "config");
         }
 
         protected override void OnLoad(EventArgs e)
@@ -72,7 +72,7 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ValidateModuleData();
                     }
 
-                    var strOut = LocalUtils.RazorTemplRender("config.tools.cshtml", ModuleId.ToString(""), "configtools" + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(), settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var strOut = LocalUtils.RazorTemplRender("config.thememanager.cshtml", ModuleId.ToString(""), "configthememanager" + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(),settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);

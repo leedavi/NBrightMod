@@ -1,0 +1,119 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System.Web.UI.HtmlControls
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+    var tabid = Model.GetUrlParam("tabid");
+}
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + "&language=" + @Model.GetUrlParam("language"))"></input>
+
+<div id="nbrightmodtools">
+
+    <div id="nbrightmodthemedata">
+        <input id="moduleid" type="hidden" value="@info.ModuleId"/>
+        <input id="updatetype" type="hidden" value=""/>
+        <input id="templfilename" type="hidden" value="" />  
+        
+
+        <div>
+            <button id='exitedit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span>@ResourceKey("Edit.exit")</button>
+        </div>
+        <hr />
+
+        <div id="optionselectdiv">
+            <div id="step1">
+                <div class='buttons'>
+                    <button id='edittheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span>@ResourceKey("Edit.edittheme")</button>
+                    @DnnLabel("lbledittheme", "Edit.lbledittheme")
+                </div>
+                <div class='buttons'>
+                    <button id='createnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span>@ResourceKey("Edit.createnew")</button>
+                    @DnnLabel("lblcreatenew", "Edit.lblcreatenew")
+                </div>
+            </div>
+
+            <div id="step2" style="display: none;">
+
+                <div id="newnamediv" style="display: none;">
+                    @DnnLabel("lblnewname", "Edit.lblnewname")
+                    @TextBox(info, "genxml/textbox/newname")
+                </div>
+
+                <div>
+                    @DnnLabel("lblthemefolder", "Settings.themefolder")
+                    @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
+                </div>
+                <hr />
+                <div class='buttons'>
+                    <button id='nextbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="edittemplatediv"></div>
+
+</div>
+
+    <div id="thememsg"></div>
+
+        <script>
+            $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
+
+            $(document).ready(function () {
+
+                $('#nextbutton').click(function () {
+
+                    $('#templfilename').val('editfields.cshtml');
+                    NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
+                });
+
+                $('#edittheme').click(function () {
+                    $('#updatetype').val('edit');
+                    $('#step1').hide();
+                    $('#step2').show();
+                });
+                $('#createnew').click(function () {
+                    $('#updatetype').val('new');
+                    $('#step1').hide();
+                    $('#step2').show();
+                    $('#newnamediv').show();
+                });
+
+                // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
+                $('#exitedit').click(function () {
+                    window.location.href = $('#exiturl').val();
+                });
+
+                $('#edittemplatediv').change(function () {
+                    $('#optionselectdiv').hide();
+                    $('#edittemplatediv').show();
+                });
+
+            });
+
+            function NBrightMod_nbxgetCompleted(e) {
+
+                if (e.cmd == 'createtemplate') {
+                    NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
+                }
+
+                if (e.cmd == 'gettemplatemenu') {
+                    $('#savedata').click(function () {
+                        NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
+                    });
+                }
+                if (e.cmd == 'savetemplatedata') {
+                        alert('Template Saved');
+                }
+
+            };
+
+
+        </script>
+</div>
+

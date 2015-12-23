@@ -42,34 +42,13 @@
                 @TextBox(info, "genxml/textbox/settinguploadfolder","","images")
             </div>
             <div>
-                @DnnLabel("lblDBcache", "Settings.dbcache")
-                @CheckBox(info, "genxml/checkbox/dbcache", "", "", true)
-            </div>
-            <div>
-                <br/>
-                @ResourceKey("Settings.dbcachemsg")
-            </div>
-            <div>
                 @DnnLabel("lbldebugmode", "Settings.lbldebugmode")
                 @CheckBox(info, "genxml/checkbox/debugmode", "", "", false)
-            </div>
-            <div>
-                @DnnLabel("lblresetvalidationflag", "Settings.resetvalidationflag")
-                @CheckBox(info, "genxml/checkbox/resetvalidationflag", "", "", false)
-            </div>
-            
+            </div>           
 
-        </div>
-        <hr/>
-        <div class="buttons importdata">
-            <button id="import" type="button" class="dnnSecondaryAction">@ResourceKey("Edit.import")</button>
-        </div>
-        <div class="buttons exportdata">
-            @RadioButtonList(info, "genxml/radiobuttonlist/exportthemelevel", "0,1,2", "ResourceKey:Edit.themelevel", "", "0")
-            <button id="export" type="button" class="dnnSecondaryAction">@ResourceKey("Edit.export")</button>
         </div>
     </div>
-
+    <hr/>
     <div id="settingsdata"></div>
 
     <div>

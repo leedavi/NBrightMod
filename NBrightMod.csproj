@@ -69,6 +69,13 @@
     </Compile>
     <Compile Include="common\LocalUtils.cs" />
     <Compile Include="Components\NBrightController.cs" />
+    <Compile Include="ThemeManager.ascx.cs">
+      <DependentUpon>ThemeManager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ThemeManager.ascx.designer.cs">
+      <DependentUpon>ThemeManager.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools.ascx.cs">
       <DependentUpon>Tools.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -146,6 +153,9 @@
     <EmbeddedResource Include="Themes\XGoogleMapMultipoint\resx\Settings.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ThemeManager.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -188,6 +198,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Themes\config\default\edittheme.cshtml" />
+    <None Include="Themes\config\default\thememanager.cshtml" />
+    <None Include="Themes\config\default\thememanagerpageheader.cshtml" />
     <None Include="Themes\config\default\toolspageheader.cshtml" />
     <None Include="Themes\config\default\tools.cshtml" />
     <None Include="Themes\config\default\settingspageheader.cshtml" />
