@@ -6,16 +6,41 @@
 
 @{
     var info = (NBrightInfo)Model.List.First();
+    var flaglang = info.Lang;
+    if (flaglang == "")
+    {
+        flaglang = "none";
+    }
+
 }
 
 <input id="lang" type="hidden" value="@info.Lang"></input>
+<input id="editlang" type="hidden" value="" />
 
 
-@EditCultureSelect("flag-list", "selecteditlanguage")
+@EditCultureSelect("flag-list", "selecteditlanguage",true)
+
+<div>
+    <div>
+        @TemplateFileSelect(info, "", "")       
+    </div>
+    <div>
+        @TemplateFileSelect(info, "", "", "css")
+    </div>
+    <div>
+        @TemplateFileSelect(info, "", "", "resx")
+    </div>
+    <div>
+        @TemplateFileSelect(info, "", "", "js")     
+    </div>
+</div>
 
 @EditButtons("s")
 
 <div id="simpletexteditor">
-    <textarea rows="50" id="simpletext" class="" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
+    <div>
+        <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
+    </div>
+    <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
 </div>
 

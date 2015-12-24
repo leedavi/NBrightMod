@@ -228,6 +228,24 @@ namespace NBrightMod.render
             return new RawString(strOut);
         }
 
+        public IEncodedString TemplateFileSelect(NBrightInfo info, String cssclass, String cssclassli, String filetype = "default")
+        {
+            var nodList = info.XMLDoc.SelectNodes("genxml/files/" + filetype + "/file");
+            var strOut = new StringBuilder("");
+            if (nodList != null)
+            {
+                strOut.Append("<ul class='" + cssclass + "'>");
+                foreach (XmlNode n in nodList)
+                {
+                    strOut.Append("<li>");
+                    strOut.Append("<a href='javascript:void(0)' filename='" + n.InnerText  + "' class='selectfiletemplate " + cssclassli + "'>" + n.InnerText + "</a>");
+                    strOut.Append("</li>");
+                }
+                strOut.Append("</ul>");
+            }
+            return new RawString(strOut.ToString());
+        }
+
 
     }
 

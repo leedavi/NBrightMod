@@ -67,8 +67,7 @@
             $(document).ready(function () {
 
                 $('#nextbutton').click(function () {
-
-                    $('#templfilename').val('editfields.cshtml');
+                    $('#templfilename').val('view.cshtml'); // set default to view, shoudl always be there!
                     NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
 
@@ -89,6 +88,7 @@
                     window.location.href = $('#exiturl').val();
                 });
 
+
                 $('#edittemplatediv').change(function () {
                     $('#optionselectdiv').hide();
                     $('#edittemplatediv').show();
@@ -106,9 +106,19 @@
                     $('#savedata').click(function () {
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
+
+                    $('.selecteditlanguage').click(function () {
+                        NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
+                        $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
+                    });
+                    $('.selectfiletemplate').click(function () {
+                        NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
+                        $('#templfilename').val($(this).attr('filename'));
+                    });           
                 }
+
                 if (e.cmd == 'savetemplatedata') {
-                        alert('Template Saved');
+                    NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
                 }
 
             };

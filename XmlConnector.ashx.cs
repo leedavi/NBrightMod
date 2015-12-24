@@ -575,8 +575,60 @@ namespace Nevoweb.DNN.NBrightMod
             var razorTempl2 = LocalUtils.GetTemplateData(templfilename, editlang, new Dictionary<string, string>());
             if (razorTempl2 != "")
             {
+                templData.Lang = editlang;
                 templData.SetXmlProperty("genxml/templtext", razorTempl2);
-                strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
+
+                // get template files
+                templData.AddSingleNode("files", "", "genxml");
+                var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
+                if (System.IO.Directory.Exists(sourceRoot))
+                {
+                    templData.RemoveXmlNode("genxml/files/default");
+                    templData.AddSingleNode("default", "", "genxml/files");
+                    string[] files = System.IO.Directory.GetFiles(sourceRoot);
+                    foreach (string s in files)
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files/default");
+                    }
+                }
+                // get template files
+                sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
+                if (System.IO.Directory.Exists(sourceRoot))
+                {
+                    templData.RemoveXmlNode("genxml/files/css");
+                    templData.AddSingleNode("css", "", "genxml/files");
+                    string[] files = System.IO.Directory.GetFiles(sourceRoot);
+                    foreach (string s in files)
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files/css");
+                    }
+                }
+                // get template files
+                sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+                if (System.IO.Directory.Exists(sourceRoot))
+                {
+                    templData.RemoveXmlNode("genxml/files/resx");
+                    templData.AddSingleNode("resx", "", "genxml/files");
+                    string[] files = System.IO.Directory.GetFiles(sourceRoot);
+                    foreach (string s in files)
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files/resx");
+                    }
+                }
+                // get template files
+                sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
+                if (System.IO.Directory.Exists(sourceRoot))
+                {
+                    templData.RemoveXmlNode("genxml/files/js");
+                    templData.AddSingleNode("js", "", "genxml/files");
+                    string[] files = System.IO.Directory.GetFiles(sourceRoot);
+                    foreach (string s in files)
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files/js");
+                    }
+                }
+
+                strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, editlang,true);
             }
 
             return strOut;
@@ -592,16 +644,24 @@ namespace Nevoweb.DNN.NBrightMod
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
             var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var fulltemplfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
             var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
+            var fldrlang = lang;
+            if (fldrlang == "") fldrlang = "default";
 
             var simpletext = ajaxInfo.GetXmlProperty("genxml/textbox/simpletext");
 
             if (simpletext != "")
             {
-                var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\default";
-                Utils.CreateFolder(fldrDefault);
+                var razorTempl2 = LocalUtils.GetTemplateData(fulltemplfilename, lang, new Dictionary<string, string>());                
+                if (razorTempl2 != simpletext) // only save if it's different. !!!! NOT WORKING !!!! 
+                {
+                    var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
+                    Utils.CreateFolder(fldrDefault);
 
-                File.WriteAllText(fldrDefault + "\\" + templfilename, simpletext);
+                    File.WriteAllText(fldrDefault + "\\" + templfilename, simpletext);
+                }
             }
             return "OK";
         }
@@ -636,13 +696,13 @@ namespace Nevoweb.DNN.NBrightMod
                     Utils.CreateFolder(fldrCss);
 
                     var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
-                    SimpleFileCopy(sourceRoot, fldrDefault);
+                    CopyFileInFolder(sourceRoot, fldrDefault);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
-                    SimpleFileCopy(sourceRoot, fldrResx);
+                    CopyFileInFolder(sourceRoot, fldrResx);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
-                    SimpleFileCopy(sourceRoot, fldrJs);
+                    CopyFileInFolder(sourceRoot, fldrJs);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
-                    SimpleFileCopy(sourceRoot, fldrCss);
+                    CopyFileInFolder(sourceRoot, fldrCss);
                 }
 
                 if (updatetype == "edit" && themefolder != "")
@@ -670,7 +730,7 @@ namespace Nevoweb.DNN.NBrightMod
         }
 
 
-        private void SimpleFileCopy(String sourcePath, String targetPath)
+        private void CopyFileInFolder(String sourcePath, String targetPath)
         {
             // To copy a folder's contents to a new location:
             // Create a new target folder, if necessary.
