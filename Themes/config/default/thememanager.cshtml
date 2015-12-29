@@ -3,6 +3,8 @@
 @using System.Web.UI.HtmlControls
 @using NBrightDNN
 
+
+
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 
 @{
@@ -16,7 +18,8 @@
     <div id="nbrightmodthemedata">
         <input id="moduleid" type="hidden" value="@info.ModuleId"/>
         <input id="updatetype" type="hidden" value=""/>
-        <input id="templfilename" type="hidden" value="" />  
+        <input id="templfilename" type="hidden" value="@info.GetXmlProperty("genxml/templfilename")" />  
+        <input id="resxfilename" type="hidden" value="@info.GetXmlProperty("genxml/resxfilename")" />
         
 
         <div>
@@ -103,7 +106,15 @@
                 }
 
                 if (e.cmd == 'gettemplatemenu') {
-                    $('#savedata').click(function () {
+
+                    $("#tabs").tabs({
+                        activate: function (event, ui) {
+                            $('#currentedittab').val(ui.newTab.index());
+                        }
+                        , active: $('#currentedittab').val()
+                    });
+
+                    $('.savedata').click(function () {
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
@@ -114,7 +125,62 @@
                     $('.selectfiletemplate').click(function () {
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                         $('#templfilename').val($(this).attr('filename'));
-                    });           
+                    });
+
+                    /// START - DOCKING SCRIPT
+                    var docked = 0;
+
+                    $("#dock li ul").height($(window).height());
+
+                    $("#dock .dock").click(function () {
+                        $(this).parent().parent().addClass("docked").removeClass("free");
+
+                        docked += 1;
+                        var dockH = ($(window).height()) / docked
+                        var dockT = 0;
+
+                        $("#dock li ul.docked").each(function () {
+                            $(this).height(dockH).css("top", dockT + "px");
+                            dockT += dockH;
+                        });
+                        $(this).parent().find(".undock").show();
+                        $(this).hide();
+
+                        if (docked > 0)
+                            $("#content").css("margin-left", "250px");
+                        else
+                            $("#content").css("margin-left", "60px");
+                    });
+
+                    $("#dock .undock").click(function () {
+                        $(this).parent().parent().addClass("free").removeClass("docked")
+                            .animate({ left: "-180px" }, 200).height($(window).height()).css("top", "0px");
+
+                        docked = docked - 1;
+                        var dockH = ($(window).height()) / docked
+                        var dockT = 0;
+
+                        $("#dock li ul.docked").each(function () {
+                            $(this).height(dockH).css("top", dockT + "px");
+                            dockT += dockH;
+                        });
+                        $(this).parent().find(".dock").show();
+                        $(this).hide();
+
+                        if (docked > 0)
+                            $("#content").css("margin-left", "250px");
+                        else
+                            $("#content").css("margin-left", "60px");
+                    });
+
+                    $("#dock li").hover(function () {
+                        $(this).find("ul").animate({ left: "40px" }, 200);
+                    }, function () {
+                        $(this).find("ul.free").animate({ left: "-180px" }, 200);
+                    });
+                    /// END - DOCKING SCRIPT
+
+
                 }
 
                 if (e.cmd == 'savetemplatedata') {

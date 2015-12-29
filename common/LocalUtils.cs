@@ -21,6 +21,7 @@ using NBrightMod.render;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
+using System.Text;
 
 namespace NBrightMod.common
 {
@@ -75,10 +76,13 @@ namespace NBrightMod.common
             var themeFolder = "config";
             if (settings != null && settings.ContainsKey("themefolder")) themeFolder = settings["themefolder"];
             var parseTemplName = templatename.Split('.');
-            if (parseTemplName.Count() == 3)
+            if (parseTemplName.Count() >= 3)
             {
                 themeFolder = parseTemplName[0];
-                templatename = parseTemplName[1] + "." + parseTemplName[2];
+                for (int i = 1; i < parseTemplName.Length; i++)
+                {
+                    templatename = parseTemplName[1] + "." + parseTemplName[2];
+                }
             }
 
             var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
@@ -559,6 +563,18 @@ namespace NBrightMod.common
                 nbi.UserId = -1;
                 objCtrl.Update(nbi);
             }
+        }
+
+        public static string RemoveWhitespace(this string str)
+        {
+            StringBuilder sb = new StringBuilder(str.Length);
+            for (int i = 0; i < str.Length; i++)
+            {
+                char c = str[i];
+                if (!char.IsWhiteSpace(c))
+                    sb.Append(c);
+            }
+            return sb.ToString();
         }
 
         /// <summary>

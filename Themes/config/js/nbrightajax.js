@@ -18,7 +18,7 @@ function NBrightMod_nbxget(cmd, selformdiv, target, selformitemdiv, appendreturn
     var request = $.ajax({ type: "POST",
 		url: cmdupdate,
 		cache: false,
-		data: { inputxml: encodeURI(values) }		
+		data: { inputxml: encodeURIComponent(values) }		
 	});
 
     request.done(function(data) {

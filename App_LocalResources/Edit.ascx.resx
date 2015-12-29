@@ -285,4 +285,13 @@
   <data name="next.Text" xml:space="preserve">
     <value>Next</value>
   </data>
+  <data name="editresx.Text" xml:space="preserve">
+    <value>Edit resx</value>
+  </data>
+  <data name="deleteportalresx.Text" xml:space="preserve">
+    <value>Remove Portal resx file</value>
+  </data>
+  <data name="deleteportaltempl.Text" xml:space="preserve">
+    <value>Remove Portal template file</value>
+  </data>
 </root>
