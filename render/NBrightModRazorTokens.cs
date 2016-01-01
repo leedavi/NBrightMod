@@ -242,6 +242,7 @@ namespace NBrightMod.render
                 {
                     if (filematchcsv == "," || filematchcsv.Contains(n.InnerText + ","))
                     {
+                        if (isPortalTemplate(info, n.Value)) cssclassli += " isportaltemplate";
                         strOut.Append("<li>");
                         strOut.Append("<a href='javascript:void(0)' filename='" + n.InnerText + "' class='selectfiletemplate " + cssclassli + "'>" + n.InnerText + "</a>");
                         strOut.Append("</li>");
@@ -252,6 +253,18 @@ namespace NBrightMod.render
             return new RawString(strOut.ToString());
         }
 
+        public Boolean IsPortalTemplate(NBrightInfo info, String filename)
+        {
+            if (isPortalTemplate(info,filename)) return true;
+            return false;
+        }
+
+        private Boolean isPortalTemplate(NBrightInfo info, String filename)
+        {
+            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + filename + "']");
+            if (nod != null) return true;
+            return false;
+        }
 
     }
 

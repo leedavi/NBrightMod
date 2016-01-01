@@ -118,6 +118,14 @@
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
+                    $('#deleteportaltempl').click(function () {
+                        NBrightMod_nbxget('deleteportaltempl', '#nbrightmodthemedata');
+                    });
+
+                    $('#deleteportalresx').click(function () {
+                        NBrightMod_nbxget('deleteportalresx', '#nbrightmodthemedata');
+                    });
+
                     $('.selecteditlanguage').click(function () {
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                         $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
@@ -184,6 +192,12 @@
                 }
 
                 if (e.cmd == 'savetemplatedata') {
+                    NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
+                }
+                if (e.cmd == 'deleteportaltempl') {
+                    NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
+                }
+                if (e.cmd == 'deleteportalresx') {
                     NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
                 }
 

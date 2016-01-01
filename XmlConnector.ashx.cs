@@ -209,6 +209,19 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = SaveTemplateMenu(context);
                     }
                     break;
+                case "deleteportalresx":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = DeletePortalResx(context);
+                    }
+                    break;
+                case "deleteportaltempl":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = DeletePortalTemplate(context);
+                    }
+                    break;
+                    
 
             }
 
@@ -631,13 +644,20 @@ namespace Nevoweb.DNN.NBrightMod
             // get template files
             templData.RemoveXmlNode("genxml/files");
                 templData.AddSingleNode("files", "", "genxml");
-                var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
+            templData.RemoveXmlNode("genxml/portalfiles");
+            templData.AddSingleNode("portalfiles", "", "genxml");
+            var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
                 if (System.IO.Directory.Exists(sourceRoot))
                 {
                     string[] files = System.IO.Directory.GetFiles(sourceRoot);
                     foreach (string s in files)
                     {
                         templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files");
+                        var portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\default\\" + Path.GetFileName(s);
+                        if (File.Exists(portalpath))
+                        {
+                            templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/portalfiles");
+                        }
                     }
                 }
                 // get template files
@@ -648,8 +668,13 @@ namespace Nevoweb.DNN.NBrightMod
                     foreach (string s in files)
                     {
                         templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files");
+                    var portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css\\" + Path.GetFileName(s);
+                    if (File.Exists(portalpath))
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/portalfiles");
                     }
                 }
+            }
                 // get template files
                 sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
                 if (System.IO.Directory.Exists(sourceRoot))
@@ -658,8 +683,13 @@ namespace Nevoweb.DNN.NBrightMod
                     foreach (string s in files)
                     {
                         templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files");
+                    var portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js\\" + Path.GetFileName(s);
+                    if (File.Exists(portalpath))
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/portalfiles");
                     }
                 }
+            }
 
                 strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
 
@@ -704,6 +734,20 @@ namespace Nevoweb.DNN.NBrightMod
                         sourceroot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
                     }
                     razorTempl2 = Utils.ReadFile(sourceroot + "\\" + templfilename);
+                    if (razorTempl2 == "")
+                    {
+                        // get orginal
+                        if (templfilename.EndsWith(".css"))
+                        {
+                            sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
+                        }
+                        if (templfilename.EndsWith(".js"))
+                        {
+                            sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
+                        }
+                        razorTempl2 = Utils.ReadFile(sourceroot + "\\" + templfilename);
+                    }
+
                 }
 
                 if (LocalUtils.RemoveWhitespace(razorTempl2) != LocalUtils.RemoveWhitespace(simpletext)) // only save if it's different. 
@@ -750,6 +794,80 @@ namespace Nevoweb.DNN.NBrightMod
                 }
 
             }
+            return "OK";
+        }
+
+        private String DeletePortalTemplate(HttpContext context)
+        {
+            //get uploaded params
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+            var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+            var fldrlang = lang;
+            if (fldrlang == "") fldrlang = "default";
+            var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
+
+
+            var fldrDefault = "";
+            if (templfilename.EndsWith(".cshtml"))
+            {
+                fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
+            }
+            else
+            {
+                if (templfilename.EndsWith(".css"))
+                {
+                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
+                }
+                if (templfilename.EndsWith(".js"))
+                {
+                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+                }
+            }
+            if (fldrDefault != "")
+            {
+                if (File.Exists(fldrDefault + "\\" + templfilename))
+                {
+                    File.Delete(fldrDefault + "\\" + templfilename);
+                }
+            }
+        
+            return "OK";
+        }
+
+        private String DeletePortalResx(HttpContext context)
+        {
+            //get uploaded params
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+            var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+            var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+            var fldrlang = lang;
+            if (fldrlang == "") fldrlang = "default";
+            var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
+
+            var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+
+            if (lang == "")
+            {
+                if (File.Exists(sourceresx + "\\" + "\\portal.ascx.resx"))
+                {
+                    File.Delete(sourceresx + "\\" + "\\portal.ascx.resx");
+                }
+            }
+            else
+            {
+                if (File.Exists(sourceresx + "\\" + "\\portal.ascx." + lang + ".resx"))
+                {
+                    File.Delete(sourceresx + "\\" + "\\portal.ascx." + lang + ".resx");
+                }
+            }
+
             return "OK";
         }
 

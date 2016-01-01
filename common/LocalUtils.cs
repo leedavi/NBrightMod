@@ -517,8 +517,16 @@ namespace NBrightMod.common
             config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
             var service = RazorEngineService.Create(config);
             Engine.Razor = service;
+            var result = "";
+            try
+            {
+                result = Engine.Razor.RunCompile(razorTempl, templateKey, null, info);
+            }
+            catch (Exception e)
+            {
+                result = "<div>" + e.Message + "</div>";
+            }
 
-            var result = Engine.Razor.RunCompile(razorTempl, templateKey, null, info);
             return result;
         }
 

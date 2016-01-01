@@ -19,7 +19,7 @@
 <input id="currentedittab" type="hidden" value="@info.GetXmlProperty("genxml/hidden/currentedittab")" />
 
 
-@EditCultureSelect("flag-list", "selecteditlanguage",true)
+@EditCultureSelect("flag-list", "selecteditlanguage", true)
 
 
     <ul id="dock">
@@ -27,7 +27,7 @@
             @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml,Edit.ascx.resx,View.ascx.resx")
         </li>
         <li id="templfiles">
-            @TemplateFileSelect(info, "free","", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "")
+            @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "")
         </li>
     </ul>
 
@@ -44,7 +44,10 @@
     <div id="tabs-1">
         <div class='buttons'>
             <button id='savedatatempl' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-            <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
+                @if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                {
+                    <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
+                }
         </div>
 
         <div id="simpletexteditor">
@@ -59,7 +62,10 @@
     <div id="tabs-2">
         <div class='buttons'>
             <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-            <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
+@if (info.GetXmlPropertyBool("genxml/resxportal"))
+{
+                <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
+}
         </div>
 
         <div id="resxtexteditor">
