@@ -157,6 +157,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Themes\config\css\ThemeDockingMenu.css" />
+    <Content Include="Themes\config\default\snippets.xml" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

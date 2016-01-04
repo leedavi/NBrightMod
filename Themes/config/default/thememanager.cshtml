@@ -23,6 +23,7 @@
         
 
         <div>
+            <button id='refreshbutton' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span>@ResourceKey("Edit.return")</button>
             <button id='exitedit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span>@ResourceKey("Edit.exit")</button>
         </div>
         <hr />
@@ -37,6 +38,10 @@
                     <button id='createnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span>@ResourceKey("Edit.createnew")</button>
                     @DnnLabel("lblcreatenew", "Edit.lblcreatenew")
                 </div>
+                <div class='buttons'>
+                    <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.makethemesys")</button>
+                    @DnnLabel("lblmakethemesys", "Edit.lblmakethemesys")
+                </div>                
             </div>
 
             <div id="step2" style="display: none;">
@@ -48,11 +53,13 @@
 
                 <div>
                     @DnnLabel("lblthemefolder", "Settings.themefolder")
-                    @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
+                    @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " class='themefolder' ")
+                    @ThemePortalSelectList(info, "genxml/dropdownlist/portalthemefolder", " class='portalthemefolder' ")
                 </div>
                 <hr />
                 <div class='buttons'>
                     <button id='nextbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
+                    <button id='makethemesysbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                 </div>
 
             </div>
@@ -70,20 +77,46 @@
             $(document).ready(function () {
 
                 $('#nextbutton').click(function () {
-                    $('#templfilename').val('view.cshtml'); // set default to view, shoudl always be there!
+                    $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
                     NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
+                });
+
+                $('#refreshbutton').click(function () {
+                    location.reload();
+                });
+
+
+                $('#makethemesysbutton').click(function () {
+                    NBrightMod_nbxget('makethemesys', '#nbrightmodthemedata', '#edittemplatediv');
                 });
 
                 $('#edittheme').click(function () {
                     $('#updatetype').val('edit');
                     $('#step1').hide();
                     $('#step2').show();
+                    $('#nextbutton').show();
+                    $('#makethemesysbutton').hide();
+                    $('.themefolder').show();
+                    $('.portalthemefolder').hide();
                 });
                 $('#createnew').click(function () {
                     $('#updatetype').val('new');
                     $('#step1').hide();
                     $('#step2').show();
                     $('#newnamediv').show();
+                    $('#nextbutton').show();
+                    $('#makethemesysbutton').hide();
+                    $('.themefolder').show();
+                    $('.portalthemefolder').hide();
+                });
+                $('#makethemesys').click(function () {
+                    $('#updatetype').val('sys');
+                    $('#step1').hide();
+                    $('#step2').show();
+                    $('#nextbutton').hide();
+                    $('#makethemesysbutton').show();
+                    $('.themefolder').hide();
+                    $('.portalthemefolder').show();
                 });
 
                 // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
@@ -106,6 +139,10 @@
                 }
 
                 if (e.cmd == 'gettemplatemenu') {
+
+                    $('.selectsnippet').click(function () {
+                        insertAtCaret('#simpletext',$('#' + $(this).attr('snipname')).html());
+                    });
 
                     $("#tabs").tabs({
                         activate: function (event, ui) {
@@ -202,6 +239,33 @@
                 }
 
             };
+
+
+
+            function insertAtCaret(selector, insertValue) {
+                var position = $(selector).getCursorPosition();
+                var content = $(selector).val();
+                var newContent = content.substr(0, position) + insertValue + content.substr(position);
+                $(selector).val(newContent);
+            };
+
+
+            (function ($, undefined) {
+                $.fn.getCursorPosition = function () {
+                    var el = $(this).get(0);
+                    var pos = 0;
+                    if ('selectionStart' in el) {
+                        pos = el.selectionStart;
+                    } else if ('selection' in document) {
+                        el.focus();
+                        var Sel = document.selection.createRange();
+                        var SelLength = document.selection.createRange().text.length;
+                        Sel.moveStart('character', -el.value.length);
+                        pos = Sel.text.length - SelLength;
+                    }
+                    return pos;
+                }
+            })(jQuery);
 
 
         </script>

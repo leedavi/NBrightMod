@@ -103,6 +103,51 @@ namespace NBrightMod.render
                 var dr = new System.IO.DirectoryInfo(d);
                 tList.Add(dr.Name);
             }
+
+            // add portal themes
+            var mappathRootFolder2 = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes";
+            var dirlist2 = System.IO.Directory.GetDirectories(mappathRootFolder2);
+            foreach (var d in dirlist2)
+            {
+                var dr = new System.IO.DirectoryInfo(d);
+                if (!tList.Contains(dr.Name)) tList.Add(dr.Name);
+            }
+
+            var strOut = "";
+
+            var upd = getUpdateAttr(xpath, attributes);
+            var id = xpath.Split('/').Last();
+            strOut = "<select id='" + id + "' " + upd + " " + attributes + ">";
+            var s = "";
+            if (allowEmpty) strOut += "    <option value=''></option>";
+            foreach (var tItem in tList)
+            {
+                if (tItem.ToLower() != "shared" && tItem.ToLower() != "config")
+                {
+                    if (info.GetXmlProperty(xpath) == tItem)
+                        s = "selected";
+                    else
+                        s = "";
+                    strOut += "    <option value='" + tItem + "' " + s + ">" + tItem + "</option>";
+                }
+            }
+            strOut += "</select>";
+
+            return new RawString(strOut);
+        }
+
+        public IEncodedString ThemePortalSelectList(NBrightInfo info, String xpath, String attributes = "", Boolean allowEmpty = true)
+        {
+            if (attributes.StartsWith("ResourceKey:")) attributes = ResourceKey(attributes.Replace("ResourceKey:", "")).ToString();
+
+            var mappathRootFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes";
+            var dirlist = System.IO.Directory.GetDirectories(mappathRootFolder);
+            var tList = new List<String>();
+            foreach (var d in dirlist)
+            {
+                var dr = new System.IO.DirectoryInfo(d);
+                tList.Add(dr.Name);
+            }
             var strOut = "";
 
             var upd = getUpdateAttr(xpath, attributes);
@@ -226,6 +271,30 @@ namespace NBrightMod.render
 
 
             return new RawString(strOut);
+        }
+
+        public IEncodedString GetSnippets(String cssclass, String cssclassli, String headerli = "", String xpath = "")
+        {
+            var snippetXml = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/config/default/snippets.xml");
+            var XMLDoc = new XmlDocument();
+            XMLDoc.Load(snippetXml);
+            var nodList = XMLDoc.SelectNodes(xpath);
+
+            var strOut = new StringBuilder("");
+            if (nodList != null)
+            {
+                strOut.Append("<ul class='" + cssclass + "'>");
+                strOut.Append(headerli);
+                foreach (XmlNode n in nodList)
+                {
+                    strOut.Append("<li>");
+                    strOut.Append("<a href='javascript:void(0)' snipname='snip" + n.Attributes["name"].InnerText + "' class='selectsnippet' " + cssclassli + "'>" + n.Attributes["text"].InnerText + "</a>");
+                    strOut.Append("<span id='snip" + n.Attributes["name"].InnerText + "' style='display:none;' >" + n.InnerText + "</span>");
+                    strOut.Append("</li>");
+                }
+                strOut.Append("</ul>");
+            }
+            return new RawString(strOut.ToString());
         }
 
         public IEncodedString TemplateFileSelect(NBrightInfo info, String cssclass, String cssclassli, String headerli = "",String filematchcsv = "")

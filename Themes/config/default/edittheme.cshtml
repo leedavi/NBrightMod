@@ -26,8 +26,14 @@
         <li id="templfiles">
             @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml,Edit.ascx.resx,View.ascx.resx")
         </li>
-        <li id="templfiles">
+        <li id="templallfiles">
             @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "")
+        </li>
+        <li id="snippets1">
+            @GetSnippets("free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>Snippets Input</li>", "root/input/*")
+        </li>
+        <li id="snippets2">
+            @GetSnippets("free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>Snippets Process</li>", "root/process/*")
         </li>
     </ul>
 
@@ -67,7 +73,7 @@
                 <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
 }
         </div>
-
+        @ResourceKey("Edit.portalresxmsg")
         <div id="resxtexteditor">
             <div>
                 <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>

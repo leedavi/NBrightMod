@@ -1,4 +1,5 @@
 ﻿
+
 $(document).ready(function () {
 
     // set the default edit language to the current langauge
@@ -394,3 +395,4 @@ function CancelAddFiles() {
         NBrightMod_nbxget('getdetail', '#selectparams', '#editdata'); // do ajax call to get edit form
     }
 }
+

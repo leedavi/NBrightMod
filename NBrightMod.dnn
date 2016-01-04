@@ -1,8 +1,8 @@
 ﻿<dotnetnuke type="Package" version="5.0">
 	<packages>
-		<package name="NBrightMod" type="Module" version="1.0.0">
+		<package name="NBrightMod" type="Module" version="1.0.1">
 			<friendlyName>NBrightMod</friendlyName>
-			<description>NBrightMod is ....</description>
+			<description>NBrightMod, generic Module for NBright Solutions</description>
 			<iconFile />
 			<owner>
 				<name>David Lee</name>
@@ -90,8 +90,28 @@ This module depends on the NBright template system.  It must be installed for th
 										<iconFile />
 										<helpUrl />
 										<supportsPopUps>False</supportsPopUps>
-									</moduleControl>								
-								</moduleControls>
+									</moduleControl>
+                  <moduleControl>
+                    <controlKey>ThemeManager</controlKey>
+                    <controlSrc>desktopmodules/nbright/nbrightmod/ThemeManager.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle>ThemeManager</controlTitle>
+                    <controlType>Admin</controlType>
+                    <iconFile />
+                    <helpUrl />
+                    <supportsPopUps>False</supportsPopUps>
+                  </moduleControl>
+                  <moduleControl>
+                    <controlKey>Tools</controlKey>
+                    <controlSrc>desktopmodules/nbright/nbrightmod/Tools.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle>Tools</controlTitle>
+                    <controlType>Admin</controlType>
+                    <iconFile />
+                    <helpUrl />
+                    <supportsPopUps>False</supportsPopUps>
+                  </moduleControl>
+                </moduleControls>
 							</moduleDefinition>
 						</moduleDefinitions>
 					</desktopModule>

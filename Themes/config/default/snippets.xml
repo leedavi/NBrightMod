@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <input>
+    <data name="textbox" text="TextBox">
+      <![CDATA[ 
+@NBrightTextBox(info, "genxml/textbox/******")
+      ]]>
+    </data>
+    <data name="textboxml" text="TextBox (ML)">
+      <![CDATA[ 
+@NBrightTextBox(info, "genxml/lang/genxml/textbox/******")
+      ]]>
+    </data>
+    <data name="CheckBox" text="CheckBox">
+      <![CDATA[ 
+@CheckBox(info, "genxml/checkbox/******", "", "", false)
+      ]]>
+    </data>
+    <data name="RadioButtonList" text="RadioButtonList">
+      <![CDATA[ 
+@RadioButtonList(info, "genxml/radiobuttonlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")      
+      ]]>
+    </data>
+    <data name="DropDownList" text="DropDownList">
+      <![CDATA[ 
+@DropDownList(info, "genxml/dropdownlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")      
+      ]]>
+    </data>
+    <data name="CheckBoxList" text="CheckBoxList">
+      <![CDATA[ 
+@CheckBoxList(info, "genxml/checkboxlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")            
+      ]]>
+    </data>
+    <data name="DateInput" text="DateInput">
+      <![CDATA[ 
+@NBrightDate(info, "genxml/textbox/******", " autocomplete='off' ")
+      ]]>
+    </data>
+    <data name="TextArea" text="TextArea">
+      <![CDATA[ 
+@NBrightTextArea(info, "genxml/lang/genxml/textbox/******", "rows='4' ")
+      ]]>
+    </data>
+    <data name="RichTextBox" text="RichTextBox">
+      <![CDATA[ 
+@RichTextBox(info, "genxml/lang/genxml/textbox/******", "")
+      ]]>
+    </data>
+    <data name="HiddenField" text="HiddenField">
+      <![CDATA[ 
+@HiddenField(info, "genxml/hidden/******","","")      
+      ]]>
+    </data>
+    <data name="ImageSingleUpload" text="Image Single Upload">
+      <![CDATA[ 
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1-shared.cshtml", Model)
+      ]]>
+    </data>
+    <data name="ImageUpload" text="Image Upload">
+      <![CDATA[ 
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image-shared.cshtml", Model)
+      ]]>
+    </data>
+    <data name="DocsSingleUpload" text="Docs Single Upload">
+      <![CDATA[ 
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/docs1-shared.cshtml", Model)
+      ]]>
+    </data>
+    <data name="DocsUpload" text="Docs Upload">
+      <![CDATA[ 
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/docs-shared.cshtml", Model)
+      ]]>
+    </data>
+    <data name="labeltextbox" text="Label and TextBox">
+      <![CDATA[ 
+<div class="form-group">
+    <label>@ResourceKey("Edit.******")</label>
+    <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/******")</div>
+</div>
+      ]]>
+    </data>
+
+  </input>
+  <process>
+    <data name="EditButtons" text="EditButtons">
+      <![CDATA[ 
+@EditButtons("add,savelist,save,saveexit,savereturn,delete,return,exit,uploadimage,uploaddoc,undodoc,undoimage")
+      ]]>
+    </data>
+    <data name="EditCultureSelect" text="EditCultureSelect">
+      <![CDATA[ 
+@EditCultureSelect("flag-list", "selecteditlanguage")
+      ]]>
+    </data>
+    <data name="assigninfo" text="Assign info var">
+      <![CDATA[ 
+@{
+    var info = (NBrightInfo)Model.List.First();
+}      
+      ]]>
+    </data>
+    <data name="GetUrlParam" text="GetUrlParam">
+      <![CDATA[ 
+@Model.GetUrlParam("******")
+    ]]>
+    </data>
+    <data name="GetSetting" text="GetSetting">
+      <![CDATA[ 
+@(Model.GetSetting("******"))
+      ]]>
+    </data>
+    <data name="ifonsettings" text="IF on Setting">
+      <![CDATA[ 
+@if (Model.GetSetting("******") == "true")
+{
+<div>True</div>
+}
+else
+{
+<div>False</div>
+}            
+      ]]>
+    </data>
+    <data name="infoloop" text="info loop">
+      <![CDATA[ 
+@{
+    var lp = 1;
+    foreach (NBrightInfo info in Model.List)
+    {
+        <div>@info.GetXmlProperty("genxml/textbox/******")</div>
+        lp += 1;
+    }
+}     
+      ]]>
+    </data>
+    <data name="" text="">
+      <![CDATA[ 
+      ]]>
+    </data>
+    <data name="" text="">
+      <![CDATA[ 
+      ]]>
+    </data>
+    <data name="AddMetaData" text="AddMetaData">
+      <![CDATA[ 
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+      ]]>
+    </data>
+
+    
+
+  </process>
+  
+</root>

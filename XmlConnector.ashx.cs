@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Web;
 using System.Xml;
 using DotNetNuke.Entities.Portals;
@@ -19,6 +20,7 @@ using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
 using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
 
 namespace Nevoweb.DNN.NBrightMod
@@ -197,6 +199,12 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = "OK";
                     }
                     break;
+                case "makethemesys":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = MoveThemeToSystem(context);
+                    }
+                    break;                    
                 case "gettemplatemenu":
                     if (LocalUtils.CheckRights())
                     {
@@ -221,8 +229,6 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = DeletePortalTemplate(context);
                     }
                     break;
-                    
-
             }
 
             #endregion
@@ -581,12 +587,14 @@ namespace Nevoweb.DNN.NBrightMod
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
             var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+            if (updatetype == "new") themefolder = newname; // if we are creating a new theme, use the new name to save.
             var razortemplname = "config.edittheme.cshtml";
             var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var fulltemplfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
             var currentedittab = ajaxInfo.GetXmlProperty("genxml/hidden/currentedittab");
+
 
             var templData = new NBrightInfo(true);
             var razorTempl2 = "";
@@ -607,6 +615,11 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     sourceportal = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
                     sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
+                }
+                if (templfilename.EndsWith(".resx"))
+                {
+                    sourceportal = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                    sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
                 }
                 razorTempl2 = Utils.ReadFile(sourceportal + "\\" + templfilename);
                 if (razorTempl2 == "")
@@ -647,7 +660,9 @@ namespace Nevoweb.DNN.NBrightMod
             templData.RemoveXmlNode("genxml/portalfiles");
             templData.AddSingleNode("portalfiles", "", "genxml");
             var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
-                if (System.IO.Directory.Exists(sourceRoot))
+            if (!System.IO.Directory.Exists(sourceRoot)) sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\default";
+
+            if (System.IO.Directory.Exists(sourceRoot))
                 {
                     string[] files = System.IO.Directory.GetFiles(sourceRoot);
                     foreach (string s in files)
@@ -662,7 +677,8 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 // get template files
                 sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
-                if (System.IO.Directory.Exists(sourceRoot))
+            if (!System.IO.Directory.Exists(sourceRoot)) sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
+            if (System.IO.Directory.Exists(sourceRoot))
                 {
                     string[] files = System.IO.Directory.GetFiles(sourceRoot);
                     foreach (string s in files)
@@ -677,7 +693,8 @@ namespace Nevoweb.DNN.NBrightMod
             }
                 // get template files
                 sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
-                if (System.IO.Directory.Exists(sourceRoot))
+            if (!System.IO.Directory.Exists(sourceRoot)) sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+            if (System.IO.Directory.Exists(sourceRoot))
                 {
                     string[] files = System.IO.Directory.GetFiles(sourceRoot);
                     foreach (string s in files)
@@ -691,7 +708,24 @@ namespace Nevoweb.DNN.NBrightMod
                 }
             }
 
-                strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
+            // get template files
+            sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+            if (!System.IO.Directory.Exists(sourceRoot)) sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+            if (System.IO.Directory.Exists(sourceRoot))
+            {
+                string[] files = System.IO.Directory.GetFiles(sourceRoot);
+                foreach (string s in files)
+                {
+                    templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/files");
+                    var portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx\\" + Path.GetFileName(s);
+                    if (File.Exists(portalpath))
+                    {
+                        templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/portalfiles");
+                    }
+                }
+            }
+
+            strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
 
             return strOut;
         }
@@ -705,6 +739,7 @@ namespace Nevoweb.DNN.NBrightMod
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
             var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+            if (updatetype == "new") themefolder = newname; // if we are creating a new theme, use the new name to save.
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var fulltemplfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -712,7 +747,6 @@ namespace Nevoweb.DNN.NBrightMod
             var fldrlang = lang;
             if (fldrlang == "") fldrlang = "default";
             var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
-
             var simpletext = ajaxInfo.GetXmlProperty("genxml/textbox/simpletext");
 
             if (simpletext != "")
@@ -733,6 +767,10 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         sourceroot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
                     }
+                    if (templfilename.EndsWith(".resx"))
+                    {
+                        sourceroot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                    }
                     razorTempl2 = Utils.ReadFile(sourceroot + "\\" + templfilename);
                     if (razorTempl2 == "")
                     {
@@ -744,6 +782,10 @@ namespace Nevoweb.DNN.NBrightMod
                         if (templfilename.EndsWith(".js"))
                         {
                             sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
+                        }
+                        if (templfilename.EndsWith(".resx"))
+                        {
+                            sourceroot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
                         }
                         razorTempl2 = Utils.ReadFile(sourceroot + "\\" + templfilename);
                     }
@@ -766,6 +808,10 @@ namespace Nevoweb.DNN.NBrightMod
                         if (templfilename.EndsWith(".js"))
                         {
                             fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+                        }
+                        if (templfilename.EndsWith(".resx"))
+                        {
+                            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
                         }
                     }
                     if (fldrDefault != "")
@@ -826,6 +872,10 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
                 }
+                if (templfilename.EndsWith(".resx"))
+                {
+                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                }
             }
             if (fldrDefault != "")
             {
@@ -834,7 +884,17 @@ namespace Nevoweb.DNN.NBrightMod
                     File.Delete(fldrDefault + "\\" + templfilename);
                 }
             }
-        
+
+            // delete theme directory if we have no files
+            var filecount = 0;
+            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder;
+            filecount += Directory.GetFiles(fldrDefault, "*.*", SearchOption.AllDirectories).Length;
+            if (filecount == 0)
+            {
+                Directory.Delete(fldrDefault,true);
+            }
+
+
             return "OK";
         }
 
@@ -882,6 +942,7 @@ namespace Nevoweb.DNN.NBrightMod
                 SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+                var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
                 var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
 
@@ -934,8 +995,75 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+        private String MoveThemeToSystem(HttpContext context)
+        {
+            try
+            {
+                var strOut = "Error unable to Move Theme";
 
-        private void CopyFileInFolder(String sourcePath, String targetPath)
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+
+                var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
+                var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+
+                if (updatetype == "sys" && portalthemefolder != "")
+                {
+                    var targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder);
+                    //see if we already have a portal level 
+                    if (Directory.Exists(targetRoot))
+                    {
+                        strOut = "ERROR: Theme already exists at system level, unable to Move Theme";
+                    }
+                    else
+                    {
+                        Utils.CreateFolder(targetRoot);
+                        
+                        var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\default";
+                        var fldrResx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\resx";
+                        var fldrJs = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\js";
+                        var fldrCss = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\css";
+
+                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/default");
+                        Utils.CreateFolder(targetRoot);
+                        CopyFileInFolder(fldrDefault, targetRoot, true);
+                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/resx");
+                        Utils.CreateFolder(targetRoot);
+                        CopyFileInFolder(fldrResx,targetRoot, true);
+                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/js");
+                        Utils.CreateFolder(targetRoot);
+                        CopyFileInFolder(fldrJs,targetRoot, true);
+                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/css");
+                        Utils.CreateFolder(targetRoot);
+                        CopyFileInFolder(fldrCss,targetRoot,true);
+
+                        // delete theme directory if we have no files
+                        var filecount = 0;
+                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder;
+                        filecount += Directory.GetFiles(fldrDefault, "*.*", SearchOption.AllDirectories).Length;
+                        if (filecount == 0)
+                        {
+                            Directory.Delete(fldrDefault, true);
+                        }
+
+                        strOut = "Theme Moved to System Level and available on ALL portals";
+                    }
+
+                }
+
+
+                return strOut;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
+
+        private void CopyFileInFolder(String sourcePath, String targetPath,Boolean move = false)
         {
             // To copy a folder's contents to a new location:
             // Create a new target folder, if necessary.
@@ -961,6 +1089,10 @@ namespace Nevoweb.DNN.NBrightMod
                     var fileName = System.IO.Path.GetFileName(s);
                     var destFile = System.IO.Path.Combine(targetPath, fileName);
                     System.IO.File.Copy(s, destFile, true);
+                    if (move)
+                    {
+                        File.Delete(s);
+                    }
                 }
             }
         }
