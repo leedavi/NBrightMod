@@ -287,8 +287,13 @@ namespace NBrightMod.render
                 strOut.Append(headerli);
                 foreach (XmlNode n in nodList)
                 {
+                    var titledtata = n.Attributes["name"].InnerText;
+                    if (n.Attributes["title"] != null && n.Attributes["title"].InnerText != "")
+                    {
+                        titledtata = n.Attributes["title"].InnerText;
+                    }
                     strOut.Append("<li>");
-                    strOut.Append("<a href='javascript:void(0)' snipname='snip" + n.Attributes["name"].InnerText + "' class='selectsnippet' " + cssclassli + "'>" + n.Attributes["text"].InnerText + "</a>");
+                    strOut.Append("<a href='javascript:void(0)' snipname='snip" + n.Attributes["name"].InnerText + "' class='selectsnippet' " + cssclassli + "' title='" + titledtata + "'>" + n.Attributes["text"].InnerText + "</a>");
                     strOut.Append("<span id='snip" + n.Attributes["name"].InnerText + "' style='display:none;' >" + n.InnerText + "</span>");
                     strOut.Append("</li>");
                 }

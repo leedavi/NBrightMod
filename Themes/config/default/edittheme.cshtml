@@ -22,68 +22,81 @@
 @EditCultureSelect("flag-list", "selecteditlanguage", true)
 
 
-    <ul id="dock">
-        <li id="templfiles">
-            @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml,Edit.ascx.resx,View.ascx.resx")
-        </li>
-        <li id="templallfiles">
-            @TemplateFileSelect(info, "free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>default</li>", "")
-        </li>
-        <li id="snippets1">
-            @GetSnippets("free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>Snippets Input</li>", "root/input/*")
-        </li>
-        <li id="snippets2">
-            @GetSnippets("free", "", "<li class='header'><a href='#' class='dock'>Dock</a><a href='#' class='undock'>Undock</a>Snippets Process</li>", "root/process/*")
-        </li>
-    </ul>
 
-<div id="tabs">
-
-    <ul>
-
-        <li><a href="#tabs-1">@info.GetXmlProperty("genxml/templfilename")</a></li>
-
-        <li><a href="#tabs-2">@info.GetXmlProperty("genxml/resxfilename")</a></li>
-
-    </ul>
-
-    <div id="tabs-1">
-        <div class='buttons'>
-            <button id='savedatatempl' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-                @if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
-                {
-                    <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
-                }
-        </div>
-
-        <div id="simpletexteditor">
-            <div>
-                <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
-            </div>
-            <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
-        </div>
-
-    </div>
-
-    <div id="tabs-2">
-        <div class='buttons'>
-            <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-@if (info.GetXmlPropertyBool("genxml/resxportal"))
-{
-                <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
-}
-        </div>
-        @ResourceKey("Edit.portalresxmsg")
-        <div id="resxtexteditor">
-            <div>
-                <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
-            </div>
-            <textarea rows="50" id="resxdata" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/resxdata")</textarea>
-        </div>
-
-    </div>
-
+<div id="sideeditmenu">
+    <nav>
+        <ul>
+            <li>
+                <a href="#"><i class="fa fa-laptop"></i>General Files</a>
+                <h2><i class="fa fa-laptop"></i>General Files</h2>
+                @TemplateFileSelect(info, "", "", "", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml")
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-laptop"></i>All Files</a>
+                <h2><i class="fa fa-laptop"></i>All Files</h2>
+                @TemplateFileSelect(info, "", "", "", "")
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-laptop"></i>Snippet Input</a>
+                <h2><i class="fa fa-laptop"></i>Snippet Input</h2>
+                @GetSnippets("", "", "", "root/input/*")
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-laptop"></i>Snippet Process</a>
+                <h2><i class="fa fa-laptop"></i>Snippet Process</h2>
+                @GetSnippets("", "", "", "root/process/*")
+            </li>
+        </ul>
+    </nav>
 </div>
+
+        <div id="tabs">
+
+            <ul>
+
+                <li><a href="#tabs-1">@info.GetXmlProperty("genxml/templfilename")</a></li>
+
+                <li><a href="#tabs-2">@info.GetXmlProperty("genxml/resxfilename")</a></li>
+
+            </ul>
+
+            <div id="tabs-1">
+                <div class='buttons'>
+                    <button id='savedatatempl' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
+                    @if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                    {
+                        <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
+                    }
+                </div>
+
+                <div id="simpletexteditor">
+                    <div>
+                        <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
+                    </div>
+                    <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
+                </div>
+
+            </div>
+
+            <div id="tabs-2">
+                <div class='buttons'>
+                    <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
+                    @if (info.GetXmlPropertyBool("genxml/resxportal"))
+                    {
+                        <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
+                    }
+                </div>
+                @ResourceKey("Edit.portalresxmsg")
+                <div id="resxtexteditor">
+                    <div>
+                        <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
+                    </div>
+                    <textarea rows="50" id="resxdata" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/resxdata")</textarea>
+                </div>
+
+            </div>
+
+        </div>
 
 
 

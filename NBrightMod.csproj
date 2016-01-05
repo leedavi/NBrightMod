@@ -156,8 +156,9 @@
     <Content Include="ThemeManager.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Themes\config\css\ThemeDockingMenu.css" />
+    <Content Include="Themes\config\css\jquery.multilevelpushmenu.css" />
     <Content Include="Themes\config\default\snippets.xml" />
+    <Content Include="Themes\config\js\jquery.multilevelpushmenu.min.js" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

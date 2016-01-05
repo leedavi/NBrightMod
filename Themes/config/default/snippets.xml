@@ -1,52 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <input>
-    <data name="textbox" text="TextBox">
+    <data name="textbox" text="TextBox" title="TextBox">
       <![CDATA[ 
 @NBrightTextBox(info, "genxml/textbox/******")
       ]]>
     </data>
-    <data name="textboxml" text="TextBox (ML)">
+    <data name="textboxml" text="TextBox (ML)" title="TextBox Localized">
       <![CDATA[ 
 @NBrightTextBox(info, "genxml/lang/genxml/textbox/******")
       ]]>
     </data>
-    <data name="CheckBox" text="CheckBox">
+    <data name="CheckBox" text="CheckBox"  title="CheckBox(NBrightInfo info, String xpath,String text, String attributes, Boolean defaultValue = false)">
       <![CDATA[ 
 @CheckBox(info, "genxml/checkbox/******", "", "", false)
       ]]>
     </data>
-    <data name="RadioButtonList" text="RadioButtonList">
+    <data name="RadioButtonList" text="RadioButtonList" title="RadioButtonList(NBrightInfo info, String xpath, String datavalue, String datatext, String attributes, String defaultValue)">
       <![CDATA[ 
 @RadioButtonList(info, "genxml/radiobuttonlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")      
       ]]>
     </data>
-    <data name="DropDownList" text="DropDownList">
+    <data name="DropDownList" text="DropDownList" title="DropDownList(NBrightInfo info, String xpath, String datavalue, String datatext, String attributes, String defaultValue)">
       <![CDATA[ 
 @DropDownList(info, "genxml/dropdownlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")      
       ]]>
     </data>
-    <data name="CheckBoxList" text="CheckBoxList">
+    <data name="CheckBoxList" text="CheckBoxList" title="CheckBoxList(NBrightInfo info, String xpath, String datavalue, String datatext, String attributes, Boolean defaultValue = false)">
       <![CDATA[ 
 @CheckBoxList(info, "genxml/checkboxlist/******", "0,1,2,3", "A,B,C,D", "class='myclass'", "0")            
       ]]>
     </data>
-    <data name="DateInput" text="DateInput">
+    <data name="DateInput" text="DateInput" title="NBrightDate(NBrightInfo info, String xpath, String attributes, String defaultValue,String extraDatePickerOptions)">
       <![CDATA[ 
 @NBrightDate(info, "genxml/textbox/******", " autocomplete='off' ")
       ]]>
     </data>
-    <data name="TextArea" text="TextArea">
+    <data name="TextArea" text="TextArea" title="NBrightTextArea(NBrightInfo info, String xpath, String attributes, String defaultValue)">
       <![CDATA[ 
 @NBrightTextArea(info, "genxml/lang/genxml/textbox/******", "rows='4' ")
       ]]>
     </data>
-    <data name="RichTextBox" text="RichTextBox">
+    <data name="RichTextBox" text="RichTextBox" title="RichTextBox(NBrightInfo info, String xpath, String attributes)">
       <![CDATA[ 
 @RichTextBox(info, "genxml/lang/genxml/textbox/******", "")
       ]]>
     </data>
-    <data name="HiddenField" text="HiddenField">
+    <data name="HiddenField" text="HiddenField" title="HiddenField(NBrightInfo info, String xpath, String attributes, String defaultValue)">
       <![CDATA[ 
 @HiddenField(info, "genxml/hidden/******","","")      
       ]]>
@@ -71,6 +71,12 @@
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/docs-shared.cshtml", Model)
       ]]>
     </data>
+    <data name="TextEditor" text="TextEditor">
+      <![CDATA[ 
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editortext-shared.cshtml", Model)
+      ]]>
+    </data>
+
     <data name="labeltextbox" text="Label and TextBox">
       <![CDATA[ 
 <div class="form-group">
@@ -79,9 +85,22 @@
 </div>
       ]]>
     </data>
+    <data name="TabSelectList" text="TabSelectList" title="TabSelectList(NBrightInfo info, String xpath, String attributes,Boolean allowEmpty = true) // GUID Tab returned">
+      <![CDATA[ 
+@TabSelectList(info,"genxml/dropdownlist/linktab","class='form-control'",true)      
+      ]]>
+    </data>
+    <data name="TabSelectList" text="TabSelectList" title="TabSelectListOnTabId(NBrightInfo info, String xpath, String attributes, Boolean allowEmpty = true) // TabId returned">
+      <![CDATA[ 
+@TabSelectListOnTabId(info,"genxml/dropdownlist/linktab","class='form-control'",true)      
+      ]]>
+    </data>
+
 
   </input>
   <process>
+    
+    
     <data name="EditButtons" text="EditButtons">
       <![CDATA[ 
 @EditButtons("add,savelist,save,saveexit,savereturn,delete,return,exit,uploadimage,uploaddoc,undodoc,undoimage")
@@ -133,21 +152,38 @@ else
 }     
       ]]>
     </data>
-    <data name="" text="">
+    <data name="AddPreProcessMetaData" text="AddPreProcessMetaData" title="AddPreProcessMetaData(String metaKey, String metaValue,String templateFullName,String moduleId)">
       <![CDATA[ 
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "******.cshtml", Model.ModuleId.ToString(""))
       ]]>
     </data>
-    <data name="" text="">
+    <data name="GetTabUrlByGuid" text="GetTabUrlByGuid" title="Gets tabid from a TabSelectList">
       <![CDATA[ 
+var tabddl = GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");      
       ]]>
-    </data>
-    <data name="AddMetaData" text="AddMetaData">
+    </data>    
+    <data name="AddMetaData" text="AddMetaData" title="AddMetaData(String metaKey, String metaValue, String templateFullName)">
       <![CDATA[ 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
       ]]>
     </data>
+    <data name="ResourceKey" text="ResourceKey" title="ResourceKey(resourcefile.resourcekey)">
+      <![CDATA[ 
+@ResourceKey("Edit.******")      
+      ]]>
+    </data>
+    <data name="DnnLabel" text="DnnLabel" title="DnnLabel(String id, String resourceFileKey, String lang)">
+      <![CDATA[ 
+@DnnLabel("*****", "Edit.*****")      
+      ]]>
+    </data>
+    <data name="GetXmlProperty" text="GetXmlProperty" title="GetXmlProperty(xpath)">
+      <![CDATA[ 
+@info.GetXmlProperty("genxml/textbox/******")
+      ]]>
+    </data>
 
-    
+
 
   </process>
   
