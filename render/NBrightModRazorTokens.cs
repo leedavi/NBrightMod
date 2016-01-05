@@ -95,22 +95,29 @@ namespace NBrightMod.render
         {
             if (attributes.StartsWith("ResourceKey:")) attributes = ResourceKey(attributes.Replace("ResourceKey:", "")).ToString();
 
-            var mappathRootFolder = System.Web.Hosting.HostingEnvironment.MapPath(relitiveRootFolder);
-            var dirlist = System.IO.Directory.GetDirectories(mappathRootFolder);
             var tList = new List<String>();
-            foreach (var d in dirlist)
+
+            var mappathRootFolder = System.Web.Hosting.HostingEnvironment.MapPath(relitiveRootFolder);
+            if (mappathRootFolder != null && Directory.Exists(mappathRootFolder))
             {
-                var dr = new System.IO.DirectoryInfo(d);
-                tList.Add(dr.Name);
+                var dirlist = System.IO.Directory.GetDirectories(mappathRootFolder);
+                foreach (var d in dirlist)
+                {
+                    var dr = new System.IO.DirectoryInfo(d);
+                    tList.Add(dr.Name);
+                }
             }
 
             // add portal themes
             var mappathRootFolder2 = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes";
-            var dirlist2 = System.IO.Directory.GetDirectories(mappathRootFolder2);
-            foreach (var d in dirlist2)
+            if (Directory.Exists(mappathRootFolder2))
             {
-                var dr = new System.IO.DirectoryInfo(d);
-                if (!tList.Contains(dr.Name)) tList.Add(dr.Name);
+                var dirlist2 = System.IO.Directory.GetDirectories(mappathRootFolder2);
+                foreach (var d in dirlist2)
+                {
+                    var dr = new System.IO.DirectoryInfo(d);
+                    if (!tList.Contains(dr.Name)) tList.Add(dr.Name);
+                }
             }
 
             var strOut = "";
@@ -140,13 +147,16 @@ namespace NBrightMod.render
         {
             if (attributes.StartsWith("ResourceKey:")) attributes = ResourceKey(attributes.Replace("ResourceKey:", "")).ToString();
 
-            var mappathRootFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes";
-            var dirlist = System.IO.Directory.GetDirectories(mappathRootFolder);
             var tList = new List<String>();
-            foreach (var d in dirlist)
+            var mappathRootFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes";
+            if (Directory.Exists(mappathRootFolder))
             {
-                var dr = new System.IO.DirectoryInfo(d);
-                tList.Add(dr.Name);
+                var dirlist = System.IO.Directory.GetDirectories(mappathRootFolder);
+                foreach (var d in dirlist)
+                {
+                    var dr = new System.IO.DirectoryInfo(d);
+                    tList.Add(dr.Name);
+                }
             }
             var strOut = "";
 
