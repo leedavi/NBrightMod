@@ -86,8 +86,8 @@ namespace Nevoweb.DNN.NBrightMod
             var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
 
             var strOut = "";
-            var cacheKey = "nbrightmodview*" + PortalSettings.Current.PortalId + "*" + ModuleId + "*" + Utils.GetCurrentCulture();
-            if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey);
+            var cacheKey = "nbrightmodview-" + PortalSettings.Current.PortalId + "-" + ModuleId + "-" + Utils.GetCurrentCulture();
+            if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey, ModuleId.ToString());
 
             if (String.IsNullOrWhiteSpace(strOut)) // check if we already have razor cache
             {

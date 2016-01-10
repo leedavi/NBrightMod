@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
@@ -269,46 +270,50 @@ namespace NBrightMod.common
 
         }
 
-
-        public static Object GetRazorCache(String cacheKey)
+        public static void SetFileCache(String cacheKey, String cachedata, string moduleid)
         {
-            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
+            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache";
+            Utils.CreateFolder(cacheFolder); // creates is not there
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            Utils.CreateFolder(modFolder); // creates is not there
+            var cacheFileName = modFolder + "\\" + cacheKey + ".txt";
+            Utils.SaveFile(cacheFileName,cachedata);
+        }
+
+        public static String GetFileCache(String cacheKey, string moduleid)
+        {
+            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache";
+            Utils.CreateFolder(cacheFolder); // creates is not there
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            Utils.CreateFolder(modFolder); // creates is not there
+            var cacheFileName = modFolder + "\\" + cacheKey + ".txt";
+            return Utils.ReadFile(cacheFileName);
+        }
+
+        public static void ClearFileCache(int moduleid)
+        {
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            Utils.DeleteFolder(modFolder,true);
+        }
+
+        public static Object GetRazorCache(String cacheKey, string moduleid)
+        {
+            var rtnObj = Utils.GetCache(cacheKey);
+            if (rtnObj == null)
             {
-                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
-                // ********************************************************************
-                var cache = System.Runtime.Caching.MemoryCache.Default;
-                return cache.Get(cacheKey);
-                // ********************************************************************
+                rtnObj = GetFileCache(cacheKey, moduleid);
             }
-            return Utils.GetCache(cacheKey);
+            return rtnObj;
         }
 
         public static void SetRazorCache(String cacheKey, String cachedata, string moduleid)
         {
-            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
-            {
-                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
-                // ********************************************************************
-                var cache = System.Runtime.Caching.MemoryCache.Default;
-                CacheItemPolicy policy = new CacheItemPolicy();
-                policy.AbsoluteExpiration = DateTimeOffset.Now.AddHours(1.0);
-                cache.Add(cacheKey, cachedata, policy);
-
-                var modCacheList = (List<String>)GetRazorCache("nbrightmodcache*" + moduleid);
-                if (modCacheList == null) modCacheList = new List<String>();
-                if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
-                cache.Add("nbrightmodcache*" + moduleid, modCacheList, policy);
-                // ********************************************************************
-            }
-            else
-            {
-                Utils.SetCache(cacheKey, cachedata);
-                var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
-                if (modCacheList == null) modCacheList = new List<String>();
-                if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
-                Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
-            }
-
+            Utils.SetCache(cacheKey, cachedata);
+            var modCacheList = (List<String>) Utils.GetCache("nbrightmodcache*" + moduleid);
+            if (modCacheList == null) modCacheList = new List<String>();
+            if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
+            Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
+            SetFileCache(cacheKey, cachedata, moduleid);
         }
 
         public static List<NBrightInfo> GetNBrightModList()
@@ -327,23 +332,6 @@ namespace NBrightMod.common
 
         public static void ClearRazorCache(String moduleid)
         {
-            if (UserController.Instance.GetCurrentUserInfo().IsSuperUser)
-            {
-                // DNN caching NOT working for su in langauge so do your own!!!!!!! ***** :-/
-                // ********************************************************************
-                var cache = System.Runtime.Caching.MemoryCache.Default;
-                var modCacheList = (List<String>)GetRazorCache("nbrightmodcache*" + moduleid);
-                if (modCacheList != null)
-                {
-                    foreach (var cachekey in modCacheList)
-                    {
-                        cache.Remove(cachekey);
-                    }
-                }
-                // ********************************************************************
-            }
-            else
-            {
                 var modCacheList = (List<String>)Utils.GetCache("nbrightmodcache*" + moduleid);
                 if (modCacheList != null)
                 {
@@ -352,11 +340,10 @@ namespace NBrightMod.common
                         Utils.RemoveCache(cachekey);
                     }
                 }
-            }
 
             if (Utils.IsNumeric(moduleid))
             {
-                //ClearDatabaseCache(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid));
+                ClearFileCache(Convert.ToInt32(moduleid));
             }
         }
 
@@ -378,9 +365,9 @@ namespace NBrightMod.common
         public static String RazorTemplRenderList(String razorTemplName, String moduleid, String cacheKey, List<NBrightInfo> objList, String lang, Boolean debug = false)
         {
             // do razor template
-            var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString() + "*" + lang;
-            var razorTempl = GetRazorCache(cachekey);
-            if (razorTempl == null || debug)
+            var cachekey = "NBrightModKey" + razorTemplName + "-" + moduleid + "-" + cacheKey + PortalSettings.Current.PortalId.ToString() + "-" + lang;
+            var razorTempl = (String)GetRazorCache(cachekey,moduleid);
+            if (debug || String.IsNullOrWhiteSpace(razorTempl))
             {
                 var settignInfo = GetSettings(moduleid);
                 var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
@@ -411,9 +398,9 @@ namespace NBrightMod.common
         public static String RazorTemplRender(String razorTemplName, String moduleid, String cacheKey, NBrightInfo obj, String lang, Boolean debug = false)
         {
             // do razor template
-            var cachekey = "NBrightModKey" + razorTemplName + "*" + moduleid + "*" + cacheKey + PortalSettings.Current.PortalId.ToString();
-            var razorTempl = GetRazorCache(cachekey);
-            if (razorTempl == null || debug)
+            var cachekey = "NBrightModKey" + razorTemplName + "-" + moduleid + "-" + cacheKey + PortalSettings.Current.PortalId.ToString();
+            var razorTempl = (String)GetRazorCache(cachekey,moduleid);
+            if (debug || String.IsNullOrWhiteSpace(razorTempl))
             {
                 var settignInfo = GetSettings(moduleid);
                 var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());

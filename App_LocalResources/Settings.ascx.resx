@@ -162,4 +162,7 @@
   <data name="doportalvalidation.Text" xml:space="preserve">
     <value>Do Portal Validation</value>
   </data>
+  <data name="imguploadfolder.Text" xml:space="preserve">
+    <value>Image Upload Folder</value>
+  </data>
 </root>

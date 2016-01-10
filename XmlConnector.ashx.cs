@@ -156,9 +156,10 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "downloadfile":
-                        var fileindex = Utils.RequestQueryStringParam(context, "fileindex");
+                    var fileindex = Utils.RequestQueryStringParam(context, "fileindex");
                     var itemid = Utils.RequestQueryStringParam(context, "itemid");
-                    if (Utils.IsNumeric(itemid))
+                    var filename = Utils.RequestQueryStringParam(context, "filename");
+                    if (Utils.IsNumeric(itemid) && Utils.IsNumeric(fileindex))
                     {
                         var objCtrl = new NBrightDataController();
                         var nbi = objCtrl.GetData(Convert.ToInt32(itemid));
@@ -170,7 +171,6 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     else
                     {
-                        var filename = Utils.RequestQueryStringParam(context, "filename");
                         if (filename != "")
                         {
                             var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + filename;
@@ -179,7 +179,7 @@ namespace Nevoweb.DNN.NBrightMod
                             Utils.ForceDocDownload(fpath, downloadname, context.Response);
                         }
                     }
-                    strOut = "File Download Error, unable to find download fileindex or filename params";
+                    strOut = "File Download Error, filename: " + filename + ", itemid: " + itemid + ", fileindex: " + fileindex + " ";
                     break;
                 case "sendemail":
                         strOut = SendEmail(context);
