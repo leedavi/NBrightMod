@@ -464,7 +464,7 @@ namespace NBrightMod.common
                     cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
 
                     // if we have no preprocess items, we don;t want to run this again, so put the empty dic into cache.
-                    if (cachedlist.Count == 0) Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
+                    if (cachedlist != null && cachedlist.Count == 0) Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
                 }
                 catch (Exception ex)
                 {

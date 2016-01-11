@@ -1396,6 +1396,7 @@ namespace Nevoweb.DNN.NBrightMod
                         // update record with ajax data
                         nbi.UpdateAjax(strIn);
                         nbi.ModuleId = Convert.ToInt32(moduleid);
+                        nbi.PortalId = PortalSettings.Current.PortalId;
                         nbi.TypeCode = "NBrightModDATA";
                         if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
 
@@ -1422,7 +1423,7 @@ namespace Nevoweb.DNN.NBrightMod
                         {
                             if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
                             {
-                                var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", " order by NB1.ModifiedDate");
+                                var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", " order by NB1.ModifiedDate DESC");
                                 if (l.Count > Convert.ToInt32(emailstosave))
                                 {
                                     var c = 1;
@@ -1446,6 +1447,7 @@ namespace Nevoweb.DNN.NBrightMod
                                 DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), clientemail.Trim(), "", emailsubject, clientemailbody, "", "HTML", "", "", "", "");
                             }
                         }
+                        LocalUtils.ClearRazorCache(moduleid);
                     }
                 }
                 else
