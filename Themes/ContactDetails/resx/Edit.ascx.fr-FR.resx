@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="company.Text" xml:space="preserve">
-    <value>Company Name</value>
+    <value>Raison sociale</value>
   </data>
   <data name="address.Text" xml:space="preserve">
-    <value>Address</value>
+    <value>Adresse</value>
   </data>
   <data name="tel.Text" xml:space="preserve">
-    <value>Tel</value>
+    <value>Tél.</value>
   </data>
   <data name="tel2.Text" xml:space="preserve">
-    <value>Tel 2</value>
+    <value>Tél. 2</value>
   </data>
   <data name="fax.Text" xml:space="preserve">
     <value>Fax</value>
@@ -139,7 +139,7 @@
     <value>Contact 1</value>
   </data>
   <data name="contactport.Text" xml:space="preserve">
-    <value>Mobile</value>
+    <value>Port.</value>
   </data>
   <data name="contactemail.Text" xml:space="preserve">
     <value>E-mail</value>
@@ -148,6 +148,6 @@
     <value>Contact 2</value>
   </data>
   <data name="extrainfos.Text" xml:space="preserve">
-    <value>Extra Info.</value>
+    <value>Informations supplémentaires</value>
   </data>
 </root>

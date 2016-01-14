@@ -61,3 +61,5 @@ label.error {
     transform: scale(1.0);
   }
 }
+/* Fix for IE */
+.contactformfields textarea {border-style:none;border-color:transparent;overflow:auto;outline:none;}

@@ -117,6 +117,7 @@
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.fr-FR.resx" />
@@ -159,6 +160,8 @@
     <Content Include="Themes\config\css\jquery.multilevelpushmenu.css" />
     <Content Include="Themes\config\default\snippets.xml" />
     <Content Include="Themes\config\js\jquery.multilevelpushmenu.min.js" />
+    <Content Include="Themes\ContactForm\img\asterisk.png" />
+    <Content Include="Themes\ContactForm\img\invalid.png" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -214,6 +217,7 @@
     <None Include="Themes\ContactDetails\default\editpageheader.cshtml" />
     <None Include="Themes\ContactDetails\default\settings.cshtml" />
     <None Include="Themes\ContactDetails\default\view.cshtml" />
+    <None Include="Themes\ContactDetails\default\viewpageheader.cshtml" />
     <None Include="Themes\ContactForm\default\clientemail.cshtml" />
     <None Include="Themes\ContactForm\default\editbody.cshtml" />
     <None Include="Themes\ContactForm\default\editfields.cshtml" />
@@ -223,12 +227,14 @@
     <None Include="Themes\ContactForm\default\settings.cshtml" />
     <None Include="Themes\ContactForm\default\view.cshtml" />
     <None Include="Themes\ContactForm\default\viewpageheader.cshtml" />
+    <None Include="Themes\ContactForm\img\Thumbs.db" />
     <None Include="Themes\Documents\default\editbody.cshtml" />
     <None Include="Themes\Documents\default\editlist.cshtml" />
     <None Include="Themes\Documents\default\editpageheader.cshtml" />
     <None Include="Themes\Documents\default\docselectlist.cshtml" />
     <None Include="Themes\Documents\default\settings.cshtml" />
     <None Include="Themes\Documents\default\view.cshtml" />
+    <None Include="Themes\Documents\default\viewpageheader.cshtml" />
     <None Include="Themes\FancyboxGallerySat\default\settings.cshtml" />
     <None Include="Themes\FancyboxGallerySat\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\editbody.cshtml" />
@@ -239,6 +245,7 @@
     <None Include="Themes\FancyboxGallery\default\settings.cshtml" />
     <None Include="Themes\FancyboxGallery\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\viewpageheader.cshtml" />
+    <None Include="Themes\FAQ\default\viewpageheader.cshtml" />
     <None Include="Themes\GoogleMap\default\editbody.cshtml" />
     <None Include="Themes\GoogleMap\default\editfields.cshtml" />
     <None Include="Themes\GoogleMap\default\editpageheader.cshtml" />
@@ -299,6 +306,7 @@
     <None Include="Themes\FAQ\default\view.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\settings.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
+    <None Include="Themes\SimpleArticlesSat\default\viewpageheader.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
     <None Include="Themes\SimpleArticles\default\editfields.cshtml" />
     <None Include="Themes\SimpleArticles\default\editlist.cshtml" />
@@ -306,11 +314,13 @@
     <None Include="Themes\SimpleArticles\default\imgselectlist.cshtml" />
     <None Include="Themes\SimpleArticles\default\settings.cshtml" />
     <None Include="Themes\SimpleArticles\default\view.cshtml" />
+    <None Include="Themes\SimpleArticles\default\viewpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\editbody.cshtml" />
     <None Include="Themes\SocialLinks\default\editfields.cshtml" />
     <None Include="Themes\SocialLinks\default\editpageheader.cshtml" />
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
+    <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editbody.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editfields.cshtml" />
     <None Include="Themes\XGoogleMapMultipoint\default\editlist.cshtml" />

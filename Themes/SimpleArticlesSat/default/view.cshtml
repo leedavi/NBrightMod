@@ -8,9 +8,9 @@
 
 <h4>@ResourceKey("View.news")</h4>
 
-@foreach (NBrightInfo infoitem in Model.List)
+@foreach (NBrightInfo info in Model.List)
 {
-<p>@infoitem.GetXmlProperty("genxml/textbox/eventdate") - @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</p>
+<p>@info.GetXmlProperty("genxml/textbox/eventdate") - @info.GetXmlProperty("genxml/lang/genxml/textbox/title")</p>
 }
 
 <p><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.knowmore")</a></p>

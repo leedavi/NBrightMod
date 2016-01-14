@@ -49,13 +49,9 @@ namespace Nevoweb.DNN.NBrightMod
 
             #region "setup language"
 
-            // because we are using a webservice the system current thread culture might not be set correctly,
-            //  so use the lang/lanaguge param to set it.
-            //if (lang == "") lang = language;
-            //if (!string.IsNullOrEmpty(lang)) _lang = lang; // DO NOT use lang, this is set to the calss Lang field and not the actual client language.
-
-            // default to current thread if we have no language.
-            if (_lang == "") _lang = System.Threading.Thread.CurrentThread.CurrentCulture.ToString();
+            // Ajax can break context with DNN, so reset the context language to match the client.
+            // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
+            SetContextLangauge(context);
 
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(_lang);
 
@@ -256,12 +252,22 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region "Methods"
 
+        private void SetContextLangauge(HttpContext context)
+        {
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
+        }
+
         private void SetContextLangauge(NBrightInfo ajaxInfo = null)
         {
+            // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
             // set langauge if we have it passed.
-            //if (ajaxInfo == null) ajaxInfo = new NBrightInfo(true);
-            //var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
-            //if (lang != "") _lang = lang;
+            if (ajaxInfo == null) ajaxInfo = new NBrightInfo(true);
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/currentlang");
+            if (lang == "") lang = Utils.RequestParam(HttpContext.Current,"langauge"); // fallbacl
+            if (lang == "") lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang"); // fallbacl
+            if (lang == "") lang = Utils.GetCurrentCulture(); // fallback, but very often en-US on ajax call
+            if (lang != "") _lang = lang;
             // set the context  culturecode, so any DNN functions use the correct culture 
             if (_lang != "" && _lang != System.Threading.Thread.CurrentThread.CurrentCulture.ToString()) System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(_lang);
 
@@ -274,7 +280,6 @@ namespace Nevoweb.DNN.NBrightMod
                 var strOut = "";
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var razortemplate = ajaxInfo.GetXmlProperty("genxml/hidden/razortemplate");
@@ -306,7 +311,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid))
@@ -378,12 +382,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                     LocalUtils.UpdateSettings(nbi);
 
-                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
-
-                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
-
-                    LocalUtils.ValidateModuleData();
-
                 }
                 return "";
 
@@ -403,7 +401,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
@@ -432,7 +429,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid))
@@ -481,7 +477,6 @@ namespace Nevoweb.DNN.NBrightMod
                 var strOut = "";
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                 var newitem = ajaxInfo.GetXmlProperty("genxml/hidden/newitem");
@@ -582,7 +577,6 @@ namespace Nevoweb.DNN.NBrightMod
             var strOut = "";
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -734,7 +728,6 @@ namespace Nevoweb.DNN.NBrightMod
         {
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -847,7 +840,6 @@ namespace Nevoweb.DNN.NBrightMod
         {
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
@@ -902,7 +894,6 @@ namespace Nevoweb.DNN.NBrightMod
         {
             //get uploaded params
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
@@ -939,7 +930,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
@@ -1003,7 +993,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
@@ -1112,7 +1101,6 @@ namespace Nevoweb.DNN.NBrightMod
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                 var selecteditemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
@@ -1172,7 +1160,6 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     var ajaxInfo = LocalUtils.GetAjaxFields(ajaxData);
 
-                    SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
                     var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                     moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                     var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -1366,7 +1353,6 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -1475,7 +1461,6 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
 
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
             if (Utils.IsNumeric(itemid))
@@ -1523,7 +1508,6 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 var objCtrl = new NBrightDataController();
                 var strOut = "";
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
@@ -1582,7 +1566,6 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 var strOut = "";
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
@@ -1786,7 +1769,6 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
 
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
-            SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
             if (Utils.IsNumeric(itemid))
@@ -1834,7 +1816,6 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 var objCtrl = new NBrightDataController();
                 var strOut = "";
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
@@ -1894,7 +1875,6 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 var strOut = "";
-                SetContextLangauge(ajaxInfo); // Ajax breaks context with DNN, so reset the context language to match the client.
 
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");

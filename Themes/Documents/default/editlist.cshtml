@@ -1,10 +1,6 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
-@{
-    var info = (NBrightInfo)Model.List[0];
-}
-
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Documents.editlist.cshtml", Model.ModuleId.ToString(""))
@@ -23,39 +19,39 @@
             <div class="box-content">
                 <ul id="editdatalist">
 
-                    @foreach (NBrightInfo x in Model.List)
+                    @foreach (NBrightInfo info in Model.List)
                     {
                         // dummy record inject for empty list
-                        if (@x.ItemID > 0)
+                        if (@info.ItemID > 0)
                         {
-                            var folderfilename = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
-                            var docurl = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/docurl");
+                            var folderfilename = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
+                            var docurl = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/docurl");
                             <li class="datalistitem form-group">
                                 <div class="col-xs-12 form-horizontal">
                                     <div class="row">
                                         <div class="col-xs-3">
                                             @if (docurl != "")
                                             {
-                                                @x.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename")
+                                                @info.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename")
                                             }
                                         </div>
                                         <div class="col-xs-3">
-                                            @TextBox(x, "genxml/lang/genxml/textbox/title")<img src='/Images/Flags/@(x.Lang).gif' width='16px' />
-                                                <span>(@x.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>
+                                            @TextBox(info, "genxml/lang/genxml/textbox/title")<img src='/Images/Flags/@(info.Lang).gif' width='16px' />
+                                                <span>(@info.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>
                                         </div>
                                         <div class="col-xs-1">
-                                            <button type="button" class="btn btn-sm itemup" itemid="@x.ItemID"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-sm itemup" itemid="@info.ItemID"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
                                         </div>
                                         <div class="col-xs-1">
-                                            <button type="button" class="btn btn-sm itemdown" itemid="@x.ItemID"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-sm itemdown" itemid="@info.ItemID"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
                                         </div>
                                         <div class="col-xs-3">
-                                                <button type="button" class="btn btn-sm btn-success filelistclick" itemid="@x.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.upload")"><span class="glyphicon glyphicon-arrow-up"></span></button>
-                                                <button type="button" class="btn btn-sm btn-danger deleteitemclick" itemid="@x.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.delete")"><span class="glyphicon glyphicon-remove"></span></button>
+                                                <button type="button" class="btn btn-sm btn-success filelistclick" itemid="@info.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.upload")"><span class="glyphicon glyphicon-arrow-up"></span></button>
+                                                <button type="button" class="btn btn-sm btn-danger deleteitemclick" itemid="@info.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.delete")"><span class="glyphicon glyphicon-remove"></span></button>
                                         </div>
-                                        <input id="itemid" type="hidden" value="@x.ItemID" />
-                                        <input id="moduleid" type="hidden" value="@x.ModuleId" />
-                                        <input id="lang" type="hidden" value="@x.Lang" />
+                                        <input id="itemid" type="hidden" value="@info.ItemID" />
+                                        <input id="moduleid" type="hidden" value="@info.ModuleId" />
+                                        <input id="lang" type="hidden" value="@info.Lang" />
                                     </div>
                                 </div>
                             </li>

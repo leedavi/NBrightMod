@@ -404,9 +404,13 @@ namespace NBrightMod.common
             {
                 var settignInfo = GetSettings(moduleid);
                 var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
-                if (razorTempl2 != "")
+                if (!String.IsNullOrWhiteSpace(razorTempl2))
                 {
-                    if (obj == null) obj = new NBrightInfo(true);
+                    if (obj == null || obj.XMLData == null) obj = new NBrightInfo(true);
+                    // we MUST set the langauge so rendering sub-templates works in the correct languague
+                    if (lang == "")lang = Utils.RequestParam(HttpContext.Current, "language");
+                    obj.SetXmlProperty("genxml/hidden/currentlang", lang);
+                    
                     var razorTemplateKey = "NBrightModKey" + moduleid + settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
                     var l = new List<object>();
@@ -416,11 +420,24 @@ namespace NBrightMod.common
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
-                        SetRazorCache(cachekey, razorTemplOut,moduleid);
+                        SetRazorCache(cachekey, razorTemplOut, moduleid);
+                    }
+                    if (String.IsNullOrWhiteSpace(razorTemplOut))
+                    {
+                        // we have a temnplate that procduces nothing 
+                        // this template might not be required, but to not effect processing too much we'll set a dummy cache
+                        SetRazorCache(cachekey, "<span>blank</span>", moduleid);
+                        return "";
                     }
                     return razorTemplOut;
                 }
+                else
+                {
+                    // the template is empty or blank, but we set a dummy cache record becuase we don't want to process again.
+                    SetRazorCache(cachekey, "<span>blank</span>", moduleid);
+                }
             }
+            if (razorTempl == "<span>blank</span>") return ""; // see if we've set a dummy cache to speed processing.
             return (String)razorTempl;
         }
 

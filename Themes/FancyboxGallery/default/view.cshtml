@@ -15,14 +15,14 @@
 
 <div class="gallery">
 
-    @foreach (NBrightInfo x in Model.List)
+    @foreach (NBrightInfo info in Model.List)
         {
-        var imageurl = x.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
         if (imageurl != "")
         {
         var width = Model.GetSetting("width");
         var height = Model.GetSetting("height");
-        var title = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+        var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
         <a class="fancybox" rel="group" title="@(title)" href="@(imageurl)">
         <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
         </a>

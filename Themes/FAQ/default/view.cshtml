@@ -1,5 +1,4 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
-@using System.Linq
 @using NBrightDNN
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/FAQ/resx/")
@@ -10,10 +9,10 @@
 
 <div id="accordion">
 
-@foreach (NBrightInfo infoitem in Model.List)
+@foreach (NBrightInfo info in Model.List)
 {
-    <div class="accordion-header">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/question")</div>
-    <div class="accordion-content" style="display: none;">@HtmlOf(infoitem, "genxml/lang/genxml/textbox/answer")</div>
+    <div class="accordion-header">@info.GetXmlProperty("genxml/lang/genxml/textbox/question")</div>
+    <div class="accordion-content" style="display: none;">@HtmlOf(info, "genxml/lang/genxml/textbox/answer")</div>
     <hr />
 }
 

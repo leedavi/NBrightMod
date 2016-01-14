@@ -74,6 +74,8 @@
         });
 
         $('#emailreturnmsg@(Model.ModuleId)').change(function () {
+            $('.contactformfields').find('input').val('');
+            $('.contactformfields').find('textarea').val('');
             $('#spinner@(Model.ModuleId)').hide();
         });
 

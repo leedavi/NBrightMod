@@ -23,25 +23,25 @@
         @{
             var lp = 1;
         }
-        @foreach (NBrightInfo infoitem in Model.List)
+        @foreach (NBrightInfo info in Model.List)
         {
-            var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
             <div class="slider-item">
                 @if (imageurl != "")
                 {
                     var width = Model.GetSetting("width");
                     var height = Model.GetSetting("height");
-                    var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                    var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
                     <img class="owl-lazy" src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" data-src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
                 }
                 <div class="slider-caption">
-                    <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
-                    <h3>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
-                    <p>@BreakOf(infoitem, "genxml/lang/genxml/textbox/text")</p>
-                    @if (infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "")
+                    <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h3>
+                    <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+                    <p>@BreakOf(info, "genxml/lang/genxml/textbox/text")</p>
+                    @if (info.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "")
                     {
-                        var tabddl = @GetTabUrlByGuid(infoitem, "/genxml/dropdownlist/linktab");
-                        <a href="@(tabddl)" class="bigbutton">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
+                        var tabddl = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+                        <a href="@(tabddl)" class="bigbutton">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
                     }
                 </div>
             </div>

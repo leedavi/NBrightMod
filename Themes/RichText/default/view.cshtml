@@ -1,15 +1,8 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
-@using System
-@using System.Linq
-@using System.Xml
 @using NBrightDNN
 
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-
-@foreach (NBrightInfo x in Model.List)
+@foreach (NBrightInfo info in Model.List)
 {
-@HtmlOf(x, "genxml/lang/genxml/textbox/simpletext")
-@HtmlOf(x, "genxml/lang/genxml/textbox/ckeditor1")
+@HtmlOf(info, "genxml/lang/genxml/textbox/simpletext")
+@HtmlOf(info, "genxml/lang/genxml/textbox/ckeditor1")
 }

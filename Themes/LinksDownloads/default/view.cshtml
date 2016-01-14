@@ -4,36 +4,32 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/LinksDownloads/resx/")
 
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "LinksDownloads.view.cshtml", Model.ModuleId.ToString(""))
 
 <ul class="sec-menu">
     
-    @foreach (NBrightInfo infoitem in Model.List)
+    @foreach (NBrightInfo info in Model.List)
         {
-        var tabddlvalue = @GetTabUrlByGuid(infoitem, "/genxml/dropdownlist/linktab");
-        var externalURL = @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/externalhref");
+        var tabddlvalue = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+        var externalURL = @info.GetXmlProperty("genxml/lang/genxml/textbox/externalhref");
         <li>
-        @if (infoitem.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 0)
+        @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 0)
         {
-          @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")
+          @info.GetXmlProperty("genxml/lang/genxml/textbox/title")
         }
-        @if (infoitem.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
+        @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
         {
-          <a href="@(tabddlvalue)">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+          <a href="@(tabddlvalue)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
         }
-        @if (infoitem.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
+        @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
         {
-          <a href="@(externalURL)" target="_blank">@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+          <a href="@(externalURL)" target="_blank">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
         }
-        @if (infoitem.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 3)
+        @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 3)
         {
-			  var fileurl = "/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=" + infoitem.ItemID + "&fileindex=1";
-			  <a href='@(fileurl)'>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+			  var fileurl = "/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=" + info.ItemID + "&fileindex=1";
+			  <a href='@(fileurl)'>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
         }
         </li>
         }

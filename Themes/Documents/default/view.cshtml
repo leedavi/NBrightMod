@@ -1,10 +1,6 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
-@using System.Linq
 @using NBrightDNN
 
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Documents.view.cshtml", Model.ModuleId.ToString(""))
@@ -22,21 +18,21 @@
 <div id="@(divid)">
 
     
-    @foreach (NBrightInfo x in Model.List)
+    @foreach (NBrightInfo info in Model.List)
     {
-    var folderfilename = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
+    var folderfilename = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
     <div class="item">
         @if (folderfilename != "")
         {
-            var displayname = x.GetXmlProperty("genxml/lang/genxml/textbox/title");
+            var displayname = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
             if (displayname == "")
             {
-                displayname = x.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename");
+                displayname = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename");
             }
-            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=@(folderfilename)'>@(displayname)</a>
+            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(info.ItemID)&filename=@(folderfilename)'>@(displayname)</a>
             if (Model.GetSetting("displaydownloadcount") == "True")
             {
-                <span>(@x.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
+                <span>(@info.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
             }
         }
     </div>

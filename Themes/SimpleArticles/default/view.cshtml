@@ -10,24 +10,24 @@
 <h1>@ResourceKey("View.news")</h1>
 <div class="simplearticles">
     
-    @foreach (NBrightInfo infoitem in Model.List)
+    @foreach (NBrightInfo info in Model.List)
         {
-        var imageurl = infoitem.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
         <div class="simplearticlesdiv">
         <div class="simplearticlesleft">
         @if (imageurl != "")
             {
-                var title = infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
                 <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=150&h=100" alt="@(title)" />
             }
         <p>
-        @infoitem.GetXmlProperty("genxml/textbox/eventdate")<br />
-        @infoitem.GetXmlProperty("genxml/lang/genxml/textbox/theme")
+        @info.GetXmlProperty("genxml/textbox/eventdate")<br />
+        @info.GetXmlProperty("genxml/lang/genxml/textbox/theme")
         </p>
         </div>
         <div class="simplearticlesright">
-        <h2>@infoitem.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
-        <p>@HtmlOf(infoitem, "genxml/lang/genxml/textbox/infodesc")</p>
+        <h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+        <p>@HtmlOf(info, "genxml/lang/genxml/textbox/infodesc")</p>
         </div>
         <div class="clearfix"></div>
         </div>
