@@ -4,6 +4,9 @@
 @using NBrightDNN
 
 
+<div class="hiddenfile" style="display: none;">
+    <input type="file" id="fileupload" name="files[]" multiple />
+</div>
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 
@@ -41,11 +44,19 @@
                 <div class='buttons'>
                     <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.makethemesys")</button>
                     @DnnLabel("lblmakethemesys", "Edit.lblmakethemesys")
-                </div>                
+                </div>
+                <hr/>
+                <div class='buttons'>
+                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.importtheme")</button>
+                    @DnnLabel("lblimporttheme", "Edit.lblimporttheme")
+                </div>
+                <div class='buttons'>
+                    <button id='exporttheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.exporttheme")</button>
+                    @DnnLabel("lblexporttheme", "Edit.lblexporttheme")
+                </div>
             </div>
 
             <div id="step2" style="display: none;">
-
                 <div id="newnamediv" style="display: none;">
                     @DnnLabel("lblnewname", "Edit.lblnewname")
                     @TextBox(info, "genxml/textbox/newname")
@@ -56,10 +67,15 @@
                     @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " class='themefolder' ")
                     @ThemePortalSelectList(info, "genxml/dropdownlist/portalthemefolder", " class='portalthemefolder' ")
                 </div>
+                <div class="fileupload">
+                    
+                </div>
+
                 <hr />
                 <div class='buttons'>
                     <button id='nextbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                     <button id='makethemesysbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
+                    <button id='exportthemebutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                 </div>
 
             </div>
@@ -85,9 +101,11 @@
                     location.reload();
                 });
 
-
                 $('#makethemesysbutton').click(function () {
                     NBrightMod_nbxget('makethemesys', '#nbrightmodthemedata', '#edittemplatediv');
+                });
+                $('#exportthemebutton').click(function () {
+                    NBrightMod_nbxget('exporttheme', '#nbrightmodthemedata', '#edittemplatediv');
                 });
 
                 $('#edittheme').click(function () {
@@ -96,6 +114,7 @@
                     $('#step2').show();
                     $('#nextbutton').show();
                     $('#makethemesysbutton').hide();
+                    $('#exportthemebutton').hide();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
                 });
@@ -106,6 +125,7 @@
                     $('#newnamediv').show();
                     $('#nextbutton').show();
                     $('#makethemesysbutton').hide();
+                    $('#exportthemebutton').hide();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
                 });
@@ -115,9 +135,72 @@
                     $('#step2').show();
                     $('#nextbutton').hide();
                     $('#makethemesysbutton').show();
+                    $('#exportthemebutton').hide();
                     $('.themefolder').hide();
                     $('.portalthemefolder').show();
                 });
+
+                $('#exporttheme').click(function () {
+                    $('#updatetype').val('export');
+                    $('#step1').hide();
+                    $('#step2').show();
+                    $('#newnamediv').show();
+                    $('#nextbutton').hide();
+                    $('#makethemesysbutton').hide();
+                    $('#exportthemebutton').show();
+                    $('.themefolder').show();
+                    $('.portalthemefolder').hide();
+                });
+
+                // activate file upload 
+                $('.fileupload-button').click(function () {
+                    $('#fileupload').trigger('click');
+                });
+
+                // activate file upload
+                $('#fileupload').change(function () {
+                    $('.processing').show();
+                    var fileSelect = document.getElementById('fileupload');
+
+                    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+                        alert('The File APIs are not fully supported in this browser.');
+                        return;
+                    }
+
+                    // Get the selected files from the input.
+                    var files = fileSelect.files;
+
+                    // Create a new FormData object.
+                    var formData = new FormData();
+
+                    // Loop through each of the selected files.
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        // Add the file to the request.
+                        formData.append('files[]', file, file.name);
+                    }
+
+                    // Set up the request.
+                    var xhr = new XMLHttpRequest();
+                    // Open the connection.
+                    xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=importtheme', true);
+
+                    // Set up a handler for when the request finishes.
+                    xhr.onload = function () {
+                        $('.processing').hide();
+                        if (xhr.status != 200) {
+                            alert('An error occurred!');
+                        } else {
+                            alert('Export File Uploaded');
+                            location.reload();
+                        }
+                    };
+
+                    // Send the Data.
+                    xhr.send(formData);
+
+                });
+
 
                 // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
                 $('#exitedit').click(function () {

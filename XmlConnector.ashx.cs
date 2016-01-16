@@ -141,7 +141,11 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
                     break;
                 case "exporttheme":
-                    if (LocalUtils.CheckRights()) strOut = DoThemeExport(context);
+                    if (LocalUtils.CheckRights())
+                    {
+                        var zipfile = DoThemeExport(context);
+                        strOut = "<a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&filename=/NBrightTemp/" + Path.GetFileName(zipfile) + "'>Download Theme</a>";
+                    }
                     break;
                 case "importtheme":
                     if (LocalUtils.CheckRights())
@@ -824,11 +828,11 @@ namespace Nevoweb.DNN.NBrightMod
                     Utils.CreateFolder(sourceresx);
                     if (lang == "")
                     {
-                            File.WriteAllText(sourceresx + "\\" + "\\portal.ascx.resx", resxdata);
+                            File.WriteAllText(sourceresx + "\\" + "\\theme.ascx.resx", resxdata);
                     }
                     else
                     {
-                        File.WriteAllText(sourceresx + "\\" + "\\portal.ascx." + lang + ".resx", resxdata);
+                        File.WriteAllText(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx", resxdata);
                     }
                 }
 
@@ -906,16 +910,16 @@ namespace Nevoweb.DNN.NBrightMod
 
             if (lang == "")
             {
-                if (File.Exists(sourceresx + "\\" + "\\portal.ascx.resx"))
+                if (File.Exists(sourceresx + "\\" + "\\theme.ascx.resx"))
                 {
-                    File.Delete(sourceresx + "\\" + "\\portal.ascx.resx");
+                    File.Delete(sourceresx + "\\" + "\\theme.ascx.resx");
                 }
             }
             else
             {
-                if (File.Exists(sourceresx + "\\" + "\\portal.ascx." + lang + ".resx"))
+                if (File.Exists(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx"))
                 {
-                    File.Delete(sourceresx + "\\" + "\\portal.ascx." + lang + ".resx");
+                    File.Delete(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx");
                 }
             }
 
@@ -1049,6 +1053,72 @@ namespace Nevoweb.DNN.NBrightMod
                 return ex.ToString();
             }
 
+        }
+
+
+        private String DoThemeExport(HttpContext context)
+        {
+            try
+            {
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+                var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+                var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
+                if (exportname == "") exportname = theme;
+
+                if (updatetype == "export" && theme != "")
+                {
+                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                    var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
+                    var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+
+                    var themeFolderName = systhemeFolderName;
+                    if (Directory.Exists(portalthemeFolderName)) themeFolderName = portalthemeFolderName;
+
+                    Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
+                    var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";
+
+                    DnnUtils.ZipFolder(themeFolderName, zipFile);
+
+                    return zipFile;
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+
+        }
+
+        private String DoThemeImport(String zipFileMapPath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(zipFileMapPath))
+                {
+                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
+                    if (!string.IsNullOrEmpty(themeName))
+                    {
+                        var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
+                        if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                        {
+                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                        }
+                        DnnUtils.UnZip(zipFileMapPath, themeFolderName);
+                        Utils.DeleteSysFile(zipFileMapPath);
+                        return "";
+                    }
+                    return "ERROR: Invalid Theme File Name";
+                }
+                return "ERROR: Upload Failed";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
         }
 
 
@@ -1272,79 +1342,6 @@ namespace Nevoweb.DNN.NBrightMod
                 }
             }
             return objInfo.XMLData;
-        }
-
-        private String DoThemeExport(HttpContext context)
-        {
-            try
-            {
-                //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
-                var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-                if (theme != "")
-                {
-                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                    var themelevel = ajaxInfo.GetXmlProperty("genxml/radiobuttonlist/exportthemelevel");
-                    var level = "system";
-                    var themeFolderName = controlMapPath + "\\Themes\\" + theme;
-                    if (themelevel == "1")
-                    {
-                        level = "portal";
-                        themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                    }
-                    var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" +  theme + "_" + level + ".zip";
-
-                    DnnUtils.ZipFolder(themeFolderName, zipFile);
-                    
-                    return "NBrightTemp\\" + Path.GetFileName(zipFile);
-                }
-                return "";
-            }
-            catch (Exception ex)
-            {
-                return "ERROR: " + ex.ToString();
-            }
-
-        }
-
-        private String DoThemeImport(String zipFileMapPath)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(zipFileMapPath))
-                {
-                    var s = Path.GetFileNameWithoutExtension(zipFileMapPath).Split('_');
-                    if (s.Count() == 4)
-                    {
-                        
-                        var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                        var level = s[3].ToLower();
-                        var theme = s[2];
-                        if (level == "module" || level == "portal")
-                        {
-                            var themeFolderName = controlMapPath + "\\Themes\\" + theme;
-                            if (level == "portal")
-                            {
-                                themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                                if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
-                                {
-                                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                                }
-                            }
-
-                            DnnUtils.UnZip(zipFileMapPath, themeFolderName);
-                            return "";
-                        }
-                    }
-                    return "ERROR: Invalid Theme File Name";
-                }
-                return "ERROR: Upload Failed";
-            }
-            catch (Exception ex)
-            {
-                return "ERROR: " + ex.ToString();
-            }
         }
 
         private String SendEmail(HttpContext context)
@@ -2173,6 +2170,8 @@ namespace Nevoweb.DNN.NBrightMod
                 var file = context.Request.Files[i];
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
+                if (uploadfolder == "") uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
+                Utils.CreateFolder(uploadfolder);
                 var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
                 if (File.Exists(fullfilename)) File.Delete(fullfilename);
                 file.SaveAs(fullfilename);
@@ -2181,6 +2180,7 @@ namespace Nevoweb.DNN.NBrightMod
                     UpdateImage(fullfilename, _itemid, modSettings);
                 else
                     UpdateDoc(fullfilename, _itemid, modSettings);
+                return fullfilename;
             }
             return "";
         }
