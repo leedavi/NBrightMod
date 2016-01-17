@@ -77,6 +77,12 @@ namespace NBrightMod.render
                 streamReader.Close();
                 inputStream.Close();
 
+                //BEGIN: INJECT RESX: assume we always want the resx paths adding
+                TemplateData = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/App_LocalResources\") " + TemplateData;
+                TemplateData = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/Themes/" + model.GetSetting("themefolder") + "/resx\") " + TemplateData;
+                TemplateData = " @AddMetaData(\"resourcepath\",\"/" + PortalSettings.Current.HomeDirectory.Trim('/') + "/NBrightMod/Themes/" + model.GetSetting("themefolder") + "/resx\") " + TemplateData;
+                //END: INJECT RESX
+
                 if (TemplateData.Contains("AddPreProcessMetaData("))
                 {
                     // do razor and cache preprocessmetadata

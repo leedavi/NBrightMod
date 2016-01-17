@@ -297,9 +297,6 @@
   <data name="makethemesys.Text" xml:space="preserve">
     <value>Move Theme to System</value>
   </data>
-  <data name="portalresxmsg.Text" xml:space="preserve">
-    <value>NOTE: Using portal level resx will require adding the Meta token into the templates that use it. &lt;br/&gt;  @AddMetaData("resourcepath","/Portals/*portal directory*/NBrightMod/Themes/*theme*/resx/")</value>
-  </data>
   <data name="lblmakethemesys.Help" xml:space="preserve">
     <value>Moves a portal theme into the DesktopModule area at system level and makes it available in ALL portals.</value>
   </data>
@@ -314,5 +311,14 @@
   </data>
   <data name="lblimporttheme.Help" xml:space="preserve">
     <value>Import a theme from a zip file</value>
+  </data>
+  <data name="deletetheme.Text" xml:space="preserve">
+    <value>Delete Portal Theme</value>
+  </data>
+  <data name="lbldeletetheme.Help" xml:space="preserve">
+    <value>Delete Portal Level theme folder.</value>
+  </data>
+  <data name="lbldeletetheme.Text" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -4,10 +4,6 @@
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
 
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxGallery.view.cshtml", Model.ModuleId.ToString(""))
 

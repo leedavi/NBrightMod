@@ -2,8 +2,6 @@
 @using System.Linq
 @using NBrightDNN
 
-@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-
 @{
     var info = (NBrightInfo)Model.List.First();
     var flaglang = info.Lang;
@@ -20,7 +18,6 @@
 
 
 @EditCultureSelect("flag-list", "selecteditlanguage", true)
-
 
 
 <div id="sideeditmenu">
@@ -86,7 +83,6 @@
                         <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
                     }
                 </div>
-                @ResourceKey("Edit.portalresxmsg")
                 <div id="resxtexteditor">
                     <div>
                         <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>

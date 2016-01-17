@@ -229,6 +229,12 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = DeletePortalTemplate(context);
                     }
                     break;
+                case "deletetheme":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = DeleteTheme(context);
+                    }
+                    break;
             }
 
             #endregion
@@ -626,15 +632,15 @@ namespace Nevoweb.DNN.NBrightMod
                 }
             }
 
-            // get resxdata for portal.ascx.**-**.resx
+            // get resxdata for theme.ascx.**-**.resx
             var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
 
-            if (resxfilename == "")
+            if (resxfilename == "" || !resxfilename.StartsWith("theme."))
             {
-                resxfilename = "portal.ascx." + editlang + ".resx";
+                resxfilename = "theme.ascx." + editlang + ".resx";
                 if (editlang == "none" || editlang == "")
                 {
-                    resxfilename = "portal.ascx.resx";
+                    resxfilename = "theme.ascx.resx";
                 }
             }
             var isportalresxlevel = "1";
@@ -881,15 +887,6 @@ namespace Nevoweb.DNN.NBrightMod
                 }
             }
 
-            // delete theme directory if we have no files
-            var filecount = 0;
-            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder;
-            filecount += Directory.GetFiles(fldrDefault, "*.*", SearchOption.AllDirectories).Length;
-            if (filecount == 0)
-            {
-                Directory.Delete(fldrDefault,true);
-            }
-
 
             return "OK";
         }
@@ -924,6 +921,48 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
             return "OK";
+        }
+
+        private String DeleteTheme(HttpContext context)
+        {
+            try
+            {
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
+                var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
+                var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
+                if (exportname == "") exportname = theme;
+
+                if (updatetype == "del" && theme != "")
+                {
+                    var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+
+                    if (Directory.Exists(portalthemeFolderName))
+                    {
+                        DirectoryInfo di = new DirectoryInfo(portalthemeFolderName);
+
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            file.Delete();
+                        }
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                        {
+                            dir.Delete(true);
+                        }
+
+                        Utils.DeleteFolder(portalthemeFolderName);
+                    }
+
+                    return "Theme Removed";
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+
         }
 
         private String CreatePortalTemplates(HttpContext context)

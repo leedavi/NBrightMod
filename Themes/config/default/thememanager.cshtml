@@ -8,7 +8,6 @@
     <input type="file" id="fileupload" name="files[]" multiple />
 </div>
 
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 
 @{
     var info = (NBrightInfo)Model.List.First();
@@ -45,13 +44,17 @@
                     <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.makethemesys")</button>
                     @DnnLabel("lblmakethemesys", "Edit.lblmakethemesys")
                 </div>
+                <div class='buttons'>
+                    <button id='deletetheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletetheme")</button>
+                    @DnnLabel("lbldeletetheme", "Edit.lbldeletetheme")
+                </div>
                 <hr/>
                 <div class='buttons'>
-                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.importtheme")</button>
+                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-log-in'></span>@ResourceKey("Edit.importtheme")</button>
                     @DnnLabel("lblimporttheme", "Edit.lblimporttheme")
                 </div>
                 <div class='buttons'>
-                    <button id='exporttheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.exporttheme")</button>
+                    <button id='exporttheme' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-log-out'></span>@ResourceKey("Edit.exporttheme")</button>
                     @DnnLabel("lblexporttheme", "Edit.lblexporttheme")
                 </div>
             </div>
@@ -76,6 +79,7 @@
                     <button id='nextbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                     <button id='makethemesysbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                     <button id='exportthemebutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
+                    <button id='deletethemebutton' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.deletetheme")</button>
                 </div>
 
             </div>
@@ -107,6 +111,9 @@
                 $('#exportthemebutton').click(function () {
                     NBrightMod_nbxget('exporttheme', '#nbrightmodthemedata', '#edittemplatediv');
                 });
+                $('#deletethemebutton').click(function () {
+                    NBrightMod_nbxget('deletetheme', '#nbrightmodthemedata', '#edittemplatediv');
+                });
 
                 $('#edittheme').click(function () {
                     $('#updatetype').val('edit');
@@ -114,6 +121,7 @@
                     $('#step2').show();
                     $('#nextbutton').show();
                     $('#makethemesysbutton').hide();
+                    $('#deletethemebutton').hide();
                     $('#exportthemebutton').hide();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
@@ -125,6 +133,7 @@
                     $('#newnamediv').show();
                     $('#nextbutton').show();
                     $('#makethemesysbutton').hide();
+                    $('#deletethemebutton').hide();
                     $('#exportthemebutton').hide();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
@@ -135,6 +144,7 @@
                     $('#step2').show();
                     $('#nextbutton').hide();
                     $('#makethemesysbutton').show();
+                    $('#deletethemebutton').hide();
                     $('#exportthemebutton').hide();
                     $('.themefolder').hide();
                     $('.portalthemefolder').show();
@@ -147,10 +157,24 @@
                     $('#newnamediv').show();
                     $('#nextbutton').hide();
                     $('#makethemesysbutton').hide();
+                    $('#deletethemebutton').hide();
                     $('#exportthemebutton').show();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
                 });
+
+                $('#deletetheme').click(function () {
+                    $('#updatetype').val('del');
+                    $('#step1').hide();
+                    $('#step2').show();
+                    $('#nextbutton').hide();
+                    $('#makethemesysbutton').hide();
+                    $('#deletethemebutton').show();
+                    $('#exportthemebutton').hide();
+                    $('.themefolder').hide();
+                    $('.portalthemefolder').show();
+                });
+
 
                 // activate file upload 
                 $('.fileupload-button').click(function () {

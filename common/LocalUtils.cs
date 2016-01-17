@@ -369,10 +369,16 @@ namespace NBrightMod.common
             var razorTempl = (String)GetRazorCache(cachekey,moduleid);
             if (debug || String.IsNullOrWhiteSpace(razorTempl))
             {
-                var settignInfo = GetSettings(moduleid);
-                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
-                if (razorTempl2 != "")
+                var settingInfo = GetSettings(moduleid);
+                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settingInfo.ToDictionary());
+                if (!String.IsNullOrWhiteSpace(razorTempl2))
                 {
+                    //BEGIN: INJECT RESX: assume we always want the resx paths adding
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/App_LocalResources\") " + razorTempl2;
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/Themes/" + settingInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + "/resx\") " + razorTempl2;
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/" + PortalSettings.Current.HomeDirectory.Trim('/') + "/NBrightMod/Themes/" + settingInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + "/resx\") " + razorTempl2;
+                    //END: INJECT RESX
+
                     if (!objList.Any())
                     {
                         var obj = new NBrightInfo(true);
@@ -382,8 +388,8 @@ namespace NBrightMod.common
                     }
                     var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
-                    var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
@@ -402,21 +408,27 @@ namespace NBrightMod.common
             var razorTempl = (String)GetRazorCache(cachekey,moduleid);
             if (debug || String.IsNullOrWhiteSpace(razorTempl))
             {
-                var settignInfo = GetSettings(moduleid);
-                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settignInfo.ToDictionary());
+                var settingInfo = GetSettings(moduleid);
+                var razorTempl2 = LocalUtils.GetTemplateData(razorTemplName, lang, settingInfo.ToDictionary());
                 if (!String.IsNullOrWhiteSpace(razorTempl2))
                 {
+                    //BEGIN: INJECT RESX: assume we always want the resx paths adding
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/App_LocalResources\") " + razorTempl2;
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/DesktopModules/NBright/NBrightMod/Themes/" + settingInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + "/resx\") " + razorTempl2;
+                    razorTempl2 = " @AddMetaData(\"resourcepath\",\"/" + PortalSettings.Current.HomeDirectory.Trim('/') + "/NBrightMod/Themes/" + settingInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + "/resx\") " + razorTempl2;
+                    //END: INJECT RESX
+
                     if (obj == null || obj.XMLData == null) obj = new NBrightInfo(true);
                     // we MUST set the langauge so rendering sub-templates works in the correct languague
                     if (lang == "")lang = Utils.RequestParam(HttpContext.Current, "language");
                     obj.SetXmlProperty("genxml/hidden/currentlang", lang);
                     
-                    var razorTemplateKey = "NBrightModKey" + moduleid + settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + razorTemplName + PortalSettings.Current.PortalId.ToString();
+                    var razorTemplateKey = "NBrightModKey" + moduleid + settingInfo.GetXmlProperty("genxml/dropdownlist/themefolder") + razorTemplName + PortalSettings.Current.PortalId.ToString();
 
                     var l = new List<object>();
                     l.Add(obj);
-                    var modRazor = new NBrightRazor(l, settignInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var modRazor = new NBrightRazor(l, settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
