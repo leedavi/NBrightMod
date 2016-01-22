@@ -16,9 +16,10 @@
     <input id="index" type="hidden" value=""></input>
     <input id="selecteditemid" type="hidden" value=""></input> <!-- used as selected edit itemid -->
     <input id="newitem" type="hidden" value=""></input> <!-- used to hold "new" oken to create new record -->
-    <input id="selectedfiles" type="hidden" value="" /> <!-- list of files to be added (already uploaded) -->
-    <input id="displayreturn" type="hidden" value="" /> <!-- LIST or DETAIL, so return display from file upload is correct -->
-    <input id="uploadtype" type="hidden" value="" /> <!-- DOC or IMAGE, so file upload operation is correct -->
+    <input id="selectedfiles" type="hidden" value=""/> <!-- list of files to be added (already uploaded) -->
+    <input id="displayreturn" type="hidden" value=""/> <!-- LIST or DETAIL, so return display from file upload is correct -->
+    <input id="uploadtype" type="hidden" value=""/> <!-- DOC or IMAGE, so file upload operation is correct -->
+    <input id="currentlang" type="hidden" value="@Model.GetUrlParam("language")"></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
 </div>
 
 <!-- hold url to exit edit and settings page -->

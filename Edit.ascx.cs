@@ -121,7 +121,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                     #endregion
 
-                    var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture());
+                    var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(),true); // debug mode, don;t use cache for edit
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);
