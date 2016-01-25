@@ -272,9 +272,9 @@ namespace NBrightMod.common
 
         public static void SetFileCache(String cacheKey, String cachedata, string moduleid)
         {
-            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache";
+            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Cache";
             Utils.CreateFolder(cacheFolder); // creates is not there
-            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Cache\\" + moduleid;
             Utils.CreateFolder(modFolder); // creates is not there
             var cacheFileName = modFolder + "\\" + cacheKey + ".txt";
             Utils.SaveFile(cacheFileName,cachedata);
@@ -282,9 +282,9 @@ namespace NBrightMod.common
 
         public static String GetFileCache(String cacheKey, string moduleid)
         {
-            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache";
+            var cacheFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Cache";
             Utils.CreateFolder(cacheFolder); // creates is not there
-            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Cache\\" + moduleid;
             Utils.CreateFolder(modFolder); // creates is not there
             var cacheFileName = modFolder + "\\" + cacheKey + ".txt";
             return Utils.ReadFile(cacheFileName);
@@ -292,7 +292,7 @@ namespace NBrightMod.common
 
         public static void ClearFileCache(int moduleid)
         {
-            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NbrightMod\\Cache\\" + moduleid;
+            var modFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Cache\\" + moduleid;
             Utils.DeleteFolder(modFolder,true);
         }
 
