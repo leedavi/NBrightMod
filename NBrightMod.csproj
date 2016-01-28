@@ -167,7 +167,7 @@
     <Content Include="Themes\ContactForm\img\invalid.png" />
     <Content Include="Themes\Flexslider\css\bg_direction_nav.png" />
     <Content Include="Themes\Flexslider\css\flexslider.css" />
-    <Content Include="Themes\Flexslider\js\jquery.flexslider-min.js" />
+    <Content Include="Themes\Flexslider\js\flexslider.min.js" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
