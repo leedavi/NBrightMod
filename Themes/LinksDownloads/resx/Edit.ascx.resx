@@ -126,21 +126,6 @@
   <data name="hidetitle.Text" xml:space="preserve">
     <value>Hide Caption</value>
   </data>
-  <data name="link.Text" xml:space="preserve">
-    <value>Link</value>
-  </data>
-  <data name="linkhref.Text" xml:space="preserve">
-    <value>Link to external url</value>
-  </data>
-  <data name="linktab.Text" xml:space="preserve">
-    <value>Link to internal page</value>
-  </data>
-  <data name="linktext.Text" xml:space="preserve">
-    <value>Link Text</value>
-  </data>
-  <data name="linktypecsv.Text" xml:space="preserve">
-    <value>None,External,Internal</value>
-  </data>
   <data name="date.Text" xml:space="preserve">
     <value>Date</value>
   </data>
