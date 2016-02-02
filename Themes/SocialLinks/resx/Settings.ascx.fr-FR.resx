@@ -159,4 +159,7 @@
   <data name="top.Text" xml:space="preserve">
     <value>Haut</value>
   </data>
+  <data name="whiteversion.Text" xml:space="preserve">
+    <value>White Version</value>
+  </data>
 </root>
