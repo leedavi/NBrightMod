@@ -159,4 +159,10 @@
   <data name="smartspeed.Text" xml:space="preserve">
     <value>Smart Speed</value>
   </data>
+  <data name="styletext.Help" xml:space="preserve">
+    <value>This CSS text will be injected in-line on the output and overwrite default flexslider css.</value>
+  </data>
+  <data name="styletext.Text" xml:space="preserve">
+    <value>Inline  CSS style code</value>
+  </data>
 </root>

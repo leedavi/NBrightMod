@@ -10,7 +10,7 @@
     {
         msg = ResourceKey("View.nosettings").ToString();
     }
-        var divid = "NBrightMod" + @Model.GetSetting("modref");
+    var divid = "NBrightMod" + @Model.GetSetting("modref");
 }
 @(msg)
 
@@ -43,7 +43,7 @@
                 </div>
             </li>
 
-            lp+=1;
+            lp += 1;
         }
 
     </ul>
@@ -53,24 +53,26 @@
             $(document).ready(function() {
 
                 $('#@(divid)').flexslider({
-                    slideshowSpeed: 4000,
-                    controlNav: true
+                    animation: '@Model.GetSetting("animation")', 
+                    easing: '@Model.GetSetting("easing")', 
+                    direction: '@Model.GetSetting("direction")', 
+                    reverse: @Model.GetSetting("reverse"), 
+                    animationLoop: @Model.GetSetting("animationloop"), 
+                    smoothHeight: @Model.GetSetting("smoothheight"), 
+                    startAt: @Model.GetSetting("startat"), 
+                    slideshow: @Model.GetSetting("slideshow"), 
+                    slideshowSpeed: @Model.GetSetting("slideshowspeed"), 
+                    animationSpeed: @Model.GetSetting("animationspeed"), 
+                    initDelay: @Model.GetSetting("initdelay"), 
+                    randomize: @Model.GetSetting("randomize"), 
+                    controlNav: @Model.GetSetting("controlnav"), 
+                    directionNav: @Model.GetSetting("directionnav") 
                 });
 
             });
         </script>
-<style>
-/* FLEXSLIDER */
-.flexslider {width:1154px;height:575px;overflow:hidden;}
-.flexslider ul, .flexslider li {margin:0;padding:0;}
-.flexslider ul li {list-style-type:none;margin:0;padding:0;}
-/* Direction Nav */
-.flex-direction-nav a {width:35px;height:70px;margin:-35px 0 0 0;background: url(/Portals/0/flexslider_nav.png) no-repeat 0 0;}
-.flex-direction-nav .flex-next {right:-35px;}
-.flex-direction-nav .flex-prev {left:-35px;}
-.flexslider:hover .flex-next {right:0;}
-.flexslider:hover .flex-prev {left:0;}
-@@media screen and (max-width:1180px) {
-.flexslider {width:auto;height:auto;}
+
+@{    
+    var htmlstyle = Model.GetSetting("styletext");
+    @HtmlOf(htmlstyle);
 }
-</style>

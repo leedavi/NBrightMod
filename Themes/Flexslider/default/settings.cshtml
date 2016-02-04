@@ -8,21 +8,89 @@
 
 <div>
     <div>
-        @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize","class='form-control' width='100px' maxlength='5' ","1154")
+        @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize", "class='form-control' width='100px' maxlength='5' ", "1154")
     </div>
     <div>
-        @DnnLabel("lblwidth","Settings.width")@NBrightTextBox(info, "genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","1154")
+        @DnnLabel("lblwidth", "Settings.width")@NBrightTextBox(info, "genxml/textbox/width", "class='form-control' width='100px' maxlength='5' ", "1154")
     </div>
     <div>
         @DnnLabel("lblheight", "Settings.height")@NBrightTextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "575")
     </div>
-       
+    <hr />
+    <div>
+        animation : @DropDownList(info, "genxml/dropdownlist/animation","fade,slide", "fade,slide", " update='save' class='form-control' ")
+    </div>
+    <div>
+        easing : @NBrightTextBox(info, "genxml/textbox/easing", "class='form-control' ", "swing")
+    </div>
+    <div>
+        direction : @DropDownList(info, "genxml/dropdownlist/direction", "horizontal,vertical", "horizontal, vertical", " update='save' class='form-control' ")
+    </div>
+    <div>
+        reverse : @DropDownList(info, "genxml/dropdownlist/reverse", "true,false", "true,false", " update='save' class='form-control' ","false")
+    </div>
+    <div>
+        animationLoop : @DropDownList(info, "genxml/dropdownlist/animationloop", "true,false", "true,false", " update='save' class='form-control' ","true")
+    </div>
+    <div>
+        smoothHeight : @DropDownList(info, "genxml/dropdownlist/smoothheight", "true,false", "true,false", " update='save' class='form-control' ", "false")
+    </div>
+    <div>
+        startAt : @NBrightTextBox(info, "genxml/textbox/startat", "class='form-control' ", "0")
+    </div>
+    <div>
+        slideshow : @DropDownList(info, "genxml/dropdownlist/slideshow", "true,false", "true,false", " update='save' class='form-control' ", "true")
+    </div>
+    <div>
+        slideshowSpeed : @NBrightTextBox(info, "genxml/textbox/slideshowspeed", "class='form-control' ", "7000")
+    </div>
+    <div>
+        animationSpeed : @NBrightTextBox(info, "genxml/textbox/animationspeed", "class='form-control' ", "600")
+    </div>
+    <div>
+        initDelay : @NBrightTextBox(info, "genxml/textbox/initdelay", "class='form-control' ", "0")
+    </div>
+    <div>
+        randomize : @DropDownList(info, "genxml/dropdownlist/randomize", "true,false", "true,false", " update='save' class='form-control' ", "false")
+    </div>
+    <div>
+        controlNav : @DropDownList(info, "genxml/dropdownlist/controlnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
+    </div>
+    <div>
+        directionNav : @DropDownList(info, "genxml/dropdownlist/directionnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
+    </div>     
+
+    <hr />
+    <div>
+        @DnnLabel("lblstyletext", "Settings.styletext")
+        @{
+            var styletext = info.GetXmlProperty("genxml/textbox/styletext");
+            if (styletext == "")
+            {
+                styletext = "<style>" + Environment.NewLine;
+                styletext += "/* FLEXSLIDER */" + Environment.NewLine;
+                styletext += ".flexslider { width: 1154px; height: 575px; overflow: hidden; }" + Environment.NewLine;
+                styletext += ".flexslider ul, .flexslider li { margin: 0; padding: 0; }" + Environment.NewLine;
+                styletext += ".flexslider ul li { list - style - type:none; margin: 0; padding: 0; }" + Environment.NewLine;
+                styletext += "/* Direction Nav */" + Environment.NewLine;
+                styletext += ".flex - direction - nav a { width: 35px; height: 70px; margin: -35px 0 0 0; background: url(/DesktopModules/NBright/NBrightMod/Themes/Flexslider/css/bg_direction_nav.png) no - repeat 0 0; }" + Environment.NewLine;
+                styletext += ".flex - direction - nav.flex - next { right: -35px; }" + Environment.NewLine;
+                styletext += ".flex - direction - nav.flex - prev { left: -35px; }" + Environment.NewLine;
+                styletext += ".flexslider: hover.flex - next { right: 0; }" + Environment.NewLine;
+                styletext += ".flexslider: hover.flex - prev { left: 0; }" + Environment.NewLine;
+                styletext += "@media screen and(max - width:1180px) {" + Environment.NewLine;
+                styletext += ".flexslider { width: auto; height: auto; }" + Environment.NewLine;
+                styletext += "}" + Environment.NewLine;
+                styletext += "</style>" + Environment.NewLine;
+            }
+        }
+        <textarea rows="50" id="styletext" class="" update="save" type="text" style="height: 250px; width: 100%">@(styletext)</textarea>
+    </div>
+
     <div style="display:none">
         <!-- set flag so upload of files replaces the current selected -->
-        @CheckBox(info, "genxml/checkbox/replaceimages", "", "",true);
+        @CheckBox(info, "genxml/checkbox/replaceimages", "", "", true);
     </div>
- 
-
 
 </div>
 
