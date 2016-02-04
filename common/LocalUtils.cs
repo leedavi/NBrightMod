@@ -635,6 +635,7 @@ namespace NBrightMod.common
                 else
                 {
                     LocalUtils.ClearRazorCache(tItem.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorSateliteCache(tItem.ModuleId.ToString(""));
                 }
                 // clear any setting cache
                 Utils.RemoveCache("nbrightmodsettings*" + tItem.ModuleId.ToString(""));
@@ -671,11 +672,11 @@ namespace NBrightMod.common
                     var datalist = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATA");
                     foreach (var datasource in datalist)
                     {
+                        var upd = false;
                         var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
                         if (imgList != null)
                         {
                             var lp = 1;
-                            var upd = false;
                             foreach (var xnod in imgList)
                             {
                                 var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
@@ -687,19 +688,35 @@ namespace NBrightMod.common
                                 }
                                 lp += 1;
                             }
-                            if (upd) objCtrl.Update(datasource);
                         }
+                        var docList = datasource.XMLDoc.SelectNodes("genxml/docs/genxml");
+                        if (docList != null)
+                        {
+                            var lp = 1;
+                            foreach (var xnod in docList)
+                            {
+                                var relPath = datasource.GetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docurl");
+                                if (relPath != "")
+                                {
+                                    var docMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
+                                    datasource.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docpath", docMapPath);
+                                    upd = true;
+                                }
+                                lp += 1;
+                            }
+                        }
+                        if (upd) objCtrl.Update(datasource);
                     }
 
                     //update language data records.
                     var datalist2 = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATALANG");
                     foreach (var datasource in datalist2)
                     {
+                        var upd = false;
                         var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
                         if (imgList != null)
                         {
                             var lp = 1;
-                            var upd = false;
                             foreach (var xnod in imgList)
                             {
                                 var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
@@ -711,8 +728,24 @@ namespace NBrightMod.common
                                 }
                                 lp += 1;
                             }
-                            if (upd) objCtrl.Update(datasource);
                         }
+                        var docList = datasource.XMLDoc.SelectNodes("genxml/docs/genxml");
+                        if (docList != null)
+                        {
+                            var lp = 1;
+                            foreach (var xnod in docList)
+                            {
+                                var relPath = datasource.GetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docurl");
+                                if (relPath != "")
+                                {
+                                    var docMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
+                                    datasource.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docpath", docMapPath);
+                                    upd = true;
+                                }
+                                lp += 1;
+                            }
+                        }
+                        if (upd) objCtrl.Update(datasource);
                     }
 
 

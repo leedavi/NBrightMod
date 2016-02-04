@@ -39,13 +39,9 @@
     <Reference Include="DotNetNuke.WebControls">
       <HintPath>..\..\..\..\..\..\Support\DNN6x\bin\DotNetNuke.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="NBrightCore, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\NBrightCore.dll</HintPath>
-    </Reference>
-    <Reference Include="RazorEngine, Version=3.7.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\RazorEngine.dll</HintPath>
+    <Reference Include="RazorEngine, Version=3.7.7.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>packages\RazorEngine.3.7.7\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -53,9 +49,9 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\System.Web.Razor.dll</HintPath>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -210,6 +206,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Themes\config\default\edittheme.cshtml" />
     <None Include="Themes\config\default\thememanager.cshtml" />
     <None Include="Themes\config\default\thememanagerpageheader.cshtml" />
@@ -360,6 +357,10 @@
     <Folder Include="Themes\HtmlContent\js\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Support\nbrightcore\NBrightCore.csproj">
+      <Project>{7b338113-6a9a-484d-a6c6-4d63fd5e58c6}</Project>
+      <Name>NBrightCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\Support\nbrightdnn\NBrightDNN.csproj">
       <Project>{ec815d38-62cf-4b46-8177-cf40ce1aab62}</Project>
       <Name>NBrightDNN</Name>

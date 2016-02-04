@@ -392,6 +392,12 @@ namespace Nevoweb.DNN.NBrightMod
 
                     LocalUtils.UpdateSettings(nbi);
 
+
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+
+                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+
+
                 }
                 return "";
 
@@ -418,7 +424,12 @@ namespace Nevoweb.DNN.NBrightMod
                     // get DB record
                     var nbi = LocalUtils.GetSettings(moduleid,false);
                     if (nbi.ItemID > 0) objCtrl.Delete(nbi.ItemID);
+
                     LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+
+                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+
+
                 }
                 return "";
             }
