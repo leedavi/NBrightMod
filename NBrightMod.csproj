@@ -318,7 +318,6 @@
     <None Include="Themes\FAQ\default\view.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\settings.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
-    <None Include="Themes\SimpleArticlesSat\default\viewpageheader.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
     <None Include="Themes\SimpleArticles\default\editfields.cshtml" />
     <None Include="Themes\SimpleArticles\default\editlist.cshtml" />

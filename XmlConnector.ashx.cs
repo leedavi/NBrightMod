@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Web;
+using System.Web.Management;
 using System.Xml;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
@@ -345,6 +346,7 @@ namespace Nevoweb.DNN.NBrightMod
                         if (satnbi != null)
                         {
                             nbi.XrefItemId = satnbi.ItemID;
+                            nbi.SetXmlProperty("genxml/hidden/moduleiddatasource",satnbi.ModuleId.ToString());
                         }
                     }
 
