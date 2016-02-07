@@ -1448,7 +1448,7 @@ namespace Nevoweb.DNN.NBrightMod
                             if (!string.IsNullOrEmpty(email.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(email.Trim()))
                             {
                                 // multiple attachments as csv with "|" seperator
-                                DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                                DotNetNuke.Services.Mail.Mail.SendMail(clientemail.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
                                 strOut = emailreturnmsg;
                             }
                         }
