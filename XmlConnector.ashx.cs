@@ -1626,10 +1626,12 @@ namespace Nevoweb.DNN.NBrightMod
 
                 foreach (var f in files)
                 {
-                    var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(f.FullName);
+                    var fullname = f.FullName; // don't use file object directly, it locks the file on servr, but not on dev machine.???? I presume it's something the Path.GetFileName does?? 
+                    var name = f.Name;
+                    var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
                     var nbi = new NBrightInfo(true);
-                    nbi.SetXmlProperty("genxml/hidden/filename", f.Name);
-                    nbi.SetXmlProperty("genxml/hidden/name", f.Name.Replace(f.Extension, ""));
+                    nbi.SetXmlProperty("genxml/hidden/filename", name);
+                    nbi.SetXmlProperty("genxml/hidden/name", name.Replace(f.Extension, ""));
                     nbi.SetXmlProperty("genxml/hidden/imageurl", imageurl);
                     imgl.Add(nbi);
                 }
@@ -1953,11 +1955,13 @@ namespace Nevoweb.DNN.NBrightMod
 
                 foreach (var f in files)
                 {
-                    var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(f.FullName);
-                    var docref = Path.GetFileNameWithoutExtension(f.Name).Replace(" ", "-");
+                    var fullname = f.FullName; // don't use file object directly, it locks the file on servr, but not on dev machine.???? I presume it's something the Path.GetFileName does?? 
+                    var name = f.Name;
+                    var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
+                    var docref = Path.GetFileNameWithoutExtension(name).Replace(" ", "-");
                     var nbi = new NBrightInfo(true);
-                    nbi.SetXmlProperty("genxml/hidden/filename", f.Name);
-                    nbi.SetXmlProperty("genxml/hidden/name", f.Name.Replace(f.Extension, ""));
+                    nbi.SetXmlProperty("genxml/hidden/filename", name);
+                    nbi.SetXmlProperty("genxml/hidden/name", name.Replace(f.Extension, ""));
                     nbi.SetXmlProperty("genxml/hidden/docurl", docurl);
                     nbi.SetXmlProperty("genxml/hidden/ref", docref);
                     imgl.Add(nbi);
