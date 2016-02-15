@@ -380,20 +380,9 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.TextData == "") nbi.TextData = "NBrightMod";
 
-                    var settingUploadFolder = nbi.GetXmlProperty("genxml/textbox/settinguploadfolder");
-                    if (settingUploadFolder == "")
-                    {
-                        settingUploadFolder = "images";
-                        nbi.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
-                    }
-                    var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
-                    var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
-                    Utils.CreateFolder(uploadFolderMapPath);
-                    nbi.SetXmlProperty("genxml/uploadfolder", uploadFolder);
-                    nbi.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
+                    nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
 
                     LocalUtils.UpdateSettings(nbi);
-
 
                     LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
 

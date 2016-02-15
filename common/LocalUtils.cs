@@ -555,7 +555,12 @@ namespace NBrightMod.common
             Utils.CreateFolder(tempFolderMapPath);
 
             var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
-            if (settingUploadFolder == "") settingUploadFolder = "images";
+            if (settingUploadFolder == "")
+            {
+                settingUploadFolder = "images";
+                settings.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
+            }
+
             var uploadFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
             var uploadFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
