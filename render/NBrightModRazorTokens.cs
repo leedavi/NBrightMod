@@ -332,9 +332,11 @@ namespace NBrightMod.render
                 {
                     if (filematchcsv == "," || filematchcsv.Contains(n.InnerText + ","))
                     {
-                        if (isPortalTemplate(info, n.Value)) cssclassli += " isportaltemplate";
+                        var cssclassli2 = cssclassli;
+                        if (isPortalTemplate(info, n.InnerText)) cssclassli2 += " isportaltemplate";
+                        if (isModuleTemplate(info, n.InnerText)) cssclassli2 += " ismoduletemplate";
                         strOut.Append("<li>");
-                        strOut.Append("<a href='javascript:void(0)' filename='" + n.InnerText + "' class='selectfiletemplate " + cssclassli + "'>" + n.InnerText + "</a>");
+                        strOut.Append("<a href='javascript:void(0)' filename='" + n.InnerText + "' class='selectfiletemplate " + cssclassli2 + "'>" + n.InnerText + "</a>");
                         strOut.Append("</li>");
                     }
                 }
@@ -352,6 +354,19 @@ namespace NBrightMod.render
         private Boolean isPortalTemplate(NBrightInfo info, String filename)
         {
             var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + filename + "']");
+            if (nod != null) return true;
+            return false;
+        }
+
+        public Boolean IsModuleTemplate(NBrightInfo info, String filename)
+        {
+            if (isModuleTemplate(info, filename)) return true;
+            return false;
+        }
+
+        private Boolean isModuleTemplate(NBrightInfo info, String filename)
+        {
+            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + filename + "']");
             if (nod != null) return true;
             return false;
         }

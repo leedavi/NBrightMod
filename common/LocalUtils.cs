@@ -341,6 +341,8 @@ namespace NBrightMod.common
                     }
                 }
 
+            Utils.RemoveCache("nbrightmodsettings*" + moduleid);
+
             if (Utils.IsNumeric(moduleid))
             {
                 ClearFileCache(Convert.ToInt32(moduleid));
@@ -604,6 +606,33 @@ namespace NBrightMod.common
                     sb.Append(c);
             }
             return sb.ToString();
+        }
+
+
+        /// <summary>
+        /// do any validation of data required.  
+        /// </summary>
+        public static void ClearModuleCacheByTheme(String themefolder)
+        {
+            var objCtrl = new NBrightDataController();
+
+            // check for invalid records and remove
+            var modList = LocalUtils.GetNBrightModList();
+            foreach (var tItem in modList)
+            {
+                var modInfo = DnnUtils.GetModuleinfo(tItem.ModuleId);
+                if (modInfo != null)
+                {
+                    var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, modInfo.ModuleID, "SETTINGS");
+                    if (modsettings != null && modsettings.GetXmlProperty("genxml/dropdownlist/themefolder") == themefolder)
+                    {
+                        LocalUtils.ClearRazorCache(tItem.ModuleId.ToString(""));
+                        LocalUtils.ClearRazorSateliteCache(tItem.ModuleId.ToString(""));
+                        // clear any setting cache
+                        Utils.RemoveCache("nbrightmodsettings*" + tItem.ModuleId.ToString(""));
+                    }
+                }
+            }
         }
 
         /// <summary>
