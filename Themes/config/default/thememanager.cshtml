@@ -269,12 +269,32 @@
 
                 if (e.cmd == 'gettemplatemenu') {
 
+                    var editortext = CodeMirror.fromTextArea($("textarea[id$='simpletext']")[0], {
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        lineWrapping: true,
+                        mode: "text/html"
+                    })
+                    var editorxml = CodeMirror.fromTextArea($("textarea[id$='resxdata']")[0], {
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        lineWrapping: true,
+                        mode: "xml"
+                    })
+
+
                     $('.selectsnippet').tooltip({
                         position: { my: "left+15 center", at: "right center" }
                     });
 
                     $('.selectsnippet').click(function () {
-                        insertAtCaret('#simpletext',$('#' + $(this).attr('snipname')).html());
+                        var snip = $('#' + $(this).attr('snipname')).html();
+                        var position = editortext.getCursor();
+                        editortext.replaceRange(snip, CodeMirror.Pos(position.line))
                     });
 
                     $("#tabs").tabs({
@@ -285,6 +305,8 @@
                     });
 
                     $('.savedata').click(function () {
+                        $('#simpletext').val(editortext.getValue())
+                        $('#resxdata').val(editorxml.getValue())
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
@@ -327,33 +349,6 @@
                 }
 
             };
-
-
-
-            function insertAtCaret(selector, insertValue) {
-                var position = $(selector).getCursorPosition();
-                var content = $(selector).val();
-                var newContent = content.substr(0, position) + insertValue + content.substr(position);
-                $(selector).val(newContent);
-            };
-
-
-            (function ($, undefined) {
-                $.fn.getCursorPosition = function () {
-                    var el = $(this).get(0);
-                    var pos = 0;
-                    if ('selectionStart' in el) {
-                        pos = el.selectionStart;
-                    } else if ('selection' in document) {
-                        el.focus();
-                        var Sel = document.selection.createRange();
-                        var SelLength = document.selection.createRange().text.length;
-                        Sel.moveStart('character', -el.value.length);
-                        pos = Sel.text.length - SelLength;
-                    }
-                    return pos;
-                }
-            })(jQuery);
 
 
         </script>
