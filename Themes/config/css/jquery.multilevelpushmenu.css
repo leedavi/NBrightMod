@@ -110,3 +110,11 @@
 .multilevelpushmenu_wrapper .iconSpacing_rtl {
 	padding: 0 0 0 .4em;
 }
+
+.isportaltemplate {
+	background: #487baf;
+}
+
+.ismoduletemplate {
+	background: #5c89b8;
+}

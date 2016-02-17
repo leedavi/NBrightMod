@@ -26,40 +26,40 @@
         
 
         <div>
-            <button id='refreshbutton' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span>@ResourceKey("Edit.return")</button>
-            <button id='exitedit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span>@ResourceKey("Edit.exit")</button>
+            <button id='refreshbutton' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span> @ResourceKey("Edit.return")</button>
+            <button id='exitedit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exit")</button>
         </div>
         <hr />
 
         <div id="optionselectdiv">
             <div id="step1">
                 <div class='buttons'>
-                    <button id='editmodtheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span>@ResourceKey("Edit.editmodtheme")</button>
+                    <button id='editmodtheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.editmodtheme")</button>
                     @DnnLabel("lbleditmodtheme", "Edit.lbleditmodtheme")
                 </div>
                 <div class='buttons'>
-                    <button id='edittheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span>@ResourceKey("Edit.edittheme")</button>
+                    <button id='edittheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
                     @DnnLabel("lbledittheme", "Edit.lbledittheme")
                 </div>
                 <div class='buttons'>
-                    <button id='createnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span>@ResourceKey("Edit.createnew")</button>
+                    <button id='createnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
                     @DnnLabel("lblcreatenew", "Edit.lblcreatenew")
                 </div>
                 <div class='buttons'>
-                    <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span>@ResourceKey("Edit.makethemesys")</button>
+                    <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
                     @DnnLabel("lblmakethemesys", "Edit.lblmakethemesys")
                 </div>
                 <div class='buttons'>
-                    <button id='deletetheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletetheme")</button>
+                    <button id='deletetheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
                     @DnnLabel("lbldeletetheme", "Edit.lbldeletetheme")
                 </div>
                 <hr/>
                 <div class='buttons'>
-                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-log-in'></span>@ResourceKey("Edit.importtheme")</button>
+                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
                     @DnnLabel("lblimporttheme", "Edit.lblimporttheme")
                 </div>
                 <div class='buttons'>
-                    <button id='exporttheme' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-log-out'></span>@ResourceKey("Edit.exporttheme")</button>
+                    <button id='exporttheme' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
                     @DnnLabel("lblexporttheme", "Edit.lblexporttheme")
                 </div>
             </div>
@@ -268,7 +268,6 @@
                 }
 
                 if (e.cmd == 'gettemplatemenu') {
-
                     var editortext = CodeMirror.fromTextArea($("textarea[id$='simpletext']")[0], {
                         lineNumbers: true,
                         styleActiveLine: true,
@@ -285,17 +284,15 @@
                         lineWrapping: true,
                         mode: "xml"
                     })
-
-
                     $('.selectsnippet').tooltip({
                         position: { my: "left+15 center", at: "right center" }
                     });
-
                     $('.selectsnippet').click(function () {
                         var snip = $('#' + $(this).attr('snipname')).html();
                         var position = editortext.getCursor();
                         editortext.replaceRange(snip, CodeMirror.Pos(position.line))
                     });
+
 
                     $("#tabs").tabs({
                         activate: function (event, ui) {
@@ -305,8 +302,8 @@
                     });
 
                     $('.savedata').click(function () {
-                        $('#simpletext').val(editortext.getValue())
-                        $('#resxdata').val(editorxml.getValue())
+                        $('#simpletext').val(editortext.getValue());
+                        $('#resxdata').val(editorxml.getValue());
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
@@ -331,7 +328,9 @@
                         $('#templfilename').val($(this).attr('filename'));
                     });
 
-                    $('#sideeditmenu').multilevelpushmenu();
+                    $('#sideeditmenu').multilevelpushmenu({
+						menuHeight: '100%'
+					});
 
                 }
 
@@ -349,7 +348,6 @@
                 }
 
             };
-
 
         </script>
 </div>
