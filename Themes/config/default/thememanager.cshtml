@@ -247,12 +247,30 @@
 
                 if (e.cmd == 'gettemplatemenu') {
 
+                    var editor = CodeMirror.fromTextArea($("textarea[id$='simpletext']")[0], {
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        lineWrapping: true,
+                        mode: "text/html"
+                    })
+                    var editorxml = CodeMirror.fromTextArea($("textarea[id$='resxdata']")[0], {
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        lineWrapping: true,
+                        mode: "xml"
+                    })
+
+
                     $('.selectsnippet').tooltip({
                         position: { my: "left+15 center", at: "right center" }
                     });
 
                     $('.selectsnippet').click(function () {
-                        insertAtCaret('#simpletext',$('#' + $(this).attr('snipname')).html());
+                        insertAtCaret('#simpletext', $('#' + $(this).attr('snipname')).html());
                     });
 
                     $("#tabs").tabs({
@@ -263,6 +281,8 @@
                     });
 
                     $('.savedata').click(function () {
+                        $('#simpletext').val(editor.getValue())
+                        $('#resxdata').val(editorxml.getValue())
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
