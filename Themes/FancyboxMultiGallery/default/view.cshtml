@@ -1,0 +1,71 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+@using System.Xml
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/FancyboxMultiGallery/resx/")
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FancyboxMultiGallery.view.cshtml", Model.ModuleId.ToString(""))
+
+
+@helper headersection(NBrightInfo x)
+{
+    if ((x.GetXmlProperty("genxml/lang/genxml/textbox/title") != "") && (!x.GetXmlPropertyBool("genxml/checkbox/hideheading")))
+    {
+        @HeadingOf(x.GetXmlProperty("genxml/lang/genxml/textbox/title"), x.GetXmlProperty("genxml/dropdownlist/headingstyle"))
+    }
+}
+
+
+@helper imagedisplay(NBrightInfo info)
+{
+var imgList = info.XMLDoc.SelectNodes("genxml/imgs/genxml");
+if (imgList != null)
+{
+    var width = Model.GetSetting("width");
+    var height = Model.GetSetting("height");
+    foreach (XmlNode i in imgList)
+    {
+        var nbi = new NBrightInfo();
+        nbi.XMLData = i.OuterXml;
+
+        var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+        var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+
+        if (imageurl != "")
+        {
+            <a class="fancybox" rel="group" title="@(title)" href="@(imageurl)">
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
+            </a>
+        }
+    }
+}
+
+}
+
+@foreach (NBrightInfo info in Model.List)
+{
+    <div>
+        @headersection(info)
+        <div class="gallery">
+            @imagedisplay(info)
+        </div>
+        <div class="clearfix"></div>
+    </div>
+}
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+			$('.fancybox').fancybox({
+			tpl: {
+				closeBtn : '<a title="@ResourceKey("View.close")" class="fancybox-item fancybox-close" href="javascript:;"></a>',
+				next     : '<a title="@ResourceKey("View.next")" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
+				prev     : '<a title="@ResourceKey("View.previous")" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+			}
+    });
+});
+</script>
+
+
