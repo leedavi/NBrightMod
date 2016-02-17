@@ -16,6 +16,15 @@
 <input id="editlang" type="hidden" value="" />
 <input id="currentedittab" type="hidden" value="@info.GetXmlProperty("genxml/hidden/currentedittab")" />
 
+@if (info.GetXmlPropertyBool("genxml/modulelevel"))
+{
+    <h3>@ResourceKey("Edit.modulelevel")</h3>
+}
+else
+{
+    <h3>@ResourceKey("Edit.portallevel")</h3>
+}
+
 
 @EditCultureSelect("flag-list", "selecteditlanguage", true)
 
@@ -25,33 +34,39 @@
         <ul>
             <li>
                 <a href="#"><i class="fa fa-laptop"></i>General Files</a>
-                <h2><i class="fa fa-laptop"></i>General Files</h2>
+                <h2><i class="fa fa-laptop"></i>General Files
+                </h2>
                 @TemplateFileSelect(info, "", "", "", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml")
             </li>
             <li>
                 <a href="#"><i class="fa fa-laptop"></i>All Files</a>
-                <h2><i class="fa fa-laptop"></i>All Files</h2>
+                <h2><i class="fa fa-laptop"></i>All Files
+                </h2>
                 @TemplateFileSelect(info, "", "", "", "")
             </li>
             <li>
                 <a href="#"><i class="fa fa-laptop"></i>Snippet Input</a>
-                <h2><i class="fa fa-laptop"></i>Snippet Input</h2>
+                <h2><i class="fa fa-laptop"></i>Snippet Input
+                </h2>
                 @GetSnippets("", "", "", "root/input/*")
             </li>
             <li>
                 <a href="#"><i class="fa fa-laptop"></i>Snippet Process</a>
-                <h2><i class="fa fa-laptop"></i>Snippet Process</h2>
+                <h2><i class="fa fa-laptop"></i>Snippet Process
+                </h2>
                 @GetSnippets("", "", "", "root/process/*")
             </li>
         </ul>
     </nav>
 </div>
 
-        <div id="tabs">
+
+
+<div id="tabs">
 
             <ul>
 
-                <li><a href="#tabs-1">@info.GetXmlProperty("genxml/templfilename")</a></li>
+                <li><a href="#tabs-1">@info.GetXmlProperty("genxml/displayfilename")</a></li>
 
                 <li><a href="#tabs-2">@info.GetXmlProperty("genxml/resxfilename")</a></li>
 
@@ -64,6 +79,44 @@
                     {
                         <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
                     }
+                    @if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                    {
+                        <button id='deletemoduletempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletemoduletempl")</button>
+                    }
+                </div>
+
+                <div>
+                    @if (info.GetXmlPropertyBool("genxml/modulelevel"))
+                    {
+                        if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                        {
+                            @ResourceKey("Edit.moduletemplateloaded")
+                        }
+                        else
+                        {
+                            if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
+                             {
+                                 @ResourceKey("Edit.portaltemplateloaded")
+                            }
+                            else
+                            {
+                                @ResourceKey("Edit.systemtemplateloaded")
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                        {
+                            @ResourceKey("Edit.portaltemplateloaded")
+                        }
+                        else
+                        {
+                            @ResourceKey("Edit.systemtemplateloaded")
+                        }
+                    }
+
+
                 </div>
 
                 <div id="simpletexteditor">

@@ -1,8 +1,0 @@
-@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
-@using System.Linq
-@using NBrightDNN
-@{
-    var info = (NBrightInfo)Model.List.First();
-}
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=@(info.Lang.Substring(0,2))"></script>
-

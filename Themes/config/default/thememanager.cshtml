@@ -18,10 +18,11 @@
 <div id="nbrightmodtools">
 
     <div id="nbrightmodthemedata">
-        <input id="moduleid" type="hidden" value="@info.ModuleId"/>
+        <input id="moduleid" type="hidden" value="@Model.ModuleId"/>
         <input id="updatetype" type="hidden" value=""/>
         <input id="templfilename" type="hidden" value="@info.GetXmlProperty("genxml/templfilename")" />  
         <input id="resxfilename" type="hidden" value="@info.GetXmlProperty("genxml/resxfilename")" />
+        <input id="modulelevel" type="hidden" value="0" />
         
 
         <div>
@@ -32,6 +33,10 @@
 
         <div id="optionselectdiv">
             <div id="step1">
+                <div class='buttons'>
+                    <button id='editmodtheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span>@ResourceKey("Edit.editmodtheme")</button>
+                    @DnnLabel("lbleditmodtheme", "Edit.lbleditmodtheme")
+                </div>
                 <div class='buttons'>
                     <button id='edittheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span>@ResourceKey("Edit.edittheme")</button>
                     @DnnLabel("lbledittheme", "Edit.lbledittheme")
@@ -79,7 +84,7 @@
                     <button id='nextbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                     <button id='makethemesysbutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
                     <button id='exportthemebutton' type='button' class='btn btn-success'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.next")</button>
-                    <button id='deletethemebutton' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.deletetheme")</button>
+                    <button id='deletethemebutton' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-circle-arrow-right'></span>@ResourceKey("Edit.deletetheme") : (@ResourceKey("Edit.deleteportalmsg"))</button>
                 </div>
 
             </div>
@@ -97,6 +102,7 @@
             $(document).ready(function () {
 
                 $('#nextbutton').click(function () {
+                    $('#modulelevel').val('0');
                     $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
                     NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
@@ -113,6 +119,22 @@
                 });
                 $('#deletethemebutton').click(function () {
                     NBrightMod_nbxget('deletetheme', '#nbrightmodthemedata', '#edittemplatediv');
+                });
+
+                $('#editmodtheme').click(function () {
+                    $('.processing').show();
+                    $('#updatetype').val('edit');
+                    $('#step1').hide();
+                    $('#step2').hide();
+                    $('#nextbutton').hide();
+                    $('#makethemesysbutton').hide();
+                    $('#deletethemebutton').hide();
+                    $('#exportthemebutton').hide();
+                    $('.themefolder').hide();
+                    $('.portalthemefolder').hide();
+                    $('#modulelevel').val('1'); 
+                    $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
+                    NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
 
                 $('#edittheme').click(function () {
@@ -289,6 +311,10 @@
                     $('#deleteportaltempl').click(function () {
                         NBrightMod_nbxget('deleteportaltempl', '#nbrightmodthemedata');
                     });
+                    $('#deletemoduletempl').click(function () {
+                        NBrightMod_nbxget('deletemoduletempl', '#nbrightmodthemedata');
+                    });
+                    
 
                     $('#deleteportalresx').click(function () {
                         NBrightMod_nbxget('deleteportalresx', '#nbrightmodthemedata');
@@ -313,6 +339,9 @@
                 if (e.cmd == 'deleteportaltempl') {
                     NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
                 }
+                if (e.cmd == 'deletemoduletempl') {
+                    NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
+                }                
                 if (e.cmd == 'deleteportalresx') {
                     NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');
                 }

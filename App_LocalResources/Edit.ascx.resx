@@ -265,13 +265,13 @@
     <value>Create New Theme</value>
   </data>
   <data name="edittheme.Text" xml:space="preserve">
-    <value>Modify Existing Theme</value>
+    <value>Edit Portal Level Theme</value>
   </data>
   <data name="lblcreatenew.Help" xml:space="preserve">
     <value>Create new Theme: Create a new portal level theme based on an existing theme.</value>
   </data>
   <data name="lbledittheme.Help" xml:space="preserve">
-    <value>Modify Existing Theme: Create a portal level adapted version.</value>
+    <value>Modify Existing Theme: Create a PORTAL level adapted version.</value>
   </data>
   <data name="lblnewname.Help" xml:space="preserve">
     <value>Name of New Theme</value>
@@ -320,5 +320,32 @@
   </data>
   <data name="lbldeletetheme.Text" xml:space="preserve">
     <value />
+  </data>
+  <data name="editmodtheme.Text" xml:space="preserve">
+    <value>Edit Module Level Theme</value>
+  </data>
+  <data name="lbleditmodtheme.Help" xml:space="preserve">
+    <value>Modify Theme: Create/Edit a MODULE level adapted version.</value>
+  </data>
+  <data name="deletemoduletempl.Text" xml:space="preserve">
+    <value>Remove Module template file</value>
+  </data>
+  <data name="deleteportalmsg.Text" xml:space="preserve">
+    <value>This will DELETE ALL Portal and Module level templates.</value>
+  </data>
+  <data name="modulelevel.Text" xml:space="preserve">
+    <value>Module Level</value>
+  </data>
+  <data name="moduletemplateloaded.Text" xml:space="preserve">
+    <value>Module template loaded</value>
+  </data>
+  <data name="portallevel.Text" xml:space="preserve">
+    <value>Portal Level</value>
+  </data>
+  <data name="portaltemplateloaded.Text" xml:space="preserve">
+    <value>Portal template loaded</value>
+  </data>
+  <data name="systemtemplateloaded.Text" xml:space="preserve">
+    <value>System template loaded</value>
   </data>
 </root>

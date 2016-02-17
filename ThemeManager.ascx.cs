@@ -72,7 +72,7 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ValidateModuleData();
                     }
 
-                    var strOut = LocalUtils.RazorTemplRender("config.thememanager.cshtml", ModuleId.ToString(""), "configthememanager" + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(),settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var strOut = LocalUtils.RazorTemplRender("config.thememanager.cshtml", ModuleId.ToString(""), "configthememanager" + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(),true); // force debug mode, we don't want to cache.
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);

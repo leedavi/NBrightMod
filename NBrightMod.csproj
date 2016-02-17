@@ -125,9 +125,11 @@
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\FlexsliderSat\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Flexslider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Flexslider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Flexslider\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\GoogleMapMultipoint\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\LinksDownloads\resx\Edit.ascx.resx" />
@@ -150,7 +152,6 @@
     <EmbeddedResource Include="Themes\SimpleArticles\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\XGoogleMapMultipoint\resx\Settings.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ThemeManager.ascx">
@@ -249,6 +250,7 @@
     <None Include="Themes\FancyboxGallery\default\view.cshtml" />
     <None Include="Themes\FancyboxGallery\default\viewpageheader.cshtml" />
     <None Include="Themes\FAQ\default\viewpageheader.cshtml" />
+    <None Include="Themes\FlexsliderSat\default\settings.cshtml" />
     <None Include="Themes\FlexsliderSat\default\view.cshtml" />
     <None Include="Themes\Flexslider\default\editbody.cshtml" />
     <None Include="Themes\Flexslider\default\editfields.cshtml" />
@@ -258,6 +260,13 @@
     <None Include="Themes\Flexslider\default\settings.cshtml" />
     <None Include="Themes\Flexslider\default\view.cshtml" />
     <None Include="Themes\Flexslider\default\viewpageheader.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\editbody.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\editfields.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\editlist.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\editpageheader.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\settings.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\view.cshtml" />
+    <None Include="Themes\GoogleMapMultipoint\default\viewpageheader.cshtml" />
     <None Include="Themes\GoogleMap\default\editbody.cshtml" />
     <None Include="Themes\GoogleMap\default\editfields.cshtml" />
     <None Include="Themes\GoogleMap\default\editpageheader.cshtml" />
@@ -332,12 +341,6 @@
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\editbody.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\editfields.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\editlist.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\settings.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\view.cshtml" />
-    <None Include="Themes\XGoogleMapMultipoint\default\viewpageheader.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>
@@ -350,7 +353,6 @@
     <Folder Include="Themes\Documents\js\" />
     <Folder Include="Themes\FlexsliderSat\css\" />
     <Folder Include="Themes\FlexsliderSat\js\" />
-    <Folder Include="Themes\FlexsliderSat\resx\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
     <Folder Include="Themes\HtmlContent\js\" />
