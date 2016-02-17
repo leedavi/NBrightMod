@@ -34,7 +34,7 @@ namespace Nevoweb.DNN.NBrightMod
         private readonly JavaScriptSerializer _js = new JavaScriptSerializer();
         private String _lang = "";
         private String _itemid = "";
-        private String _resxdatadefault = "<?xml version=\"1.0\" encoding=\"utf - 8\"?>\r\n<root>\r\n<data name=\"text.Text\" xml:space=\"preserve\"><value>Text</value></data>\r\n</root>";
+        private String _resxdatadefault = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<root>\r\n<data name=\"text.Text\" xml:space=\"preserve\"><value>Text</value></data>\r\n</root>";
 
         public void ProcessRequest(HttpContext context)
         {
