@@ -22,19 +22,10 @@
         var imgheight = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/textbox/imgheight");
         var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
         var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/textbox/imagedesc");
-        var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/dropdownlist/imglinktab");
 
         if (imageurl != "")
         {
-            if (imglinktab != "")
-            {
-                @:{<a href="TEST" target="_blank">}
-            }
             <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)"/>
-            if (imglinktab != "")
-            {
-                @:{</a >}
-            }
             if (showcaptions)
             {
                 <div class="newspaper-imgcaption">@(caption)</div>
@@ -58,21 +49,12 @@
                 var imgwidth = nbi.GetXmlProperty("genxml/textbox/imgwidth");
                 var imgheight = nbi.GetXmlProperty("genxml/textbox/imgheight");
                 var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/textbox/imagedesc");
-                var imglinktab = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/dropdownlist/imglinktab");
 
                 if (imageurl != "")
                 {
                     if ((displaytype == "vert") || ((c%2 != 0) && displaytype == "odd") || ((c%2 == 0) && displaytype == "even"))
                     {
-                        if (imglinktab != "")
-                        {
-                            @:{<a href="TEST" target="_blank">}
-                        }
-                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />
-                    if (imglinktab != "")
-                    {
-                        @:{</a>}
-                    }
+                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />                                
                     if (showcaptions)
                     {
                             <div class="newspaper-imgcaption">@(caption)</div>
@@ -81,9 +63,7 @@
                     if (displaytype == "hoz")
                     {
                         <div class="newspaper-imgdivfloatleft">
-                            <a href="javascript:void(0)">
-                                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)"/>
-                            </a>
+                            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />
                             @if (showcaptions)
                             {
                                 <div class="newspaper-imgcaption">@(caption)</div>
