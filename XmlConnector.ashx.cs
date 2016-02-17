@@ -34,7 +34,7 @@ namespace Nevoweb.DNN.NBrightMod
         private readonly JavaScriptSerializer _js = new JavaScriptSerializer();
         private String _lang = "";
         private String _itemid = "";
-        private String _resxdatadefault = "<?xml version=\"1.0\" encoding=\"utf - 8\"?>\r\n<root>\r\n<data name=\"text.Text\" xml:space=\"preserve\"><value>Text</value></data>\r\n</root>";
+        private String _resxdatadefault = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<root>\r\n<data name=\"text.Text\" xml:space=\"preserve\"><value>Text</value></data>\r\n</root>";
 
         public void ProcessRequest(HttpContext context)
         {
@@ -151,7 +151,7 @@ namespace Nevoweb.DNN.NBrightMod
                 case "importtheme":
                     if (LocalUtils.CheckRights())
                     {
-                        var fname1 = FileUpload(context, moduleid);
+                        var fname1 = FileUpload(context, moduleid,true);
                         strOut = DoThemeImport(fname1);
                         LocalUtils.ClearRazorCache(moduleid);
                     }
@@ -1020,6 +1020,19 @@ namespace Nevoweb.DNN.NBrightMod
             var fldrlang = lang;
             if (fldrlang == "") fldrlang = "default";
             var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
+
+            var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
+
+            if (themefolder == "" && Utils.IsNumeric(moduleid)) // themefolder is blank for modulelevel editing
+            {
+                var objCtrl = new NBrightDataController();
+                var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+                if (modsettings != null)
+                {
+                    themefolder = modsettings.GetXmlProperty("genxml/dropdownlist/themefolder");
+                }
+            }
+
 
             var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
 
@@ -2297,7 +2310,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region "fileupload"
 
-        private string FileUpload(HttpContext context, String moduleid)
+        private string FileUpload(HttpContext context, String moduleid, Boolean passbackfilename = false)
         {
             try
             {
@@ -2310,7 +2323,7 @@ namespace Nevoweb.DNN.NBrightMod
                         break;
                     case "POST":
                     case "PUT":
-                        strOut = UploadFile(context, moduleid);
+                        strOut = UploadFile(context, moduleid, passbackfilename);
                         break;
                     case "DELETE":
                         break;
@@ -2333,13 +2346,13 @@ namespace Nevoweb.DNN.NBrightMod
         }
 
         // Upload file to the server
-        private String UploadFile(HttpContext context, String moduleid)
+        private String UploadFile(HttpContext context, String moduleid, Boolean passbackfilename = false)
         {
-            return UploadWholeFile(context, moduleid);
+            return UploadWholeFile(context, moduleid, passbackfilename);
         }
 
         // Upload entire file
-        private String UploadWholeFile(HttpContext context, String moduleid)
+        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename = false)
         {
             var modSettings = LocalUtils.GetSettings(moduleid);
             for (int i = 0; i < context.Request.Files.Count; i++)
@@ -2357,7 +2370,7 @@ namespace Nevoweb.DNN.NBrightMod
                     UpdateImage(fullfilename, _itemid, modSettings);
                 else
                     UpdateDoc(fullfilename, _itemid, modSettings);
-                return fullfilename;
+                if (passbackfilename) return fullfilename;
             }
             return "";
         }

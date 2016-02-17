@@ -20,8 +20,10 @@
     <div class="panel-body">
 
                 <div id="captionscheckbox" style="display: none;">
-                    @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " class='dnnCheckbox'")
+                    @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " ")
                 </div>
+
+
 
                 <div id="imageselectlist" style="display: none;"></div>
 
@@ -39,12 +41,15 @@
                                     {
                                         <th>@ResourceKey("Edit.height")</th>
                                     }
+                                    <th></th>
                                 </tr>
 
                     @{
                         var imglp = 1;
-                            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
-
+                        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+                        if (imageurl != "")
+                        {
+                            
                                   <tr class="imageitem">
                                   <td>
                                   @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
@@ -61,7 +66,9 @@
                                       {
                                           <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgheight", " update='imgsave' style='width:60px;' ", "0")</td>
                                       }
+                                      <td>@IconButtons(info, "de")</td>
                                   </tr>
+                        }
 
                     }
 

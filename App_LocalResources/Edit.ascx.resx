@@ -333,6 +333,9 @@
   <data name="deleteportalmsg.Text" xml:space="preserve">
     <value>This will DELETE ALL Portal and Module level templates.</value>
   </data>
+  <data name="hide.Text" xml:space="preserve">
+    <value>Hide</value>
+  </data>
   <data name="modulelevel.Text" xml:space="preserve">
     <value>Module Level</value>
   </data>
