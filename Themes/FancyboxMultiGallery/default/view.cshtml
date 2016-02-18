@@ -25,6 +25,7 @@ if (imgList != null)
 {
     var width = Model.GetSetting("width");
     var height = Model.GetSetting("height");
+    var imglp = 1;
     foreach (XmlNode i in imgList)
     {
         var nbi = new NBrightInfo();
@@ -32,13 +33,19 @@ if (imgList != null)
 
         var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
         var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+        var imgcaption = info.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption");
+        if (imgcaption == "")
+        {
+            imgcaption = title;
+        }
 
         if (imageurl != "")
         {
-            <a class="fancybox" rel="group" title="@(title)" href="@(imageurl)">
-                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
+            <a class="fancybox" rel="group" title="@(imgcaption)" href="@(imageurl)">
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(imgcaption)" />
             </a>
         }
+        imglp += 1;
     }
 }
 
