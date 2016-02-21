@@ -23,6 +23,7 @@ using NBrightMod.common;
 using RazorEngine.Templating;
 using RazorEngine.Text;
 using System.IO;
+using DotNetNuke.Entities.Modules;
 
 namespace NBrightMod.render
 {
@@ -317,6 +318,25 @@ namespace NBrightMod.render
             }
             return new RawString(strOut.ToString());
         }
+
+        public IEncodedString TreeViewTabsFancyTreeClones(String moduleid)
+        {
+            var strOut = ""; 
+            if (Utils.IsNumeric(moduleid))
+            {
+                var selectedlist = "";
+                var objmodules = new ModuleController();
+                var tlist = objmodules.GetAllTabsModulesByModuleID(Convert.ToInt32(moduleid));
+                foreach (ModuleInfo t in tlist)
+                {
+                    selectedlist += t.TabID + ",";
+                }
+
+                strOut = DnnUtils.GetTreeViewTabJSData(selectedlist);
+            }
+            return new RawString(strOut);
+        }
+
 
         public IEncodedString TemplateFileSelect(NBrightInfo info, String cssclass, String cssclassli, String headerli = "",String filematchcsv = "")
         {

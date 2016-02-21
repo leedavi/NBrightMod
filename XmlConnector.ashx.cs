@@ -23,6 +23,7 @@ using System.Web.Script.Serialization;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
+using DotNetNuke.Entities.Modules;
 
 namespace Nevoweb.DNN.NBrightMod
 {
@@ -240,6 +241,12 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights())
                     {
                         strOut = DeleteTheme(context);
+                    }
+                    break;
+                case "clonemodule":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = CloneModule(context);
                     }
                     break;
             }
@@ -1099,6 +1106,66 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+        private String CloneModule(HttpContext context)
+        {
+            try
+            {
+                var objmodules = new ModuleController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var clonelist = ajaxInfo.GetXmlProperty("genxml/hidden/clonelist");
+                var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
+                var currenttabid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/currenttabid");
+                var tablist = clonelist.Split(',');
+
+                // delete existing clones not selected.
+                var tabList = DotNetNuke.Entities.Tabs.TabController.GetTabsBySortOrder(DotNetNuke.Entities.Portals.PortalSettings.Current.PortalId, Utils.GetCurrentCulture(), true);
+                foreach  (var tabinfo in tabList)
+                {
+                    if (tabinfo.TabID != currenttabid)
+                    {
+                        ModuleInfo mi = objmodules.GetModule(moduleid, tabinfo.TabID);
+                        if (mi != null && !tablist.Contains(tabinfo.TabID.ToString("")))
+                        {
+                            objmodules.DeleteTabModule(tabinfo.TabID, moduleid, false);
+                        }
+                    }
+                }
+
+                if (moduleid > 0)
+                {
+                    foreach (var tabId in tablist)
+                    {
+                        if (Utils.IsNumeric(tabId))
+                        {
+                            var existingmodule = objmodules.GetModule(moduleid, Convert.ToInt32(tabId));
+                            if (existingmodule == null && currenttabid != Convert.ToInt32(tabId))
+                            {
+                                ModuleInfo fmi = objmodules.GetModule(moduleid);
+                                ModuleInfo newModule = fmi.Clone();
+
+                                newModule.UniqueId = Guid.NewGuid(); // Cloned Module requires a different uniqueID 
+                                newModule.TabID = Convert.ToInt32(tabId);
+                                objmodules.AddModule(newModule);
+                            }
+
+                        }
+                    }
+
+
+                    return "OK";
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+
+        }
+
+
         private String CreatePortalTemplates(HttpContext context)
         {
             try
@@ -1765,7 +1832,8 @@ namespace Nevoweb.DNN.NBrightMod
                 extensionArray.Add(".jpg");
                 extensionArray.Add(".png");
                 HashSet<string> allowedExtensions = new HashSet<string>(extensionArray, StringComparer.OrdinalIgnoreCase);
-                FileInfo[] files = Array.FindAll(dirInfo.GetFiles(), f => allowedExtensions.Contains(f.Extension));
+                var gotfiles = dirInfo.GetFiles();
+                FileInfo[] files = Array.FindAll(gotfiles, f => allowedExtensions.Contains(f.Extension));
 
                 var imgl = new List<NBrightInfo>();
 
@@ -1773,10 +1841,11 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     var fullname = f.FullName; // don't use file object directly, it locks the file on servr, but not on dev machine.???? I presume it's something the Path.GetFileName does?? 
                     var name = f.Name;
+                    var ext = f.Extension;
                     var imageurl = modSettings.GetXmlProperty("genxml/uploadfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
                     var nbi = new NBrightInfo(true);
                     nbi.SetXmlProperty("genxml/hidden/filename", name);
-                    nbi.SetXmlProperty("genxml/hidden/name", name.Replace(f.Extension, ""));
+                    nbi.SetXmlProperty("genxml/hidden/name", name.Replace(ext, ""));
                     nbi.SetXmlProperty("genxml/hidden/imageurl", imageurl);
                     imgl.Add(nbi);
                 }

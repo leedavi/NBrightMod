@@ -3,23 +3,101 @@
 @using System.Web.UI.HtmlControls
 @using NBrightDNN
 
+
+<link href="/DesktopModules/NBright/NBrightMod/Themes/config/css/ui.fancytree.css" rel="stylesheet" type="text/css">
+<script src="/DesktopModules/NBright/NBrightMod/Themes/config/js/jquery.fancytree-all.min.js" type="text/javascript"></script>
+
 @{
     var tabid = Model.GetUrlParam("tabid");
 }
-<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + "&language=" + @Model.GetUrlParam("language"))"></input>
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + "&language=" + @Model.GetUrlParam("language"))" />
+
+<div id="toolsmsg"></div>
 
 <div id="nbrightmodtools">
+
+    @EditButtons("ex")
+
+<hr/>
 
     <div id="nbrightmodtoolsdata">
         <div>
             <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
         </div>
 
-            @EditButtons("ex")
-
     </div>
 
-    <div id="toolsmsg"></div>
+    <hr />
+
+    <h1>@ResourceKey("Settings.clonemodule")</h1>
+    <p>
+        <a href="#" id="btnSelectAll">@ResourceKey("Settings.selectall")</a> -
+        <a href="#" id="btnDeselectAll">@ResourceKey("Settings.deselectall")</a>
+    </p>
+    <div id="tree1"></div>
+    <div>
+        <button id="clonemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.clonemodule")</button>
+        <div id="clonemsg"></div>
+    </div>
+
+    <div id="clonedata">
+        <input id="clonelist" type="hidden" value="" />
+        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
+        <input id="currenttabid" type="hidden" value="@(tabid)" />
+    </div>
+
+    <script>
+
+        @TreeViewTabsFancyTreeClones(@Model.GetUrlParam("mid"))
+
+        $(function(){
+
+            $("#tree1").fancytree({
+                checkbox: true,
+                selectMode: 2,
+                source: treeData,
+                select: function (event, data) {
+                    // Display list of selected nodes
+                    var selNodes = data.tree.getSelectedNodes();
+                    // convert to title/key array
+                    var selKeys = $.map(selNodes, function (node) {
+                        return node.key;
+                    });
+                    $("#clonelist").val(selKeys.join(", "));
+                },
+                click: function (event, data) {
+                    // We should not toggle, if target was "checkbox", because this
+                    // would result in double-toggle (i.e. no toggle)
+                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
+                        data.node.toggleSelected();
+                    }
+                },
+                keydown: function (event, data) {
+                    if (event.which === 32) {
+                        data.node.toggleSelected();
+                        return false;
+                    }
+                }
+            });
+
+            $("#btnDeselectAll").click(function () {
+                $("#tree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(false);
+                });
+                return false;
+            });
+            $("#btnSelectAll").click(function () {
+                $("#tree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(true);
+                });
+                return false;
+            });
+
+        });
+
+    </script>
+
+
 
         <script>
             $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
@@ -29,17 +107,22 @@
                     NBrightMod_nbxget('doportalvalidation', '#toolsmsg');
                 });
 
+                $('#clonemodule').click(function () {
+                    NBrightMod_nbxget('clonemodule', '#clonedata', '#clonemsg');
+                });
+
                 // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
                 $('#exitedit').click(function () {
                     window.location.href = $('#exiturl').val();
                 });
+                
 
             });
 
             function NBrightMod_nbxgetCompleted(e) {
 
-                if (e.cmd == 'xxxxxxxxxx') {
-                    // do action
+                if (e.cmd == 'clonemodule') {
+                    // so something
                 }
             };
 

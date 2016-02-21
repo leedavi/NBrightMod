@@ -165,4 +165,16 @@
   <data name="imguploadfolder.Text" xml:space="preserve">
     <value>Image Upload Folder</value>
   </data>
+  <data name="clonemodule.Text" xml:space="preserve">
+    <value>Clone Module</value>
+  </data>
+  <data name="deselectall.Text" xml:space="preserve">
+    <value>Deselect All</value>
+  </data>
+  <data name="selectall.Text" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="clonesupdated.Text" xml:space="preserve">
+    <value>Clones Updated</value>
+  </data>
 </root>
