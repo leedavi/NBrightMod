@@ -49,7 +49,12 @@ namespace Nevoweb.DNN.NBrightMod
                 Utils.RemoveCache("dnnsearchindexflag" + ModuleId);
                 LocalUtils.ClearRazorCache(ModuleId.ToString(""));
                 LocalUtils.ClearRazorSateliteCache(ModuleId.ToString(""));
-                Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + "&language=" + Utils.RequestParam(Context, "language"), true);
+                var langparam = "";
+                if (DnnUtils.GetCultureCodeList().Count() > 1)
+                {
+                    langparam = "&language=" + Utils.RequestParam(Context, "language");
+                }
+                Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + langparam, true);
             }
 
 
