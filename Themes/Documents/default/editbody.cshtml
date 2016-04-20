@@ -1,3 +1,5 @@
+@using System.Linq
+@using NBrightDNN
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/Documents/resx/")
@@ -27,8 +29,14 @@
 <!-- hold url to exit edit and settings page -->
 @{
     var tabid = Model.GetUrlParam("tabid");
+    var langparam = "";
+    if (DnnUtils.GetCultureCodeList().Count() > 1)
+    {
+        langparam = "&language=" + @Model.GetUrlParam("language");
+    }
+
 }
-<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid)"></input>
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + langparam)"></input>
 
 <!-- div section to display ajax return -->
 <div id="editdata" class="NBM"></div>

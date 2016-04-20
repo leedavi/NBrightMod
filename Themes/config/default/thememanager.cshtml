@@ -12,8 +12,14 @@
 @{
     var info = (NBrightInfo)Model.List.First();
     var tabid = Model.GetUrlParam("tabid");
+    var langparam = "";
+    if (DnnUtils.GetCultureCodeList().Count() > 1)
+    {
+        langparam = "&language=" + @Model.GetUrlParam("language");
+    }
+
 }
-<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid)"></input>
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + langparam)"></input>
 
 <div id="nbrightmodtools">
 

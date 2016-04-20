@@ -1,4 +1,7 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System.Runtime.Remoting.Contexts
+@using NBrightCore.common
 @using NBrightDNN
 
 <!-- loading display to cover buttons, to stop multiple clicks -->
@@ -33,8 +36,14 @@
         <script> $('#selecteditemid').val('@(Model.GetSetting("singlepageitemid"))') </script>
     }
 
+    var langparam = "";
+    if (DnnUtils.GetCultureCodeList().Count() > 1)
+    {
+        langparam = "&language=" + @Model.GetUrlParam("language");
+    }
 }
-<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid)"></input>
+
+<input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + langparam)"></input>
 
 <!-- dummy div to indicate to JS when save has completed, so we can exit without clean on save-exit & save-return-->
 <div id="savereturn" Style="display:none;"></div>
