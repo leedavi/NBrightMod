@@ -569,15 +569,20 @@ namespace Nevoweb.DNN.NBrightMod
                     if (l.Any())
                     {
                         // check we have a base data recxord, if so create langauge record.
+                        var nolang = false;
                         foreach (var nbi in l)
                         {
                             var lnode = nbi.XMLDoc.SelectSingleNode("genxml/lang");
                             if (lnode == null)
                             {
                                 LocalUtils.CreateLangaugeDataRecord(nbi.ItemID, Convert.ToInt32(moduleid), editlang);
+                                nolang = true;
                             }
                         }
-                        l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                        if (nolang) // reload if we found invalid data list
+                        {
+                            l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                        }
 
                     }
 
