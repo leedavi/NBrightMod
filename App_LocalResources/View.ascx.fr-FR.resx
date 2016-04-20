@@ -124,10 +124,10 @@
     <value>Thèmes</value>
   </data>
   <data name="nosettings.Text" xml:space="preserve">
-    <value>AUNCUN PARAMETRE POUR LE MODULE. Veuillez enregistrer les paramètres du module.</value>
+    <value>Aucun paramètre pour le module. Veuillez enregistrer les paramètres du module.</value>
   </data>
   <data name="notheme.Text" xml:space="preserve">
-    <value>AUNCUN THEME SELECTIONNE. Veuillez sélectionner un thème dans les paramètres du module.</value>
+    <value>Aucun thème appliqué. Veuillez sélectionner un thème dans les paramètres du module.</value>
   </data>
   <data name="settings.Text" xml:space="preserve">
     <value>Paramètres</value>

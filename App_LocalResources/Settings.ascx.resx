@@ -177,4 +177,7 @@
   <data name="clonesupdated.Text" xml:space="preserve">
     <value>Clones Updated</value>
   </data>
+  <data name="openinlightbox.Text" xml:space="preserve">
+    <value>Open images inside a lightbox</value>
+  </data>
 </root>

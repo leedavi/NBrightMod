@@ -177,6 +177,14 @@
     <Content Include="Themes\Flexslider\css\bg_direction_nav.png" />
     <Content Include="Themes\Flexslider\css\flexslider.css" />
     <Content Include="Themes\Flexslider\js\flexslider.min.js" />
+    <Content Include="Themes\HtmlContent\css\jquery.fancybox.css" />
+    <Content Include="Themes\HtmlContent\img\blank.gif" />
+    <Content Include="Themes\HtmlContent\img\fancybox_loading%402x.gif" />
+    <Content Include="Themes\HtmlContent\img\fancybox_loading.gif" />
+    <Content Include="Themes\HtmlContent\img\fancybox_overlay.png" />
+    <Content Include="Themes\HtmlContent\img\fancybox_sprite%402x.png" />
+    <Content Include="Themes\HtmlContent\img\fancybox_sprite.png" />
+    <Content Include="Themes\HtmlContent\js\jquery.fancybox.pack.js" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -375,7 +383,6 @@
     <Folder Include="Themes\FlexsliderSat\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
-    <Folder Include="Themes\HtmlContent\js\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\Support\nbrightcore\NBrightCore.csproj">

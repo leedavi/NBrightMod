@@ -1,1 +1,16 @@
 <link href="/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/css/htmlcontent.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/js/jquery.fancybox.pack.js"></script>
+<link href="/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/css/jquery.fancybox.css" rel="stylesheet"/>
+
+<script type="text/javascript">
+$(document).ready(function() {
+			$('.fancybox').fancybox({
+			tpl: {
+				closeBtn : '<a class="fancybox-item fancybox-close" href="javascript:;"></a>',
+				next     : '<a class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
+				prev     : '<a class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+			}
+    });
+});
+</script>

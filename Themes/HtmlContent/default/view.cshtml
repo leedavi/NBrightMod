@@ -4,7 +4,6 @@
 @using System.Xml
 @using NBrightDNN
 
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/HtmlContent/resx/")
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 
 @{
@@ -20,55 +19,69 @@
         var imageurl = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/hidden/imageurl");
         var imgwidth = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/textbox/imgwidth");
         var imgheight = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/textbox/imgheight");
-        var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
-        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/textbox/imagedesc");
+        var openinlightbox = x.GetXmlPropertyBool("genxml/checkbox/openinlightbox");
+        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/textbox/imgcaption");
 
         if (imageurl != "")
         {
-            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)"/>
-            if (showcaptions)
+            if (openinlightbox)
             {
-                <div class="newspaper-imgcaption">@(caption)</div>
+            <a class="fancybox" rel="group@(x.ItemID)" title="@(caption)" href="@(imageurl)">
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
+            </a>
+            }
+            else
+            {
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
             }
         }
     }
 
     @helper imagedisplay(NBrightInfo x, String displaytype)
     {
-        var imgList = x.XMLDoc.SelectNodes("genxml/imgs/genxml");
-        if (imgList != null)
+    var imgList = x.XMLDoc.SelectNodes("genxml/imgs/genxml");
+    if (imgList != null)
+    {
+        var openinlightbox = x.GetXmlPropertyBool("genxml/checkbox/openinlightbox");
+        var c = 1;
+        foreach (XmlNode i in imgList)
         {
-            var showcaptions = x.GetXmlPropertyBool("genxml/checkbox/showcaptions");
-            var c = 1;
-            foreach (XmlNode i in imgList)
+            var nbi = new NBrightInfo();
+            nbi.XMLData = i.OuterXml;
+            var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+            var imgwidth = nbi.GetXmlProperty("genxml/textbox/imgwidth");
+            var imgheight = nbi.GetXmlProperty("genxml/textbox/imgheight");
+            var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/textbox/imgcaption");
+
+            if (imageurl != "")
             {
-                var nbi = new NBrightInfo();
-                nbi.XMLData = i.OuterXml;
-
-                var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
-                var imgwidth = nbi.GetXmlProperty("genxml/textbox/imgwidth");
-                var imgheight = nbi.GetXmlProperty("genxml/textbox/imgheight");
-                var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/textbox/imagedesc");
-
-                if (imageurl != "")
+                if ((displaytype == "vert") || ((c%2 != 0) && displaytype == "odd") || ((c%2 == 0) && displaytype == "even"))
                 {
-                    if ((displaytype == "vert") || ((c%2 != 0) && displaytype == "odd") || ((c%2 == 0) && displaytype == "even"))
+                    if (openinlightbox)
                     {
-                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />                                
-                    if (showcaptions)
-                    {
-                            <div class="newspaper-imgcaption">@(caption)</div>
-                        }
+                      <a class="fancybox" rel="group@(x.ItemID)" title="@(caption)" href="@(imageurl)">
+                      <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
+                      </a>
+                      }
+                      else
+                      {
+                      <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
+                      }
                     }
                     if (displaytype == "hoz")
                     {
-                        <div class="newspaper-imgdivfloatleft">
-                            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" />
-                            @if (showcaptions)
-                            {
-                                <div class="newspaper-imgcaption">@(caption)</div>
-                            }
-                        </div>
+                    <div class="newspaper-imgdivfloatleft">
+                      @if (openinlightbox)
+                      {
+                          <a class="fancybox" rel="group@(x.ItemID)" title="@(caption)" href="@(imageurl)">
+                          <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
+                          </a>
+                      }
+                      else
+                      {
+                          <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(imgwidth)&h=@(imgheight)" alt="@(caption)" />
+                      }
+                    </div>
                     }
                 }
                 c += 1;
@@ -99,7 +112,7 @@ if (docList != null)
             displayname = nbi.GetXmlProperty("genxml/hidden/filename");
         }
         <div class='documents'>
-        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=NBrightUpload\documents\@(nbi.GetXmlProperty("genxml/hidden/filename"))'>@(displayname)</a>            
+        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=NBrightUpload\documents\@(nbi.GetXmlProperty("genxml/hidden/filename"))'>@(displayname)</a>
         </div>
 
         c += 1;
@@ -261,5 +274,3 @@ if (docList != null)
         }
 
     </div>
-
-
