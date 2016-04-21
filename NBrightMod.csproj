@@ -39,6 +39,14 @@
     <Reference Include="DotNetNuke.WebControls">
       <HintPath>..\..\..\..\..\..\Support\DNN6x\bin\DotNetNuke.WebControls.dll</HintPath>
     </Reference>
+    <Reference Include="NBrightCore, Version=3.4.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\NBrightCore.dll</HintPath>
+    </Reference>
+    <Reference Include="NBrightDNN, Version=8.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\bin\NBrightDNN.dll</HintPath>
+    </Reference>
     <Reference Include="RazorEngine, Version=3.7.7.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>packages\RazorEngine.3.7.7\lib\net45\RazorEngine.dll</HintPath>
       <Private>True</Private>
@@ -383,16 +391,6 @@
     <Folder Include="Themes\FlexsliderSat\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Support\nbrightcore\NBrightCore.csproj">
-      <Project>{7b338113-6a9a-484d-a6c6-4d63fd5e58c6}</Project>
-      <Name>NBrightCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\Support\nbrightdnn\NBrightDNN.csproj">
-      <Project>{ec815d38-62cf-4b46-8177-cf40ce1aab62}</Project>
-      <Name>NBrightDNN</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

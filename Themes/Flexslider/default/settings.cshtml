@@ -64,28 +64,7 @@
     <hr />
     <div>
         @DnnLabel("lblstyletext", "Settings.styletext")
-        @{
-            var styletext = info.GetXmlProperty("genxml/textbox/styletext");
-            if (styletext == "")
-            {
-                styletext = "<style>" + Environment.NewLine;
-                styletext += "/* FLEXSLIDER */" + Environment.NewLine;
-                styletext += ".flexslider {width:1154px;height:575px;overflow:hidden;}" + Environment.NewLine;
-                styletext += ".flexslider ul, .flexslider li {margin:0;padding:0;}" + Environment.NewLine;
-                styletext += ".flexslider ul li {list-style-type:none;margin:0;padding:0;}" + Environment.NewLine;
-                styletext += "/* Direction Nav */" + Environment.NewLine;
-                styletext += ".flex-direction-nav a {width:35px;height:70px;margin:-35px 0 0 0;background:url(/DesktopModules/NBright/NBrightMod/Themes/Flexslider/css/bg_direction_nav.png) no-repeat 0 0;}" + Environment.NewLine;
-                styletext += ".flex-direction-nav.flex-next {right:-35px;}" + Environment.NewLine;
-                styletext += ".flex-direction-nav.flex-prev {left:-35px;}" + Environment.NewLine;
-                styletext += ".flexslider:hover.flex-next {right:0;}" + Environment.NewLine;
-                styletext += ".flexslider:hover.flex-prev {left:0;}" + Environment.NewLine;
-                styletext += "@media screen and (max-width:1180px) {" + Environment.NewLine;
-                styletext += ".flexslider {width:auto;height:auto;}" + Environment.NewLine;
-                styletext += "}" + Environment.NewLine;
-                styletext += "</style>" + Environment.NewLine;
-            }
-        }
-        <textarea rows="50" id="styletext" class="" update="save" type="text" style="height: 250px; width: 100%">@(styletext)</textarea>
+        <textarea rows="50" id="styletext" class="" update="save" type="text" style="height: 250px; width: 100%"></textarea>
     </div>
 
     <div style="display:none">
