@@ -529,12 +529,19 @@ namespace NBrightMod.common
 
         public static String RazorRender(Object info, String razorTempl, String templateKey, Boolean debugMode = false)
         {
-            // do razor test
-            var config = new TemplateServiceConfiguration();
-            config.Debug = debugMode;
-            config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
-            var service = RazorEngineService.Create(config);
-            Engine.Razor = service;
+
+            var service = (IRazorEngineService)HttpContext.Current.Application.Get("NBrightModIRazorEngineService");
+            if (service == null || debugMode)
+            {
+                // do razor test
+                var config = new TemplateServiceConfiguration();
+                config.Debug = debugMode;
+                config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
+                service = RazorEngineService.Create(config);
+                Engine.Razor = service;
+                HttpContext.Current.Application.Set("NBrightModIRazorEngineService", service);
+            }
+
             var result = "";
             try
             {
@@ -542,7 +549,7 @@ namespace NBrightMod.common
             }
             catch (Exception e)
             {
-                result = "<div>" + e.Message + "</div>";
+                result = "<div>" + e.Message + " templateKey='" + templateKey + "'</div>";
             }
 
             return result;

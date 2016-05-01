@@ -91,7 +91,7 @@ namespace NBrightMod.render
                     var razorTempl = LocalUtils.RazorRender(model, TemplateData, "preprocessmetadata" + Path.GetFileName(templatePath), false);
                 }
 
-                strOut = LocalUtils.RazorRender(model, TemplateData, "", false);
+                strOut = LocalUtils.RazorRender(model, TemplateData, model.GetSetting("themefolder") + "." + Path.GetFileName(templatePath), false);
 
             }
 
