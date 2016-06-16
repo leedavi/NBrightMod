@@ -4,7 +4,7 @@
 @using NBrightCore.common
 @using NBrightDNN
 
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "FlexsiderSat.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", Model.GetSetting("themefolder") + ".view.cshtml", Model.ModuleId.ToString(""))
 
 <div class="topimageheader">
 
@@ -15,7 +15,7 @@
         {
             if (Model.List.Count >= Convert.ToInt32(imgindex))
             {
-                info = (NBrightInfo)Model.List[Convert.ToInt32(imgindex) - 1];
+                info = (NBrightInfo)Model.List[Convert.ToInt32(imgindex) -1];
             }
         }
 

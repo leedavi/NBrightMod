@@ -1330,8 +1330,29 @@ namespace Nevoweb.DNN.NBrightMod
                     var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
                     var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
 
+                    // export from portal level, so save export.config
+                    var exportconfig = new NBrightInfo(true);
+
                     var themeFolderName = systhemeFolderName;
-                    if (Directory.Exists(portalthemeFolderName)) themeFolderName = portalthemeFolderName;
+                    if (Directory.Exists(portalthemeFolderName))
+                    {
+                        themeFolderName = portalthemeFolderName;
+                        exportconfig.SetXmlProperty("genxml/portallevel", "true");
+                    }
+                    else
+                    {
+                        exportconfig.SetXmlProperty("genxml/portallevel", "false");
+                    }
+
+                    exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
+                    exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
+                    exportconfig.SetXmlProperty("genxml/systhemefoldername", systhemeFolderName);
+                    exportconfig.SetXmlProperty("genxml/portalthemefoldername", portalthemeFolderName);
+                    exportconfig.SetXmlProperty("genxml/portalrelfolder", PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" +  theme);
+                    exportconfig.SetXmlProperty("genxml/systemrelfolder", "/DesktopModules/NBright/NBrightMod/Themes/" + theme);
+                    exportconfig.SetXmlProperty("genxml/themename", theme);
+
+                    Utils.SaveFile(themeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
 
                     Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
                     var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";

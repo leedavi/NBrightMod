@@ -173,14 +173,18 @@ function savedata() {
 
 function moveUp(item) {
     var prev = item.prev();
+    var prev2 = item.prev().prev();
     if (typeof $(item).attr("fixedsort") !== typeof undefined && $(item).attr("fixedsort") !== false) return;
     if (typeof $(prev).attr("fixedsort") !== typeof undefined && $(prev).attr("fixedsort") !== false) return;
     if (prev.length == 0) return;
+    if (prev2.length == 0) return;
     prev.css('z-index', 999).css('position', 'relative').animate({ top: item.height() }, 1);
     item.css('z-index', 1000).css('position', 'relative').animate({ top: '-' + prev.height() }, 1, function () {
         prev.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertBefore(prev);
+        $('.tooltip-inner').hide();
+        $('.tooltip-arrow').hide();
     });
 }
 function moveDown(item) {
@@ -193,6 +197,8 @@ function moveDown(item) {
         next.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertAfter(next);
+        $('.tooltip-inner').hide();
+        $('.tooltip-arrow').hide();
     });
 }
 function removeelement(elementtoberemoved) {

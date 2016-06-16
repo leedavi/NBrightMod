@@ -2,7 +2,7 @@
 @using System.Linq
 @using NBrightDNN
 
-@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Flexslider.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", Model.GetSetting("themefolder") + ".view.cshtml", Model.ModuleId.ToString(""))
 
 @{
     var msg = "";
