@@ -95,7 +95,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                     var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
 
-                    if (newsinglepageflag != oldsinglepageflag)
+                    if (newsinglepageflag != oldsinglepageflag || !Utils.IsNumeric(settings.GetXmlProperty("genxml/hidden/singlepageitemid")))
                     {
                         settings.SetXmlProperty("genxml/hidden/singlepageitemid", "");
                         if (newsinglepageflag)
