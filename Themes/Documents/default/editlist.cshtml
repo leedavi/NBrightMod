@@ -1,65 +1,18 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
+@{
+    var info = (NBrightInfo)Model.List[0];
+    Model.Settings.Add("actionbuttons", "e,su,sd,di");
+}
+
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Documents.editlist.cshtml", Model.ModuleId.ToString(""))
 
 @EditCultureSelect("flag-list", "selecteditlistlanguage")
 
-<div class="buttons">
-    <button id="exitedit" type="button" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span>@ResourceKey("Edit.exit")</button>
-    <button id="savelistdata" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-floppy-save"></span>@ResourceKey("Edit.save")</button>
-    <button id="addnew" type="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span>@ResourceKey("Edit.addnew")</button>
-</div>
+@EditButtons("sl,a,ex")
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12">
-        <div class="box">
-            <div class="box-content">
-                <ul id="editdatalist">
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlist-shared.cshtml", Model)
 
-                    @foreach (NBrightInfo info in Model.List)
-                    {
-                        // dummy record inject for empty list
-                        if (@info.ItemID > 0)
-                        {
-                            var folderfilename = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
-                            var docurl = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/docurl");
-                            <li class="datalistitem form-group">
-                                <div class="col-xs-12 form-horizontal">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            @if (docurl != "")
-                                            {
-                                                @info.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename")
-                                            }
-                                        </div>
-                                        <div class="col-xs-3">
-                                            @TextBox(info, "genxml/lang/genxml/textbox/title")<img src='/Images/Flags/@(info.Lang).gif' width='16px' />
-                                                <span>(@info.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <button type="button" class="btn btn-sm itemup" itemid="@info.ItemID"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <button type="button" class="btn btn-sm itemdown" itemid="@info.ItemID"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
-                                        </div>
-                                        <div class="col-xs-3">
-                                                <button type="button" class="btn btn-sm btn-success filelistclick" itemid="@info.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.upload")"><span class="glyphicon glyphicon-arrow-up"></span></button>
-                                                <button type="button" class="btn btn-sm btn-danger deleteitemclick" itemid="@info.ItemID" data-toggle="tooltip" data-placement="top" data-original-title="@ResourceKey("Edit.delete")"><span class="glyphicon glyphicon-remove"></span></button>
-                                        </div>
-                                        <input id="itemid" type="hidden" value="@info.ItemID" />
-                                        <input id="moduleid" type="hidden" value="@info.ModuleId" />
-                                        <input id="lang" type="hidden" value="@info.Lang" />
-                                    </div>
-                                </div>
-                            </li>
-                        }
-                    }
-                </ul>
-            </div>
-        </div>
-
-    </div>
-</div>

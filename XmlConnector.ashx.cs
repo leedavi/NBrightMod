@@ -169,7 +169,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                         if (downloadname == "") downloadname = Path.GetFileName(fpath);
                         UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
-                        Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                        Utils.ForceDocDownload(fpath, downloadname, context.Response); 
                     }
                     else
                     {
@@ -178,7 +178,7 @@ namespace Nevoweb.DNN.NBrightMod
                             var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + filename;
                             var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                             if (downloadname == "") downloadname = Path.GetFileName(fpath);
-                            Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                            Utils.ForceDocDownload(fpath, downloadname, context.Response); 
                         }
                     }
                     strOut = "File Download Error, filename: " + filename + ", itemid: " + itemid + ", fileindex: " + fileindex + " ";
@@ -2457,7 +2457,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
                 if (uploadfolder == "") uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
                 Utils.CreateFolder(uploadfolder);
-                var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
+                var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName.Replace(" ", "_"); // replace for browser detection on download.
                 if (File.Exists(fullfilename)) File.Delete(fullfilename);
                 file.SaveAs(fullfilename);
 
