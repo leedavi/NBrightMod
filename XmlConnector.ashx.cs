@@ -758,6 +758,25 @@ namespace Nevoweb.DNN.NBrightMod
                         templData.AddSingleNode("file", modref + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // real file name
                         templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/modulefiles"); // standard file name, to use for testing if file is module level.
                     }
+
+                    // we need to check each language folder
+                    var langs = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                    foreach (var l in langs)
+                    {
+                        modulepath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + l + "\\" + modref + Path.GetFileName(s);
+                        if (File.Exists(modulepath))
+                        {
+                            templData.AddSingleNode("file", l + modref + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // real file name
+                            templData.AddSingleNode("file", l + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // standard file name, to use for testing if file is module level.
+                        }
+                        portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + l + "\\" + Path.GetFileName(s);
+                        if (File.Exists(portalpath))
+                        {
+                            templData.AddSingleNode("file", l + System.IO.Path.GetFileName(s), "genxml/portalfiles");
+                        }
+                    }
+
+
                 }
             }
             return templData;
@@ -885,6 +904,12 @@ namespace Nevoweb.DNN.NBrightMod
                         Utils.CreateFolder(fldrDefault);
                         File.WriteAllText(fldrDefault + "\\" + templfilename, simpletext);
                     }
+
+                    LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    // reset razor service, this causes a memory leak, but it's the only way for now to clear the razor cache.
+                    // on live system we shouldn't be changing templates to much, so it should be OK.
+                    HttpContext.Current.Application.Remove("NBrightModIRazorEngineService");
+
                 }
 
                 var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
@@ -904,8 +929,6 @@ namespace Nevoweb.DNN.NBrightMod
                         File.WriteAllText(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx", resxdata);
                     }
                 }
-
-                LocalUtils.ClearModuleCacheByTheme(themefolder);
 
             }
             return "OK";

@@ -388,7 +388,7 @@ namespace NBrightMod.common
                         obj.Lang = Utils.GetCurrentCulture();
                         objList.Add(obj);
                     }
-                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
+                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString() + lang;
 
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
                     var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));

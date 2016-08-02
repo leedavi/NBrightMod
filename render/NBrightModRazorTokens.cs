@@ -373,7 +373,7 @@ namespace NBrightMod.render
 
         private Boolean isPortalTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + filename + "']");
+            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + info.Lang + filename + "']");
             if (nod != null) return true;
             return false;
         }
@@ -386,8 +386,11 @@ namespace NBrightMod.render
 
         private Boolean isModuleTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + filename + "']");
-            if (nod != null) return true;
+            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + info.Lang + filename + "']");
+            if (nod != null)
+            {
+                return true;
+            }
             return false;
         }
 
