@@ -121,7 +121,7 @@
     <value>Edit</value>
   </data>
   <data name="ModuleTheme.Text" xml:space="preserve">
-    <value>Themes</value>
+    <value>AppThemes</value>
   </data>
   <data name="nosettings.Text" xml:space="preserve">
     <value>NO SETTINGS FOR THIS MODULE.  Enter the module settings and save.</value>
@@ -139,6 +139,6 @@
     <value>Tools</value>
   </data>
   <data name="ThemeManager.Text" xml:space="preserve">
-    <value>Theme Manager</value>
+    <value>AppTheme Manager</value>
   </data>
 </root>
