@@ -1,4 +1,5 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Xml
 @using NBrightDNN
 
 
@@ -13,29 +14,69 @@
     }
         var divid = "NBrightMod" + @Model.GetSetting("modref");
 }
-@(msg) 
+@(msg)
 
 <div id="@(divid)">
 
-    
+
     @foreach (NBrightInfo info in Model.List)
     {
-    var folderfilename = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/folderfilename");
-    <div class="item">
-        @if (folderfilename != "")
-        {
-            var displayname = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
-            if (displayname == "")
-            {
-                displayname = info.GetXmlProperty("genxml/docs/genxml[1]/hidden/filename");
+        <h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+        <div class="rTable">
+            @{
+
+                var doclist = info.XMLDoc.SelectNodes("genxml/docs/genxml");
+
+                var lp = 1;
+
+                foreach (XmlNode xmlNod in doclist)
+                {
+                    <div class="rTableRow">
+                        @{
+                            var selectSingleNode = xmlNod.SelectSingleNode("hidden/ref");
+                            if (selectSingleNode != null)
+                            {
+                                var filename = "";
+                                var displayname = selectSingleNode.InnerText;
+                                var filenamenod = xmlNod.SelectSingleNode("hidden/filename");
+                                if (filenamenod != null)
+                                {
+                                    filename = filenamenod.InnerText;
+                                }
+                                if (displayname == "" && filename != "")
+                                {
+                                    displayname = filename;
+                                }
+                                if (displayname != "" && filename != "")
+                                {
+                                    <div class='rTableCell'>
+                                        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(lp)&itemid=@info.ItemID&filename=NBrightUpload\documents\@(filename)'>@(displayname)</a>
+                                    </div>
+                                    var docdescnod2 = info.XMLDoc.SelectSingleNode("genxml/docs/genxml[" + lp + "]/textbox/downloadcount");
+                                    if (docdescnod2 != null)
+                                    {
+                                        <div class='rTableCell' style="width: 60px;text-align:right">@(docdescnod2.InnerText)</div>
+                                    }
+
+                                    <div class='rTableCell'>
+                                        @{
+                                            var docdescnod = info.XMLDoc.SelectSingleNode("genxml/lang/genxml/docs/genxml[" + lp + "]/textbox/docdesc");
+                                            if (docdescnod != null)
+                                            {
+                                                <div>@(docdescnod.InnerText)</div>
+                                            }
+                                        }
+                                    </div>
+
+
+                                    lp += 1;
+                                }
+                            }
+                        }
+                    </div>
+                }
             }
-            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(info.ItemID)&filename=@(folderfilename)'>@(displayname)</a>
-            if (Model.GetSetting("displaydownloadcount") == "True")
-            {
-                <span>(@info.GetXmlProperty("genxml/data/file[./folderfilename='" + folderfilename + "']/downloadcount"))</span>                
-            }
-        }
-    </div>
+        </div>
     }
 </div>
 

@@ -99,15 +99,15 @@ namespace NBrightMod.common
             return templ;
         }
 
-        public static NBrightInfo GetAjaxFields(HttpContext context)
+        public static NBrightInfo GetAjaxFields(HttpContext context, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-            return GetAjaxFields(strIn);
+            return GetAjaxFields(strIn, "", ignoresecurityfilter, filterlinks);
         }
 
-        public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "")
+        public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "",bool ignoresecurityfilter = false, bool filterlinks = false)
         {
-            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml);
+            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml,"genxml", ignoresecurityfilter, filterlinks);
             var objInfo = new NBrightInfo();
 
             objInfo.ItemID = -1;
@@ -149,13 +149,13 @@ namespace NBrightMod.common
             return HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
         }
 
-        public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context)
+        public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var xmlAjaxData = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-            return GetGenXmlListByAjax(xmlAjaxData);
+            return GetGenXmlListByAjax(xmlAjaxData, ignoresecurityfilter ,  filterlinks );
         }
 
-        public static List<NBrightInfo> GetGenXmlListByAjax(String xmlAjaxData)
+        public static List<NBrightInfo> GetGenXmlListByAjax(String xmlAjaxData, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var rtnList = new List<NBrightInfo>();
             if (!String.IsNullOrEmpty(xmlAjaxData))
@@ -166,7 +166,7 @@ namespace NBrightMod.common
                 if (nodList != null)
                     foreach (XmlNode nod in nodList)
                     {
-                        var xmlData = GenXmlFunctions.GetGenXmlByAjax(nod.OuterXml, "");
+                        var xmlData = GenXmlFunctions.GetGenXmlByAjax(nod.OuterXml, "","genxml", ignoresecurityfilter, filterlinks);
                         var objInfo = new NBrightInfo();
                         objInfo.ItemID = -1;
                         objInfo.TypeCode = "AJAXDATA";
@@ -430,7 +430,7 @@ namespace NBrightMod.common
                     var l = new List<object>();
                     l.Add(obj);
                     var modRazor = new NBrightRazor(l, settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, debug);
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
@@ -525,6 +525,11 @@ namespace NBrightMod.common
                     page.Items["nbrightinject"] = page.Items["nbrightinject"] + fullTemplName + "." + moduleName + ",";
                 }
             }
+        }
+
+        public static void RemoveCachedRazorEngineService()
+        {
+            HttpContext.Current.Application.Set("NBrightModIRazorEngineService", null);
         }
 
         public static String RazorRender(Object info, String razorTempl, String templateKey, Boolean debugMode = false)

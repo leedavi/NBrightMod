@@ -453,7 +453,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid))
@@ -467,7 +467,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.ModuleId > 0)
                     {
-                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context));
+                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context),"",true,false);
                         objCtrl.Update(nbi);
                         LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                     }
@@ -607,7 +607,7 @@ namespace Nevoweb.DNN.NBrightMod
             #region "init params from ajax"
             var strOut = "";
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -645,12 +645,12 @@ namespace Nevoweb.DNN.NBrightMod
             if (modulelevel)
             {
                 templfilename = moduleref + templfilename; // module level templates prefixed with moduleref
-                templData.SetXmlProperty("genxml/modulelevel","True");
+                templData.SetXmlProperty("genxml/modulelevel","True",TypeCode.String,true,true,false);
             }
             else
             {
                 modInfo = new NBrightInfo(); // we're editing portal level, clear module info so we pickup only portal level templates.
-                templData.SetXmlProperty("genxml/modulelevel", "False");
+                templData.SetXmlProperty("genxml/modulelevel", "False", TypeCode.String, true, true, false);
             }
 
             var fulltemplfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
@@ -786,7 +786,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             #region "init params from ajax"
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -991,6 +991,7 @@ namespace Nevoweb.DNN.NBrightMod
                         File.Delete(fldrDefault + "\\" + templfilename);
                         LocalUtils.ClearRazorCache(moduleid.ToString(""));
                         LocalUtils.ClearRazorSateliteCache(moduleid.ToString(""));
+                        LocalUtils.RemoveCachedRazorEngineService();
                     }
                 }
 
@@ -1036,7 +1037,8 @@ namespace Nevoweb.DNN.NBrightMod
                 if (File.Exists(fldrDefault + "\\" + templfilename))
                 {
                     File.Delete(fldrDefault + "\\" + templfilename);
-                    LocalUtils.ClearModuleCacheByTheme(themefolder); 
+                    LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1085,6 +1087,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     File.Delete(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx");
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1201,7 +1204,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
@@ -1276,7 +1279,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var strOut = "Error unable to Move Theme";
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
@@ -1341,7 +1344,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
                 var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
                 var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -1651,7 +1654,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,true);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -1769,7 +1772,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateimages");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml);
+                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml,true,false);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
@@ -2081,7 +2084,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdatedocs");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var docList = LocalUtils.GetGenXmlListByAjax(strAjaxXml);
+                var docList = LocalUtils.GetGenXmlListByAjax(strAjaxXml, true, false);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
@@ -2368,9 +2371,9 @@ namespace Nevoweb.DNN.NBrightMod
             var dataRecord = objCtrl.Get(itemid);
             if (dataRecord != null)
             {
-                var amt = dataRecord.GetXmlPropertyDouble("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount");
+                var amt = dataRecord.GetXmlPropertyDouble("genxml/docs/genxml[" + fileindex + "]/textbox/downloadcount");
                 amt = amt + amount;
-                dataRecord.SetXmlProperty("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount", amt.ToString("######"));
+                dataRecord.SetXmlProperty("genxml/docs/genxml[" + fileindex + "]/textbox/downloadcount", amt.ToString("######"));
                 objCtrl.Update(dataRecord);
             }
         }

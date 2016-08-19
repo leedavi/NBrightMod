@@ -351,4 +351,7 @@
   <data name="systemtemplateloaded.Text" xml:space="preserve">
     <value>System template loaded</value>
   </data>
+  <data name="count.Text" xml:space="preserve">
+    <value>Count</value>
+  </data>
 </root>
