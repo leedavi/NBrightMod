@@ -50,7 +50,7 @@
                                 if (displayname != "" && filename != "")
                                 {
                                     <div class='rTableCell'>
-                                        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(lp)&itemid=@info.ItemID&filename=NBrightUpload\documents\@(filename)'>@(displayname)</a>
+                                        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(lp)&itemid=@info.ItemID&documentname=@(filename)' rel='nofollow' >@(displayname)</a>
                                     </div>
                                     var docdescnod2 = info.XMLDoc.SelectSingleNode("genxml/docs/genxml[" + lp + "]/textbox/downloadcount");
                                     if (docdescnod2 != null)

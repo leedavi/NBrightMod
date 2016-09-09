@@ -124,6 +124,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "fileupload":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
+                case "fileuploadsecure":
+                    if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
+                    break;
                 case "addselectedfiles":
                     if (LocalUtils.CheckRights()) AddSelectedFiles(context);
                     break;
@@ -2431,7 +2434,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region "fileupload"
 
-        private string FileUpload(HttpContext context, String moduleid, Boolean passbackfilename = false)
+        private string FileUpload(HttpContext context, String moduleid, Boolean passbackfilename = false, Boolean encrptfilename = false)
         {
             try
             {
@@ -2444,7 +2447,7 @@ namespace Nevoweb.DNN.NBrightMod
                         break;
                     case "POST":
                     case "PUT":
-                        strOut = UploadFile(context, moduleid, passbackfilename);
+                        strOut = UploadFile(context, moduleid, passbackfilename, encrptfilename);
                         break;
                     case "DELETE":
                         break;
@@ -2472,8 +2475,13 @@ namespace Nevoweb.DNN.NBrightMod
             return UploadWholeFile(context, moduleid, passbackfilename);
         }
 
+        private String UploadFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename)
+        {
+            return UploadWholeFile(context, moduleid, passbackfilename, encrptfilename);
+        }
+
         // Upload entire file
-        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename = false)
+        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename = false, Boolean encrptfilename = false)
         {
             var modSettings = LocalUtils.GetSettings(moduleid);
             for (int i = 0; i < context.Request.Files.Count; i++)
@@ -2483,8 +2491,17 @@ namespace Nevoweb.DNN.NBrightMod
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
                 if (uploadfolder == "") uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
                 Utils.CreateFolder(uploadfolder);
-                var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName.Replace(" ", "_"); // replace for browser detection on download.
-                if (File.Exists(fullfilename)) File.Delete(fullfilename);
+                var fullfilename = "";
+                if (encrptfilename)
+                {
+                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + Guid.NewGuid(); 
+                    File.WriteAllText(fullfilename + "txt", file.FileName);
+                }
+                else
+                {
+                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName.Replace(" ", "_"); // replace for browser detection on download.
+                    if (File.Exists(fullfilename)) File.Delete(fullfilename);
+                }
                 file.SaveAs(fullfilename);
 
                 if (ImgUtils.IsImageFile(Path.GetExtension(fullfilename)))
