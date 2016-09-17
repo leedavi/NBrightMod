@@ -40,15 +40,17 @@
                         var docurl = info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/docurl");
 
                         <tr class="docitem">
-                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/ref", " update='docsave' ")
-                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/filename", " update='docsave' ")
-                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docurl", " update='docsave' ")
-                            @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docpath", " update='docsave' ")
-                                    <td><a href="@(docurl)" target="_blank">@info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/filename")</a></td>
-                                    <td>@NBrightTextBox(info, "genxml/lang/genxml/docs/genxml[" + doclp + "]/textbox/docdesc", " update='doclang' ")</td>
-                                    <td>
-									@IconButtons(info, "su,sd")
-                                    </td>
+                            <td>
+                                @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/ref", " update='docsave' ")
+                                @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/filename", " update='docsave' ")
+                                @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docurl", " update='docsave' ")
+                                @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docpath", " update='docsave' ")
+                                @info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/filename")
+                            </td>
+                            <td>@NBrightTextBox(info, "genxml/lang/genxml/docs/genxml[" + doclp + "]/textbox/docdesc", " update='doclang' ")</td>
+                            <td>
+                                @IconButtons(info, "su,sd")
+                            </td>
                         </tr>
 
                         doclp += 1;

@@ -583,12 +583,18 @@ namespace NBrightMod.common
             var uploadDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
+            var uploadSecureDocFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/securedocs";
+            var uploadSecureDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\securedocs";
+            Utils.CreateFolder(uploadSecureDocFolderMapPath);
+
             settings.SetXmlProperty("genxml/tempfolder", "/" + tempFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
             settings.SetXmlProperty("genxml/uploadfolder", "/" + uploadFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
             settings.SetXmlProperty("genxml/uploaddocfolder", "/" + uploadDocFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
+            settings.SetXmlProperty("genxml/uploadsecuredocfolder", "/" + uploadSecureDocFolder.TrimStart('/'));
+            settings.SetXmlProperty("genxml/uploadsecuredocfoldermappath", uploadSecureDocFolderMapPath);
 
             return settings;
         }

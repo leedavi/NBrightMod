@@ -37,7 +37,12 @@
                             if (selectSingleNode != null)
                             {
                                 var filename = "";
-                                var displayname = selectSingleNode.InnerText;
+                                var displayname = "";
+                                var displaynod = xmlNod.SelectSingleNode("hidden/displayname");
+                                if (displaynod != null)
+                                {
+                                    displayname = displaynod.InnerText;
+                                }
                                 var filenamenod = xmlNod.SelectSingleNode("hidden/filename");
                                 if (filenamenod != null)
                                 {
@@ -50,7 +55,7 @@
                                 if (displayname != "" && filename != "")
                                 {
                                     <div class='rTableCell'>
-                                        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(lp)&itemid=@info.ItemID&documentname=@(filename)' rel='nofollow' >@(displayname)</a>
+                                        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(lp)&itemid=@(info.ItemID)&downloadname=@(filename.Replace(" ","_"))' rel='nofollow' >@(displayname)</a>
                                     </div>
                                     var docdescnod2 = info.XMLDoc.SelectSingleNode("genxml/docs/genxml[" + lp + "]/textbox/downloadcount");
                                     if (docdescnod2 != null)

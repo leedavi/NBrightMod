@@ -180,4 +180,7 @@
   <data name="openinlightbox.Text" xml:space="preserve">
     <value>Open images inside a lightbox</value>
   </data>
+  <data name="encryptfilename.Text" xml:space="preserve">
+    <value>Encrypt Filename</value>
+  </data>
 </root>

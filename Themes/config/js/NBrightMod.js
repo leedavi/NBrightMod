@@ -360,7 +360,7 @@ function ActivateFileUploadButtons() {
         // Set up the request.
         var xhr = new XMLHttpRequest();
         // Open the connection.
-        xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=fileupload&itemid=' + $('#selecteditemid').val(), true);
+        xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=' + $('#fileuploadcmd').val() + '&itemid=' + $('#selecteditemid').val(), true);
 
         // Set up a handler for when the request finishes.
         xhr.onload = function () {

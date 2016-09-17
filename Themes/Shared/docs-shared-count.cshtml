@@ -47,7 +47,7 @@
                             @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/filename", " update='docsave' ")
                             @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docurl", " update='docsave' ")
                             @HiddenField(info, "genxml/docs/genxml[" + doclp + "]/hidden/docpath", " update='docsave' ")
-									<a href="@(docurl)" target="_blank">@info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/filename")</a>
+									@info.GetXmlProperty("genxml/docs/genxml[" + doclp + "]/hidden/filename")
 									</td>
                                     <td>@NBrightTextBox(info, "genxml/lang/genxml/docs/genxml[" + doclp + "]/textbox/docdesc", " update='doclang' ")</td>
                                     <td>@NBrightTextBox(info, "genxml/docs/genxml[" + doclp + "]/textbox/downloadcount", " update='docsave' style='width: 80px' ","0")</td>

@@ -23,6 +23,16 @@
     <input id="displayreturn" type="hidden" value=""/> <!-- LIST or DETAIL, so return display from file upload is correct -->
     <input id="uploadtype" type="hidden" value=""/> <!-- DOC or IMAGE, so file upload operation is correct -->
     <input id="currentlang" type="hidden" value="@Model.GetUrlParam("language")"></input> <!-- get the current culture and pass to the ajax server side, so it knows what language is -->
+
+        @if (Model.GetSettingBool("encryptfilename"))
+        {
+            <input id="fileuploadcmd" type="hidden" value="fileuploadsecure"/>
+        }
+        else
+        {
+            <input id="fileuploadcmd" type="hidden" value="fileupload"/>
+        }    
+
 </div>
 
 <!-- hold url to exit edit and settings page -->

@@ -20,6 +20,7 @@ using NBrightDNN;
 using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
@@ -48,11 +49,13 @@ namespace Nevoweb.DNN.NBrightMod
             var lang = Utils.RequestQueryStringParam(context, "lang");
             var language = Utils.RequestQueryStringParam(context, "language");
             _itemid = Utils.RequestQueryStringParam(context, "itemid");
+            var secure = Utils.RequestQueryStringParam(context, "secure");
+            bool encryptfilename = secure == "1";
 
             #region "setup language"
 
-            // Ajax can break context with DNN, so reset the context language to match the client.
-            // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
+                // Ajax can break context with DNN, so reset the context language to match the client.
+                // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
             SetContextLangauge(context);
 
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(_lang);
@@ -124,6 +127,7 @@ namespace Nevoweb.DNN.NBrightMod
                 case "fileupload":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
+
                 case "fileuploadsecure":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
                     break;
@@ -172,6 +176,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                         if (downloadname == "") downloadname = Path.GetFileName(fpath);
                         UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
+                        LocalUtils.ClearRazorCache(nbi.ModuleId.ToString());
                         Utils.ForceDocDownload(fpath, downloadname, context.Response); 
                     }
                     else
@@ -2179,7 +2184,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String GetFolderDocs(NBrightInfo ajaxInfo, bool clearCache = false)
+        private String GetFolderDocs(NBrightInfo ajaxInfo, bool clearCache = false, Boolean encrptfilename = false)
         {
             try
             {
@@ -2194,10 +2199,12 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var modSettings = LocalUtils.GetSettings(moduleid);
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
+                var uploadsecurefolder = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath");
                 var allowedfiletypes = modSettings.GetXmlProperty("genxml/textbox/allowedfiletypes");
                 if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
 
+ 
                 FileInfo[] files;
                 DirectoryInfo dirInfo = new DirectoryInfo(uploadfolder);
                 if (allowedfiletypes == "*")
@@ -2229,7 +2236,37 @@ namespace Nevoweb.DNN.NBrightMod
                     var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
                     var docref = Path.GetFileNameWithoutExtension(name).Replace(" ", "-");
                     var nbi = new NBrightInfo(true);
+                    nbi.SetXmlProperty("genxml/hidden/filename", Path.GetFileName(fullname));
+                    nbi.SetXmlProperty("genxml/hidden/name", Path.GetFileName(fullname));
+                    nbi.SetXmlProperty("genxml/hidden/docurl", docurl);
+                    nbi.SetXmlProperty("genxml/hidden/ref", docref);
+                    imgl.Add(nbi);
+                }
+
+                // get secured files and add to the list
+                DirectoryInfo dirsecureInfo = new DirectoryInfo(uploadsecurefolder);
+                var extensionArray2 = new HashSet<string>();
+                extensionArray2.Add(".txt");
+                HashSet<string> allowedExtensions2 = new HashSet<string>(extensionArray2, StringComparer.OrdinalIgnoreCase);
+                files = Array.FindAll(dirsecureInfo.GetFiles(), f => allowedExtensions2.Contains(f.Extension));
+
+                foreach (var f in files)
+                {
+                    var fullname = f.FullName; // don't use file object directly, it locks the file on servr, but not on dev machine.???? I presume it's something the Path.GetFileName does?? 
+                    var name = f.Name;
+                    var docurl = modSettings.GetXmlProperty("genxml/uploadsecuredocfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
+                    var docmappath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('/') + "/" + Path.GetFileName(fullname);
+                    var docref = Path.GetFileNameWithoutExtension(name).Replace(" ", "-");
+                    var nbi = new NBrightInfo(true);
                     nbi.SetXmlProperty("genxml/hidden/filename", name);
+                    if (File.Exists(docmappath))
+                    {
+                        var fname = File.ReadAllLines(docmappath);
+                        if (fname.Length > 0)
+                        {
+                            nbi.SetXmlProperty("genxml/hidden/filename", fname[0]);
+                        }
+                    }
                     nbi.SetXmlProperty("genxml/hidden/name", name.Replace(f.Extension, ""));
                     nbi.SetXmlProperty("genxml/hidden/docurl", docurl);
                     nbi.SetXmlProperty("genxml/hidden/ref", docref);
@@ -2283,13 +2320,32 @@ namespace Nevoweb.DNN.NBrightMod
                 var alreadyaddedlist = new List<String>();
                 foreach (var f in flist)
                 {
+                    var filedisplayname = f;
+
                     if ((allowedfiletypes == "*" || allowedfiletypeslist.Contains(Path.GetExtension(f).Replace(".", "").ToLower())) && f.Trim() != "")
                     {
                         var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
                         var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
+
+                        if (!File.Exists(docpath))
+                        {
+                            docpath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('\\') + "\\" + f;
+                            docurl = modSettings.GetXmlProperty("genxml/uploadsecuredocfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
+
+                            if (File.Exists(docpath + ".txt"))
+                            {
+                                var fname = File.ReadAllLines(docpath + ".txt");
+                                if (fname.Length > 0)
+                                {
+                                    filedisplayname =  fname[0];
+                                }
+                            }
+
+                        }
+
                         if (!alreadyaddedlist.Contains(docpath))
                         {
-                            AddNewDoc(Convert.ToInt32(itemid), docurl, docpath);
+                            AddNewDoc(Convert.ToInt32(itemid), filedisplayname, docurl, docpath);
                             alreadyaddedlist.Add(docurl);
                         }
                     }
@@ -2314,7 +2370,19 @@ namespace Nevoweb.DNN.NBrightMod
                     if (f != "")
                     {
                         var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
-                        if (File.Exists(docpath)) File.Delete(docpath);
+                        if (File.Exists(docpath))
+                        {
+                            File.Delete(docpath);
+                        }
+                        else
+                        {
+                            docpath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('\\') + "\\" + f;
+                            if (File.Exists(docpath))
+                            {
+                                File.Delete(docpath);
+                                File.Delete(docpath + ".txt");
+                            }
+                        }
                     }
                 }
             }
@@ -2347,15 +2415,14 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-        private void AddNewDoc(int itemId, String docurl, String docpath)
+        private void AddNewDoc(int itemId,String filename, String docurl, String docpath)
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemId);
             if (dataRecord != null)
             {
-                var f = Path.GetFileName(docpath);
                 var r = Path.GetFileNameWithoutExtension(docpath);
-                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + f + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath,"") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden></genxml></docs></genxml>";
+                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + filename + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath,"") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden><textbox></textbox></genxml></docs></genxml>";
                 if (dataRecord.XMLDoc.SelectSingleNode("genxml/docs") == null)
                 {
                     dataRecord.AddXmlNode(strXml, "genxml/docs", "genxml");
@@ -2481,7 +2548,7 @@ namespace Nevoweb.DNN.NBrightMod
         }
 
         // Upload entire file
-        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename = false, Boolean encrptfilename = false)
+        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename = false)
         {
             var modSettings = LocalUtils.GetSettings(moduleid);
             for (int i = 0; i < context.Request.Files.Count; i++)
@@ -2489,13 +2556,16 @@ namespace Nevoweb.DNN.NBrightMod
                 var file = context.Request.Files[i];
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
+                if (encrptfilename) uploadfolder = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath");
                 if (uploadfolder == "") uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
+
+
                 Utils.CreateFolder(uploadfolder);
                 var fullfilename = "";
                 if (encrptfilename)
                 {
                     fullfilename = uploadfolder.TrimEnd('\\') + "\\" + Guid.NewGuid(); 
-                    File.WriteAllText(fullfilename + "txt", file.FileName);
+                    File.WriteAllText(fullfilename + ".txt", file.FileName);
                 }
                 else
                 {
