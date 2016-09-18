@@ -112,7 +112,7 @@ if (docList != null)
             displayname = nbi.GetXmlProperty("genxml/hidden/filename");
         }
         <div class='documents'>
-        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&itemid=@(x.ItemID)&filename=NBrightUpload\documents\@(nbi.GetXmlProperty("genxml/hidden/filename"))'>@(displayname)</a>
+        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(c)&itemid=@(x.ItemID)&&downloadname=@(nbi.GetXmlProperty("genxml/hidden/filename").Replace(" ","_"))'>@(displayname)</a>
         </div>
 
         c += 1;

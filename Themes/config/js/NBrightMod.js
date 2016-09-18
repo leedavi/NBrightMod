@@ -44,6 +44,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#displayreturn').val('detail');
 
         $('.selecteditlanguage').click(function () {
+            $('#savedreturnaction').val(""); // set flag to return on save of data
             savedata();
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
@@ -157,6 +158,25 @@ function NBrightMod_nbxgetCompleted(e) {
             $('#savedreturnaction').val('');
             $('#return').trigger("click");
         }
+
+        if ($('#savedreturnaction').val() == "images") {
+            $('#displayreturn').val("detail");
+            $('#uploadtype').val("image");
+            $('.fileinput').show();
+            $('#fileselectlist').children().remove();
+            NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+            $("#NBrightModModal").appendTo("body");
+        }
+
+        if ($('#savedreturnaction').val() == "files") {
+            $('#displayreturn').val("detail");
+            $('#uploadtype').val("doc");
+            $('.fileinput').show();
+            $('#fileselectlist').children().remove();
+            NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+            $("#NBrightModModal").appendTo("body");
+        }
+
     });
 
 
@@ -164,11 +184,15 @@ function NBrightMod_nbxgetCompleted(e) {
 }
 
 function savedata() {
+
+    //NOTE: Richtext field use a temp field to save data to the server, this is triggered by the event
+    // These events are defined by the @Richtext razor token and act on #savedata, .selecteditlanguage, .flieclick, .imageclick
+
     var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
-    NBrightMod_nbxget('savedata', '#editdata','#savereturn');
+    NBrightMod_nbxget('savedata', '#editdata', '#savereturn');
 }
 
 function moveUp(item) {
@@ -239,13 +263,9 @@ function ActivateFileLoader() {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
 
+        $('#savedreturnaction').val('files'); // set flag to return on save of data
+
         savedata();
-        $('#displayreturn').val("detail");
-        $('#uploadtype').val("doc");
-        $('.fileinput').show();
-        $('#fileselectlist').children().remove();
-        NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
-        $("#NBrightModModal").appendTo("body");
     });
 
     $('.imagelistclick').click(function () {
@@ -266,13 +286,9 @@ function ActivateFileLoader() {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
 
+        $('#savedreturnaction').val('images'); // set flag to return on save of data
+
         savedata();
-        $('#displayreturn').val("detail");
-        $('#uploadtype').val("image");
-        $('.fileinput').show();
-        $('#fileselectlist').children().remove();
-        NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
-        $("#NBrightModModal").appendTo("body");
     });
 
     $('#fileselectlist').change(function () {
