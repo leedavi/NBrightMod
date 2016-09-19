@@ -124,7 +124,7 @@
     <value>Run in Debug Mode with cache off</value>
   </data>
   <data name="themefolder.Text" xml:space="preserve">
-    <value>Theme Folder</value>
+    <value>AppTheme Folder</value>
   </data>
   <data name="sourcedata.Text" xml:space="preserve">
     <value>Data Source</value>
@@ -179,5 +179,8 @@
   </data>
   <data name="openinlightbox.Text" xml:space="preserve">
     <value>Open images inside a lightbox</value>
+  </data>
+  <data name="encryptfilename.Text" xml:space="preserve">
+    <value>Encrypt Filename</value>
   </data>
 </root>

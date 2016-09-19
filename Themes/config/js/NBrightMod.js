@@ -44,6 +44,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('#displayreturn').val('detail');
 
         $('.selecteditlanguage').click(function () {
+            $('#savedreturnaction').val(""); // set flag to return on save of data
             savedata();
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
@@ -157,6 +158,25 @@ function NBrightMod_nbxgetCompleted(e) {
             $('#savedreturnaction').val('');
             $('#return').trigger("click");
         }
+
+        if ($('#savedreturnaction').val() == "images") {
+            $('#displayreturn').val("detail");
+            $('#uploadtype').val("image");
+            $('.fileinput').show();
+            $('#fileselectlist').children().remove();
+            NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+            $("#NBrightModModal").appendTo("body");
+        }
+
+        if ($('#savedreturnaction').val() == "files") {
+            $('#displayreturn').val("detail");
+            $('#uploadtype').val("doc");
+            $('.fileinput').show();
+            $('#fileselectlist').children().remove();
+            NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
+            $("#NBrightModModal").appendTo("body");
+        }
+
     });
 
 
@@ -164,23 +184,31 @@ function NBrightMod_nbxgetCompleted(e) {
 }
 
 function savedata() {
+
+    //NOTE: Richtext field use a temp field to save data to the server, this is triggered by the event
+    // These events are defined by the @Richtext razor token and act on #savedata, .selecteditlanguage, .flieclick, .imageclick
+
     var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
-    NBrightMod_nbxget('savedata', '#editdata','#savereturn');
+    NBrightMod_nbxget('savedata', '#editdata', '#savereturn');
 }
 
 function moveUp(item) {
     var prev = item.prev();
+    var prev2 = item.prev().prev();
     if (typeof $(item).attr("fixedsort") !== typeof undefined && $(item).attr("fixedsort") !== false) return;
     if (typeof $(prev).attr("fixedsort") !== typeof undefined && $(prev).attr("fixedsort") !== false) return;
     if (prev.length == 0) return;
+    if (prev2.length == 0) return;
     prev.css('z-index', 999).css('position', 'relative').animate({ top: item.height() }, 1);
     item.css('z-index', 1000).css('position', 'relative').animate({ top: '-' + prev.height() }, 1, function () {
         prev.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertBefore(prev);
+        $('.tooltip-inner').hide();
+        $('.tooltip-arrow').hide();
     });
 }
 function moveDown(item) {
@@ -193,6 +221,8 @@ function moveDown(item) {
         next.css('z-index', '').css('top', '').css('position', '');
         item.css('z-index', '').css('top', '').css('position', '');
         item.insertAfter(next);
+        $('.tooltip-inner').hide();
+        $('.tooltip-arrow').hide();
     });
 }
 function removeelement(elementtoberemoved) {
@@ -233,13 +263,9 @@ function ActivateFileLoader() {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
 
+        $('#savedreturnaction').val('files'); // set flag to return on save of data
+
         savedata();
-        $('#displayreturn').val("detail");
-        $('#uploadtype').val("doc");
-        $('.fileinput').show();
-        $('#fileselectlist').children().remove();
-        NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
-        $("#NBrightModModal").appendTo("body");
     });
 
     $('.imagelistclick').click(function () {
@@ -260,13 +286,9 @@ function ActivateFileLoader() {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
 
+        $('#savedreturnaction').val('images'); // set flag to return on save of data
+
         savedata();
-        $('#displayreturn').val("detail");
-        $('#uploadtype').val("image");
-        $('.fileinput').show();
-        $('#fileselectlist').children().remove();
-        NBrightMod_nbxget('getfolderfiles', '#selectparams', '#fileselectlist');
-        $("#NBrightModModal").appendTo("body");
     });
 
     $('#fileselectlist').change(function () {
@@ -354,7 +376,7 @@ function ActivateFileUploadButtons() {
         // Set up the request.
         var xhr = new XMLHttpRequest();
         // Open the connection.
-        xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=fileupload&itemid=' + $('#selecteditemid').val(), true);
+        xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?mid=' + $('#moduleid').val() + '&cmd=' + $('#fileuploadcmd').val() + '&itemid=' + $('#selecteditemid').val(), true);
 
         // Set up a handler for when the request finishes.
         xhr.onload = function () {

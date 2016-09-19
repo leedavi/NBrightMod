@@ -39,34 +39,27 @@
 
         <div id="optionselectdiv">
             <div id="step1">
-                <div class='buttons'>
-                    <button id='editmodtheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.editmodtheme")</button>
-                    @DnnLabel("lbleditmodtheme", "Edit.lbleditmodtheme")
+                <div class="buttons">
+                    <button id="editmodtheme" type="button" class="btn btn-success" data-toggle="tooltip" title="@ResourceKey("Edit.lbleditmodtheme","","Help")" ><span class="glyphicon glyphicon-pencil"></span> @ResourceKey("Edit.editmodtheme")</button>
+                </div>
+                <div class="buttons">
+                    <button id="edittheme" type='button' class='btn btn-success' data-toggle="tooltip" title="@ResourceKey("Edit.lbledittheme","","Help")" ><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='edittheme' type='button' class='btn btn-success'><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
-                    @DnnLabel("lbledittheme", "Edit.lbledittheme")
+                    <button id='createnew' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblcreatenew","","Help")" ><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='createnew' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
-                    @DnnLabel("lblcreatenew", "Edit.lblcreatenew")
+                    <button id='makethemesys' type='button' class='btn btn-info' data-toggle="tooltip" title="@ResourceKey("Edit.lblmakethemesys","","Help")" ><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='makethemesys' type='button' class='btn btn-info'><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
-                    @DnnLabel("lblmakethemesys", "Edit.lblmakethemesys")
-                </div>
-                <div class='buttons'>
-                    <button id='deletetheme' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
-                    @DnnLabel("lbldeletetheme", "Edit.lbldeletetheme")
+                    <button id='deletetheme' type='button' class='btn btn-danger' data-toggle="tooltip" title="@ResourceKey("Edit.lbldeletetheme","","Help")" ><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
                 </div>
                 <hr/>
                 <div class='buttons'>
-                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button'><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
-                    @DnnLabel("lblimporttheme", "Edit.lblimporttheme")
+                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button' data-toggle="tooltip" title="@ResourceKey("Edit.lblimporttheme","","Help")" ><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='exporttheme' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
-                    @DnnLabel("lblexporttheme", "Edit.lblexporttheme")
+                    <button id='exporttheme' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblexporttheme","","Help")" ><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
                 </div>
             </div>
 
@@ -299,14 +292,14 @@
                         editortext.replaceRange(snip, CodeMirror.Pos(position.line))
                     });
 
-
+                    
                     $("#tabs").tabs({
                         activate: function (event, ui) {
                             $('#currentedittab').val(ui.newTab.index());
                         }
                         , active: $('#currentedittab').val()
                     });
-
+                    
                     $('.savedata').click(function () {
                         $('#simpletext').val(editortext.getValue());
                         $('#resxdata').val(editorxml.getValue());

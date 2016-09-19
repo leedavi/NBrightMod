@@ -91,7 +91,7 @@ namespace NBrightMod.render
                     var razorTempl = LocalUtils.RazorRender(model, TemplateData, "preprocessmetadata" + Path.GetFileName(templatePath), false);
                 }
 
-                strOut = LocalUtils.RazorRender(model, TemplateData, "", false);
+                strOut = LocalUtils.RazorRender(model, TemplateData, model.GetSetting("themefolder") + "." + Path.GetFileName(templatePath), false);
 
             }
 
@@ -373,7 +373,7 @@ namespace NBrightMod.render
 
         private Boolean isPortalTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + filename + "']");
+            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + info.Lang + filename + "']");
             if (nod != null) return true;
             return false;
         }
@@ -386,8 +386,11 @@ namespace NBrightMod.render
 
         private Boolean isModuleTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + filename + "']");
-            if (nod != null) return true;
+            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + info.Lang + filename + "']");
+            if (nod != null)
+            {
+                return true;
+            }
             return false;
         }
 

@@ -36,9 +36,9 @@
                 @DnnLabel("lblSourceData", "Settings.sourcedata")
                 @NBrightModSelectList(info, "genxml/dropdownlist/datasourceref", " ")
             </div>
-            <div>
-                @DnnLabel("lblUploadFolder", "Settings.imguploadfolder")
-                @TextBox(info, "genxml/textbox/settinguploadfolder","","images")
+            <div style="display: none;">
+                @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+                @TextBox(info, "genxml/textbox/settinguploadfolder","","")
             </div>
             <div>
                 @DnnLabel("lbldebugmode", "Settings.lbldebugmode")

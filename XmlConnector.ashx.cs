@@ -20,6 +20,7 @@ using NBrightDNN;
 using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
@@ -48,11 +49,13 @@ namespace Nevoweb.DNN.NBrightMod
             var lang = Utils.RequestQueryStringParam(context, "lang");
             var language = Utils.RequestQueryStringParam(context, "language");
             _itemid = Utils.RequestQueryStringParam(context, "itemid");
+            var secure = Utils.RequestQueryStringParam(context, "secure");
+            bool encryptfilename = secure == "1";
 
             #region "setup language"
 
-            // Ajax can break context with DNN, so reset the context language to match the client.
-            // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
+                // Ajax can break context with DNN, so reset the context language to match the client.
+                // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
             SetContextLangauge(context);
 
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(_lang);
@@ -124,6 +127,10 @@ namespace Nevoweb.DNN.NBrightMod
                 case "fileupload":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
+
+                case "fileuploadsecure":
+                    if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
+                    break;
                 case "addselectedfiles":
                     if (LocalUtils.CheckRights()) AddSelectedFiles(context);
                     break;
@@ -169,7 +176,8 @@ namespace Nevoweb.DNN.NBrightMod
                         var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                         if (downloadname == "") downloadname = Path.GetFileName(fpath);
                         UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
-                        Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                        LocalUtils.ClearRazorCache(nbi.ModuleId.ToString());
+                        Utils.ForceDocDownload(fpath, downloadname, context.Response); 
                     }
                     else
                     {
@@ -178,7 +186,7 @@ namespace Nevoweb.DNN.NBrightMod
                             var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + filename;
                             var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                             if (downloadname == "") downloadname = Path.GetFileName(fpath);
-                            Utils.ForceDocDownload(fpath, downloadname, context.Response);
+                            Utils.ForceDocDownload(fpath, downloadname, context.Response); 
                         }
                     }
                     strOut = "File Download Error, filename: " + filename + ", itemid: " + itemid + ", fileindex: " + fileindex + " ";
@@ -453,7 +461,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid))
@@ -467,7 +475,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.ModuleId > 0)
                     {
-                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context));
+                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context),"",true,false);
                         objCtrl.Update(nbi);
                         LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                     }
@@ -607,7 +615,7 @@ namespace Nevoweb.DNN.NBrightMod
             #region "init params from ajax"
             var strOut = "";
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -645,12 +653,12 @@ namespace Nevoweb.DNN.NBrightMod
             if (modulelevel)
             {
                 templfilename = moduleref + templfilename; // module level templates prefixed with moduleref
-                templData.SetXmlProperty("genxml/modulelevel","True");
+                templData.SetXmlProperty("genxml/modulelevel","True",TypeCode.String,true,true,false);
             }
             else
             {
                 modInfo = new NBrightInfo(); // we're editing portal level, clear module info so we pickup only portal level templates.
-                templData.SetXmlProperty("genxml/modulelevel", "False");
+                templData.SetXmlProperty("genxml/modulelevel", "False", TypeCode.String, true, true, false);
             }
 
             var fulltemplfilename = themefolder + "." + ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
@@ -758,6 +766,25 @@ namespace Nevoweb.DNN.NBrightMod
                         templData.AddSingleNode("file", modref + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // real file name
                         templData.AddSingleNode("file", System.IO.Path.GetFileName(s), "genxml/modulefiles"); // standard file name, to use for testing if file is module level.
                     }
+
+                    // we need to check each language folder
+                    var langs = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                    foreach (var l in langs)
+                    {
+                        modulepath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + l + "\\" + modref + Path.GetFileName(s);
+                        if (File.Exists(modulepath))
+                        {
+                            templData.AddSingleNode("file", l + modref + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // real file name
+                            templData.AddSingleNode("file", l + System.IO.Path.GetFileName(s), "genxml/modulefiles"); // standard file name, to use for testing if file is module level.
+                        }
+                        portalpath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + l + "\\" + Path.GetFileName(s);
+                        if (File.Exists(portalpath))
+                        {
+                            templData.AddSingleNode("file", l + System.IO.Path.GetFileName(s), "genxml/portalfiles");
+                        }
+                    }
+
+
                 }
             }
             return templData;
@@ -767,7 +794,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             #region "init params from ajax"
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -885,6 +912,12 @@ namespace Nevoweb.DNN.NBrightMod
                         Utils.CreateFolder(fldrDefault);
                         File.WriteAllText(fldrDefault + "\\" + templfilename, simpletext);
                     }
+
+                    LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    // reset razor service, this causes a memory leak, but it's the only way for now to clear the razor cache.
+                    // on live system we shouldn't be changing templates to much, so it should be OK.
+                    HttpContext.Current.Application.Remove("NBrightModIRazorEngineService");
+
                 }
 
                 var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
@@ -904,8 +937,6 @@ namespace Nevoweb.DNN.NBrightMod
                         File.WriteAllText(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx", resxdata);
                     }
                 }
-
-                LocalUtils.ClearModuleCacheByTheme(themefolder);
 
             }
             return "OK";
@@ -968,6 +999,7 @@ namespace Nevoweb.DNN.NBrightMod
                         File.Delete(fldrDefault + "\\" + templfilename);
                         LocalUtils.ClearRazorCache(moduleid.ToString(""));
                         LocalUtils.ClearRazorSateliteCache(moduleid.ToString(""));
+                        LocalUtils.RemoveCachedRazorEngineService();
                     }
                 }
 
@@ -1013,7 +1045,8 @@ namespace Nevoweb.DNN.NBrightMod
                 if (File.Exists(fldrDefault + "\\" + templfilename))
                 {
                     File.Delete(fldrDefault + "\\" + templfilename);
-                    LocalUtils.ClearModuleCacheByTheme(themefolder); 
+                    LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1062,6 +1095,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     File.Delete(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx");
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1178,7 +1212,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
@@ -1253,7 +1287,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var strOut = "Error unable to Move Theme";
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
 
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
@@ -1318,7 +1352,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
                 var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
                 var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -1330,8 +1364,29 @@ namespace Nevoweb.DNN.NBrightMod
                     var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
                     var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
 
+                    // export from portal level, so save export.config
+                    var exportconfig = new NBrightInfo(true);
+
                     var themeFolderName = systhemeFolderName;
-                    if (Directory.Exists(portalthemeFolderName)) themeFolderName = portalthemeFolderName;
+                    if (Directory.Exists(portalthemeFolderName))
+                    {
+                        themeFolderName = portalthemeFolderName;
+                        exportconfig.SetXmlProperty("genxml/portallevel", "true");
+                    }
+                    else
+                    {
+                        exportconfig.SetXmlProperty("genxml/portallevel", "false");
+                    }
+
+                    exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
+                    exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
+                    exportconfig.SetXmlProperty("genxml/systhemefoldername", systhemeFolderName);
+                    exportconfig.SetXmlProperty("genxml/portalthemefoldername", portalthemeFolderName);
+                    exportconfig.SetXmlProperty("genxml/portalrelfolder", PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" +  theme);
+                    exportconfig.SetXmlProperty("genxml/systemrelfolder", "/DesktopModules/NBright/NBrightMod/Themes/" + theme);
+                    exportconfig.SetXmlProperty("genxml/themename", theme);
+
+                    Utils.SaveFile(themeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
 
                     Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
                     var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";
@@ -1607,7 +1662,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,true);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -1725,7 +1780,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateimages");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml);
+                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml,true,false);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
@@ -2037,7 +2092,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdatedocs");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var docList = LocalUtils.GetGenXmlListByAjax(strAjaxXml);
+                var docList = LocalUtils.GetGenXmlListByAjax(strAjaxXml, true, false);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
@@ -2129,7 +2184,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String GetFolderDocs(NBrightInfo ajaxInfo, bool clearCache = false)
+        private String GetFolderDocs(NBrightInfo ajaxInfo, bool clearCache = false, Boolean encrptfilename = false)
         {
             try
             {
@@ -2144,10 +2199,12 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var modSettings = LocalUtils.GetSettings(moduleid);
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
+                var uploadsecurefolder = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath");
                 var allowedfiletypes = modSettings.GetXmlProperty("genxml/textbox/allowedfiletypes");
                 if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
 
+ 
                 FileInfo[] files;
                 DirectoryInfo dirInfo = new DirectoryInfo(uploadfolder);
                 if (allowedfiletypes == "*")
@@ -2179,7 +2236,37 @@ namespace Nevoweb.DNN.NBrightMod
                     var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
                     var docref = Path.GetFileNameWithoutExtension(name).Replace(" ", "-");
                     var nbi = new NBrightInfo(true);
+                    nbi.SetXmlProperty("genxml/hidden/filename", Path.GetFileName(fullname));
+                    nbi.SetXmlProperty("genxml/hidden/name", Path.GetFileName(fullname));
+                    nbi.SetXmlProperty("genxml/hidden/docurl", docurl);
+                    nbi.SetXmlProperty("genxml/hidden/ref", docref);
+                    imgl.Add(nbi);
+                }
+
+                // get secured files and add to the list
+                DirectoryInfo dirsecureInfo = new DirectoryInfo(uploadsecurefolder);
+                var extensionArray2 = new HashSet<string>();
+                extensionArray2.Add(".txt");
+                HashSet<string> allowedExtensions2 = new HashSet<string>(extensionArray2, StringComparer.OrdinalIgnoreCase);
+                files = Array.FindAll(dirsecureInfo.GetFiles(), f => allowedExtensions2.Contains(f.Extension));
+
+                foreach (var f in files)
+                {
+                    var fullname = f.FullName; // don't use file object directly, it locks the file on servr, but not on dev machine.???? I presume it's something the Path.GetFileName does?? 
+                    var name = f.Name;
+                    var docurl = modSettings.GetXmlProperty("genxml/uploadsecuredocfolder").TrimEnd('/') + "/" + Path.GetFileName(fullname);
+                    var docmappath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('/') + "/" + Path.GetFileName(fullname);
+                    var docref = Path.GetFileNameWithoutExtension(name).Replace(" ", "-");
+                    var nbi = new NBrightInfo(true);
                     nbi.SetXmlProperty("genxml/hidden/filename", name);
+                    if (File.Exists(docmappath))
+                    {
+                        var fname = File.ReadAllLines(docmappath);
+                        if (fname.Length > 0)
+                        {
+                            nbi.SetXmlProperty("genxml/hidden/filename", fname[0]);
+                        }
+                    }
                     nbi.SetXmlProperty("genxml/hidden/name", name.Replace(f.Extension, ""));
                     nbi.SetXmlProperty("genxml/hidden/docurl", docurl);
                     nbi.SetXmlProperty("genxml/hidden/ref", docref);
@@ -2233,13 +2320,32 @@ namespace Nevoweb.DNN.NBrightMod
                 var alreadyaddedlist = new List<String>();
                 foreach (var f in flist)
                 {
+                    var filedisplayname = f;
+
                     if ((allowedfiletypes == "*" || allowedfiletypeslist.Contains(Path.GetExtension(f).Replace(".", "").ToLower())) && f.Trim() != "")
                     {
                         var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
                         var docurl = modSettings.GetXmlProperty("genxml/uploaddocfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
+
+                        if (!File.Exists(docpath))
+                        {
+                            docpath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('\\') + "\\" + f;
+                            docurl = modSettings.GetXmlProperty("genxml/uploadsecuredocfolder").TrimEnd('/') + "/" + Path.GetFileName(docpath);
+
+                            if (File.Exists(docpath + ".txt"))
+                            {
+                                var fname = File.ReadAllLines(docpath + ".txt");
+                                if (fname.Length > 0)
+                                {
+                                    filedisplayname =  fname[0];
+                                }
+                            }
+
+                        }
+
                         if (!alreadyaddedlist.Contains(docpath))
                         {
-                            AddNewDoc(Convert.ToInt32(itemid), docurl, docpath);
+                            AddNewDoc(Convert.ToInt32(itemid), filedisplayname, docurl, docpath);
                             alreadyaddedlist.Add(docurl);
                         }
                     }
@@ -2264,7 +2370,19 @@ namespace Nevoweb.DNN.NBrightMod
                     if (f != "")
                     {
                         var docpath = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath").TrimEnd('\\') + "\\" + f;
-                        if (File.Exists(docpath)) File.Delete(docpath);
+                        if (File.Exists(docpath))
+                        {
+                            File.Delete(docpath);
+                        }
+                        else
+                        {
+                            docpath = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath").TrimEnd('\\') + "\\" + f;
+                            if (File.Exists(docpath))
+                            {
+                                File.Delete(docpath);
+                                File.Delete(docpath + ".txt");
+                            }
+                        }
                     }
                 }
             }
@@ -2297,15 +2415,14 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-        private void AddNewDoc(int itemId, String docurl, String docpath)
+        private void AddNewDoc(int itemId,String filename, String docurl, String docpath)
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemId);
             if (dataRecord != null)
             {
-                var f = Path.GetFileName(docpath);
                 var r = Path.GetFileNameWithoutExtension(docpath);
-                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + f + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath,"") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden></genxml></docs></genxml>";
+                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + filename + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath,"") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden><textbox></textbox></genxml></docs></genxml>";
                 if (dataRecord.XMLDoc.SelectSingleNode("genxml/docs") == null)
                 {
                     dataRecord.AddXmlNode(strXml, "genxml/docs", "genxml");
@@ -2324,9 +2441,9 @@ namespace Nevoweb.DNN.NBrightMod
             var dataRecord = objCtrl.Get(itemid);
             if (dataRecord != null)
             {
-                var amt = dataRecord.GetXmlPropertyDouble("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount");
+                var amt = dataRecord.GetXmlPropertyDouble("genxml/docs/genxml[" + fileindex + "]/textbox/downloadcount");
                 amt = amt + amount;
-                dataRecord.SetXmlProperty("genxml/docs/genxml[" + fileindex + "]/hidden/downloadcount", amt.ToString("######"));
+                dataRecord.SetXmlProperty("genxml/docs/genxml[" + fileindex + "]/textbox/downloadcount", amt.ToString("######"));
                 objCtrl.Update(dataRecord);
             }
         }
@@ -2384,7 +2501,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         #region "fileupload"
 
-        private string FileUpload(HttpContext context, String moduleid, Boolean passbackfilename = false)
+        private string FileUpload(HttpContext context, String moduleid, Boolean passbackfilename = false, Boolean encrptfilename = false)
         {
             try
             {
@@ -2397,7 +2514,7 @@ namespace Nevoweb.DNN.NBrightMod
                         break;
                     case "POST":
                     case "PUT":
-                        strOut = UploadFile(context, moduleid, passbackfilename);
+                        strOut = UploadFile(context, moduleid, passbackfilename, encrptfilename);
                         break;
                     case "DELETE":
                         break;
@@ -2425,8 +2542,13 @@ namespace Nevoweb.DNN.NBrightMod
             return UploadWholeFile(context, moduleid, passbackfilename);
         }
 
+        private String UploadFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename)
+        {
+            return UploadWholeFile(context, moduleid, passbackfilename, encrptfilename);
+        }
+
         // Upload entire file
-        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename = false)
+        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename = false)
         {
             var modSettings = LocalUtils.GetSettings(moduleid);
             for (int i = 0; i < context.Request.Files.Count; i++)
@@ -2434,10 +2556,22 @@ namespace Nevoweb.DNN.NBrightMod
                 var file = context.Request.Files[i];
                 var uploadfolder = modSettings.GetXmlProperty("genxml/uploaddocfoldermappath");
                 if (ImgUtils.IsImageFile(Path.GetExtension(file.FileName))) uploadfolder = modSettings.GetXmlProperty("genxml/tempfoldermappath");
+                if (encrptfilename) uploadfolder = modSettings.GetXmlProperty("genxml/uploadsecuredocfoldermappath");
                 if (uploadfolder == "") uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
+
+
                 Utils.CreateFolder(uploadfolder);
-                var fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName;
-                if (File.Exists(fullfilename)) File.Delete(fullfilename);
+                var fullfilename = "";
+                if (encrptfilename)
+                {
+                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + Guid.NewGuid(); 
+                    File.WriteAllText(fullfilename + ".txt", file.FileName);
+                }
+                else
+                {
+                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + file.FileName.Replace(" ", "_"); // replace for browser detection on download.
+                    if (File.Exists(fullfilename)) File.Delete(fullfilename);
+                }
                 file.SaveAs(fullfilename);
 
                 if (ImgUtils.IsImageFile(Path.GetExtension(fullfilename)))

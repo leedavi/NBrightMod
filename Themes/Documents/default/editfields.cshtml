@@ -1,0 +1,37 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang"></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s,d,r")
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+        <div class="form-group">
+            <label>@ResourceKey("Edit.title")</label>
+            @NBrightTextBox(info, "genxml/lang/genxml/textbox/title")
+        </div>
+        <div class="formrow">
+            <div>@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/docs-shared-count.cshtml", Model)</div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+
+
+});
+</script>

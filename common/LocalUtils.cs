@@ -99,15 +99,15 @@ namespace NBrightMod.common
             return templ;
         }
 
-        public static NBrightInfo GetAjaxFields(HttpContext context)
+        public static NBrightInfo GetAjaxFields(HttpContext context, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-            return GetAjaxFields(strIn);
+            return GetAjaxFields(strIn, "", ignoresecurityfilter, filterlinks);
         }
 
-        public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "")
+        public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "",bool ignoresecurityfilter = false, bool filterlinks = false)
         {
-            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml);
+            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml,"genxml", ignoresecurityfilter, filterlinks);
             var objInfo = new NBrightInfo();
 
             objInfo.ItemID = -1;
@@ -149,13 +149,13 @@ namespace NBrightMod.common
             return HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
         }
 
-        public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context)
+        public static List<NBrightInfo> GetGenXmlListByAjax(HttpContext context, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var xmlAjaxData = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-            return GetGenXmlListByAjax(xmlAjaxData);
+            return GetGenXmlListByAjax(xmlAjaxData, ignoresecurityfilter ,  filterlinks );
         }
 
-        public static List<NBrightInfo> GetGenXmlListByAjax(String xmlAjaxData)
+        public static List<NBrightInfo> GetGenXmlListByAjax(String xmlAjaxData, bool ignoresecurityfilter = false, bool filterlinks = false)
         {
             var rtnList = new List<NBrightInfo>();
             if (!String.IsNullOrEmpty(xmlAjaxData))
@@ -166,7 +166,7 @@ namespace NBrightMod.common
                 if (nodList != null)
                     foreach (XmlNode nod in nodList)
                     {
-                        var xmlData = GenXmlFunctions.GetGenXmlByAjax(nod.OuterXml, "");
+                        var xmlData = GenXmlFunctions.GetGenXmlByAjax(nod.OuterXml, "","genxml", ignoresecurityfilter, filterlinks);
                         var objInfo = new NBrightInfo();
                         objInfo.ItemID = -1;
                         objInfo.TypeCode = "AJAXDATA";
@@ -388,7 +388,7 @@ namespace NBrightMod.common
                         obj.Lang = Utils.GetCurrentCulture();
                         objList.Add(obj);
                     }
-                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString();
+                    var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString() + lang;
 
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
                     var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
@@ -430,7 +430,7 @@ namespace NBrightMod.common
                     var l = new List<object>();
                     l.Add(obj);
                     var modRazor = new NBrightRazor(l, settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
-                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, debug);
 
                     if (cacheKey != "") // only cache if we have a key.
                     {
@@ -527,14 +527,26 @@ namespace NBrightMod.common
             }
         }
 
+        public static void RemoveCachedRazorEngineService()
+        {
+            HttpContext.Current.Application.Set("NBrightModIRazorEngineService", null);
+        }
+
         public static String RazorRender(Object info, String razorTempl, String templateKey, Boolean debugMode = false)
         {
-            // do razor test
-            var config = new TemplateServiceConfiguration();
-            config.Debug = debugMode;
-            config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
-            var service = RazorEngineService.Create(config);
-            Engine.Razor = service;
+
+            var service = (IRazorEngineService)HttpContext.Current.Application.Get("NBrightModIRazorEngineService");
+            if (service == null || debugMode)
+            {
+                // do razor test
+                var config = new TemplateServiceConfiguration();
+                config.Debug = debugMode;
+                config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
+                service = RazorEngineService.Create(config);
+                Engine.Razor = service;
+                HttpContext.Current.Application.Set("NBrightModIRazorEngineService", service);
+            }
+
             var result = "";
             try
             {
@@ -542,7 +554,7 @@ namespace NBrightMod.common
             }
             catch (Exception e)
             {
-                result = "<div>" + e.Message + "</div>";
+                result = "<div>" + e.Message + " templateKey='" + templateKey + "'</div>";
             }
 
             return result;
@@ -571,12 +583,18 @@ namespace NBrightMod.common
             var uploadDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
+            var uploadSecureDocFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/securedocs";
+            var uploadSecureDocFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\securedocs";
+            Utils.CreateFolder(uploadSecureDocFolderMapPath);
+
             settings.SetXmlProperty("genxml/tempfolder", "/" + tempFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/tempfoldermappath", tempFolderMapPath);
             settings.SetXmlProperty("genxml/uploadfolder", "/" + uploadFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploadfoldermappath", uploadFolderMapPath);
             settings.SetXmlProperty("genxml/uploaddocfolder", "/" + uploadDocFolder.TrimStart('/'));
             settings.SetXmlProperty("genxml/uploaddocfoldermappath", uploadDocFolderMapPath);
+            settings.SetXmlProperty("genxml/uploadsecuredocfolder", "/" + uploadSecureDocFolder.TrimStart('/'));
+            settings.SetXmlProperty("genxml/uploadsecuredocfoldermappath", uploadSecureDocFolderMapPath);
 
             return settings;
         }

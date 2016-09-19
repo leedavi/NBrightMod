@@ -25,8 +25,9 @@ else
     <h3>@ResourceKey("Edit.portallevel")</h3>
 }
 
-
-@EditCultureSelect("flag-list", "selecteditlanguage", true)
+<div class="NBM">
+@EditCultureSelect("flag-list", "selecteditlanguage", true)    
+</div>
 
 
 <div id="sideeditmenu">
@@ -64,49 +65,39 @@ else
 
 <div id="tabs">
 
-            <ul>
+    <!-- Using JQuery tabs, bootstrap has some issues display textbox data -->
+    <ul class="nav nav-tabs">
 
-                <li><a href="#tabs-1">@info.GetXmlProperty("genxml/displayfilename")</a></li>
+        <li><a href="#tabs-1">@info.GetXmlProperty("genxml/displayfilename")</a></li>
 
-                <li><a href="#tabs-2">@info.GetXmlProperty("genxml/resxfilename")</a></li>
+        <li><a href="#tabs-2">@info.GetXmlProperty("genxml/resxfilename")</a></li>
 
-            </ul>
+    </ul>
 
-            <div id="tabs-1">
-                <div class='buttons'>
-                    <button id='savedatatempl' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-                    @if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+    <div class="tab-content">
+        <div id="tabs-1">
+            <div class='buttons'>
+                <button id='savedatatempl' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
+                @if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")) && !info.GetXmlPropertyBool("genxml/modulelevel"))
+                {
+                    <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
+                }
+                @if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                {
+                    <button id='deletemoduletempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletemoduletempl")</button>
+                }
+            </div>
+
+            <div>
+                @if (info.GetXmlPropertyBool("genxml/modulelevel"))
+                {
+                    if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
                     {
-                        <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
-                    }
-                    @if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
-                    {
-                        <button id='deletemoduletempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletemoduletempl")</button>
-                    }
-                </div>
-
-                <div>
-                    @if (info.GetXmlPropertyBool("genxml/modulelevel"))
-                    {
-                        if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
-                        {
-                            @ResourceKey("Edit.moduletemplateloaded")
-                        }
-                        else
-                        {
-                            if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
-                             {
-                                 @ResourceKey("Edit.portaltemplateloaded")
-                            }
-                            else
-                            {
-                                @ResourceKey("Edit.systemtemplateloaded")
-                            }
-                        }
+                        @ResourceKey("Edit.moduletemplateloaded")
                     }
                     else
                     {
-                        if (IsPortalTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                        if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
                         {
                             @ResourceKey("Edit.portaltemplateloaded")
                         }
@@ -115,37 +106,54 @@ else
                             @ResourceKey("Edit.systemtemplateloaded")
                         }
                     }
+                }
+                else
+                {
+                    if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
+                    {
+                        @ResourceKey("Edit.portaltemplateloaded")
+                    }
+                    else
+                    {
+                        @ResourceKey("Edit.systemtemplateloaded")
+                    }
+                }
 
-
-                </div>
-
-                <div id="simpletexteditor">
-                    <div>
-                        <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
-                    </div>
-                    <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
-                </div>
 
             </div>
 
-            <div id="tabs-2">
-                <div class='buttons'>
-                    <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
-                    @if (info.GetXmlPropertyBool("genxml/resxportal"))
-                    {
-                        <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
-                    }
+            <div id="simpletexteditor">
+                <div>
+                    <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
                 </div>
-                <div id="resxtexteditor">
-                    <div>
-                        <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
-                    </div>
-                    <textarea rows="50" id="resxdata" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/resxdata")</textarea>
-                </div>
-
+                <textarea rows="50" id="simpletext" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/templtext")</textarea>
             </div>
 
         </div>
+
+        <div id="tabs-2">
+            <div class='buttons'>
+                <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
+                @if (info.GetXmlPropertyBool("genxml/resxportal"))
+                {
+                    <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
+                }
+            </div>
+            <div id="resxtexteditor">
+                <div>
+                    <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
+                </div>
+                <textarea rows="50" id="resxdata" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/resxdata")</textarea>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
 
 
 
