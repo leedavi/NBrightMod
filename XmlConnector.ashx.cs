@@ -1490,6 +1490,9 @@ namespace Nevoweb.DNN.NBrightMod
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                 if (lang == "") lang = _lang;
 
+                var ignoresecurityfilter = LocalUtils.CheckRights();
+
+
                 if (Utils.IsNumeric(itemid))
                 {
                     // get DB record
@@ -1505,7 +1508,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                         // do langauge record
                         nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
-                        nbi.UpdateAjax(strIn);
+                        nbi.UpdateAjax(strIn,"", ignoresecurityfilter);
                         nbi.TextData = ""; // clear any output DB caching
                         objCtrl.Update(nbi);
 
@@ -1547,6 +1550,8 @@ namespace Nevoweb.DNN.NBrightMod
                     var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                     if (lang == "") lang = _lang;
 
+                    var ignoresecurityfilter = LocalUtils.CheckRights();
+
                     if (Utils.IsNumeric(itemid))
                     {
                         // get DB record
@@ -1560,7 +1565,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                             // do langauge record
                             nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
-                            nbi.UpdateAjax(ajaxData);
+                            nbi.UpdateAjax(ajaxData,"", ignoresecurityfilter);
                             objCtrl.Update(nbi);
 
                             objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
