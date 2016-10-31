@@ -1,1 +1,23 @@
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=fr"></script>
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
+@using System.Linq
+@using NBrightDNN
+@using NBrightCore
+@using NBrightCore.common
+
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+
+    var currentlang = Utils.GetCurrentCulture();
+    if (String.IsNullOrEmpty(currentlang) || currentlang.Length < 2)
+    {
+        currentlang = "en";
+    }
+    else
+    {
+        currentlang = currentlang.Substring(0, 2);
+    }
+}
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=@(currentlang)&key=@Model.GetSetting("key")"></script>

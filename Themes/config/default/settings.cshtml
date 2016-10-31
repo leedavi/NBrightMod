@@ -28,19 +28,19 @@
     <div>
         <div id="themedata">
             <input id="moduleid" type="hidden" value="@info.ModuleId"/>
-            <div>
+            <div class='dnnFormItem'>
                 @DnnLabel("lblthemefolder", "Settings.themefolder")
                 @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
             </div>
-            <div>
+            <div class='dnnFormItem'>
                 @DnnLabel("lblSourceData", "Settings.sourcedata")
                 @NBrightModSelectList(info, "genxml/dropdownlist/datasourceref", " ")
             </div>
-            <div style="display: none;">
+            <div class='dnnFormItem' style="display: none;">
                 @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
                 @TextBox(info, "genxml/textbox/settinguploadfolder","","")
             </div>
-            <div>
+            <div class='dnnFormItem'>
                 @DnnLabel("lbldebugmode", "Settings.lbldebugmode")
                 @CheckBox(info, "genxml/checkbox/debugmode", "", "", false)
             </div>           
@@ -50,10 +50,10 @@
     <hr/>
     <div id="settingsdata"></div>
 
-    <div>
+    <div class='dnnFormItem'>
         Ref: @info.GetXmlProperty("genxml/hidden/modref")
     </div>
-    <div>
+    <div class='dnnFormItem'>
         <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
     </div>
 

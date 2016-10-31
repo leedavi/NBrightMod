@@ -73,7 +73,7 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = "<root>" + UserController.Instance.GetCurrentUserInfo().Username + "</root>";
                     break;
                 case "getsettings":
-                    strOut = GetSettings(context);
+                    strOut = GetSettings(context,true);
                     break;
                 case "gettheme":
                     strOut = GetSettings(context);

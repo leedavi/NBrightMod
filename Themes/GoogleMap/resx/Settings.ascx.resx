@@ -144,4 +144,7 @@
   <data name="infowidth.Text" xml:space="preserve">
     <value>Caption Panel Width</value>
   </data>
+  <data name="key.Text" xml:space="preserve">
+    <value>Key</value>
+  </data>
 </root>
