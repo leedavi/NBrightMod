@@ -18,11 +18,11 @@
 
 @if (info.GetXmlPropertyBool("genxml/modulelevel"))
 {
-    <h3>@ResourceKey("Edit.modulelevel")</h3>
+    <h3>@ResourceKey("Edit.modulelevel") (@info.GetXmlProperty("genxml/themefolder"))</h3>
 }
 else
 {
-    <h3>@ResourceKey("Edit.portallevel")</h3>
+    <h3>@ResourceKey("Edit.portallevel") (@info.GetXmlProperty("genxml/themefolder"))</h3>
 }
 
 <div class="NBM">
@@ -119,8 +119,21 @@ else
                     }
                 }
 
-
+                
             </div>
+
+            @if (info.GetXmlProperty("genxml/templrelpath") != "")
+            {
+                <div>
+                    @info.GetXmlProperty("genxml/templrelpath")
+                </div>
+                if (info.GetXmlProperty("genxml/templfullpath").ToLower().EndsWith(".css"))
+                {
+                    <div>
+                        <b>@ResourceKey("Edit.cssfilechange")</b>
+                    </div>
+                }
+            }
 
             <div id="simpletexteditor">
                 <div>

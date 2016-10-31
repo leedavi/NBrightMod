@@ -354,4 +354,7 @@
   <data name="count.Text" xml:space="preserve">
     <value>Count</value>
   </data>
+  <data name="cssfilechange.Text" xml:space="preserve">
+    <value>The page header templates for this module may need editing to use this .css template.</value>
+  </data>
 </root>
