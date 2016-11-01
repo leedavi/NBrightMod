@@ -63,4 +63,10 @@ function NBrightMod_nbxgetCompleted(e) {
 
 }
 
+function saveresxdata() {
+    // The resxdata is in list format we therefore need to convert CDATA, we can't do that in the template becuase the template itself will covert.
+    // There we use this function to place the required data format for passback in the correct field.
+    var xmlrtn3 = $.fn.genxmlajaxitems('#resxtextboxes > p', '.itemresx').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
+    $('#xmlupdateresx').val(xmlrtn3);
+}
 

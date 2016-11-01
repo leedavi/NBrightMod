@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 using DotNetNuke.Common;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using NBrightCore.common;
 using NBrightCore.render;
@@ -49,6 +50,10 @@ namespace Nevoweb.DNN.NBrightMod
                 Utils.RemoveCache("dnnsearchindexflag" + ModuleId);
                 LocalUtils.ClearRazorCache(ModuleId.ToString(""));
                 LocalUtils.ClearRazorSateliteCache(ModuleId.ToString(""));
+
+                // this should be available from DnnUtils, but use direct to save recompile.
+                DataCache.ClearPortalCache(PortalId, true);
+
                 var langparam = "";
                 if (DnnUtils.GetCultureCodeList().Count() > 1)
                 {

@@ -373,7 +373,8 @@ namespace NBrightMod.render
 
         private Boolean isPortalTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + info.Lang + filename + "']");
+            var lang = info.GetXmlProperty("genxml/editlang");
+            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + lang + filename + "']");
             if (nod != null) return true;
             return false;
         }
@@ -386,11 +387,42 @@ namespace NBrightMod.render
 
         private Boolean isModuleTemplate(NBrightInfo info, String filename)
         {
-            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + info.Lang + filename + "']");
+            var lang = info.GetXmlProperty("genxml/editlang");
+            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + lang + filename + "']");
             if (nod != null)
             {
                 return true;
             }
+            return false;
+        }
+
+        public Boolean IsModuleDefaultTemplate(NBrightInfo info, String filename)
+        {
+            if (isModuleDefaultTemplate(info, filename)) return true;
+            return false;
+        }
+        private Boolean isModuleDefaultTemplate(NBrightInfo info, String filename)
+        {
+            if (info.GetXmlProperty("genxml/editlang") == "" || info.GetXmlProperty("genxml/editlang") == "none") return false;
+            var nod = info.XMLDoc.SelectSingleNode("genxml/modulefiles[file='" + filename + "']");
+            if (nod != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public Boolean IsPortalDefaultTemplate(NBrightInfo info, String filename)
+        {
+            if (isPortalDefaultTemplate(info, filename)) return true;
+            return false;
+        }
+
+        private Boolean isPortalDefaultTemplate(NBrightInfo info, String filename)
+        {
+            if (info.GetXmlProperty("genxml/editlang") == "" || info.GetXmlProperty("genxml/editlang") == "none") return false;
+            var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + filename + "']");
+            if (nod != null) return true;
             return false;
         }
 

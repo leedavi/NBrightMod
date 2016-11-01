@@ -1,10 +1,12 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
 @using System.Linq
+@using System.Xml
 @using NBrightDNN
 
 @{
     var info = (NBrightInfo)Model.List.First();
-    var flaglang = info.Lang;
+    var flaglang = info.GetXmlProperty("genxml/editlang");
     if (flaglang == "")
     {
         flaglang = "none";
@@ -13,8 +15,10 @@
 }
 
 <input id="lang" type="hidden" value="@info.Lang"></input>
-<input id="editlang" type="hidden" value="" />
+<input id="editlang" type="hidden" value="@info.GetXmlProperty("genxml/editlang")" />
 <input id="currentedittab" type="hidden" value="@info.GetXmlProperty("genxml/hidden/currentedittab")" />
+<input id="resxfilename" type="hidden" value="@info.GetXmlProperty("genxml/resxfilename")" />
+
 
 @if (info.GetXmlPropertyBool("genxml/modulelevel"))
 {
@@ -82,7 +86,7 @@ else
                 {
                     <button id='deleteportaltempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportaltempl")</button>
                 }
-                @if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")))
+                @if (IsModuleTemplate(info, info.GetXmlProperty("genxml/templfilename")) && info.GetXmlPropertyBool("genxml/modulelevel"))
                 {
                     <button id='deletemoduletempl' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deletemoduletempl")</button>
                 }
@@ -99,11 +103,25 @@ else
                     {
                         if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
                         {
-                            @ResourceKey("Edit.portaltemplateloaded")
+                            if (IsPortalDefaultTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
+                            {
+                                @ResourceKey("Edit.defaulttemplateloaded")
+                            }
+                            else
+                            {
+                                @ResourceKey("Edit.portaltemplateloaded")
+                            }
                         }
                         else
                         {
-                            @ResourceKey("Edit.systemtemplateloaded")
+                            if (IsModuleDefaultTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
+                            {
+                                @ResourceKey("Edit.defaulttemplateloaded")
+                            }
+                            else
+                            {
+                                @ResourceKey("Edit.systemtemplateloaded")
+                            }
                         }
                     }
                 }
@@ -111,11 +129,18 @@ else
                 {
                     if (IsPortalTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
                     {
-                        @ResourceKey("Edit.portaltemplateloaded")
+                            @ResourceKey("Edit.portaltemplateloaded")
                     }
                     else
                     {
-                        @ResourceKey("Edit.systemtemplateloaded")
+                        if (IsPortalDefaultTemplate(info, info.GetXmlProperty("genxml/displayfilename")))
+                        {
+                            @ResourceKey("Edit.defaulttemplateloaded")
+                        }
+                        else
+                        {
+                            @ResourceKey("Edit.systemtemplateloaded")
+                        }
                     }
                 }
 
@@ -145,8 +170,13 @@ else
         </div>
 
         <div id="tabs-2">
+
+            <!-- input used to return XML of resx fields --> 
+            <input id="xmlupdateresx" type="hidden" value=""/>
+
             <div class='buttons'>
                 <button id='savedataresx' type='button' class='savedata btn btn-success'><span class='glyphicon glyphicon-save'></span>@ResourceKey("Edit.save")</button>
+                <button id='add_resxtextbox' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span>@ResourceKey("Edit.add")</button>
                 @if (info.GetXmlPropertyBool("genxml/resxportal"))
                 {
                     <button id='deleteportalresx' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span>@ResourceKey("Edit.deleteportalresx")</button>
@@ -156,15 +186,28 @@ else
                 <div>
                     <span class='input-group-addon'><img src='/Images/Flags/@(flaglang).gif' width='24px' /></span>
                 </div>
-                <textarea rows="50" id="resxdata" class="" update="lang" type="text" style="height: 750px; width: 100%">@info.GetXmlProperty("genxml/resxdata")</textarea>
+                <br/>
+                <div id="resxtextboxes">
+                    @{
+                        var nodList = info.XMLDoc.SelectNodes("genxml/resxdata/genxml/item");
+                        var lp = 1;
+                        foreach (XmlNode nod in nodList)
+                        {
+                            <p class="itemresx">
+                                <input type="text" id="resxkey@(lp)" size="50" value="@(nod.SelectSingleNode("key").InnerText)" update="save"/>&nbsp;<input type="text" id="resxvalue@(lp)" size="80" value="@(nod.SelectSingleNode("value").InnerText)" update="save"/>
+                            </p>
+                            lp += 1;
+                        }
+
+                    }
+                </div>
+
             </div>
 
         </div>
     </div>
 
 </div>
-
-
 
 
 

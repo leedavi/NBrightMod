@@ -357,4 +357,7 @@
   <data name="cssfilechange.Text" xml:space="preserve">
     <value>The page header templates for this module may need editing to use this .css template.</value>
   </data>
+  <data name="defaulttemplateloaded.Text" xml:space="preserve">
+    <value>Default template loaded</value>
+  </data>
 </root>

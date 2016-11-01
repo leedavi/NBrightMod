@@ -27,7 +27,6 @@
         <input id="moduleid" type="hidden" value="@Model.ModuleId"/>
         <input id="updatetype" type="hidden" value=""/>
         <input id="templfilename" type="hidden" value="@info.GetXmlProperty("genxml/templfilename")" />  
-        <input id="resxfilename" type="hidden" value="@info.GetXmlProperty("genxml/resxfilename")" />
         <input id="modulelevel" type="hidden" value="0" />
         
 
@@ -98,29 +97,29 @@
         <script>
             $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
 
-            $(document).ready(function () {
+            $(document).ready(function() {
 
-                $('#nextbutton').click(function () {
+                $('#nextbutton').click(function() {
                     $('#modulelevel').val('0');
                     $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
                     NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
 
-                $('#refreshbutton').click(function () {
+                $('#refreshbutton').click(function() {
                     location.reload();
                 });
 
-                $('#makethemesysbutton').click(function () {
+                $('#makethemesysbutton').click(function() {
                     NBrightMod_nbxget('makethemesys', '#nbrightmodthemedata', '#edittemplatediv');
                 });
-                $('#exportthemebutton').click(function () {
+                $('#exportthemebutton').click(function() {
                     NBrightMod_nbxget('exporttheme', '#nbrightmodthemedata', '#edittemplatediv');
                 });
-                $('#deletethemebutton').click(function () {
+                $('#deletethemebutton').click(function() {
                     NBrightMod_nbxget('deletetheme', '#nbrightmodthemedata', '#edittemplatediv');
                 });
 
-                $('#editmodtheme').click(function () {
+                $('#editmodtheme').click(function() {
                     $('.processing').show();
                     $('#updatetype').val('edit');
                     $('#step1').hide();
@@ -131,12 +130,12 @@
                     $('#exportthemebutton').hide();
                     $('.themefolder').hide();
                     $('.portalthemefolder').hide();
-                    $('#modulelevel').val('1'); 
+                    $('#modulelevel').val('1');
                     $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
                     NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
 
-                $('#edittheme').click(function () {
+                $('#edittheme').click(function() {
                     $('#updatetype').val('edit');
                     $('#step1').hide();
                     $('#step2').show();
@@ -147,7 +146,7 @@
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
                 });
-                $('#createnew').click(function () {
+                $('#createnew').click(function() {
                     $('#updatetype').val('new');
                     $('#step1').hide();
                     $('#step2').show();
@@ -159,7 +158,7 @@
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
                 });
-                $('#makethemesys').click(function () {
+                $('#makethemesys').click(function() {
                     $('#updatetype').val('sys');
                     $('#step1').hide();
                     $('#step2').show();
@@ -171,7 +170,7 @@
                     $('.portalthemefolder').show();
                 });
 
-                $('#exporttheme').click(function () {
+                $('#exporttheme').click(function() {
                     $('#updatetype').val('export');
                     $('#step1').hide();
                     $('#step2').show();
@@ -184,7 +183,7 @@
                     $('.portalthemefolder').hide();
                 });
 
-                $('#deletetheme').click(function () {
+                $('#deletetheme').click(function() {
                     $('#updatetype').val('del');
                     $('#step1').hide();
                     $('#step2').show();
@@ -198,12 +197,12 @@
 
 
                 // activate file upload 
-                $('.fileupload-button').click(function () {
+                $('.fileupload-button').click(function() {
                     $('#fileupload').trigger('click');
                 });
 
                 // activate file upload
-                $('#fileupload').change(function () {
+                $('#fileupload').change(function() {
                     $('.processing').show();
                     var fileSelect = document.getElementById('fileupload');
 
@@ -231,7 +230,7 @@
                     xhr.open('POST', '/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=importtheme', true);
 
                     // Set up a handler for when the request finishes.
-                    xhr.onload = function () {
+                    xhr.onload = function() {
                         $('.processing').hide();
                         if (xhr.status != 200) {
                             alert('An error occurred!');
@@ -248,12 +247,12 @@
 
 
                 // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
-                $('#exitedit').click(function () {
+                $('#exitedit').click(function() {
                     window.location.href = $('#exiturl').val();
                 });
 
 
-                $('#edittemplatediv').change(function () {
+                $('#edittemplatediv').change(function() {
                     $('#optionselectdiv').hide();
                     $('#edittemplatediv').show();
                 });
@@ -276,34 +275,26 @@
                         mode: "text/html"
                     });
 
-                    var editorxml = CodeMirror.fromTextArea($("textarea[id$='resxdata']")[0], {
-                        lineNumbers: true,
-                        styleActiveLine: true,
-                        matchBrackets: true,
-                        autoCloseTags: true,
-                        lineWrapping: true,
-                        mode: "xml"
-                    })
                     $('.selectsnippet').tooltip({
                         position: { my: "left+15 center", at: "right center" }
                     });
-                    $('.selectsnippet').click(function () {
+                    $('.selectsnippet').click(function() {
                         var snip = $('#' + $(this).attr('snipname')).html();
                         var position = editortext.getCursor();
                         editortext.replaceRange(snip, CodeMirror.Pos(position.line))
                     });
 
-                    
+
                     $("#tabs").tabs({
-                        activate: function (event, ui) {
+                        activate: function(event, ui) {
                             $('#currentedittab').val(ui.newTab.index());
-                        }
-                        , active: $('#currentedittab').val()
+                        },
+                        active: $('#currentedittab').val()
                     });
-                    
+
                     $('.savedata').click(function () {
+                        saveresxdata();
                         $('#simpletext').val(editortext.getValue());
-                        $('#resxdata').val(editorxml.getValue());
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                     });
 
@@ -320,6 +311,8 @@
                     });
 
                     $('.selecteditlanguage').click(function () {
+                        saveresxdata();
+                        $('#simpletext').val(editortext.getValue());
                         NBrightMod_nbxget('savetemplatedata', '#nbrightmodthemedata');
                         $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
                     });
@@ -330,7 +323,15 @@
 
                     $('#sideeditmenu').multilevelpushmenu({
 						menuHeight: '100%'
-					});
+                    });
+
+                    // RESX add dynamic textboxes
+                    var resxtextcount = $('#resxtextboxes p').size() + 1;
+
+                    $('#add_resxtextbox').click(function () {
+                        $('<p class="itemresx" ><input type="text" id="resxkey' + resxtextcount + '" size="50" value="" update="save" />&nbsp;<input type="text" id="resxvalue' + resxtextcount + '" size="80" value="" update="save" /></p>').appendTo("#resxtextboxes");
+                        resxtextcount++;
+                    });
 
                 }
 

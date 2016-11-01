@@ -61,6 +61,7 @@
       <HintPath>..\..\..\bin\System.Web.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -126,9 +127,8 @@
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.resx" />
-    <EmbeddedResource Include="Themes\Documents\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\Documents\resx\theme.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\Documents\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\View.ascx.fr-FR.resx" />

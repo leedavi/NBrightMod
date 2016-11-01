@@ -1,11 +1,13 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Resources;
 using System.Text;
 using System.Web;
 using System.Web.Management;
@@ -36,7 +38,6 @@ namespace Nevoweb.DNN.NBrightMod
         private readonly JavaScriptSerializer _js = new JavaScriptSerializer();
         private String _lang = "";
         private String _itemid = "";
-        private String _resxdatadefault = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<root>\r\n<data name=\"text.Text\" xml:space=\"preserve\"><value>Text</value></data>\r\n</root>";
 
         public void ProcessRequest(HttpContext context)
         {
@@ -692,35 +693,39 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
             // get resxdata for theme.ascx.**-**.resx
-            var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+            var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+            resxfilename = "theme.ascx." + editlang + ".resx";
+            if (editlang == "none" || editlang == "") resxfilename = "theme.ascx.resx";
+            var resxfilenameread = resxfilename;
+            if (!File.Exists(sourcesystemresx + "\\" + resxfilenameread)) resxfilenameread = "theme.ascx.resx";
 
-            if (resxfilename == "" || !resxfilename.StartsWith("theme."))
+            var resxdata = "<genxml>";
+            if (File.Exists(sourcesystemresx + "\\" + resxfilenameread))
             {
-                resxfilename = "theme.ascx." + editlang + ".resx";
-                if (editlang == "none" || editlang == "")
+                ResXResourceReader rsxr = new ResXResourceReader(sourcesystemresx + "\\" + resxfilenameread);
+                var resxlist = new List<DictionaryEntry>();
+                foreach (DictionaryEntry d in rsxr)
                 {
-                    resxfilename = "theme.ascx.resx";
+                    resxlist.Add(d);
+                    resxdata += "<item><key>" + d.Key + "</key><value>" + d.Value + "</value></item>";
                 }
+                rsxr.Close();
             }
-            var isportalresxlevel = "1";
-            var resxdata = Utils.ReadFile(sourceresx + "\\" + resxfilename);
-            if (resxdata == "")
-            {
-                // set simple base if no file exists
-                resxdata = _resxdatadefault;
-                isportalresxlevel = "0";
-            }
-            templData.Lang = editlang;
+            resxdata += "</genxml>";
+
+            templData.SetXmlProperty("genxml/resxdata", "");
+            templData.AddXmlNode(resxdata, "genxml", "genxml/resxdata");
+
+            templData.Lang = _lang;
+            templData.SetXmlProperty("genxml/editlang", editlang);
             templData.SetXmlProperty("genxml/templtext", razorTempl2);
             templData.SetXmlProperty("genxml/templfullpath", templfullpath);
             templData.SetXmlProperty("genxml/templrelpath", templrelpath);            
-            templData.SetXmlProperty("genxml/resxdata", resxdata);
             templData.SetXmlProperty("genxml/templfilename", templfilename);
             var displayname = templfilename;
             if (moduleref != "") displayname = templfilename.Replace(moduleref, "");
             templData.SetXmlProperty("genxml/displayfilename", displayname);
             templData.SetXmlProperty("genxml/resxfilename", resxfilename);
-            templData.SetXmlProperty("genxml/resxportal", isportalresxlevel);
             templData.SetXmlProperty("genxml/hidden/currentedittab", currentedittab);
             templData.SetXmlProperty("genxml/themefolder", themefolder);
             
@@ -802,7 +807,7 @@ namespace Nevoweb.DNN.NBrightMod
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
             var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
-            var fldrlang = lang;
+            var fldrlang = editlang;
             if (fldrlang == "") fldrlang = "default";
             var resxfilename = ajaxInfo.GetXmlProperty("genxml/hidden/resxfilename");
             var simpletext = ajaxInfo.GetXmlProperty("genxml/textbox/simpletext");
@@ -850,7 +855,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var razorTempl2 = "";
                 if (templfilename.EndsWith(".cshtml"))
                 {
-                    razorTempl2 = LocalUtils.GetTemplateData(fulltemplfilename, lang, modInfo.ToDictionary());
+                    razorTempl2 = LocalUtils.GetTemplateData(fulltemplfilename, editlang, modInfo.ToDictionary());
                 }
                 else
                 {
@@ -923,23 +928,28 @@ namespace Nevoweb.DNN.NBrightMod
 
                 }
 
-                var sourceresx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
-                var existingresxdata = Utils.ReadFile(sourceresx + "\\" + resxfilename);
-                var resxdata = ajaxInfo.GetXmlProperty("genxml/textbox/resxdata");
-                var resxdatatest = LocalUtils.RemoveWhitespace(resxdata);
+                // RESX update resx data returned
+                var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+                var xmlupdateresx = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateresx"); // get data pased back by ajax
+                xmlupdateresx = GenXmlFunctions.DecodeCDataTag(xmlupdateresx); // convert CDATA
+                var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx,""); // Convert to genxml format
 
-                if (resxdatatest != LocalUtils.RemoveWhitespace(_resxdatadefault) && resxdatatest != LocalUtils.RemoveWhitespace(existingresxdata))
+                var nbi = new NBrightInfo();
+                nbi.XMLData = xmlData;
+                // set simple base if no file exists
+                using (ResXResourceWriter resx = new ResXResourceWriter(sourcesystemresx + "\\" + resxfilename))
                 {
-                    Utils.CreateFolder(sourceresx);
-                    if (lang == "")
+                    var lp = 1;
+                    while (nbi.XMLDoc != null && nbi.XMLDoc.SelectSingleNode("genxml/textbox/resxkey" + lp) != null)
                     {
-                            File.WriteAllText(sourceresx + "\\" + "\\theme.ascx.resx", resxdata);
-                    }
-                    else
-                    {
-                        File.WriteAllText(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx", resxdata);
-                    }
+                        if (nbi.GetXmlProperty("genxml/textbox/resxkey" + lp) != "")
+                        {
+                            resx.AddResource(nbi.GetXmlProperty("genxml/textbox/resxkey" + lp), nbi.GetXmlProperty("genxml/textbox/resxvalue" + lp));
+                        }
+                        lp += 1;
+                    }                    
                 }
+
 
             }
             return "OK";
@@ -952,7 +962,7 @@ namespace Nevoweb.DNN.NBrightMod
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
-            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
             var fldrlang = lang;
             if (fldrlang == "") fldrlang = "default";
 
@@ -1019,7 +1029,7 @@ namespace Nevoweb.DNN.NBrightMod
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
-            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
             var fldrlang = lang;
             if (fldrlang == "") fldrlang = "default";
 
