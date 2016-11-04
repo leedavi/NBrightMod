@@ -765,6 +765,14 @@ namespace NBrightMod.common
                     foreach (var datasource in datalist2)
                     {
                         var upd = false;
+
+                        // check for invalid empty record.
+                        if (datasource.XMLDoc == null)
+                        {
+                            datasource.ValidateXmlFormat();
+                            upd = true;
+                        }
+
                         var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
                         if (imgList != null)
                         {

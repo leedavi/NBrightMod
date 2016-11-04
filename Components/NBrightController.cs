@@ -105,57 +105,61 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         var objPortal = PortalController.Instance.GetPortal(objModInfo.PortalID);
 
                         //realign images
-                        var nodl = nbi.XMLDoc.SelectNodes("genxml/imgs/genxml");
-                        if (nodl != null)
+                        if (nbi.XMLDoc != null)
                         {
-                            var lp = 1;
-                            foreach (XmlNode xNod in nodl)
-                            {
-                                // image url
-                                var imgurlnod = xNod.SelectSingleNode("genxml/hidden/imageurl");
-                                if (imgurlnod != null && imgurlnod.InnerText != "")
-                                {
-                                    var imgurl = imgurlnod.InnerText;
-                                    imgurl = imgurl.Replace("NBrightUpload", "*");
-                                    var imgsplit = imgurl.Split('*');
-                                    if (imgsplit.Length == 2)
-                                    {
-                                        imgurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
-                                        var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
-                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", imgurl);
-                                        nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
-                                    }
-                                }
-                                lp += 1;
-                            }
-                        }
 
-                        //realign files
-                        var nodfl = nbi.XMLDoc.SelectNodes("genxml/files/genxml");
-                        if (nodfl != null)
-                        {
-                            var lp = 1;
-                            foreach (XmlNode xNod in nodfl)
+                            var nodl = nbi.XMLDoc.SelectNodes("genxml/imgs/genxml");
+                            if (nodl != null)
                             {
-                                // image url
-                                var fileurlnod = xNod.SelectSingleNode("genxml/hidden/fileurl");
-                                if (fileurlnod != null && fileurlnod.InnerText != "")
+                                var lp = 1;
+                                foreach (XmlNode xNod in nodl)
                                 {
-                                    var fileurl = fileurlnod.InnerText;
-                                    fileurl = fileurl.Replace("NBrightUpload", "*");
-                                    var filesplit = fileurl.Split('*');
-                                    if (filesplit.Length == 2)
+                                    // image url
+                                    var imgurlnod = xNod.SelectSingleNode("genxml/hidden/imageurl");
+                                    if (imgurlnod != null && imgurlnod.InnerText != "")
                                     {
-                                        fileurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
-                                        var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
-                                        nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
-                                        nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath", filepath);
+                                        var imgurl = imgurlnod.InnerText;
+                                        imgurl = imgurl.Replace("NBrightUpload", "*");
+                                        var imgsplit = imgurl.Split('*');
+                                        if (imgsplit.Length == 2)
+                                        {
+                                            imgurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
+                                            var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
+                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", imgurl);
+                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
+                                        }
                                     }
+                                    lp += 1;
                                 }
-                                lp += 1;
                             }
-                        }
 
+                            //realign files
+                            var nodfl = nbi.XMLDoc.SelectNodes("genxml/files/genxml");
+                            if (nodfl != null)
+                            {
+                                var lp = 1;
+                                foreach (XmlNode xNod in nodfl)
+                                {
+                                    // image url
+                                    var fileurlnod = xNod.SelectSingleNode("genxml/hidden/fileurl");
+                                    if (fileurlnod != null && fileurlnod.InnerText != "")
+                                    {
+                                        var fileurl = fileurlnod.InnerText;
+                                        fileurl = fileurl.Replace("NBrightUpload", "*");
+                                        var filesplit = fileurl.Split('*');
+                                        if (filesplit.Length == 2)
+                                        {
+                                            fileurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
+                                            var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
+                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
+                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath", filepath);
+                                        }
+                                    }
+                                    lp += 1;
+                                }
+                            }
+
+                        }
                         // get new GUIDKey for settings records
                         if (nbi.TypeCode == "SETTINGS")
                         {
