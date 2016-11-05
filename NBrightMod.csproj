@@ -156,6 +156,8 @@
     <EmbeddedResource Include="Themes\FAQ\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\FAQ\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\FAQ\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\SecureHoliday\resx\Default.ascx.fr-FR.resx" />
+    <EmbeddedResource Include="Themes\SecureHoliday\resx\Default.ascx.resx" />
     <EmbeddedResource Include="Themes\SimpleArticlesSat\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\SimpleArticlesSat\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\SimpleArticles\resx\Edit.ascx.resx" />
@@ -172,6 +174,7 @@
     <Content Include="Themes\config\css\jquery.multilevelpushmenu.css" />
     <Content Include="Themes\config\default\snippets.xml" />
     <Content Include="Themes\config\js\jquery.multilevelpushmenu.min.js" />
+    <Content Include="Themes\config\js\jquery.datepick.xlang.eur.js" />
     <Content Include="Themes\ContactForm\img\asterisk.png" />
     <Content Include="Themes\ContactForm\img\invalid.png" />
     <Content Include="Themes\Documents\css\documents.css" />
@@ -194,6 +197,7 @@
     <Content Include="Themes\HtmlContent\img\fancybox_sprite%402x.png" />
     <Content Include="Themes\HtmlContent\img\fancybox_sprite.png" />
     <Content Include="Themes\HtmlContent\js\jquery.fancybox.pack.js" />
+    <Content Include="Themes\SecureHoliday\css\secureholiday.css" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -344,6 +348,10 @@
     <None Include="Themes\RichText\default\editfields.cshtml" />
     <None Include="Themes\RichText\default\editpageheader.cshtml" />
     <None Include="Themes\RichText\default\view.cshtml" />
+    <None Include="Themes\SecureHoliday\default\settings.cshtml" />
+    <None Include="Themes\SecureHoliday\default\view.cshtml" />
+    <None Include="Themes\SecureHoliday\default\viewpageheader.cshtml" />
+    <None Include="Themes\config\default\datepicker.cshtml" />
     <None Include="Themes\Shared\docs-shared-count.cshtml" />
     <None Include="Themes\Shared\docs-shared.cshtml" />
     <None Include="Themes\Shared\docs1-shared.cshtml" />
@@ -393,6 +401,7 @@
     <Folder Include="Themes\FlexsliderSat\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
+    <Folder Include="Themes\SecureHoliday\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
