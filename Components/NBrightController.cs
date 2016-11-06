@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Web;
 using System.Xml;
 using DotNetNuke.Common.Utilities;
@@ -59,6 +62,35 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
                 var settingsInfo = LocalUtils.GetSettings(ModuleId.ToString());
                 xmlOut += settingsInfo.ToXmlItem();
+
+                var themefolder = settingsInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
+                // get portal level AppTheme templates
+                var rtnfile = LocalUtils.ExportPortalTheme(themefolder);
+                if (rtnfile == "" || !File.Exists(rtnfile))
+                {
+                    System.IO.FileStream inFile = new System.IO.FileStream(rtnfile,System.IO.FileMode.Open,System.IO.FileAccess.Read);
+                    byte[] binaryData = new Byte[inFile.Length];
+                    long bytesRead = inFile.Read(binaryData, 0,(int)inFile.Length);
+                    inFile.Close();
+                    string base64String = System.Convert.ToBase64String(binaryData,0,binaryData.Length);
+
+                    xmlOut += "<exportzip>";
+                    xmlOut += base64String;
+                    xmlOut += "</exportzip>";
+                }
+
+                //theme.ascx.resx files
+                xmlOut += "<resxfiles>";
+
+                var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+                var resxfiles = Directory.GetFiles(sourcesystemresx, "theme.ascx*.resx");
+                foreach (var r in resxfiles)
+                {
+                    xmlOut += "<resxfile name='" + Path.GetFileName(r) + "'>";
+                    xmlOut += Utils.ReadFile(r);
+                    xmlOut += "</resxfile>";
+                }
+                xmlOut += "</resxfiles>";
 
             }
             xmlOut += "</root>";
@@ -126,7 +158,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                             imgurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
                                             var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
                                             nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", imgurl);
-                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
+                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath",
+                                                imgpath);
                                         }
                                     }
                                     lp += 1;
@@ -152,7 +185,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                             fileurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
                                             var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
                                             nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
-                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath", filepath);
+                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath",
+                                                filepath);
                                         }
                                     }
                                     lp += 1;
@@ -163,8 +197,10 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         // get new GUIDKey for settings records
                         if (nbi.TypeCode == "SETTINGS")
                         {
-                            nbi.UserId = -1; // flag to indicate a import has been done, used to trigger LocalUtils.ValidateModuleData
-                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", ""); // clear singlepageitemid, this will always change on import and needs to be reset.
+                            nbi.UserId = -1;
+                                // flag to indicate a import has been done, used to trigger LocalUtils.ValidateModuleData
+                            nbi.SetXmlProperty("genxml/hidden/singlepageitemid", "");
+                                // clear singlepageitemid, this will always change on import and needs to be reset.
 
                             // set new upload paths
                             nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
@@ -180,7 +216,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var link1 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATA");
                 foreach (var nbi in link1)
                 {
-                    var link2 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATALANG", " and NB1.parentitemid = " + nbi.GUIDKey);
+                    var link2 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATALANG",
+                        " and NB1.parentitemid = " + nbi.GUIDKey);
                     foreach (var nbi2 in link2)
                     {
                         nbi2.ParentItemId = nbi.ItemID;
@@ -194,12 +231,89 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var settings = LocalUtils.GetSettings(moduleId.ToString(""), false);
                 if (settings != null)
                 {
-                    var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                        var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
                     if (newsinglepageflag && link1.Count > 0)
                     {
                         // set single item to first item in list.
                         settings.SetXmlProperty("genxml/hidden/singlepageitemid", link1[0].ItemID.ToString(""));
                         objCtrl.Update(settings);
+                    }
+
+                    var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
+                    if (theme != "")
+                    {
+
+                        // import theme
+                        var xmlNod = xmlDoc.SelectSingleNode("root/exportzip");
+                        if (xmlNod != null)
+                        {
+                            var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + theme + ".zip";
+                            Utils.SaveBase64ToFile(zipFile, xmlNod.InnerText);
+                            LocalUtils.ImportPortalTheme(zipFile);
+                        }
+
+                        // merge/save resx files
+                        var nodfl = xmlDoc.SelectNodes("genxml/resxfiles/resxfile");
+                        if (nodfl != null)
+                        {
+                            foreach (XmlNode xNod in nodfl)
+                            {
+                                if (xNod.Attributes["name"] != null)
+                                {
+                                    var fname = xNod.Attributes["name"].InnerText;
+                                    var fdata = xNod.InnerText;
+
+                                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                                    var systhemeFileName = controlMapPath + "\\Themes\\" + theme + "\\" + fname;
+                                    if (File.Exists(systhemeFileName))
+                                    {
+                                        // save resx temp file
+
+                                        Utils.SaveBase64ToFile(systhemeFileName + ".tmp", fdata);
+
+                                        var resxlist = new List<DictionaryEntry>();
+                                        // read temp resx file
+                                        if (File.Exists(systhemeFileName + ".tmp"))
+                                        {
+                                            ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
+                                            foreach (DictionaryEntry d in rsxr)
+                                            {
+                                                resxlist.Add(d);
+                                            }
+                                            rsxr.Close();
+                                            File.Delete(systhemeFileName + ".tmp");
+                                        }
+
+                                        // read resx file
+                                        if (File.Exists(systhemeFileName))
+                                        {
+                                            ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
+                                            foreach (DictionaryEntry d in rsxr)
+                                            {
+                                                resxlist.Add(d);
+                                            }
+                                            rsxr.Close();
+                                            File.Delete(systhemeFileName);
+                                        }
+
+                                        // merge resx file
+                                        using (ResXResourceWriter resx = new ResXResourceWriter(systhemeFileName))
+                                        {
+                                            foreach (var d in resxlist)
+                                            {
+                                                resx.AddResource(d.Key.ToString(), d.Value.ToString());
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        // save resx file
+                                        Utils.SaveBase64ToFile(systhemeFileName,fdata);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

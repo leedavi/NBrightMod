@@ -820,6 +820,130 @@ namespace NBrightMod.common
 
         }
 
+
+        public static string ExportPortalTheme(string theme)
+        {
+            if (theme != "")
+            {
+                var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+
+                if (!Directory.Exists(portalthemeFolderName)) return "";
+
+                // export from portal level, so save export.config
+                var exportconfig = new NBrightInfo(true);
+                exportconfig.SetXmlProperty("genxml/portallevel", "true");
+                exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
+                exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
+                exportconfig.SetXmlProperty("genxml/systhemefoldername", "");
+                exportconfig.SetXmlProperty("genxml/portalthemefoldername", portalthemeFolderName);
+                exportconfig.SetXmlProperty("genxml/portalrelfolder", PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" + theme);
+                exportconfig.SetXmlProperty("genxml/systemrelfolder", "/DesktopModules/NBright/NBrightMod/Themes/" + theme);
+                exportconfig.SetXmlProperty("genxml/themename", theme);
+
+                Utils.SaveFile(portalthemeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
+
+                Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
+                var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + theme + ".zip";
+
+                DnnUtils.ZipFolder(portalthemeFolderName, zipFile);
+
+                return zipFile;
+            }
+            return "";
+        }
+
+        public static string ExportSystemTheme(string theme)
+        {
+            //get uploaded params
+            if (theme != "")
+            {
+                var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
+
+                if (!Directory.Exists(systhemeFolderName)) return "";
+
+                // export from portal level, so save export.config
+                var exportconfig = new NBrightInfo(true);
+
+                exportconfig.SetXmlProperty("genxml/portallevel", "false");
+                exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
+                exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
+                exportconfig.SetXmlProperty("genxml/systhemefoldername", systhemeFolderName);
+                exportconfig.SetXmlProperty("genxml/portalthemefoldername", "");
+                exportconfig.SetXmlProperty("genxml/portalrelfolder",PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" + theme);
+                exportconfig.SetXmlProperty("genxml/systemrelfolder","/DesktopModules/NBright/NBrightMod/Themes/" + theme);
+                exportconfig.SetXmlProperty("genxml/themename", theme);
+
+                Utils.SaveFile(systhemeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
+
+                Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
+                var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') +
+                              "\\NBrightTemp\\NBrightMod_Theme_" + theme + ".zip";
+
+                DnnUtils.ZipFolder(systhemeFolderName, zipFile);
+
+                return zipFile;
+            }
+            return "";
+
+        }
+
+        public static string ImportPortalTheme(String zipFileMapPath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(zipFileMapPath))
+                {
+                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
+                    if (!string.IsNullOrEmpty(themeName))
+                    {
+                        var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
+                        if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                        {
+                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                        }
+                        DnnUtils.UnZip(zipFileMapPath, themeFolderName);
+                        Utils.DeleteSysFile(zipFileMapPath);
+                        return "";
+                    }
+                    return "ERROR: Invalid Theme File Name";
+                }
+                return "ERROR: Upload Failed";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+        }
+
+        public static string ImportSystemTheme(String zipFileMapPath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(zipFileMapPath))
+                {
+                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
+                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                    var systhemeFolderName = controlMapPath + "\\Themes\\" + themeName;
+
+                    if (!string.IsNullOrEmpty(themeName))
+                    {
+                        DnnUtils.UnZip(zipFileMapPath, systhemeFolderName);
+                        Utils.DeleteSysFile(zipFileMapPath);
+                        return "";
+                    }
+                    return "ERROR: Invalid Theme File Name";
+                }
+                return "ERROR: Upload Failed";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+        }
+
+
         #endregion
 
     }

@@ -1370,45 +1370,16 @@ namespace Nevoweb.DNN.NBrightMod
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
                 var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
                 if (exportname == "") exportname = theme;
-
+                var rtnfile = "";
                 if (updatetype == "export" && theme != "")
                 {
-                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                    var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
-                    var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-
-                    // export from portal level, so save export.config
-                    var exportconfig = new NBrightInfo(true);
-
-                    var themeFolderName = systhemeFolderName;
-                    if (Directory.Exists(portalthemeFolderName))
+                    rtnfile = LocalUtils.ExportPortalTheme(theme);
+                    if (rtnfile == "" || !File.Exists(rtnfile))
                     {
-                        themeFolderName = portalthemeFolderName;
-                        exportconfig.SetXmlProperty("genxml/portallevel", "true");
+                        rtnfile = LocalUtils.ExportSystemTheme(theme);
                     }
-                    else
-                    {
-                        exportconfig.SetXmlProperty("genxml/portallevel", "false");
-                    }
-
-                    exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
-                    exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
-                    exportconfig.SetXmlProperty("genxml/systhemefoldername", systhemeFolderName);
-                    exportconfig.SetXmlProperty("genxml/portalthemefoldername", portalthemeFolderName);
-                    exportconfig.SetXmlProperty("genxml/portalrelfolder", PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" +  theme);
-                    exportconfig.SetXmlProperty("genxml/systemrelfolder", "/DesktopModules/NBright/NBrightMod/Themes/" + theme);
-                    exportconfig.SetXmlProperty("genxml/themename", theme);
-
-                    Utils.SaveFile(themeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
-
-                    Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
-                    var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";
-
-                    DnnUtils.ZipFolder(themeFolderName, zipFile);
-
-                    return zipFile;
                 }
-                return "";
+                return rtnfile;
             }
             catch (Exception ex)
             {
@@ -1419,31 +1390,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         private String DoThemeImport(String zipFileMapPath)
         {
-            try
-            {
-                if (!string.IsNullOrEmpty(zipFileMapPath))
-                {
-                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
-                    if (!string.IsNullOrEmpty(themeName))
-                    {
-                        var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
-                        if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
-                        {
-                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                        }
-                        DnnUtils.UnZip(zipFileMapPath, themeFolderName);
-                        Utils.DeleteSysFile(zipFileMapPath);
-                        return "";
-                    }
-                    return "ERROR: Invalid Theme File Name";
-                }
-                return "ERROR: Upload Failed";
-            }
-            catch (Exception ex)
-            {
-                return "ERROR: " + ex.ToString();
-            }
+            return LocalUtils.ImportPortalTheme(zipFileMapPath);
         }
 
 

@@ -127,7 +127,6 @@
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\View.ascx.resx" />
-    <EmbeddedResource Include="Themes\Documents\resx\theme.ascx.resx" />
     <EmbeddedResource Include="Themes\Documents\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\FancyboxGallery\resx\Settings.ascx.resx" />
