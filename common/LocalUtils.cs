@@ -2,10 +2,13 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Runtime.Caching;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.UI;
 using System.Xml;
@@ -321,7 +324,7 @@ namespace NBrightMod.common
             var rtnList = new List<NBrightInfo>();
             // get template
             var objCtrl = new NBrightDataController();
-            var dataList = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.TextData = 'NBrightMod'");
+            var dataList = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.TextData = 'NBrightMod'", " order by [XMLData].value('(/genxml/dropdownlist/themefolder)[1]', 'varchar(max)') ");
             foreach (var nbi in dataList)
             {
                 rtnList.Add(nbi);
@@ -667,22 +670,7 @@ namespace NBrightMod.common
                 var modInfo = DnnUtils.GetModuleinfo(tItem.ModuleId);
                 if (modInfo == null) // might happen if invalid module data is imported
                 {
-                    var l1 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "NBrightModDATA");
-                    foreach (var i in l1)
-                    {
-                        objCtrl.Delete(i.ItemID);
-                    }
-                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "NBrightModDATALANG");
-                    foreach (var i in l2)
-                    {
-                        objCtrl.Delete(i.ItemID);
-                    }
-                    var l3 = objCtrl.GetList(PortalSettings.Current.PortalId, tItem.ModuleId, "SETTINGS");
-                    foreach (var i in l3)
-                    {
-                        objCtrl.Delete(i.ItemID);
-                    }
-
+                    DeleteAllDataRecords(tItem.ModuleId);
                 }
                 else
                 {
@@ -888,7 +876,13 @@ namespace NBrightMod.common
 
         }
 
-        public static string ImportPortalTheme(String zipFileMapPath)
+        /// <summary>
+        /// Import zip file into portal level template area
+        /// </summary>
+        /// <param name="zipFileMapPath">Zip File MapPath</param>
+        /// <param name="extractFolderMapPath">Mappath to add to extract folder, if empty the default theme fodler under NBrightMod\Themes is used.</param>
+        /// <returns>String with status message</returns>
+        public static string ImportPortalTheme(String zipFileMapPath,string extractFolderMapPath = "")
         {
             try
             {
@@ -897,11 +891,22 @@ namespace NBrightMod.common
                     var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
                     if (!string.IsNullOrEmpty(themeName))
                     {
-                        var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
-                        if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                        var themeFolderName = extractFolderMapPath;
+                        if (extractFolderMapPath == "")
                         {
-                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                            Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                            themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
+                            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                            {
+                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                            }
+                        }
+                        else
+                        {
+                            if (!Directory.Exists(extractFolderMapPath))
+                            {
+                                Directory.CreateDirectory(extractFolderMapPath);
+                            }
                         }
                         DnnUtils.UnZip(zipFileMapPath, themeFolderName);
                         Utils.DeleteSysFile(zipFileMapPath);
@@ -941,6 +946,116 @@ namespace NBrightMod.common
             {
                 return "ERROR: " + ex.ToString();
             }
+        }
+
+        public static void DeleteAllDataRecords(int moduleid)
+        {
+            var objCtrl = new NBrightDataController();
+
+            var l1 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleid, "NBrightModDATA");
+            foreach (var i in l1)
+            {
+                objCtrl.Delete(i.ItemID);
+            }
+            var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleid, "NBrightModDATALANG");
+            foreach (var i in l2)
+            {
+                objCtrl.Delete(i.ItemID);
+            }
+            var l3 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+            foreach (var i in l3)
+            {
+                objCtrl.Delete(i.ItemID);
+            }
+
+        }
+
+        public static string ExportResxXml(string themefolder)
+        {
+            var xmlOut = "<resxfiles>";
+
+            var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+            var resxfiles = Directory.GetFiles(sourcesystemresx, "theme.ascx*.resx");
+            foreach (var r in resxfiles)
+            {
+                xmlOut += "<resxfile name='" + Path.GetFileName(r) + "'><![CDATA[";
+                var rData = Utils.ReadFile(r);
+                xmlOut += GenXmlFunctions.EncodeCDataTag(rData);
+                xmlOut += "]]></resxfile>";
+            }
+            xmlOut += "</resxfiles>";
+            return xmlOut;
+        }
+
+        public static void ImportResxXml(XmlNodeList nodList,string themefolder)
+        {
+            if (nodList != null)
+            {
+                foreach (XmlNode xNodResx in nodList)
+                {
+                    var resxXML = xNodResx.InnerXml.Replace("<![CDATA[", "").Replace("]]>", "");
+                    resxXML = GenXmlFunctions.DecodeCDataTag(resxXML);
+                    var xmlDocresx = new XmlDocument();
+                    xmlDocresx.LoadXml(resxXML);
+
+                    var xNod = xmlDocresx.SelectSingleNode("/resxfile");
+                    if (xNod?.Attributes?["name"] != null)
+                    {
+                        var fname = xNod.Attributes["name"].InnerText;
+                        var fdata = xNod.InnerText;
+
+                        var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                        var systhemeFileName = controlMapPath + "\\Themes\\" + themefolder + "\\" + fname;
+                        if (File.Exists(systhemeFileName))
+                        {
+                            // save resx temp file
+
+                            Utils.SaveBase64ToFile(systhemeFileName + ".tmp", fdata);
+
+                            var resxlist = new List<DictionaryEntry>();
+                            // read temp resx file
+                            if (File.Exists(systhemeFileName + ".tmp"))
+                            {
+                                ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
+                                foreach (DictionaryEntry d in rsxr)
+                                {
+                                    resxlist.Add(d);
+                                }
+                                rsxr.Close();
+                                File.Delete(systhemeFileName + ".tmp");
+                            }
+
+                            // read resx file
+                            if (File.Exists(systhemeFileName))
+                            {
+                                ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
+                                foreach (DictionaryEntry d in rsxr)
+                                {
+                                    resxlist.Add(d);
+                                }
+                                rsxr.Close();
+                                File.Delete(systhemeFileName);
+                            }
+
+                            // merge resx file
+                            using (ResXResourceWriter resx = new ResXResourceWriter(systhemeFileName))
+                            {
+                                foreach (var d in resxlist)
+                                {
+                                    resx.AddResource(d.Key.ToString(), d.Value.ToString());
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            // save resx file
+                            Utils.SaveBase64ToFile(systhemeFileName, fdata);
+                        }
+                    }
+                }
+            }
+
         }
 
 

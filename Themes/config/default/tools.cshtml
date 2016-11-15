@@ -12,6 +12,9 @@
     {
         langparam = "&language=" + @Model.GetUrlParam("language");
     }
+
+    var info = (NBrightInfo)Model.List.First();
+
 }
 <input id="exiturl" type="hidden" value="//@WebsiteUrl("tabid=" + tabid + langparam)"></input>
 
@@ -23,11 +26,20 @@
 
 <hr/>
 
+    <div class='dnnFormItem'>
+        Ref: @info.GetXmlProperty("genxml/hidden/modref")
+    </div>
+
     <div id="nbrightmodtoolsdata">
         <div>
             <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
         </div>
+    </div>
 
+    <hr/>
+
+    <div class='dnnFormItem'>
+        <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
     </div>
 
     <hr />
@@ -114,6 +126,10 @@
                     NBrightMod_nbxget('clonemodule', '#clonedata', '#clonemsg');
                 });
 
+                $('#resetsettings').click(function () {
+                    NBrightMod_nbxget('resetsettings', '#clonedata', '#toolsmsg');
+                });
+
                 // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
                 $('#exitedit').click(function () {
                     window.location.href = $('#exiturl').val();
@@ -127,6 +143,12 @@
                 if (e.cmd == 'clonemodule') {
                     // so something
                 }
+
+                if (e.cmd == 'resetsettings') {
+                    window.location.href = $('#exiturl').val();
+                }
+
+
             };
 
 

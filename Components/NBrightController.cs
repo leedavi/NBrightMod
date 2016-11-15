@@ -14,6 +14,7 @@ using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Search;
 using DotNetNuke.Services.Search.Entities;
 using NBrightCore.common;
+using NBrightCore.render;
 using NBrightDNN;
 using NBrightMod.common;
 
@@ -66,7 +67,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var themefolder = settingsInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 // get portal level AppTheme templates
                 var rtnfile = LocalUtils.ExportPortalTheme(themefolder);
-                if (rtnfile == "" || !File.Exists(rtnfile))
+                if (rtnfile != "" || File.Exists(rtnfile))
                 {
                     System.IO.FileStream inFile = new System.IO.FileStream(rtnfile,System.IO.FileMode.Open,System.IO.FileAccess.Read);
                     byte[] binaryData = new Byte[inFile.Length];
@@ -80,17 +81,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 }
 
                 //theme.ascx.resx files
-                xmlOut += "<resxfiles>";
-
-                var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
-                var resxfiles = Directory.GetFiles(sourcesystemresx, "theme.ascx*.resx");
-                foreach (var r in resxfiles)
-                {
-                    xmlOut += "<resxfile name='" + Path.GetFileName(r) + "'>";
-                    xmlOut += Utils.ReadFile(r);
-                    xmlOut += "</resxfile>";
-                }
-                xmlOut += "</resxfiles>";
+                xmlOut += LocalUtils.ExportResxXml(themefolder);
 
             }
             xmlOut += "</root>";
@@ -231,13 +222,16 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var settings = LocalUtils.GetSettings(moduleId.ToString(""), false);
                 if (settings != null)
                 {
-                        var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                    var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
                     if (newsinglepageflag && link1.Count > 0)
                     {
                         // set single item to first item in list.
                         settings.SetXmlProperty("genxml/hidden/singlepageitemid", link1[0].ItemID.ToString(""));
                         objCtrl.Update(settings);
                     }
+
+                    var extractFolder = Utils.GetUniqueKey();
+                    var extractMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\" + extractFolder;
 
                     var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
                     if (theme != "")
@@ -248,73 +242,57 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         if (xmlNod != null)
                         {
                             var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + theme + ".zip";
+                            if (!Directory.Exists(extractMapPath))
+                            {
+                                Directory.CreateDirectory(extractMapPath);
+                            }
                             Utils.SaveBase64ToFile(zipFile, xmlNod.InnerText);
-                            LocalUtils.ImportPortalTheme(zipFile);
+                            LocalUtils.ImportPortalTheme(zipFile,extractMapPath);
                         }
 
                         // merge/save resx files
                         var nodfl = xmlDoc.SelectNodes("genxml/resxfiles/resxfile");
-                        if (nodfl != null)
-                        {
-                            foreach (XmlNode xNod in nodfl)
-                            {
-                                if (xNod.Attributes["name"] != null)
-                                {
-                                    var fname = xNod.Attributes["name"].InnerText;
-                                    var fdata = xNod.InnerText;
-
-                                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                                    var systhemeFileName = controlMapPath + "\\Themes\\" + theme + "\\" + fname;
-                                    if (File.Exists(systhemeFileName))
-                                    {
-                                        // save resx temp file
-
-                                        Utils.SaveBase64ToFile(systhemeFileName + ".tmp", fdata);
-
-                                        var resxlist = new List<DictionaryEntry>();
-                                        // read temp resx file
-                                        if (File.Exists(systhemeFileName + ".tmp"))
-                                        {
-                                            ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
-                                            foreach (DictionaryEntry d in rsxr)
-                                            {
-                                                resxlist.Add(d);
-                                            }
-                                            rsxr.Close();
-                                            File.Delete(systhemeFileName + ".tmp");
-                                        }
-
-                                        // read resx file
-                                        if (File.Exists(systhemeFileName))
-                                        {
-                                            ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
-                                            foreach (DictionaryEntry d in rsxr)
-                                            {
-                                                resxlist.Add(d);
-                                            }
-                                            rsxr.Close();
-                                            File.Delete(systhemeFileName);
-                                        }
-
-                                        // merge resx file
-                                        using (ResXResourceWriter resx = new ResXResourceWriter(systhemeFileName))
-                                        {
-                                            foreach (var d in resxlist)
-                                            {
-                                                resx.AddResource(d.Key.ToString(), d.Value.ToString());
-                                            }
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        // save resx file
-                                        Utils.SaveBase64ToFile(systhemeFileName,fdata);
-                                    }
-                                }
-                            }
-                        }
+                        LocalUtils.ImportResxXml(nodfl, theme);
                     }
+
+                    // check if we have imported into same portal, if so reset the moduleref so it's still unique.
+                    var oldmodref = settings.GUIDKey;
+                    var checklistcount = objCtrl.GetListCount(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.GUIDKey = '" + settings.GUIDKey + "' ");
+                    if (checklistcount >= 2)
+                    {
+                        // we have multiple module with this modref, so reset to a unique one.
+                        var newref = Utils.GetUniqueKey(10);
+                        settings.SetXmlProperty("genxml/hidden/modref", newref);
+                        if (settings.GetXmlProperty("genxml/dropdownlist/datasourceref") == settings.GUIDKey)
+                        {
+                            settings.SetXmlProperty("genxml/dropdownlist/datasourceref", newref);
+                        }
+                        var objModule = DnnUtils.GetModuleinfo(moduleId);
+                        settings.SetXmlProperty("genxml/ident", settings.GetXmlProperty("genxml/dropdownlist/themefolder") + ": " + objModule.ParentTab.TabName + " " + objModule.PaneName + " [" + newref + "]");
+                        settings.GUIDKey = newref;
+                        objCtrl.Update(settings);
+                    }
+
+                    // move extracted theme files to theme folder
+                    var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                    if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                    {
+                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                    }
+                    var flist = Directory.GetFiles(extractMapPath, "*.*", SearchOption.AllDirectories);
+                    foreach (var f in flist)
+                    {
+                        var dest = f.Replace(extractMapPath, themeFolderName).Replace(oldmodref, settings.GUIDKey);
+                        if (File.Exists(dest)) File.Delete(dest);
+                        File.Move(f,dest);                        
+                    }
+
+                    if (Directory.Exists(extractMapPath))
+                    {
+                        Directory.Delete(extractMapPath, true);
+                    }
+
                 }
 
             }
@@ -322,7 +300,6 @@ namespace Nevoweb.DNN.NBrightMod.Components
         }
 
         #endregion
-
 
         #region ModuleSearchBase
 

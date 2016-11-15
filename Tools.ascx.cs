@@ -72,7 +72,7 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ValidateModuleData();
                     }
 
-                    var strOut = LocalUtils.RazorTemplRender("config.tools.cshtml", ModuleId.ToString(""), "", new NBrightInfo(), Utils.GetCurrentCulture(), settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var strOut = LocalUtils.RazorTemplRender("config.tools.cshtml", ModuleId.ToString(""), "", settings, Utils.GetCurrentCulture(), settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);

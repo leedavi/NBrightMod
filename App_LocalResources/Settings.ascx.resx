@@ -136,7 +136,7 @@
     <value>Hide Heading</value>
   </data>
   <data name="reset.Text" xml:space="preserve">
-    <value>Reset</value>
+    <value>Reset Module and Delete ALL data</value>
   </data>
   <data name="uploadfolder.Text" xml:space="preserve">
     <value>Upload Folder</value>

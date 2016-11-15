@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Resources;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Web;
 using System.Web.Management;
@@ -402,6 +403,10 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.TextData == "") nbi.TextData = "NBrightMod";
 
+                    // update module description for identifying module.
+                    var objModule = DnnUtils.GetModuleinfo(Convert.ToInt32(moduleid));
+                    nbi.SetXmlProperty("genxml/ident", nbi.GetXmlProperty("genxml/dropdownlist/themefolder") + ": " + objModule.ParentTab.TabName + " " + objModule.PaneName + " [" + nbi.GUIDKey + "]");
+
                     nbi = LocalUtils.CreateRequiredUploadFolders(nbi);
 
                     LocalUtils.UpdateSettings(nbi);
@@ -426,22 +431,22 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
-                var objCtrl = new NBrightDataController();
-
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
                 {
-                    // get DB record
-                    var nbi = LocalUtils.GetSettings(moduleid,false);
-                    if (nbi.ItemID > 0) objCtrl.Delete(nbi.ItemID);
 
-                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+                    Utils.RemoveCache("dnnsearchindexflag" + moduleid);
+                    LocalUtils.ClearRazorCache(moduleid);
+                    LocalUtils.ClearRazorSateliteCache(moduleid);
 
-                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+                    // this should be available from DnnUtils, but use direct to save recompile.
+                    DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
 
+                    // remove all data linked to module.
+                    LocalUtils.DeleteAllDataRecords(Convert.ToInt32(moduleid));
 
                 }
                 return "";
