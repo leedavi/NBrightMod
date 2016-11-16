@@ -19,7 +19,8 @@
 	    if ('@(Utils.GetCurrentCulture().Substring(0, 2))' == 'da') $.datepicker.setDefaults($.datepicker.regional['da']);
 	    if ('@(Utils.GetCurrentCulture().Substring(0, 2))' == 'sv') $.datepicker.setDefaults($.datepicker.regional['sv']);
 
-        $('input[type=date]').datepicker();
+	    // use a "datatype='date'" attribute on input, "type='date'" will make chrome inject it's own popup calendar.
+        $('input[datatype=date]').datepicker();
 
 	    //}
 	});
