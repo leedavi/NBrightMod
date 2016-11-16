@@ -438,6 +438,23 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
                 {
 
+                    // remove module level templates (before removal of data records)
+                    var settings = LocalUtils.GetSettings(moduleid, false);
+                    if (settings != null)
+                    {
+                        var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
+                        if (theme != "")
+                        {
+                            var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                            var flist = Directory.GetFiles(themeFolderName, "*.*", SearchOption.AllDirectories);
+                            foreach (var f in flist)
+                            {
+                                var fname = Path.GetFileName(f);
+                                if (fname != null && fname.StartsWith(settings.GUIDKey)) File.Delete(f);
+                            }
+                        }
+                    }
+
                     Utils.RemoveCache("dnnsearchindexflag" + moduleid);
                     LocalUtils.ClearRazorCache(moduleid);
                     LocalUtils.ClearRazorSateliteCache(moduleid);
@@ -935,6 +952,14 @@ namespace Nevoweb.DNN.NBrightMod
 
                 // RESX update resx data returned
                 var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
+                if (!Directory.Exists(sourcesystemresx))
+                {
+                    if (!Directory.Exists(HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder)))
+                    {
+                        Directory.CreateDirectory(HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder));
+                    }
+                    Directory.CreateDirectory(sourcesystemresx);
+                }
                 var xmlupdateresx = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateresx"); // get data pased back by ajax
                 xmlupdateresx = GenXmlFunctions.DecodeCDataTag(xmlupdateresx); // convert CDATA
                 var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx,""); // Convert to genxml format
@@ -1378,10 +1403,10 @@ namespace Nevoweb.DNN.NBrightMod
                 var rtnfile = "";
                 if (updatetype == "export" && theme != "")
                 {
-                    rtnfile = LocalUtils.ExportPortalTheme(theme);
+                    rtnfile = LocalUtils.ExportPortalTheme(theme, exportname);
                     if (rtnfile == "" || !File.Exists(rtnfile))
                     {
-                        rtnfile = LocalUtils.ExportSystemTheme(theme);
+                        rtnfile = LocalUtils.ExportSystemTheme(theme, exportname);
                     }
                 }
                 return rtnfile;

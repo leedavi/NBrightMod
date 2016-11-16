@@ -319,7 +319,7 @@
     <value>Delete Portal Level apptheme folder.</value>
   </data>
   <data name="lbldeletetheme.Text" xml:space="preserve">
-    <value />
+    <value>Delete Theme</value>
   </data>
   <data name="editmodtheme.Text" xml:space="preserve">
     <value>Edit Module Level AppTheme</value>
@@ -359,5 +359,8 @@
   </data>
   <data name="defaulttemplateloaded.Text" xml:space="preserve">
     <value>Default template loaded</value>
+  </data>
+  <data name="completed.Text" xml:space="preserve">
+    <value>Completed</value>
   </data>
 </root>
