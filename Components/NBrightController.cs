@@ -233,6 +233,12 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     var extractFolder = Utils.GetUniqueKey();
                     var extractMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\" + extractFolder;
 
+                    // create temp folder is it doesn;t exist, so we can use it for import.
+                    if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\"))
+                    {
+                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\");
+                    }
+
                     var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
                     if (theme != "")
                     {

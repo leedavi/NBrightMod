@@ -913,6 +913,12 @@ namespace NBrightMod.common
                         }
                         DnnUtils.UnZip(zipFileMapPath, themeFolderName);
                         Utils.DeleteSysFile(zipFileMapPath);
+
+                        //// import/merge resx data for theme.ascx.resx
+                        //var nodfl = xmlDoc.SelectNodes("genxml/resxfiles/resxfile");
+                        //LocalUtils.ImportResxXml(nodfl, theme);
+
+
                         return "";
                     }
                     return "ERROR: Invalid Theme File Name";

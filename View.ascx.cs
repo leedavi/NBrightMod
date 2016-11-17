@@ -48,25 +48,6 @@ namespace Nevoweb.DNN.NBrightMod
         {
             base.OnInit(e);
 
-            // refresh view by clearing all cache, and redirtect back to view 
-            if (Utils.RequestParam(Context, "refreshview") == "1" && Request.ApplicationPath != null)
-            {
-                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
-                Utils.RemoveCache("dnnsearchindexflag" + ModuleId);
-                LocalUtils.ClearRazorCache(ModuleId.ToString(""));
-                LocalUtils.ClearRazorSateliteCache(ModuleId.ToString(""));
-
-                // this should be available from DnnUtils, but use direct to save recompile.
-                DataCache.ClearPortalCache(PortalId, true);
-
-                var langparam = "";
-                if (DnnUtils.GetCultureCodeList().Count() > 1)
-                {
-                    langparam = "&language=" + Utils.RequestParam(Context, "language");
-                }
-                Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context, "TabId") + langparam, true);
-            }
-
             LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod","view");
         }
 
