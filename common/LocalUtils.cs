@@ -914,10 +914,8 @@ namespace NBrightMod.common
                         DnnUtils.UnZip(zipFileMapPath, themeFolderName);
                         Utils.DeleteSysFile(zipFileMapPath);
 
-                        //// import/merge resx data for theme.ascx.resx
-                        //var nodfl = xmlDoc.SelectNodes("genxml/resxfiles/resxfile");
-                        //LocalUtils.ImportResxXml(nodfl, theme);
-
+                        // import/merge resx data for theme.ascx.resx
+                        ImportExportConfigResx(themeFolderName, themeName);
 
                         return "";
                     }
@@ -955,6 +953,28 @@ namespace NBrightMod.common
             {
                 return "ERROR: " + ex.ToString();
             }
+        }
+
+        private static void ImportExportConfigResx(string themeFolderMapPath,string themeName)
+        {
+            if (File.Exists(themeFolderMapPath + "\\export.config"))
+            {
+                var xmlExportDoc = new XmlDocument();
+                xmlExportDoc.Load(themeFolderMapPath + "\\export.config");
+                if (xmlExportDoc != null)
+                {
+                    var resxdatanode = xmlExportDoc.SelectSingleNode("genxml/resxfiles");
+                    if (resxdatanode != null)
+                    {
+                        var resxdataxml = GenXmlFunctions.DecodeCDataTag(resxdatanode.InnerText);
+                        var xmlResxDoc = new XmlDocument();
+                        xmlResxDoc.LoadXml(resxdataxml);
+                        var nodfl = xmlResxDoc.SelectNodes("/resxfiles/resxfile");
+                        LocalUtils.ImportResxXml(nodfl, themeName);
+                    }
+                }
+            }
+
         }
 
         public static void DeleteAllDataRecords(int moduleid)
@@ -1011,13 +1031,26 @@ namespace NBrightMod.common
                     xmlDocresx.LoadXml(resxXML);
 
                     var xNod = xmlDocresx.SelectSingleNode("/resxfile");
+                    if (xNod == null)
+                    {
+                        // If we are importing a apptheme the nodelist is the resx level
+                        xNod = xNodResx;
+                    }
                     if (xNod?.Attributes?["name"] != null)
                     {
                         var fname = xNod.Attributes["name"].InnerText;
                         var fdata = xNod.InnerText;
 
                         var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                        var systhemeFileName = controlMapPath + "\\Themes\\" + themefolder + "\\" + fname;
+                        if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder))
+                        {
+                            Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder);
+                        }
+                        if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder + "\\resx"))
+                        {
+                            Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder + "\\resx");
+                        }
+                        var systhemeFileName = controlMapPath + "\\Themes\\" + themefolder + "\\resx\\" + fname;
                         if (File.Exists(systhemeFileName))
                         {
                             // save resx temp file
