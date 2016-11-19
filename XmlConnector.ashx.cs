@@ -446,16 +446,18 @@ namespace Nevoweb.DNN.NBrightMod
                         if (theme != "")
                         {
                             var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                            var flist = Directory.GetFiles(themeFolderName, "*.*", SearchOption.AllDirectories);
-                            foreach (var f in flist)
+                            if (Directory.Exists(themeFolderName))
                             {
-                                var fname = Path.GetFileName(f);
-                                if (fname != null && fname.StartsWith(settings.GUIDKey)) File.Delete(f);
+                                var flist = Directory.GetFiles(themeFolderName, "*.*", SearchOption.AllDirectories);
+                                foreach (var f in flist)
+                                {
+                                    var fname = Path.GetFileName(f);
+                                    if (fname != null && fname.StartsWith(settings.GUIDKey)) File.Delete(f);
+                                }
                             }
                         }
                     }
 
-                    Utils.RemoveCache("dnnsearchindexflag" + moduleid);
                     LocalUtils.ClearRazorCache(moduleid);
                     LocalUtils.ClearRazorSateliteCache(moduleid);
 
@@ -1175,6 +1177,29 @@ namespace Nevoweb.DNN.NBrightMod
 
                         Utils.DeleteFolder(portalthemeFolderName);
                         LocalUtils.ClearModuleCacheByTheme(theme);
+
+                        // check if we only have theme.asc.resx in System level, if so then we can remove system level folder
+                        var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                        var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
+                        if (Directory.Exists(systhemeFolderName))
+                        {
+                            var flist = Directory.GetFiles(systhemeFolderName, "*.*", SearchOption.AllDirectories);
+                            var remoavesystfolder = true;
+                            foreach (var f in flist)
+                            {
+                                var fname = Path.GetFileName(f);
+                                if (fname != null && !fname.ToLower().StartsWith("theme.ascx"))
+                                {
+                                    remoavesystfolder = false;
+                                    break;
+                                }
+                            }
+                            if (remoavesystfolder)
+                            {
+                                Directory.Delete(systhemeFolderName,true);
+                            }
+                        }
+
                     }
 
                     return "Theme Removed";
@@ -1403,11 +1428,12 @@ namespace Nevoweb.DNN.NBrightMod
                 var rtnfile = "";
                 if (updatetype == "export" && theme != "")
                 {
-                    rtnfile = LocalUtils.ExportPortalTheme(theme, exportname);
-                    if (rtnfile == "" || !File.Exists(rtnfile))
-                    {
-                        rtnfile = LocalUtils.ExportSystemTheme(theme, exportname);
-                    }
+                    Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\");
+                    rtnfile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".xml";
+                    var xmlOut = "<root>";
+                    xmlOut += LocalUtils.ExportTheme(theme);
+                    xmlOut += "<root>";
+                    Utils.SaveFile(rtnfile,xmlOut);
                 }
                 return rtnfile;
             }

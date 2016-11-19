@@ -13,6 +13,7 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Search;
 using DotNetNuke.Services.Search.Entities;
+using NBrightCore;
 using NBrightCore.common;
 using NBrightCore.render;
 using NBrightDNN;
@@ -49,40 +50,27 @@ namespace Nevoweb.DNN.NBrightMod.Components
             {
                 var portalId = objModInfo.PortalID;
                 var objCtrl = new NBrightDataController();
+
+                //DATA
                 var l = objCtrl.GetList(portalId, ModuleId, "NBrightModDATA");
                 foreach (var nbi in l)
                 {
                     nbi.GUIDKey = nbi.ItemID.ToString(""); // set the GUIDKey to the current itemid, so we can relink lang record on import.
                     xmlOut += nbi.ToXmlItem();
                 }
+                //DATALANG
                 var l2 = objCtrl.GetList(portalId, ModuleId, "NBrightModDATALANG");
                 foreach (var nbi in l2)
                 {
                             xmlOut += nbi.ToXmlItem();
                 }
-
+                // SETTINGS
                 var settingsInfo = LocalUtils.GetSettings(ModuleId.ToString());
                 xmlOut += settingsInfo.ToXmlItem();
 
+                // EXPORT THEME
                 var themefolder = settingsInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-                // get portal level AppTheme templates
-                var rtnfile = LocalUtils.ExportPortalTheme(themefolder);
-                if (rtnfile != "" || File.Exists(rtnfile))
-                {
-                    System.IO.FileStream inFile = new System.IO.FileStream(rtnfile,System.IO.FileMode.Open,System.IO.FileAccess.Read);
-                    byte[] binaryData = new Byte[inFile.Length];
-                    long bytesRead = inFile.Read(binaryData, 0,(int)inFile.Length);
-                    inFile.Close();
-                    string base64String = System.Convert.ToBase64String(binaryData,0,binaryData.Length);
-
-                    xmlOut += "<exportzip>";
-                    xmlOut += base64String;
-                    xmlOut += "</exportzip>";
-                }
-
-                //theme.ascx.resx files
-                xmlOut += LocalUtils.ExportResxXml(themefolder);
-
+                xmlOut += LocalUtils.ExportTheme(themefolder);
             }
             xmlOut += "</root>";
 
@@ -207,15 +195,17 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var link1 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATA");
                 foreach (var nbi in link1)
                 {
-                    var link2 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATALANG",
-                        " and NB1.parentitemid = " + nbi.GUIDKey);
-                    foreach (var nbi2 in link2)
+                    if (nbi.GUIDKey != "") // exists but not imported if guid empty.
                     {
-                        nbi2.ParentItemId = nbi.ItemID;
-                        objCtrl.Update(nbi2);
+                        var link2 = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATALANG", " and NB1.parentitemid = " + nbi.GUIDKey);
+                        foreach (var nbi2 in link2)
+                        {
+                            nbi2.ParentItemId = nbi.ItemID;
+                            objCtrl.Update(nbi2);
+                        }
+                        nbi.GUIDKey = "";
+                        objCtrl.Update(nbi);
                     }
-                    nbi.GUIDKey = "";
-                    objCtrl.Update(nbi);
                 }
 
                 // reset setting data for import
@@ -230,36 +220,6 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         objCtrl.Update(settings);
                     }
 
-                    var extractFolder = Utils.GetUniqueKey();
-                    var extractMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\" + extractFolder;
-
-                    // create temp folder is it doesn;t exist, so we can use it for import.
-                    if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\"))
-                    {
-                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\");
-                    }
-
-                    var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
-                    if (theme != "")
-                    {
-
-                        // import theme
-                        var xmlNod = xmlDoc.SelectSingleNode("root/exportzip");
-                        if (xmlNod != null)
-                        {
-                            var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + theme + ".zip";
-                            if (!Directory.Exists(extractMapPath))
-                            {
-                                Directory.CreateDirectory(extractMapPath);
-                            }
-                            Utils.SaveBase64ToFile(zipFile, xmlNod.InnerText);
-                            LocalUtils.ImportPortalTheme(zipFile,extractMapPath);
-                        }
-
-                        // merge/save resx files
-                        var nodfl = xmlDoc.SelectNodes("genxml/resxfiles/resxfile");
-                        LocalUtils.ImportResxXml(nodfl, theme);
-                    }
 
                     // check if we have imported into same portal, if so reset the moduleref so it's still unique.
                     var oldmodref = settings.GUIDKey;
@@ -279,25 +239,61 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         objCtrl.Update(settings);
                     }
 
-                    // move extracted theme files to theme folder
-                    var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                    if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                    var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
+                    if (theme != "")
                     {
-                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                        Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                    }
-                    var flist = Directory.GetFiles(extractMapPath, "*.*", SearchOption.AllDirectories);
-                    foreach (var f in flist)
-                    {
-                        var dest = f.Replace(extractMapPath, themeFolderName).Replace(oldmodref, settings.GUIDKey);
-                        if (File.Exists(dest)) File.Delete(dest);
-                        File.Move(f,dest);                        
+
+                        // load portal theme files and process
+                        var themportalfiles = objCtrl.GetList(objModInfo.PortalID, moduleId, "EXPORTPORTALFILE");
+                        foreach (var nbi in themportalfiles)
+                        {
+
+                            // create directory for theme files 
+                            var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                            {
+                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                            }
+                            if (!Directory.Exists(themeFolderName))
+                            {
+                                Directory.CreateDirectory(themeFolderName);
+                            }
+
+                            // save files
+                            var relpath =  PortalSettings.Current.HomeDirectory.Trim('/') + "/" + nbi.GetXmlProperty("genxml/relpath");
+                            var fname = nbi.GetXmlProperty("genxml/name").Replace(oldmodref,settings.GUIDKey);
+                            var filemappath = HttpContext.Current.Server.MapPath(relpath.Replace(oldmodref, settings.GUIDKey));
+                            var filefolder = filemappath.Replace("\\" + fname, "");
+                            if (!Directory.Exists(filefolder))
+                            {
+                                Directory.CreateDirectory(filefolder);
+                            }
+                            Utils.SaveFile(filemappath,nbi.TextData);
+
+                            objCtrl.Delete(nbi.ItemID); // remove temp import record.
+                        }
+
+                        // load system theme files and process
+                        var themsysfiles = objCtrl.GetList(objModInfo.PortalID, moduleId, "EXPORTSYSFILE");
+                        foreach (var nbi in themsysfiles)
+                        {
+
+                            // At the moment we don;t import the system level template files. 
+                            // Only the resx files, because these are merged.
+                            // Need to think about some version control on the system theme!!
+                            var fname = nbi.GetXmlProperty("genxml/name");
+
+                            if (fname.ToLower().EndsWith(".resx"))
+                            {
+                                LocalUtils.ImportResxXml(nbi, theme);
+                            }
+
+                            objCtrl.Delete(nbi.ItemID); // remove temp import record.
+                        }
+
                     }
 
-                    if (Directory.Exists(extractMapPath))
-                    {
-                        Directory.Delete(extractMapPath, true);
-                    }
 
                 }
 

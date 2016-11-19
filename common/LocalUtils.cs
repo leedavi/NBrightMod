@@ -809,119 +809,71 @@ namespace NBrightMod.common
         }
 
 
-        public static string ExportPortalTheme(string theme,string exportname = "")
+        public static string ExportTheme(string themefolder)
         {
-            if (theme != "")
+            var xmlOut = "";
+            if (themefolder != "")
             {
-                var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                //APPTHEME
+                // get portal level AppTheme templates
+                var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themefolder;
+                if (Directory.Exists(portalthemeFolderName))
+                {
+                    var flist = Directory.GetFiles(portalthemeFolderName, "*.*", SearchOption.AllDirectories);
+                    foreach (var f in flist)
+                    {
+                        var nbi2 = new NBrightInfo(true);
+                        nbi2.TypeCode = "EXPORTPORTALFILE";
+                        nbi2.ModuleId = -1;
+                        nbi2.TextData = Utils.ReadFile(f);
+                        nbi2.SetXmlProperty("genxml/mappath", f);
+                        nbi2.SetXmlProperty("genxml/name", Path.GetFileName(f));
+                        System.Uri uri1 = new Uri(f);
+                        System.Uri uri2 = new Uri(PortalSettings.Current.HomeDirectoryMapPath);
+                        Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                        nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
+                        xmlOut += nbi2.ToXmlItem();
+                    }
 
-                if (!Directory.Exists(portalthemeFolderName)) return "";
+                }
 
-                // export from portal level, so save export.config
-                var exportconfig = new NBrightInfo(true);
-                exportconfig.SetXmlProperty("genxml/portallevel", "true");
-                exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
-                exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
-                exportconfig.SetXmlProperty("genxml/systhemefoldername", "");
-                exportconfig.SetXmlProperty("genxml/portalthemefoldername", portalthemeFolderName);
-                exportconfig.SetXmlProperty("genxml/portalrelfolder", PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" + theme);
-                exportconfig.SetXmlProperty("genxml/systemrelfolder", "/DesktopModules/NBright/NBrightMod/Themes/" + theme);
-                exportconfig.SetXmlProperty("genxml/themename", theme);
-
-                exportconfig.SetXmlProperty("genxml/resxfiles", GenXmlFunctions.EncodeCDataTag(ExportResxXml(theme)));
-
-                Utils.SaveFile(portalthemeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
-
-                Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
-                if (exportname == "") exportname = theme;
-                var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";
-
-                DnnUtils.ZipFolder(portalthemeFolderName, zipFile);
-
-                return zipFile;
-            }
-            return "";
-        }
-
-        public static string ExportSystemTheme(string theme, string exportname = "")
-        {
-            //get uploaded params
-            if (theme != "")
-            {
                 var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                var systhemeFolderName = controlMapPath + "\\Themes\\" + theme;
+                var systhemeFolderName = controlMapPath + "\\Themes\\" + themefolder;
+                if (Directory.Exists(systhemeFolderName))
+                {
+                    var flist = Directory.GetFiles(systhemeFolderName, "*.*", SearchOption.AllDirectories);
+                    foreach (var f in flist)
+                    {
+                        var nbi2 = new NBrightInfo(true);
+                        nbi2.TypeCode = "EXPORTSYSFILE";
+                        nbi2.ModuleId = -1;
+                        nbi2.TextData = Utils.ReadFile(f);
+                        nbi2.SetXmlProperty("genxml/mappath", f);
+                        nbi2.SetXmlProperty("genxml/name", Path.GetFileName(f));
+                        System.Uri uri1 = new Uri(f);
+                        System.Uri uri2 = new Uri(controlMapPath);
+                        Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                        nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
+                        xmlOut += nbi2.ToXmlItem();
+                    }
 
-                if (!Directory.Exists(systhemeFolderName)) return "";
-
-                // export from portal level, so save export.config
-                var exportconfig = new NBrightInfo(true);
-
-                exportconfig.SetXmlProperty("genxml/portallevel", "false");
-                exportconfig.SetXmlProperty("genxml/portalmappath", PortalSettings.Current.HomeDirectoryMapPath);
-                exportconfig.SetXmlProperty("genxml/portalpath", PortalSettings.Current.HomeDirectory);
-                exportconfig.SetXmlProperty("genxml/systhemefoldername", systhemeFolderName);
-                exportconfig.SetXmlProperty("genxml/portalthemefoldername", "");
-                exportconfig.SetXmlProperty("genxml/portalrelfolder",PortalSettings.Current.HomeDirectory + "/NBrightMod/Themes/" + theme);
-                exportconfig.SetXmlProperty("genxml/systemrelfolder","/DesktopModules/NBright/NBrightMod/Themes/" + theme);
-                exportconfig.SetXmlProperty("genxml/themename", theme);
-
-                Utils.SaveFile(systhemeFolderName.TrimEnd('\\') + "\\export.config", exportconfig.XMLData);
-
-                Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp");
-                if (exportname == "") exportname = theme;
-                var zipFile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".zip";
-
-                DnnUtils.ZipFolder(systhemeFolderName, zipFile);
-
-                return zipFile;
+                }
             }
-            return "";
-
+            return xmlOut;
         }
 
         /// <summary>
         /// Import zip file into portal level template area
         /// </summary>
-        /// <param name="zipFileMapPath">Zip File MapPath</param>
-        /// <param name="extractFolderMapPath">Mappath to add to extract folder, if empty the default theme fodler under NBrightMod\Themes is used.</param>
-        /// <returns>String with status message</returns>
-        public static string ImportPortalTheme(String zipFileMapPath,string extractFolderMapPath = "")
+        /// <param name="fileMapPath">Import file and path</param>
+        /// <returns></returns>
+        public static string ImportTheme(String fileMapPath)
         {
             try
             {
-                if (!string.IsNullOrEmpty(zipFileMapPath))
-                {
-                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
-                    if (!string.IsNullOrEmpty(themeName))
-                    {
-                        var themeFolderName = extractFolderMapPath;
-                        if (extractFolderMapPath == "")
-                        {
-                            themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeName;
-                            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
-                            {
-                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                            }
-                        }
-                        else
-                        {
-                            if (!Directory.Exists(extractFolderMapPath))
-                            {
-                                Directory.CreateDirectory(extractFolderMapPath);
-                            }
-                        }
-                        DnnUtils.UnZip(zipFileMapPath, themeFolderName);
-                        Utils.DeleteSysFile(zipFileMapPath);
+                //[TODO: Need to implement import of theme]
 
-                        // import/merge resx data for theme.ascx.resx
-                        ImportExportConfigResx(themeFolderName, themeName);
-
-                        return "";
-                    }
-                    return "ERROR: Invalid Theme File Name";
-                }
-                return "ERROR: Upload Failed";
+                return "";
             }
             catch (Exception ex)
             {
@@ -929,53 +881,6 @@ namespace NBrightMod.common
             }
         }
 
-        public static string ImportSystemTheme(String zipFileMapPath)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(zipFileMapPath))
-                {
-                    var themeName = Path.GetFileName(zipFileMapPath).Replace("NBrightMod_Theme_", "").Replace(".zip", "");
-                    var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                    var systhemeFolderName = controlMapPath + "\\Themes\\" + themeName;
-
-                    if (!string.IsNullOrEmpty(themeName))
-                    {
-                        DnnUtils.UnZip(zipFileMapPath, systhemeFolderName);
-                        Utils.DeleteSysFile(zipFileMapPath);
-                        return "";
-                    }
-                    return "ERROR: Invalid Theme File Name";
-                }
-                return "ERROR: Upload Failed";
-            }
-            catch (Exception ex)
-            {
-                return "ERROR: " + ex.ToString();
-            }
-        }
-
-        private static void ImportExportConfigResx(string themeFolderMapPath,string themeName)
-        {
-            if (File.Exists(themeFolderMapPath + "\\export.config"))
-            {
-                var xmlExportDoc = new XmlDocument();
-                xmlExportDoc.Load(themeFolderMapPath + "\\export.config");
-                if (xmlExportDoc != null)
-                {
-                    var resxdatanode = xmlExportDoc.SelectSingleNode("genxml/resxfiles");
-                    if (resxdatanode != null)
-                    {
-                        var resxdataxml = GenXmlFunctions.DecodeCDataTag(resxdatanode.InnerText);
-                        var xmlResxDoc = new XmlDocument();
-                        xmlResxDoc.LoadXml(resxdataxml);
-                        var nodfl = xmlResxDoc.SelectNodes("/resxfiles/resxfile");
-                        LocalUtils.ImportResxXml(nodfl, themeName);
-                    }
-                }
-            }
-
-        }
 
         public static void DeleteAllDataRecords(int moduleid)
         {
@@ -1019,88 +924,66 @@ namespace NBrightMod.common
             return xmlOut;
         }
 
-        public static void ImportResxXml(XmlNodeList nodList,string themefolder)
+        public static void ImportResxXml(NBrightInfo nbi,string themefolder)
         {
-            if (nodList != null)
+            var resxXML = nbi.TextData;
+            var fname = nbi.GetXmlProperty("genxml/name");
+
+            var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+            if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder))
             {
-                foreach (XmlNode xNodResx in nodList)
+                Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder);
+            }
+            if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder + "\\resx"))
+            {
+                Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder + "\\resx");
+            }
+            var systhemeFileName = controlMapPath + "\\Themes\\" + themefolder + "\\resx\\" + fname;
+            if (File.Exists(systhemeFileName))
+            {
+                // save resx temp file
+                Utils.SaveFile(systhemeFileName + ".tmp", resxXML);
+
+                var resxlist = new List<DictionaryEntry>();
+                // read temp resx file
+                if (File.Exists(systhemeFileName + ".tmp"))
                 {
-                    var resxXML = xNodResx.InnerXml.Replace("<![CDATA[", "").Replace("]]>", "");
-                    resxXML = GenXmlFunctions.DecodeCDataTag(resxXML);
-                    var xmlDocresx = new XmlDocument();
-                    xmlDocresx.LoadXml(resxXML);
-
-                    var xNod = xmlDocresx.SelectSingleNode("/resxfile");
-                    if (xNod == null)
+                    ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
+                    foreach (DictionaryEntry d in rsxr)
                     {
-                        // If we are importing a apptheme the nodelist is the resx level
-                        xNod = xNodResx;
+                        resxlist.Add(d);
                     }
-                    if (xNod?.Attributes?["name"] != null)
+                    rsxr.Close();
+                    File.Delete(systhemeFileName + ".tmp");
+                }
+
+                // read resx file
+                if (File.Exists(systhemeFileName))
+                {
+                    ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
+                    foreach (DictionaryEntry d in rsxr)
                     {
-                        var fname = xNod.Attributes["name"].InnerText;
-                        var fdata = xNod.InnerText;
+                        resxlist.Add(d);
+                    }
+                    rsxr.Close();
+                    File.Delete(systhemeFileName);
+                }
 
-                        var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
-                        if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder))
-                        {
-                            Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder);
-                        }
-                        if (!Directory.Exists(controlMapPath + "\\Themes\\" + themefolder + "\\resx"))
-                        {
-                            Directory.CreateDirectory(controlMapPath + "\\Themes\\" + themefolder + "\\resx");
-                        }
-                        var systhemeFileName = controlMapPath + "\\Themes\\" + themefolder + "\\resx\\" + fname;
-                        if (File.Exists(systhemeFileName))
-                        {
-                            // save resx temp file
-
-                            Utils.SaveBase64ToFile(systhemeFileName + ".tmp", fdata);
-
-                            var resxlist = new List<DictionaryEntry>();
-                            // read temp resx file
-                            if (File.Exists(systhemeFileName + ".tmp"))
-                            {
-                                ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
-                                foreach (DictionaryEntry d in rsxr)
-                                {
-                                    resxlist.Add(d);
-                                }
-                                rsxr.Close();
-                                File.Delete(systhemeFileName + ".tmp");
-                            }
-
-                            // read resx file
-                            if (File.Exists(systhemeFileName))
-                            {
-                                ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
-                                foreach (DictionaryEntry d in rsxr)
-                                {
-                                    resxlist.Add(d);
-                                }
-                                rsxr.Close();
-                                File.Delete(systhemeFileName);
-                            }
-
-                            // merge resx file
-                            using (ResXResourceWriter resx = new ResXResourceWriter(systhemeFileName))
-                            {
-                                foreach (var d in resxlist)
-                                {
-                                    resx.AddResource(d.Key.ToString(), d.Value.ToString());
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            // save resx file
-                            Utils.SaveBase64ToFile(systhemeFileName, fdata);
-                        }
+                // merge resx file
+                using (ResXResourceWriter resx = new ResXResourceWriter(systhemeFileName))
+                {
+                    foreach (var d in resxlist)
+                    {
+                        resx.AddResource(d.Key.ToString(), d.Value.ToString());
                     }
                 }
-            }
 
+            }
+            else
+            {
+                // save resx file
+                Utils.SaveBase64ToFile(systhemeFileName, resxXML);
+            }
         }
 
 
