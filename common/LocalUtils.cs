@@ -530,6 +530,10 @@ namespace NBrightMod.common
             }
         }
 
+        /// <summary>
+        /// Reset razor service, this causes a memory leak, but it's the only way for now to clear the razor cache.
+        /// on live system we shouldn't be changing templates to much, so it should be OK.
+        /// </summary>
         public static void RemoveCachedRazorEngineService()
         {
             HttpContext.Current.Application.Set("NBrightModIRazorEngineService", null);
@@ -808,8 +812,13 @@ namespace NBrightMod.common
 
         }
 
-
-        public static string ExportTheme(string themefolder)
+        /// <summary>
+        /// Get Export XML data for theme
+        /// </summary>
+        /// <param name="themefolder">Theme folder</param>
+        /// <param name="modref">Module ref is this is for a content export, so we only take hte required module level template.</param>
+        /// <returns></returns>
+        public static string ExportTheme(string themefolder,string modref = "")
         {
             var xmlOut = "";
             if (themefolder != "")
@@ -822,17 +831,30 @@ namespace NBrightMod.common
                     var flist = Directory.GetFiles(portalthemeFolderName, "*.*", SearchOption.AllDirectories);
                     foreach (var f in flist)
                     {
-                        var nbi2 = new NBrightInfo(true);
-                        nbi2.TypeCode = "EXPORTPORTALFILE";
-                        nbi2.ModuleId = -1;
-                        nbi2.TextData = Utils.ReadFile(f);
-                        nbi2.SetXmlProperty("genxml/mappath", f);
-                        nbi2.SetXmlProperty("genxml/name", Path.GetFileName(f));
-                        System.Uri uri1 = new Uri(f);
-                        System.Uri uri2 = new Uri(PortalSettings.Current.HomeDirectoryMapPath);
-                        Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                        nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
-                        xmlOut += nbi2.ToXmlItem();
+                        var doexport = true;
+                        var fname = Path.GetFileName(f);
+                        if (modref != "" && fname.StartsWith("_")) // prefix of "_" indicates module level template
+                        {
+                            if (!fname.Contains(modref))
+                            {
+                                // we only want to export this modules templates.
+                                doexport = false;
+                            }
+                        }
+                        if (doexport)
+                        {
+                            var nbi2 = new NBrightInfo(true);
+                            nbi2.TypeCode = "EXPORTPORTALFILE";
+                            nbi2.ModuleId = -1;
+                            nbi2.TextData = Utils.ReadFile(f);
+                            nbi2.SetXmlProperty("genxml/mappath", f);
+                            nbi2.SetXmlProperty("genxml/name", fname);
+                            System.Uri uri1 = new Uri(f);
+                            System.Uri uri2 = new Uri(PortalSettings.Current.HomeDirectoryMapPath);
+                            Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                            nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
+                            xmlOut += nbi2.ToXmlItem();
+                        }
                     }
 
                 }
@@ -865,20 +887,62 @@ namespace NBrightMod.common
         /// <summary>
         /// Import zip file into portal level template area
         /// </summary>
-        /// <param name="fileMapPath">Import file and path</param>
+        /// <param name="theme">Name of theme to import</param>
+        /// <param name="oldmodref">Old moduleref, if we are importing a module level and the ref has changed.</param>
+        /// <param name="newmodref">New moduleref, if we are importing a module level and the ref has changed.</param>
         /// <returns></returns>
-        public static string ImportTheme(String fileMapPath)
+        public static string ImportTheme(string theme, string oldmodref = "", string newmodref = "")
         {
-            try
+            var objCtrl = new NBrightDataController();
+            // load portal theme files and process
+            var themportalfiles = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "EXPORTPORTALFILE");
+            foreach (var nbi in themportalfiles)
             {
-                //[TODO: Need to implement import of theme]
 
-                return "";
+                // create directory for theme files 
+                var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+                if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+                {
+                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                }
+                if (!Directory.Exists(themeFolderName))
+                {
+                    Directory.CreateDirectory(themeFolderName);
+                }
+
+                // save files
+                var relpath = PortalSettings.Current.HomeDirectory.Trim('/') + "/" + nbi.GetXmlProperty("genxml/relpath");
+                var fname = nbi.GetXmlProperty("genxml/name").Replace(oldmodref, newmodref);
+                var filemappath = HttpContext.Current.Server.MapPath(relpath.Replace(oldmodref, newmodref));
+                var filefolder = filemappath.Replace("\\" + fname, "");
+                if (!Directory.Exists(filefolder))
+                {
+                    Directory.CreateDirectory(filefolder);
+                }
+                Utils.SaveFile(filemappath, nbi.TextData);
+
+                objCtrl.Delete(nbi.ItemID); // remove temp import record.
             }
-            catch (Exception ex)
+
+            // load system theme files and process
+            var themsysfiles = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "EXPORTSYSFILE");
+            foreach (var nbi in themsysfiles)
             {
-                return "ERROR: " + ex.ToString();
+
+                // At the moment we don;t import the system level template files. 
+                // Only the resx files, because these are merged.
+                // Need to think about some version control on the system theme!!
+                var fname = nbi.GetXmlProperty("genxml/name");
+
+                if (fname.ToLower().EndsWith(".resx"))
+                {
+                    LocalUtils.ImportResxXml(nbi, theme);
+                }
+
+                objCtrl.Delete(nbi.ItemID); // remove temp import record.
             }
+            return "";
         }
 
 
@@ -902,26 +966,6 @@ namespace NBrightMod.common
                 objCtrl.Delete(i.ItemID);
             }
 
-        }
-
-        public static string ExportResxXml(string themefolder)
-        {
-            var xmlOut = "<resxfiles>";
-
-            var sourcesystemresx = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
-            if (Directory.Exists(sourcesystemresx))
-            {
-                var resxfiles = Directory.GetFiles(sourcesystemresx, "theme.ascx*.resx");
-                foreach (var r in resxfiles)
-                {
-                    xmlOut += "<resxfile name='" + Path.GetFileName(r) + "'><![CDATA[";
-                    var rData = Utils.ReadFile(r);
-                    xmlOut += GenXmlFunctions.EncodeCDataTag(rData);
-                    xmlOut += "]]></resxfile>";
-                }
-            }
-            xmlOut += "</resxfiles>";
-            return xmlOut;
         }
 
         public static void ImportResxXml(NBrightInfo nbi,string themefolder)

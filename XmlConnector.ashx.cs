@@ -396,7 +396,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                         else
                         {
-                            var gid = Utils.GetUniqueKey(10);
+                            var gid = "_" + Utils.GetUniqueKey(10); // prefix with "_", so export can identify module level templates.
                             nbi.SetXmlProperty("genxml/hidden/modref", gid);
                             nbi.GUIDKey = gid;
                         }
@@ -466,6 +466,8 @@ namespace Nevoweb.DNN.NBrightMod
 
                     // remove all data linked to module.
                     LocalUtils.DeleteAllDataRecords(Convert.ToInt32(moduleid));
+
+                    LocalUtils.RemoveCachedRazorEngineService();
 
                 }
                 return "";
@@ -862,8 +864,7 @@ namespace Nevoweb.DNN.NBrightMod
             }
             if (modulelevel)
             {
-
-                templfilename = moduleref + templfilename; // module level templates prefixed with moduleref
+                templfilename = moduleref + templfilename; // module level templates prefixed with moduleref 
             }
             else
             {
@@ -946,10 +947,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
 
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
-                    // reset razor service, this causes a memory leak, but it's the only way for now to clear the razor cache.
-                    // on live system we shouldn't be changing templates to much, so it should be OK.
-                    HttpContext.Current.Application.Remove("NBrightModIRazorEngineService");
-
+                    LocalUtils.RemoveCachedRazorEngineService();
                 }
 
                 // RESX update resx data returned
@@ -1444,9 +1442,29 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
-        private String DoThemeImport(String zipFileMapPath)
+        private String DoThemeImport(String importfile)
         {
-            return LocalUtils.ImportPortalTheme(zipFileMapPath);
+            var objCtrl = new NBrightDataController();
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(importfile);
+            var xmlNodList = xmlDoc.SelectNodes("root/item");
+            if (xmlNodList != null)
+            {
+                foreach (XmlNode xmlNod1 in xmlNodList)
+                {
+                    var nbi = new NBrightInfo();
+                    nbi.FromXmlItem(xmlNod1.OuterXml);
+                    nbi.ItemID = -1; // new item
+                    nbi.PortalId = PortalSettings.Current.PortalId;
+                    nbi.ModuleId = -1;
+                    objCtrl.Update(nbi);
+                }
+            }
+
+            var theme = Path.GetFileNameWithoutExtension(importfile);
+            theme = theme.Replace("NBrightMod_Theme_","");
+
+            return LocalUtils.ImportTheme(theme);
         }
 
 

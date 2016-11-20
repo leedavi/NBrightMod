@@ -70,7 +70,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
                 // EXPORT THEME
                 var themefolder = settingsInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-                xmlOut += LocalUtils.ExportTheme(themefolder);
+                xmlOut += LocalUtils.ExportTheme(themefolder, settingsInfo.GUIDKey);
             }
             xmlOut += "</root>";
 
@@ -242,56 +242,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
                     if (theme != "")
                     {
-
-                        // load portal theme files and process
-                        var themportalfiles = objCtrl.GetList(objModInfo.PortalID, moduleId, "EXPORTPORTALFILE");
-                        foreach (var nbi in themportalfiles)
-                        {
-
-                            // create directory for theme files 
-                            var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
-                            {
-                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                            }
-                            if (!Directory.Exists(themeFolderName))
-                            {
-                                Directory.CreateDirectory(themeFolderName);
-                            }
-
-                            // save files
-                            var relpath =  PortalSettings.Current.HomeDirectory.Trim('/') + "/" + nbi.GetXmlProperty("genxml/relpath");
-                            var fname = nbi.GetXmlProperty("genxml/name").Replace(oldmodref,settings.GUIDKey);
-                            var filemappath = HttpContext.Current.Server.MapPath(relpath.Replace(oldmodref, settings.GUIDKey));
-                            var filefolder = filemappath.Replace("\\" + fname, "");
-                            if (!Directory.Exists(filefolder))
-                            {
-                                Directory.CreateDirectory(filefolder);
-                            }
-                            Utils.SaveFile(filemappath,nbi.TextData);
-
-                            objCtrl.Delete(nbi.ItemID); // remove temp import record.
-                        }
-
-                        // load system theme files and process
-                        var themsysfiles = objCtrl.GetList(objModInfo.PortalID, moduleId, "EXPORTSYSFILE");
-                        foreach (var nbi in themsysfiles)
-                        {
-
-                            // At the moment we don;t import the system level template files. 
-                            // Only the resx files, because these are merged.
-                            // Need to think about some version control on the system theme!!
-                            var fname = nbi.GetXmlProperty("genxml/name");
-
-                            if (fname.ToLower().EndsWith(".resx"))
-                            {
-                                LocalUtils.ImportResxXml(nbi, theme);
-                            }
-
-                            objCtrl.Delete(nbi.ItemID); // remove temp import record.
-                        }
-
+                        LocalUtils.ImportTheme(theme, oldmodref, settings.GUIDKey);
                     }
 
 
