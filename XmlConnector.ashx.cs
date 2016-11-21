@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Mime;
 using System.Resources;
 using System.Runtime.Remoting.Contexts;
@@ -23,6 +24,7 @@ using NBrightDNN;
 using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
+using System.Web.UI.WebControls;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Localization;
@@ -458,16 +460,13 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                     }
 
-                    LocalUtils.ClearRazorCache(moduleid);
-                    LocalUtils.ClearRazorSateliteCache(moduleid);
-
-                    // this should be available from DnnUtils, but use direct to save recompile.
-                    DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
-
-                    // remove all data linked to module.
-                    LocalUtils.DeleteAllDataRecords(Convert.ToInt32(moduleid));
 
                     LocalUtils.RemoveCachedRazorEngineService();
+                    LocalUtils.ClearRazorCache(moduleid);
+                    LocalUtils.ClearRazorSateliteCache(moduleid);
+                    DnnUtils.ClearPortalCache(PortalSettings.Current.PortalId);
+                    // remove all data linked to module.
+                    LocalUtils.DeleteAllDataRecords(Convert.ToInt32(moduleid));
 
                 }
                 return "";
@@ -993,63 +992,9 @@ namespace Nevoweb.DNN.NBrightMod
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
-            var fldrlang = lang;
-            if (fldrlang == "") fldrlang = "default";
-
             var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
-            var moduleref = "";
 
-            // for module level template we need to add the modref to the start of the template
-            if (Utils.IsNumeric(moduleid))
-            {
-                var objCtrl = new NBrightDataController();
-
-                // assign module themefolder.
-                var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
-                if (modsettings != null)
-                {
-                    themefolder = modsettings.GetXmlProperty("genxml/dropdownlist/themefolder");
-                    moduleref = modsettings.GetXmlProperty("genxml/hidden/modref");
-                    templfilename = moduleref + templfilename;
-                }
-
-
-
-                var fldrDefault = "";
-                if (templfilename.EndsWith(".cshtml"))
-                {
-                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
-                }
-                else
-                {
-                    if (templfilename.EndsWith(".css"))
-                    {
-                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
-                    }
-                    if (templfilename.EndsWith(".js"))
-                    {
-                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
-                    }
-                    if (templfilename.EndsWith(".resx"))
-                    {
-                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
-                    }
-                }
-                if (fldrDefault != "")
-                {
-                    if (File.Exists(fldrDefault + "\\" + templfilename))
-                    {
-                        File.Delete(fldrDefault + "\\" + templfilename);
-                        LocalUtils.ClearRazorCache(moduleid.ToString(""));
-                        LocalUtils.ClearRazorSateliteCache(moduleid.ToString(""));
-                        LocalUtils.RemoveCachedRazorEngineService();
-                    }
-                }
-
-            }
-
-
-            return "OK";
+            return LocalUtils.DeleteModuleTemplate(moduleid, themefolder, templfilename, lang);
         }
 
         private String DeletePortalTemplate(HttpContext context)
@@ -1430,7 +1375,7 @@ namespace Nevoweb.DNN.NBrightMod
                     rtnfile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".xml";
                     var xmlOut = "<root>";
                     xmlOut += LocalUtils.ExportTheme(theme);
-                    xmlOut += "<root>";
+                    xmlOut += "</root>";
                     Utils.SaveFile(rtnfile,xmlOut);
                 }
                 return rtnfile;

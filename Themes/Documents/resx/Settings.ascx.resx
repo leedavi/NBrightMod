@@ -126,13 +126,4 @@
   <data name="displaydownloadcount.Text" xml:space="preserve">
     <value>Display Download Count</value>
   </data>
-  <data name="allowedfiletypes.Help" xml:space="preserve">
-    <value>CSV list of allowed file extensions e.g (pdf,zip).  blank is all files.</value>
-  </data>
-  <data name="allowedfiletypes.Text" xml:space="preserve">
-    <value>Allowed File Extensions</value>
-  </data>
-  <data name="displaydownloadcount.Text" xml:space="preserve">
-    <value>Display Download Count</value>
-  </data>
 </root>

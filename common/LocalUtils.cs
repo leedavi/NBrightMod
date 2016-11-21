@@ -852,7 +852,8 @@ namespace NBrightMod.common
                             System.Uri uri1 = new Uri(f);
                             System.Uri uri2 = new Uri(PortalSettings.Current.HomeDirectoryMapPath);
                             Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                            nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
+                            nbi2.SetXmlProperty("genxml/relpath", "/" + relativeUri.ToString());
+                            nbi2.SetXmlProperty("genxml/themefolder", themefolder);
                             xmlOut += nbi2.ToXmlItem();
                         }
                     }
@@ -873,9 +874,10 @@ namespace NBrightMod.common
                         nbi2.SetXmlProperty("genxml/mappath", f);
                         nbi2.SetXmlProperty("genxml/name", Path.GetFileName(f));
                         System.Uri uri1 = new Uri(f);
-                        System.Uri uri2 = new Uri(controlMapPath);
+                        System.Uri uri2 = new Uri(HttpContext.Current.Server.MapPath("/"));
                         Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                        nbi2.SetXmlProperty("genxml/relpath", relativeUri.ToString());
+                        nbi2.SetXmlProperty("genxml/relpath", "/" + relativeUri.ToString());
+                        nbi2.SetXmlProperty("genxml/themefolder", themefolder);
                         xmlOut += nbi2.ToXmlItem();
                     }
 
@@ -899,6 +901,8 @@ namespace NBrightMod.common
             foreach (var nbi in themportalfiles)
             {
 
+                var themefolder = nbi.GetXmlProperty("genxml/themefolder");
+
                 // create directory for theme files 
                 var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
                 if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
@@ -912,9 +916,15 @@ namespace NBrightMod.common
                 }
 
                 // save files
-                var relpath = PortalSettings.Current.HomeDirectory.Trim('/') + "/" + nbi.GetXmlProperty("genxml/relpath");
-                var fname = nbi.GetXmlProperty("genxml/name").Replace(oldmodref, newmodref);
-                var filemappath = HttpContext.Current.Server.MapPath(relpath.Replace(oldmodref, newmodref));
+                var relpath = "/" + PortalSettings.Current.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
+                var fname = nbi.GetXmlProperty("genxml/name");
+                if (oldmodref != "") fname = fname.Replace(oldmodref, newmodref);
+                var filemappath = HttpContext.Current.Server.MapPath(relpath);
+                if (oldmodref != "") filemappath = filemappath.Replace(oldmodref, newmodref);
+                if (theme != themefolder)
+                {
+                    filemappath = filemappath.Replace("\\NBrightMod\\Themes\\" + themefolder, "\\NBrightMod\\Themes\\" + theme);
+                }
                 var filefolder = filemappath.Replace("\\" + fname, "");
                 if (!Directory.Exists(filefolder))
                 {
@@ -989,12 +999,14 @@ namespace NBrightMod.common
                 Utils.SaveFile(systhemeFileName + ".tmp", resxXML);
 
                 var resxlist = new List<DictionaryEntry>();
+                var resxKeys = new List<string>();
                 // read temp resx file
                 if (File.Exists(systhemeFileName + ".tmp"))
                 {
                     ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName + ".tmp");
                     foreach (DictionaryEntry d in rsxr)
                     {
+                        resxKeys.Add(d.Key.ToString());
                         resxlist.Add(d);
                     }
                     rsxr.Close();
@@ -1007,7 +1019,11 @@ namespace NBrightMod.common
                     ResXResourceReader rsxr = new ResXResourceReader(systhemeFileName);
                     foreach (DictionaryEntry d in rsxr)
                     {
-                        resxlist.Add(d);
+                        if (!resxKeys.Contains(d.Key.ToString()))
+                        {
+                            resxKeys.Add(d.Key.ToString());
+                            resxlist.Add(d);
+                        }
                     }
                     rsxr.Close();
                     File.Delete(systhemeFileName);
@@ -1026,10 +1042,83 @@ namespace NBrightMod.common
             else
             {
                 // save resx file
-                Utils.SaveBase64ToFile(systhemeFileName, resxXML);
+                Utils.SaveFile(systhemeFileName, resxXML);
             }
         }
 
+        public static string DeleteModuleTemplate(int moduleid, string themefolder, string templfilename, string lang = "")
+        {
+            var langlist = new List<string>();
+            if (lang == "")
+            {
+                var langs = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+                foreach (var l in langs)
+                {
+                    langlist.Add(l);
+                }
+            }
+            else
+            {
+                langlist.Add(lang);
+            }
+
+            foreach (var actionlang in langlist)
+            {
+                var fldrlang = actionlang;
+                if (fldrlang == "") fldrlang = "default";
+
+                // for module level template we need to add the modref to the start of the template
+                if (Utils.IsNumeric(moduleid))
+                {
+                    var objCtrl = new NBrightDataController();
+
+                    // assign module themefolder.
+                    var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+                    if (modsettings != null)
+                    {
+                        themefolder = modsettings.GetXmlProperty("genxml/dropdownlist/themefolder");
+                        var moduleref = modsettings.GetXmlProperty("genxml/hidden/modref");
+                        templfilename = moduleref + templfilename;
+                    }
+
+
+
+                    var fldrDefault = "";
+                    if (templfilename.EndsWith(".cshtml"))
+                    {
+                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
+                    }
+                    else
+                    {
+                        if (templfilename.EndsWith(".css"))
+                        {
+                            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
+                        }
+                        if (templfilename.EndsWith(".js"))
+                        {
+                            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+                        }
+                        if (templfilename.EndsWith(".resx"))
+                        {
+                            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                        }
+                    }
+                    if (fldrDefault != "")
+                    {
+                        if (File.Exists(fldrDefault + "\\" + templfilename))
+                        {
+                            File.Delete(fldrDefault + "\\" + templfilename);
+                            LocalUtils.ClearRazorCache(moduleid.ToString(""));
+                            LocalUtils.ClearRazorSateliteCache(moduleid.ToString(""));
+                            LocalUtils.RemoveCachedRazorEngineService();
+                        }
+                    }
+
+                }
+            }
+
+            return "OK";
+        }
 
         #endregion
 

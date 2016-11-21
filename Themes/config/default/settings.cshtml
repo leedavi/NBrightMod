@@ -55,14 +55,13 @@
     </div>
 
         <script>
-            $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
-
+ 
             $(document).ready(function () {
 
                 @if (info.GetXmlProperty("genxml/dropdownlist/themefolder") != "")
-            {
-                @:NBrightMod_nbxget('gettheme', '#themedata', '#settingsdata');
-                            }
+                {
+                    @:NBrightMod_nbxget('gettheme', '#themedata', '#settingsdata');
+                }
                 $('a[id*="_cmdUpdate"]').click(function () {
                     NBrightMod_nbxget('savesettings', '#nbrightmodsettings');
                 });
@@ -70,13 +69,6 @@
                     NBrightMod_nbxget('savetheme', '#themedata');
                 });
             });
-
-            function NBrightMod_nbxgetCompleted(e) {
-
-                if (e.cmd == 'resetsettings') {
-                    location.reload();
-                }
-            };
 
 
         </script>
