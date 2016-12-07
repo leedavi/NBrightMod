@@ -461,7 +461,6 @@ namespace Nevoweb.DNN.NBrightMod
                     }
 
 
-                    LocalUtils.RemoveCachedRazorEngineService();
                     LocalUtils.ClearRazorCache(moduleid);
                     LocalUtils.ClearRazorSateliteCache(moduleid);
                     DnnUtils.ClearPortalCache(PortalSettings.Current.PortalId);
@@ -946,7 +945,6 @@ namespace Nevoweb.DNN.NBrightMod
                     }
 
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
-                    LocalUtils.RemoveCachedRazorEngineService();
                 }
 
                 // RESX update resx data returned
@@ -1034,7 +1032,6 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     File.Delete(fldrDefault + "\\" + templfilename);
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
-                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1083,7 +1080,6 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     File.Delete(sourceresx + "\\" + "\\theme.ascx." + lang + ".resx");
                     LocalUtils.ClearModuleCacheByTheme(themefolder);
-                    LocalUtils.RemoveCachedRazorEngineService();
                 }
             }
 
@@ -1265,6 +1261,22 @@ namespace Nevoweb.DNN.NBrightMod
                     CopyFileInFolder(sourceRoot, fldrJs);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
                     CopyFileInFolder(sourceRoot, fldrCss);
+
+                    // rename the settings theme so the module uses the new one.
+                    if (Utils.IsNumeric(moduleid))
+                    {
+                        // assign module themefolder.
+                        var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+                        if (modsettings != null)
+                        {
+                            modsettings.SetXmlProperty("genxml/dropdownlist/themefolder",newname);
+                            objCtrl.Update(modsettings);
+                            LocalUtils.ClearRazorCache(modsettings.ItemID.ToString());
+                            LocalUtils.ClearFileCache(modsettings.ItemID);
+                        }
+                    }
+
+
                 }
 
                 if (updatetype == "edit" && themefolder != "")

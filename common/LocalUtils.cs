@@ -9,6 +9,7 @@ using System.Linq;
 using System.Resources;
 using System.Runtime.Caching;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 using System.Xml;
@@ -530,41 +531,59 @@ namespace NBrightMod.common
             }
         }
 
-        /// <summary>
-        /// Reset razor service, this causes a memory leak, but it's the only way for now to clear the razor cache.
-        /// on live system we shouldn't be changing templates to much, so it should be OK.
-        /// </summary>
-        public static void RemoveCachedRazorEngineService()
+
+        public static string RazorRender(Object info, string razorTempl, string templateKey, Boolean debugMode = false)
         {
-            HttpContext.Current.Application.Set("NBrightModIRazorEngineService", null);
-        }
-
-        public static String RazorRender(Object info, String razorTempl, String templateKey, Boolean debugMode = false)
-        {
-
-            var service = (IRazorEngineService)HttpContext.Current.Application.Get("NBrightModIRazorEngineService");
-            if (service == null || debugMode)
-            {
-                // do razor test
-                var config = new TemplateServiceConfiguration();
-                config.Debug = debugMode;
-                config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
-                service = RazorEngineService.Create(config);
-                Engine.Razor = service;
-                HttpContext.Current.Application.Set("NBrightModIRazorEngineService", service);
-            }
-
             var result = "";
             try
             {
-                result = Engine.Razor.RunCompile(razorTempl, templateKey, null, info);
+                var service = (IRazorEngineService)HttpContext.Current.Application.Get("NBrightModIRazorEngineService");
+                if (service == null)
+                {
+                    // do razor test
+                    var config = new TemplateServiceConfiguration();
+                    config.Debug = debugMode;
+                    config.BaseTemplateType = typeof(NBrightModRazorTokens<>);
+                    service = RazorEngineService.Create(config);
+                    HttpContext.Current.Application.Set("NBrightModIRazorEngineService", service);
+                }
+                Engine.Razor = service;
+                var israzorCached = Utils.GetCache("rzcache_" + templateKey); // get a cache flag for razor compile.
+                if (israzorCached == null || (string)israzorCached != razorTempl)
+                {
+                    result = Engine.Razor.RunCompile(razorTempl, GetMd5Hash(razorTempl), null, info);
+                    Utils.SetCache("rzcache_" + templateKey, razorTempl);
+                }
+                else
+                {
+                    result = Engine.Razor.Run(GetMd5Hash(razorTempl), null, info);
+                }
+
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                result = "<div>" + e.Message + " templateKey='" + templateKey + "'</div>";
+                result = "<div>" + ex.Message + " templateKey='" + templateKey + "'</div>";
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// work arounf MD5 has for razorengine caching.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static string GetMd5Hash(string input)
+        {
+            var md5 = MD5.Create();
+            var inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            var hash = md5.ComputeHash(inputBytes);
+            var sb = new StringBuilder();
+            foreach (byte t in hash)
+            {
+                sb.Append(t.ToString("X2"));
+            }
+            return sb.ToString();
         }
 
         public static NBrightInfo CreateRequiredUploadFolders(NBrightInfo settings)
@@ -1110,7 +1129,6 @@ namespace NBrightMod.common
                             File.Delete(fldrDefault + "\\" + templfilename);
                             LocalUtils.ClearRazorCache(moduleid.ToString(""));
                             LocalUtils.ClearRazorSateliteCache(moduleid.ToString(""));
-                            LocalUtils.RemoveCachedRazorEngineService();
                         }
                     }
 
