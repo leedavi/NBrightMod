@@ -27,6 +27,7 @@ using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using System.Text;
+using System.Windows.Forms;
 
 namespace NBrightMod.common
 {
@@ -919,38 +920,7 @@ namespace NBrightMod.common
             var themportalfiles = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "EXPORTPORTALFILE");
             foreach (var nbi in themportalfiles)
             {
-
-                var themefolder = nbi.GetXmlProperty("genxml/themefolder");
-
-                // create directory for theme files 
-                var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-                if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
-                {
-                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                    Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
-                }
-                if (!Directory.Exists(themeFolderName))
-                {
-                    Directory.CreateDirectory(themeFolderName);
-                }
-
-                // save files
-                var relpath = "/" + PortalSettings.Current.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
-                var fname = nbi.GetXmlProperty("genxml/name");
-                if (oldmodref != "") fname = fname.Replace(oldmodref, newmodref);
-                var filemappath = HttpContext.Current.Server.MapPath(relpath);
-                if (oldmodref != "") filemappath = filemappath.Replace(oldmodref, newmodref);
-                if (theme != themefolder)
-                {
-                    filemappath = filemappath.Replace("\\NBrightMod\\Themes\\" + themefolder, "\\NBrightMod\\Themes\\" + theme);
-                }
-                var filefolder = filemappath.Replace("\\" + fname, "");
-                if (!Directory.Exists(filefolder))
-                {
-                    Directory.CreateDirectory(filefolder);
-                }
-                Utils.SaveFile(filemappath, nbi.TextData);
-
+                ImportFileToPortalLevel(nbi,theme,oldmodref,newmodref);
                 objCtrl.Delete(nbi.ItemID); // remove temp import record.
             }
 
@@ -968,12 +938,53 @@ namespace NBrightMod.common
                 {
                     LocalUtils.ImportResxXml(nbi, theme);
                 }
+                else
+                {
+                    ImportFileToPortalLevel(nbi, theme, oldmodref, newmodref);
+                }
 
                 objCtrl.Delete(nbi.ItemID); // remove temp import record.
             }
             return "";
         }
 
+        private static void ImportFileToPortalLevel(NBrightInfo nbi, string theme, string oldmodref = "", string newmodref = "")
+        {
+            var themefolder = nbi.GetXmlProperty("genxml/themefolder");
+
+            // create directory for theme files 
+            var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+            {
+                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+            }
+            if (!Directory.Exists(themeFolderName))
+            {
+                Directory.CreateDirectory(themeFolderName);
+            }
+
+            // save files
+            var relpath = "/" + PortalSettings.Current.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
+            var fname = nbi.GetXmlProperty("genxml/name");
+            if (oldmodref != "") fname = fname.Replace(oldmodref, newmodref);
+            var filemappath = HttpContext.Current.Server.MapPath(relpath);
+            if (oldmodref != "") filemappath = filemappath.Replace(oldmodref, newmodref);
+            if (theme != themefolder)
+            {
+                filemappath = filemappath.Replace("\\NBrightMod\\Themes\\" + themefolder, "\\NBrightMod\\Themes\\" + theme);
+            }
+            // remove any system level path that may exist.
+            filemappath = filemappath.Replace("\\DesktopModules\\NBright", "");
+
+            var filefolder = filemappath.Replace("\\" + fname, "");
+            if (!Directory.Exists(filefolder))
+            {
+                Directory.CreateDirectory(filefolder);
+            }
+            Utils.SaveFile(filemappath, nbi.TextData);
+
+        }
 
         public static void DeleteAllDataRecords(int moduleid)
         {
