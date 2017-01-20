@@ -351,6 +351,7 @@
     <None Include="Themes\Shared\docselect-shared.cshtml" />
     <None Include="Themes\Shared\docselect1-shared.cshtml" />
     <None Include="Themes\Shared\editbody-shared.cshtml" />
+    <None Include="Themes\Shared\links-shared.cshtml" />
     <None Include="Themes\Shared\editlist-shared.cshtml" />
     <None Include="Themes\Shared\editortext-shared.cshtml" />
     <None Include="Themes\Shared\editpageheader-shared.cshtml" />

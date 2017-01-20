@@ -264,4 +264,10 @@
   <data name="Processing.Text" xml:space="preserve">
     <value>Traitement, veuillez patienter...</value>
   </data>
+  <data name="linktypecsv2.Text" xml:space="preserve">
+    <value>Aucun,Lien interne,Lien externe</value>
+  </data>
+  <data name="linktitle.Text" xml:space="preserve">
+    <value>Lien Titre</value>
+  </data>
 </root>

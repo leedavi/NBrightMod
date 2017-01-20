@@ -363,4 +363,10 @@
   <data name="completed.Text" xml:space="preserve">
     <value>Completed</value>
   </data>
+  <data name="linktypecsv2.Text" xml:space="preserve">
+    <value>None,Internal link,External link</value>
+  </data>
+  <data name="linktitle.Text" xml:space="preserve">
+    <value>Link Title</value>
+  </data>
 </root>

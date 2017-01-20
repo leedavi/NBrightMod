@@ -775,10 +775,16 @@ namespace Nevoweb.DNN.NBrightMod
         private NBrightInfo GetListOfTemplateFiles(NBrightInfo templData,String themefolder,String themesubfolder,String modref)
         {
             var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/" + themesubfolder);
-            if (!System.IO.Directory.Exists(sourceRoot)) sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + themesubfolder;
+            var systemtheme = "True";
+            if (!System.IO.Directory.Exists(sourceRoot))
+            {
+                systemtheme = "False";
+                sourceRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + themesubfolder;
+            }
 
             if (System.IO.Directory.Exists(sourceRoot))
             {
+                templData.AddSingleNode("systemtheme", systemtheme, "genxml");
                 string[] files = System.IO.Directory.GetFiles(sourceRoot);
                 foreach (string s in files)
                 {
@@ -1307,7 +1313,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
-                var strOut = "Error unable to Move Theme";
+                var strOut = "";
 
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
@@ -1319,44 +1325,62 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     var targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder);
                     //see if we already have a portal level 
+                    Utils.CreateFolder(targetRoot);
+
+                    var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\default";
+                    var fldrResx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\resx";
+                    var fldrJs = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\js";
+                    var fldrCss = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\css";
+
+                    targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/default");
                     if (Directory.Exists(targetRoot))
                     {
-                        strOut = "ERROR: Theme already exists at system level, unable to Move Theme";
+                        strOut = "ERROR: Theme 'default' already exists at system level, unable to Move 'default' Theme folder <br/>";
                     }
                     else
                     {
                         Utils.CreateFolder(targetRoot);
-                        
-                        var fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\default";
-                        var fldrResx = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\resx";
-                        var fldrJs = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\js";
-                        var fldrCss = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder + "\\css";
-
-                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/default");
-                        Utils.CreateFolder(targetRoot);
                         CopyFileInFolder(fldrDefault, targetRoot, true);
-                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/resx");
-                        Utils.CreateFolder(targetRoot);
-                        CopyFileInFolder(fldrResx,targetRoot, true);
                         targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/js");
-                        Utils.CreateFolder(targetRoot);
-                        CopyFileInFolder(fldrJs,targetRoot, true);
-                        targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/css");
-                        Utils.CreateFolder(targetRoot);
-                        CopyFileInFolder(fldrCss,targetRoot,true);
-
-                        // delete theme directory if we have no files
-                        var filecount = 0;
-                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder;
-                        filecount += Directory.GetFiles(fldrDefault, "*.*", SearchOption.AllDirectories).Length;
-                        if (filecount == 0)
+                        if (Directory.Exists(targetRoot))
                         {
-                            Directory.Delete(fldrDefault, true);
+                            strOut = "ERROR: Theme 'js' already exists at system level, unable to Move 'js' Theme folder <br/>";
                         }
+                        else
+                        {
+                            Utils.CreateFolder(targetRoot);
+                            CopyFileInFolder(fldrJs, targetRoot, true);
 
-                        strOut = "Theme Moved to System Level and available on ALL portals";
+                            targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/css");
+                            if (Directory.Exists(targetRoot))
+                            {
+                                strOut = "ERROR: Theme 'css' already exists at system level, unable to Move 'css' Theme folder <br/>";
+                            }
+                            else
+                            {
+                                Utils.CreateFolder(targetRoot);
+                                CopyFileInFolder(fldrCss, targetRoot, true);
+
+                                // NOTE: we expect resx file to exist, becuase created by editing/import. we're going to overwrite
+                                targetRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + portalthemefolder + "/resx");
+                                Utils.CreateFolder(targetRoot);
+                                CopyFileInFolder(fldrResx, targetRoot, true);
+
+                                // delete theme directory if we have no files
+                                var filecount = 0;
+                                fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + portalthemefolder;
+                                filecount += Directory.GetFiles(fldrDefault, "*.*", SearchOption.AllDirectories).Length;
+                                if (filecount == 0)
+                                {
+                                    Directory.Delete(fldrDefault, true);
+                                }
+
+                            }
+
+                        }
                     }
 
+                    if (strOut=="") strOut = " Theme Moved to System Level and available on ALL portals";
                 }
 
 
@@ -2029,7 +2053,7 @@ namespace Nevoweb.DNN.NBrightMod
             if (ImgUtils.IsImageFile(Path.GetExtension(fullName)))
             {
                 var extension = Path.GetExtension(fullName);
-                var newImageFileName = modSettings.GetXmlProperty("genxml/uploadfoldermappath").TrimEnd('\\') + "\\" + Utils.GetUniqueKey() + extension;
+                var newImageFileName = modSettings.GetXmlProperty("genxml/uploadfoldermappath").TrimEnd('\\') + "\\" + DateTime.Now.ToString("yyMMddHHmmss") + Utils.GetUniqueKey() + extension;
                 if (extension != null && extension.ToLower() == ".png")
                 {
                     newImageFileName = ImgUtils.ResizeImageToPng(fullName, newImageFileName, imgSize);

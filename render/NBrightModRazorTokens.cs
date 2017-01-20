@@ -375,6 +375,7 @@ namespace NBrightMod.render
             var lang = info.GetXmlProperty("genxml/editlang");
             var nod = info.XMLDoc.SelectSingleNode("genxml/portalfiles[file='" + lang + filename + "']");
             if (nod != null) return true;
+            if (!info.GetXmlPropertyBool("genxml/systemtheme")) return true;
             return false;
         }
 

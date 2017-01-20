@@ -1076,16 +1076,17 @@ namespace NBrightMod.common
             }
         }
 
-        public static string DeleteModuleTemplate(int moduleid, string themefolder, string templfilename, string lang = "")
+        public static string DeleteModuleTemplate(int moduleid, string themefolder, string templfilename, string lang = "*")
         {
             var langlist = new List<string>();
-            if (lang == "")
+            if (lang == "*")
             {
                 var langs = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
                 foreach (var l in langs)
                 {
                     langlist.Add(l);
                 }
+                langlist.Add("");
             }
             else
             {
@@ -1116,7 +1117,7 @@ namespace NBrightMod.common
                     var fldrDefault = "";
                     if (templfilename.EndsWith(".cshtml"))
                     {
-                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
+                            fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
                     }
                     else
                     {
