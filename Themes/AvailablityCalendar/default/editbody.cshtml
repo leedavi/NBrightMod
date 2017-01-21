@@ -1,0 +1,12 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+<!-- div section to display ajax return -->
+<div id="editdata" class="NBM"></div>
+
+<!-- Datepicker is inject here, because it causes an error is we try and post it back with ajax. -->
+<hr/>
+<div id="inlineDatepicker"></div>
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editbody-shared.cshtml", Model)
+

@@ -122,6 +122,7 @@
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\AvailablityCalendar\resx\theme.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\ContactDetails\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\ContactForm\resx\Settings.ascx.resx" />
@@ -237,6 +238,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Themes\AvailablityCalendar\default\editbody.cshtml" />
+    <None Include="Themes\AvailablityCalendar\default\editfields.cshtml" />
+    <None Include="Themes\AvailablityCalendar\default\editpageheader.cshtml" />
+    <None Include="Themes\AvailablityCalendar\default\settings.cshtml" />
+    <None Include="Themes\AvailablityCalendar\default\view.cshtml" />
+    <None Include="Themes\AvailablityCalendar\default\viewpageheader.cshtml" />
     <None Include="Themes\config\default\edittheme.cshtml" />
     <None Include="Themes\config\default\thememanager.cshtml" />
     <None Include="Themes\config\default\thememanagerpageheader.cshtml" />
@@ -389,6 +396,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
+    <Folder Include="Themes\AvailablityCalendar\css\" />
+    <Folder Include="Themes\AvailablityCalendar\js\" />
     <Folder Include="Themes\ContactForm\js\" />
     <Folder Include="Themes\Documents\js\" />
     <Folder Include="Themes\FlexsliderSat\css\" />

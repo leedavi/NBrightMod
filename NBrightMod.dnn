@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
 	<packages>
-		<package name="NBrightMod" type="Module" version="8.0.11">
+		<package name="NBrightMod" type="Module" version="8.0.12">
 			<friendlyName>NBrightMod</friendlyName>
 			<description>NBrightMod, generic Module for NBright Solutions</description>
 			<iconFile />
@@ -22,13 +22,18 @@ Assemblies:
 
 NBrightMod
 
+Requires NBrightTS v8.1.5
 
 NOTES:
 
 This module depends on the NBright template system.  It must be installed for this module to work. 
 
 			</releaseNotes>
-			<components>
+      <dependencies>
+        <dependency type="CoreVersion">08.00.00</dependency>
+        <dependency type="managedPackage" version="8.1.5">NBrightTemplateSys</dependency>
+      </dependencies>
+      <components>
 				<component type="ResourceFile">
 					<resourceFiles>
 						<basePath>DesktopModules\NBright\NBrightMod</basePath>
