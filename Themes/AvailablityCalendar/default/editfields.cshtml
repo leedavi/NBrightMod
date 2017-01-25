@@ -47,16 +47,16 @@
 
         $(function() {
 
-            $.datepick.setDefaults($.datepick.regionalOptions['fr']);
-
             $('#inlineDatepicker').datepick({ dateFormat: 'yyyy-mm-dd', multiSelect: 999, minDate: 0, maxDate: 750, monthsToShow: [3, 4], monthsOffset: 0, monthsToStep: 12, useMouseWheel: false, changeMonth: false, onSelect: showDate });
 
             var lst = "@info.GetXmlProperty("genxml/hidden/datedata")";
-            var myArr = lst.split(',');
-            $('#inlineDatepicker').datepick('setDate', myArr);
-            var currentTime = new Date();
-            var year = currentTime.getFullYear();
-            $('#inlineDatepicker').datepick('showMonth', year, 1);
+            if (lst != "") {                
+                var myArr = lst.split(',');
+                $('#inlineDatepicker').datepick('setDate', myArr);
+                var currentTime = new Date();
+                var year = currentTime.getFullYear();
+                $('#inlineDatepicker').datepick('showMonth', year, 1);
+            }
 
             firstPass = false;
 

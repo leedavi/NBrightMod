@@ -1826,7 +1826,6 @@ namespace Nevoweb.DNN.NBrightMod
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/imgs", "genxml");
                         objCtrl.Update(nbilang);
                     }
-                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                 }
             }
             return "";
@@ -2138,7 +2137,6 @@ namespace Nevoweb.DNN.NBrightMod
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/docs", "genxml");
                         objCtrl.Update(nbilang);
                     }
-                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                 }
             }
             return "";
