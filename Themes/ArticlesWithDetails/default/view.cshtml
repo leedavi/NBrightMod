@@ -1,0 +1,38 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticles/resx/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "SimpleArticles.view.cshtml", Model.ModuleId.ToString(""))
+
+<h1>@ResourceKey("View.news")</h1>
+<div class="simplearticles">
+    
+    @foreach (NBrightInfo info in Model.List)
+        {
+        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+        <div class="simplearticlesdiv">
+        <div class="simplearticlesleft">
+        @if (imageurl != "")
+            {
+                var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=150&h=100" alt="@(title)" />
+            }
+        <p>
+        @info.GetXmlProperty("genxml/textbox/eventdate")<br />
+        @info.GetXmlProperty("genxml/lang/genxml/textbox/theme")
+        </p>
+        </div>
+            <div class="simplearticlesright">
+                <h2><a href="@ResolveUrl("?eid=" + @info.ItemID)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a></h2>
+                <p>@BreakOf(info, "genxml/lang/genxml/textbox/summary")</p>
+            </div>
+            <div>
+            </div>
+        <div class="clearfix"></div>
+        </div>
+        }
+
+</div>

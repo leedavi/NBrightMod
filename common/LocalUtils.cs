@@ -521,9 +521,10 @@ namespace NBrightMod.common
             var fullTemplName = theme + "." + templateprefix + "pageheader.cshtml";
             if (!page.Items["nbrightinject"].ToString().Contains(fullTemplName + "." + moduleName + ","))
             {
+                var debug = settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode");
                 var nbi = new NBrightInfo();
                 nbi.Lang = Utils.GetCurrentCulture();
-                var razorTempl = RazorTemplRender(fullTemplName, moduleid, Utils.GetCurrentCulture(), nbi, Utils.GetCurrentCulture());
+                var razorTempl = RazorTemplRender(fullTemplName, moduleid, Utils.GetCurrentCulture(), nbi, Utils.GetCurrentCulture(), debug);
                 if (razorTempl != "")
                 {
                     PageIncludes.IncludeTextInHeader(page, razorTempl);

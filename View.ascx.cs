@@ -86,19 +86,31 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
             var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
+            // check for detail page display
+            var eid = Utils.RequestQueryStringParam(Request, "eid");
+            var displayview = "view.cshtml";
+            // check for detail page display
+            if (Utils.IsNumeric(eid))
+            {
+                displayview = "viewdetail.cshtml";
+            }
 
             var strOut = "";
-            var cacheKey = "nbrightmodview-" + PortalSettings.Current.PortalId + "-" + ModuleId + "-" + Utils.GetCurrentCulture();
+            var cacheKey = "nbrightmodview-" + PortalSettings.Current.PortalId + "-" + ModuleId + "-" + Utils.GetCurrentCulture() + "-" + eid;
             if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey, ModuleId.ToString());
 
             if (String.IsNullOrWhiteSpace(strOut)) // check if we already have razor cache
             {
                 // preprocess razor template to get meta data for data select into cache.
-                var cachedlist = LocalUtils.RazorPreProcessTempl("view.cshtml", ModuleId.ToString(""), Utils.GetCurrentCulture());
+                var cachedlist = LocalUtils.RazorPreProcessTempl(displayview, ModuleId.ToString(""), Utils.GetCurrentCulture());
                 var orderby = "";
                 if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
                 var filter = "";
                 if (cachedlist != null && cachedlist.ContainsKey("filter")) filter = cachedlist["filter"];
+                if (Utils.IsNumeric(eid))
+                {
+                    filter = " and NB1.ItemId = '" + eid + "'";
+                }
 
                 // get source moduleid
                 var sourcemodid = Convert.ToInt32(ModuleId);
@@ -125,7 +137,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
 
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
-                strOut = LocalUtils.RazorTemplRenderList("view.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture(), debug);
+                strOut = LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture(), debug);
 
                 if (!debug)
                 {
