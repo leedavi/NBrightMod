@@ -1,6 +1,9 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
 @using System.Linq
+@using NBrightCore.common
 @using NBrightDNN
+@using RazorEngine.Templating
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SimpleArticles/resx/")
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
@@ -20,10 +23,16 @@
                 var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
                 <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=150&h=100" alt="@(title)" />
             }
-        <p>
-        @info.GetXmlProperty("genxml/textbox/eventdate")<br />
-        @info.GetXmlProperty("genxml/lang/genxml/textbox/theme")
-        </p>
+            <p>
+                @if (Utils.IsDate(@info.GetXmlPropertyRaw("genxml/textbox/eventdate")))
+                {
+                    var eventdate = Convert.ToDateTime(info.GetXmlPropertyRaw("genxml/textbox/eventdate"));
+                    <span>@(eventdate.ToString("dd"))</span>
+                    <span>@(eventdate.ToString("MMM"))</span>
+                }
+                @info.GetXmlProperty("genxml/textbox/eventdate")<br/>
+                @info.GetXmlProperty("genxml/lang/genxml/textbox/theme")
+            </p>
         </div>
             <div class="simplearticlesright">
                 <h2><a href="@ResolveUrl("?eid=" + @info.ItemID)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a></h2>

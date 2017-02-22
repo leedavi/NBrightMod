@@ -86,13 +86,18 @@ namespace Nevoweb.DNN.NBrightMod
             var objCtrl = new NBrightDataController();
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
             var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
+            var activatedetail = settings.GetXmlPropertyBool("genxml/checkbox/activatedetail");
             // check for detail page display
             var eid = Utils.RequestQueryStringParam(Request, "eid");
             var displayview = "view.cshtml";
             // check for detail page display
-            if (Utils.IsNumeric(eid))
+            if (Utils.IsNumeric(eid) && activatedetail)
             {
                 displayview = "viewdetail.cshtml";
+            }
+            else
+            {
+                eid = ""; // clear for cache key
             }
 
             var strOut = "";
@@ -107,7 +112,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
                 var filter = "";
                 if (cachedlist != null && cachedlist.ContainsKey("filter")) filter = cachedlist["filter"];
-                if (Utils.IsNumeric(eid))
+                if (Utils.IsNumeric(eid) && activatedetail)
                 {
                     filter = " and NB1.ItemId = '" + eid + "'";
                 }

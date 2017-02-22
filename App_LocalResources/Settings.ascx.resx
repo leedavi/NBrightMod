@@ -183,4 +183,7 @@
   <data name="encryptfilename.Text" xml:space="preserve">
     <value>Encrypt Filename</value>
   </data>
+  <data name="activatedetail.Text" xml:space="preserve">
+    <value>Activate Detail Page</value>
+  </data>
 </root>
