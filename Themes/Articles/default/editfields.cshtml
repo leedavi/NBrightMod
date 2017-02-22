@@ -17,9 +17,6 @@
 
 @EditButtons("sr,s,d,r")
 
-@{
-    Model.Settings.Add("imglistcolumns", "w,h");
-}
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image-shared.cshtml", Model)
 
 @CheckBox(info, "genxml/checkbox/openinlightbox", "ResourceKey:Settings.openinlightbox", " class='dnnCheckbox'")

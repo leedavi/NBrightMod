@@ -5,7 +5,7 @@
 #loader{background:#848D92;color:#000000;height:100%;left:0;opacity:0.3;transition:all 0.4s ease-in-out 0s;position:fixed;text-align:center;top:0;width:100%;z-index:9999;}
 .clearfix{clear:both;}
 /* Normal Display */
-.newspaper-wrapperdiv{margin-bottom:30px;overflow:hidden;}
+.newspaper-wrapperdiv{margin-bottom:30px;}
 .newspaper-imgdivtop, .newspaper-imgdivbottom{text-align:center;}
 .newspaper-imgdivtop img{margin:0 10px 10px 10px;}
 .newspaper-imgdivbottom img{margin:10px 10px 0 10px;}
@@ -39,6 +39,14 @@
 @media all and (max-width:640px),
             screen and (-webkit-min-device-pixel-ratio: 3.0) and (max-width: 1920px) and (orientation: portrait),
             screen and (-webkit-min-device-pixel-ratio: 2.0) and (max-width: 1280px) and (orientation: portrait) {
+.newspaper-imgdivfloatleft{float:none;}
+.newspaper-imgdivfloatright{float:none;}
+.newspaper-imgdivfloatleft img{margin:0 0 10px 0;}
+.newspaper-imgdivfloatright img{margin:0 0 10px 0;}
+.newspaper-imgdivcellleft, .newspaper-imgdivcellright{display:block;}
+.newspaper-imgdivcellleft img{margin:0 0 10px 0;}
+.newspaper-imgdivcellright img{margin:0 0 10px 0;}
+.newspaper-textdivcell{display:block;}
 .newspaper-wrapper2col .newspaper-wrapperdiv {float:none;width:auto;margin-right:0;}
 .newspaper-wrapper3col .newspaper-wrapperdiv {float:none;width:auto;margin-right:0;}
 .newspaper-wrapper4col .newspaper-wrapperdiv {float:none;width:auto;margin-right:0;}

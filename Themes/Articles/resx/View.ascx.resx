@@ -118,6 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="news.Text" xml:space="preserve">
-    <value>Actualités</value>
+    <value>News</value>
+  </data>
+  <data name="readmore.Text" xml:space="preserve">
+    <value>Read more</value>
+  </data>
+  <data name="published.Text" xml:space="preserve">
+    <value>Published on</value>
+  </data>
+  <data name="in.Text" xml:space="preserve">
+    <value>in</value>
+  </data>
+  <data name="allnews.Text" xml:space="preserve">
+    <value>See all news</value>
+  </data>
+  <data name="archives.Text" xml:space="preserve">
+    <value>Archives</value>
   </data>
 </root>
