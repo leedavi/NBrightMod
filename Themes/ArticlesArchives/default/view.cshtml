@@ -1,0 +1,16 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightCore.common
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Articles/resx/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "ArticlesArchives.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "ArticlesArchives.view.cshtml", Model.ModuleId.ToString(""))
+
+<h4>@ResourceKey("View.archives")</h4>
+<ul>
+@foreach (NBrightInfo info in Model.List)
+{
+<li><a href="@(GetTabUrlByGuid(Model.GetSetting("sourcepage")) + "?eid=" + info.ItemID)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a></li>
+}
+</ul>

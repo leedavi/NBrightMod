@@ -1,0 +1,18 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightCore.common
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/Articles/resx/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "ArticlesSat.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "ArticlesSat.view.cshtml", Model.ModuleId.ToString(""))
+
+<h4>@ResourceKey("View.news")</h4>
+
+@foreach (NBrightInfo info in Model.List)
+{
+<p><a href="@(GetTabUrlByGuid(Model.GetSetting("sourcepage")) + "?eid=" + info.ItemID)"><strong>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</strong></a><br />
+@BreakOf(info, "genxml/lang/genxml/textbox/summary")</p>
+}
+
+<p><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.allnews")</a></p>
