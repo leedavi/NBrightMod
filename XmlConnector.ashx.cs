@@ -1714,7 +1714,11 @@ namespace Nevoweb.DNN.NBrightMod
                         nbi.ModuleId = Convert.ToInt32(moduleid);
                         nbi.PortalId = PortalSettings.Current.PortalId;
                         nbi.TypeCode = "NBrightModDATA";
-                        if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0) objCtrl.Update(nbi);
+                        var newItemId = -1;
+                        if (Utils.IsNumeric(emailstosave) && Convert.ToInt32(emailstosave) > 0)
+                        {
+                            newItemId = objCtrl.Update(nbi);
+                        }
 
                         // do edit field data if a itemid has been selected
                         var emailbody = LocalUtils.RazorTemplRender(managertemplate, moduleid, "", nbi, _lang);
@@ -1730,7 +1734,8 @@ namespace Nevoweb.DNN.NBrightMod
                             {
                                 // multiple attachments as csv with "|" seperator
                                 DotNetNuke.Services.Mail.Mail.SendMail(clientemail.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
-                                strOut = emailreturnmsg;
+                                strOut = emailreturnmsg.Replace("{ItemId}", newItemId.ToString());
+                                
                             }
                         }
 
