@@ -122,10 +122,6 @@
     <EmbeddedResource Include="App_LocalResources\Settings.ascx.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.fr-FR.resx" />
     <EmbeddedResource Include="App_LocalResources\View.ascx.resx" />
-    <EmbeddedResource Include="Themes\AigueVivePay\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\AigueVivePay\resx\theme.ascx.resx" />
-    <EmbeddedResource Include="Themes\AigueVivePay\resx\View.ascx.fr-FR.resx" />
-    <EmbeddedResource Include="Themes\AigueVivePay\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\Articles\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Articles\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Articles\resx\View.ascx.fr-FR.resx" />
@@ -177,8 +173,6 @@
     <Content Include="ThemeManager.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Themes\AigueVivePay\css\defaultform.css" />
-    <Content Include="Themes\AigueVivePay\css\flatform.css" />
     <Content Include="Themes\config\css\jquery.multilevelpushmenu.css" />
     <Content Include="Themes\config\default\snippets.xml" />
     <Content Include="Themes\config\js\jquery.multilevelpushmenu.min.js" />
@@ -248,15 +242,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Themes\AigueVivePay\default\clientemail.cshtml" />
-    <None Include="Themes\AigueVivePay\default\editbody.cshtml" />
-    <None Include="Themes\AigueVivePay\default\editfields.cshtml" />
-    <None Include="Themes\AigueVivePay\default\editlist.cshtml" />
-    <None Include="Themes\AigueVivePay\default\editpageheader.cshtml" />
-    <None Include="Themes\AigueVivePay\default\manageremail.cshtml" />
-    <None Include="Themes\AigueVivePay\default\settings.cshtml" />
-    <None Include="Themes\AigueVivePay\default\view.cshtml" />
-    <None Include="Themes\AigueVivePay\default\viewpageheader.cshtml" />
     <None Include="Themes\Articles\default\editbody.cshtml" />
     <None Include="Themes\Articles\default\editfields.cshtml" />
     <None Include="Themes\Articles\default\editlist.cshtml" />
@@ -424,7 +409,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
-    <Folder Include="Themes\AigueVivePay\js\" />
     <Folder Include="Themes\AvailablityCalendar\css\" />
     <Folder Include="Themes\AvailablityCalendar\js\" />
     <Folder Include="Themes\ContactForm\js\" />

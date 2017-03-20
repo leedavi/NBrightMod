@@ -747,6 +747,13 @@ namespace NBrightMod.common
                                 var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
                                 if (relPath != "")
                                 {
+
+                                    if (!relPath.StartsWith(nbi.GetXmlProperty("genxml/uploadfolder")))
+                                    {
+                                        relPath = "/" + nbi.GetXmlProperty("genxml/uploadfolder").Trim('/') + "/" + datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/filename");
+                                        datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", relPath);
+                                    }
+
                                     var imgMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
                                     datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgMapPath);
                                     upd = true;
@@ -763,6 +770,12 @@ namespace NBrightMod.common
                                 var relPath = datasource.GetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docurl");
                                 if (relPath != "")
                                 {
+                                    if (!relPath.StartsWith(nbi.GetXmlProperty("genxml/uploaddocfolder")))
+                                    {
+                                        relPath = "/" + nbi.GetXmlProperty("genxml/uploaddocfolder").Trim('/') + "/" + datasource.GetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/filename");
+                                        datasource.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/imageurl", relPath);
+                                    }
+
                                     var docMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
                                     datasource.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docpath", docMapPath);
                                     upd = true;
