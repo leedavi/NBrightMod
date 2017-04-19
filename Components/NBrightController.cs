@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Resources;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using DotNetNuke.Common.Utilities;
@@ -279,8 +280,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     var lstData1 = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATA","", " order by NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int'), NB1.ModifiedDate"); // reset search list objects to non-langauge ones.
                     string strContent = "";
                     var modifiedDate = DateTime.Now;
-                    var searchTitle = modInfo.ModuleTitle;
-                    if (searchTitle == "") searchTitle = modInfo.ParentTab.TabName;
+                    var searchTitle = "";
 
                     foreach (var obj1 in lstData1)
                     {
@@ -305,7 +305,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                 foreach (XmlNode xmlNod in xmlNods)
                                 {
                                     //if (xmlNod.Attributes != null && xmlNod.Attributes["datatype"] != null && xmlNod.Attributes["datatype"].InnerText == "html")
-                                    strContent += HttpUtility.HtmlDecode(xmlNod.InnerText) + " ";
+                                        strContent += Regex.Replace(HttpUtility.HtmlDecode(xmlNod.InnerText), @"<[^>]+>|&nbsp;", "").Trim() + " ";
                                     //else
                                     //    strContent += xmlNod.InnerText + " ";
                                 }
@@ -325,10 +325,11 @@ namespace Nevoweb.DNN.NBrightMod.Components
                         }
                     }
 
+                    if (searchTitle == "") searchTitle = modInfo.ParentTab.TabName;
+
                     if (strContent != "")
                     {
                         var description = strContent.Length <= 100 ? strContent : HtmlUtils.Shorten(strContent, 100, "...");
-
                         var searchDoc = new SearchDocument
                         {
                             UniqueKey = modInfo.ModuleID.ToString() + "*" + lang,
