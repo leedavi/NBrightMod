@@ -96,28 +96,28 @@ var docList = x.XMLDoc.SelectNodes("genxml/docs/genxml");
 if (docList != null)
 {
     var c = 1;
-    foreach (XmlNode i in docList)
-    {
-        XmlNode docdescnod = x.XMLDoc.SelectSingleNode("genxml/lang/genxml/docs/genxml[" + c + "]/textbox/docdesc");
-
-        var nbi = new NBrightInfo();
-        nbi.XMLData = i.OuterXml;
-        var displayname = "";
-        if (docdescnod != null)
+    <div class='documents'>
+        @foreach (XmlNode i in docList)
         {
-            displayname = docdescnod.InnerText;
-        }
-        if (displayname == "")
-        {
-            displayname = nbi.GetXmlProperty("genxml/hidden/filename");
-        }
-        <div class='documents'>
-        <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(c)&itemid=@(x.ItemID)&&downloadname=@(nbi.GetXmlProperty("genxml/hidden/filename").Replace(" ","_"))'>@(displayname)</a>
-        </div>
+            XmlNode docdescnod = x.XMLDoc.SelectSingleNode("genxml/lang/genxml/docs/genxml[" + c + "]/textbox/docdesc");
 
-        c += 1;
+            var nbi = new NBrightInfo();
+            nbi.XMLData = i.OuterXml;
+            var displayname = "";
+            if (docdescnod != null)
+            {
+                displayname = docdescnod.InnerText;
+            }
+            if (displayname == "")
+            {
+                displayname = nbi.GetXmlProperty("genxml/hidden/filename");
+            }
 
-    }
+            <a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&fileindex=@(c)&itemid=@(x.ItemID)&&downloadname=@(nbi.GetXmlProperty("genxml/hidden/filename").Replace(" ","_"))'>@(displayname)</a>
+
+            c += 1;
+        }
+    </div>
 }
 }
 

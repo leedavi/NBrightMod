@@ -264,9 +264,10 @@ namespace Nevoweb.DNN.NBrightMod.Components
             var objcache = Utils.GetCache("dnnsearchindexflag" + modInfo.ModuleID.ToString(""));
             if (objcache != null) lastindexflag = (Boolean)objcache;
 
+            if (modInfo.IsDeleted) return searchDocuments; 
+
             if (!lastindexflag)
             {
-
 
                 // Get all the non-langauge data records.
                 var objCtrl = new NBrightDataController();
@@ -274,21 +275,26 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var culturecodeList = DnnUtils.GetCultureCodeList(modInfo.PortalID);
                 foreach (var lang in culturecodeList)
                 {
-                    var lstData = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATA"); // reset search list objects to non-langauge ones.
+                    var lstData = new List<NBrightInfo>();
+                    var lstData1 = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATA","", " order by NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int'), NB1.ModifiedDate"); // reset search list objects to non-langauge ones.
                     string strContent = "";
                     var modifiedDate = DateTime.Now;
                     var searchTitle = modInfo.ModuleTitle;
                     if (searchTitle == "") searchTitle = modInfo.ParentTab.TabName;
 
-                    // add lanaguge records to list to be indexed
-                    var lstDataLang = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATALANG", " and NB1.Lang = '" + lang + "' ");
-                    foreach (var obj in lstDataLang)
+                    foreach (var obj1 in lstData1)
                     {
-                        lstData.Add(obj);
+                        lstData.Add(obj1);
+                        // add lanaguge records to list to be indexed
+                        var lstDataLang = objCtrl.GetList(modInfo.PortalID, modInfo.ModuleID, "NBrightModDATALANG", " and NB1.ParentItemId = '" + obj1.ItemID + "' and NB1.Lang = '" + lang + "' ", "");
+                        foreach (var obj in lstDataLang)
+                        {
+                            lstData.Add(obj);
+                        }
                     }
-
                     foreach (var objContent in lstData)
                     {
+
                         //content is encoded in the Database so Decode before Indexing
                         if (objContent.XMLDoc != null)
                         {
@@ -298,18 +304,23 @@ namespace Nevoweb.DNN.NBrightMod.Components
                             {
                                 foreach (XmlNode xmlNod in xmlNods)
                                 {
-                                    if (xmlNod.Attributes != null && xmlNod.Attributes["datatype"] != null && xmlNod.Attributes["datatype"].InnerText == "html")
-                                        strContent += HttpUtility.HtmlDecode(xmlNod.InnerText) + " ";
-                                    else
-                                        strContent += xmlNod.InnerText + " ";
+                                    //if (xmlNod.Attributes != null && xmlNod.Attributes["datatype"] != null && xmlNod.Attributes["datatype"].InnerText == "html")
+                                    strContent += HttpUtility.HtmlDecode(xmlNod.InnerText) + " ";
+                                    //else
+                                    //    strContent += xmlNod.InnerText + " ";
                                 }
                             }
-                            var xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/searchtitle");
-                            if (xNod == null || xNod.InnerText.Trim() == "")
+
+                            if (searchTitle == "")
                             {
-                                xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/title");
+                                var xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/searchtitle");
+                                if (xNod == null || xNod.InnerText.Trim() == "")
+                                {
+                                    xNod = objContent.XMLDoc.SelectSingleNode("genxml/textbox/title");
+                                }
+                                if (xNod != null && xNod.InnerText.Trim() != "") searchTitle = xNod.InnerText;
                             }
-                            if (xNod != null && xNod.InnerText.Trim() != "") searchTitle = xNod.InnerText;
+
                             if (objContent.ModifiedDate < modifiedDate) modifiedDate = objContent.ModifiedDate;
                         }
                     }
