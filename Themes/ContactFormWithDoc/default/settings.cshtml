@@ -1,0 +1,31 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<div>
+    <div>
+        @DnnLabel("lblemailsubject", "Settings.emailsubject")@TextBox(info, "genxml/textbox/emailsubject", "class='form-control' width='300px' ")
+    </div>
+    <div>
+        @DnnLabel("lblemailto","Settings.emailto")@TextBox(info,"genxml/textbox/emailto","class='form-control' width='300px' ")
+    </div>
+    <div>
+        @DnnLabel("lblemailfrom", "Settings.emailfrom")@TextBox(info, "genxml/textbox/emailfrom", "class='form-control' width='300px' ")
+    </div>
+    <div>
+        @DnnLabel("lblcopytoclient", "Settings.copytoclient")@CheckBox(info, "genxml/checkbox/copytoclient", "", "", true)
+    </div>
+    <div>
+        @DnnLabel("lblemailstosave", "Settings.emailstosave")@TextBox(info, "genxml/textbox/emailstosave", "class='form-control' width='300px' ","50")
+    </div>
+
+</div>
+

@@ -131,7 +131,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "fileupload":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
-
+                case "clientfileupload":
+                    UploadWholeFile(context, moduleid,false,false,1);
+                    break;
                 case "fileuploadsecure":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
                     break;
@@ -1694,6 +1696,8 @@ namespace Nevoweb.DNN.NBrightMod
                 var emailreturnmsg = ajaxInfo.GetXmlProperty("genxml/hidden/emailreturnmsg");
                 var clientemail = ajaxInfo.GetXmlProperty("genxml/textbox/clientemail");
 
+                var optionfilelist = ajaxInfo.GetXmlProperty("genxml/textbox/optionfilelist");
+
                 var strOut = "ERROR - Email Unable to be sent";
 
                 if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(clientemail.Trim()))
@@ -1735,7 +1739,24 @@ namespace Nevoweb.DNN.NBrightMod
                                 // multiple attachments as csv with "|" seperator
                                 DotNetNuke.Services.Mail.Mail.SendMail(clientemail.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
                                 strOut = emailreturnmsg.Replace("{ItemId}", newItemId.ToString());
-                                
+
+                                if (optionfilelist != "")
+                                {
+                                    // send email attachement as seperate email, incase files too large or virus problem and it doesn't work!.
+                                    var uploadfolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightTemp";
+                                    var attchmentlist = "";
+                                    var sp = optionfilelist.Split(',');
+                                    foreach (var fn in sp)
+                                    {
+                                        if (fn != "")
+                                        {
+                                            attchmentlist += uploadfolder + "\\" + fn.Replace(" ", "_") + "|";
+                                        }
+                                    }
+                                    attchmentlist = attchmentlist.TrimEnd('|');
+                                    DotNetNuke.Services.Mail.Mail.SendMail(clientemail.Trim(), email.Trim(), "", emailsubject, emailbody, attchmentlist, "HTML", "", "", "", "");
+                                }
+
                             }
                         }
 
@@ -2570,8 +2591,16 @@ namespace Nevoweb.DNN.NBrightMod
             return UploadWholeFile(context, moduleid, passbackfilename, encrptfilename);
         }
 
-        // Upload entire file
-        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename = false)
+        /// <summary>
+        /// Upload entire file 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="moduleid"></param>
+        /// <param name="passbackfilename"></param>
+        /// <param name="encrptfilename"></param>
+        /// <param name="purgefilesmins">number of minutes to keep files, 0 turn off purge.</param>
+        /// <returns></returns>
+        private String UploadWholeFile(HttpContext context, String moduleid, Boolean passbackfilename, Boolean encrptfilename = false, int purgefilesmins = 0)
         {
             var modSettings = LocalUtils.GetSettings(moduleid);
             for (int i = 0; i < context.Request.Files.Count; i++)
@@ -2601,6 +2630,25 @@ namespace Nevoweb.DNN.NBrightMod
                     UpdateImage(fullfilename, _itemid, modSettings);
                 else
                     UpdateDoc(fullfilename, _itemid, modSettings);
+
+                if (purgefilesmins > 0)
+                {
+                    try
+                    {
+                        foreach (var f in Directory.GetFiles(uploadfolder))
+                        {
+                            if (File.Exists(f) && File.GetCreationTime(f) < DateTime.Now.AddMinutes((purgefilesmins * -1)))
+                            {
+                                File.Delete(f);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // ignore
+                    }                    
+                }
+
                 if (passbackfilename) return fullfilename;
             }
             return "";

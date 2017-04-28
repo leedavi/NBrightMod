@@ -1,0 +1,124 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using System.Xml
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/ContactForm/resx/")
+
+@{
+    var info = new NBrightInfo();
+    var langcode = Model.GetUrlParam("language");
+    if (langcode != "")
+    {
+        langcode = langcode.Substring(0, 2);
+    }
+
+}
+
+@if (langcode != "" && langcode != "en")
+{
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/localization/messages_@(langcode).js"></script>
+}
+
+<h2>@ResourceKey("View.contact")</h2>
+
+<div id="emailform@(Model.ModuleId)" class="contactform">
+
+    <input id="moduleid" type="hidden" value="@Model.ModuleId"></input>
+    <input id="lang" type="hidden" value="@Model.GetUrlParam("language")"></input>
+    <input id="emailreturnmsg" type="hidden" value="@ResourceKey("View.emailreturnmsg")"></input>
+    <input id="invalidemailmsg" type="hidden" value="@ResourceKey("View.invalidemailmsg")"></input>    
+
+    <div class="contactformfields">
+      <div class="cf-rbl">@RadioButtonList(info,"genxml/radiobuttonlist/rblapp","1,2","ResourceKey:View.app","","1")</div>
+      <label>@ResourceKey("View.name")</label>
+      <div>@TextBox(info, "genxml/textbox/name")</div>
+      <label>@ResourceKey("View.tel")</label>
+      <div>@TextBox(info, "genxml/textbox/tel")</div>
+      <label>@ResourceKey("View.email")</label>
+      <div class="requiredfield">@TextBox(info, "genxml/textbox/clientemail", "type='email' required")</div>
+      <label>@ResourceKey("View.message")</label>
+        <div><textarea rows="4" id="emailsendermsg" update="save" type="text">@info.GetXmlProperty("genxml/textbox/emailsendermsg")</textarea>
+        </div>
+
+        <div>
+
+            <div class="docinput panel panel-default">
+
+                <div class="panel-heading clearfix">
+                    <div>
+                        <span class="panel-title">@ResourceKey("Edit.documents")</span>
+                    </div>
+                    <div class="fileUpload dnnSecondaryAction">
+                        <span class='glyphicon glyphicon-folder-open'>&nbsp;@ResourceKey("Edit.browse")</span>
+                        <input id='optionfile' class="normalFileUpload form-control" type='file' name="files[]" />
+                    </div>
+                    <input id='optionfilelist' style='display: none;' update='save' type='text'/>
+                    <input id='optionfileprefix' update='save' type='hidden'/>
+
+                </div>
+                <div class="panel-body">
+
+                    <div class="table-responsive">
+                        
+                        <span class="panel-title proceesingupload" style='display: none;'>@ResourceKey("View.proceesingupload")</span>
+
+                        <table id="doclist" class="table">
+                            <tbody class="fileuploadlist">
+                            <tr>
+                                <th>@ResourceKey("Edit.file")</th>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <button id="sendemail@(Model.ModuleId)" type="button" class="bigbutton">@ResourceKey("View.send")</button>
+
+    <div id="emailreturnmsg@(Model.ModuleId)"></div>
+
+    <div id="spinner@(Model.ModuleId)" class="spinner" style="display: none;">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+
+</div>
+
+<script>
+    $( document ).ready(function() {
+
+        var form = $("#Form");
+        form.validate();
+
+        $('#sendemail@(Model.ModuleId)').click(function () {
+
+            if (form.valid()) {
+                NBrightMod_nbxget('sendemail', '#emailform@(Model.ModuleId)', '#emailreturnmsg@(Model.ModuleId)');
+                $('#sendemail@(Model.ModuleId)').hide();
+                $('#spinner@(Model.ModuleId)').show();
+            }
+
+        });
+
+        $('#emailreturnmsg@(Model.ModuleId)').change(function () {
+            $('.contactformfields').find('input').val('');
+            $('.contactformfields').find('textarea').val('');
+            $('#spinner@(Model.ModuleId)').hide();
+        });
+
+    });
+
+</script>
