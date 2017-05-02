@@ -132,7 +132,7 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
                     break;
                 case "clientfileupload":
-                    UploadWholeFile(context, moduleid,false,false,1);
+                    UploadWholeFile(context, moduleid,false,false,60);
                     break;
                 case "fileuploadsecure":
                     if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
