@@ -25,11 +25,14 @@ using NBrightMod.common;
 using DataProvider = DotNetNuke.Data.DataProvider;
 using System.Web.Script.Serialization;
 using System.Web.UI.WebControls;
+using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Security.Permissions;
+using DotNetNuke.Security.Roles;
 
 namespace Nevoweb.DNN.NBrightMod
 {
@@ -261,6 +264,12 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights())
                     {
                         strOut = CloneModule(context);
+                    }
+                    break;
+                case "attachroles":
+                    if (LocalUtils.CheckRights())
+                    {
+                        strOut = AttachRolesToModule(context);
                     }
                     break;
             }
@@ -1219,6 +1228,109 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+
+        private String AttachRolesToModule(HttpContext context)
+        {
+            try
+            {
+                var objmodules = new ModuleController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var rolelist = ajaxInfo.GetXmlProperty("genxml/hidden/rolelist");
+                var selectedRoleId = ajaxInfo.GetXmlPropertyInt("genxml/hidden/roleid");
+                var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
+                var currenttabid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/currenttabid");
+                var tablist = rolelist.Replace(" ","").Split(',');
+
+                var mlist = objmodules.GetAllTabsModules(PortalSettings.Current.PortalId, false);
+                foreach (ModuleInfo moduleInfo in mlist)
+                {
+                    if (moduleInfo.ModuleDefinition.DefinitionName == "NBrightMod")
+                    {
+                        var roleexist = false;
+                        var permissionID = -1;
+                        var PermissionsList2 = moduleInfo.ModulePermissions.ToList();
+                        var role = RoleController.Instance.GetRoleById(PortalSettings.Current.PortalId, selectedRoleId);
+                        if (role != null)
+                        {
+                            foreach (var p in PermissionsList2)
+                            {
+                                if (p.RoleName == role.RoleName)
+                                {
+                                    permissionID = p.PermissionID;
+                                    roleexist = true;
+                                }
+                            }
+
+                            if (tablist.Contains(moduleInfo.TabID.ToString()))
+                            {
+                                // ADD Role
+                                if (!roleexist)
+                                {
+                                    ArrayList permissions = PermissionController.GetPermissionsByPortalDesktopModule();
+                                    foreach (PermissionInfo permission in permissions)
+                                    {
+                                        if (permission.PermissionKey == "DEPLOY")
+                                        {
+                                            var objPermission = new ModulePermissionInfo(permission)
+                                            {
+
+                                                ModuleID = moduleInfo.DesktopModuleID,
+                                                RoleID = role.RoleID,
+                                                RoleName = role.RoleName,
+                                                AllowAccess = true,
+                                                UserID = Null.NullInteger,
+                                                DisplayName = Null.NullString
+                                            };
+                                            var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
+                                            objmodules.UpdateModule(moduleInfo);
+                                        }
+                                    }
+                                    var permissionController = new PermissionController();
+                                    ArrayList systemModuleEditPermissions = permissionController.GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", "EDIT");
+                                    foreach (PermissionInfo permission in systemModuleEditPermissions)
+                                    {
+                                        if (permission.PermissionKey == "EDIT")
+                                        {
+                                            var objPermission = new ModulePermissionInfo(permission)
+                                            {
+                                                ModuleID = moduleInfo.DesktopModuleID,
+                                                RoleID = role.RoleID,
+                                                RoleName = role.RoleName,
+                                                AllowAccess = true,
+                                                UserID = Null.NullInteger,
+                                                DisplayName = Null.NullString
+                                            };
+                                            var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
+                                            objmodules.UpdateModule(moduleInfo);
+                                        }
+                                    }
+
+
+                                }
+                            }
+                            else
+                            {
+                                //REMOVE Role
+                                if (roleexist && permissionID > -1)
+                                {
+                                    moduleInfo.ModulePermissions.Remove(permissionID, role.RoleID, Null.NullInteger);
+                                    objmodules.UpdateModule(moduleInfo);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.ToString();
+            }
+
+        }
 
         private String CreatePortalTemplates(HttpContext context)
         {

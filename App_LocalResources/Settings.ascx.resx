@@ -186,4 +186,10 @@
   <data name="activatedetail.Text" xml:space="preserve">
     <value>Activate Detail Page</value>
   </data>
+  <data name="attachroles.Text" xml:space="preserve">
+    <value>Attach Roles to NBrightMod</value>
+  </data>
+  <data name="rolemodule.Text" xml:space="preserve">
+    <value>Add and Remove Role to ALL NBrightMod modules</value>
+  </data>
 </root>

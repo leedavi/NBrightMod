@@ -24,6 +24,8 @@ using RazorEngine.Templating;
 using RazorEngine.Text;
 using System.IO;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Security.Permissions;
+using DotNetNuke.Security.Roles;
 
 namespace NBrightMod.render
 {
@@ -332,6 +334,79 @@ namespace NBrightMod.render
                 }
 
                 strOut = DnnUtils.GetTreeViewTabJSData(selectedlist);
+            }
+            return new RawString(strOut);
+        }
+
+        public IEncodedString TreeViewTabsFancyTreeRoles(string roleid, int portalID)
+        {
+            var strOut = "";
+            var selectedlist = "";
+            var objmodules = new ModuleController();
+
+            var mlist = objmodules.GetAllTabsModules(portalID, false);
+            foreach (ModuleInfo t in mlist)
+            {
+                if (t.ModuleDefinition.DefinitionName == "NBrightMod")
+                {
+                    var roleexist = false;
+                    var permissionsList2 = t.ModulePermissions.ToList();
+                    foreach (var p in permissionsList2)
+                    {
+                        if (Utils.IsNumeric(roleid) && p.RoleID == Convert.ToInt32(roleid)) roleexist = true;
+                    }
+                    if (roleexist)
+                    {
+                        selectedlist += t.TabID + ",";
+                    }
+                }
+            }
+
+            strOut = DnnUtils.GetTreeViewTabJSData(selectedlist).Replace("treeData", "roletreeData");
+            return new RawString(strOut);
+        }
+
+        public IEncodedString RolesDropDownList(NBrightInfo info, String xpath, String attributes = "", String defaultValue = "")
+        {
+            if (attributes.StartsWith("ResourceKey:")) attributes = ResourceKey(attributes.Replace("ResourceKey:", "")).ToString();
+            if (defaultValue.StartsWith("ResourceKey:")) defaultValue = ResourceKey(defaultValue.Replace("ResourceKey:", "")).ToString();
+
+            var strOut = "";
+
+            var roles = RoleController.Instance.GetRoles(PortalSettings.Current.PortalId);
+
+            var datavalue = "";
+            var datatext = "";
+            foreach (var role in roles)
+            {
+                datavalue += role.RoleID + ",";
+                datatext += role.RoleName + ",";
+            }
+            datavalue = datavalue.TrimEnd(',');
+            datatext = datatext.TrimEnd(',');
+
+            var datav = datavalue.Split(',');
+            var datat = datatext.Split(',');
+            if (datav.Count() == datat.Count())
+            {
+                var upd = getUpdateAttr(xpath, attributes);
+                var id = getIdFromXpath(xpath);
+                strOut = "<select id='" + id + "' " + upd + " " + attributes + ">";
+                var c = 0;
+                var s = "";
+                var value = info.GetXmlProperty(xpath);
+                if (value == "") value = defaultValue;
+                foreach (var v in datav)
+                {
+                    if (value == v)
+                        s = "selected";
+                    else
+                        s = "";
+
+                    strOut += "    <option value='" + v + "' " + s + ">" + datat[c] + "</option>";
+                    c += 1;
+                }
+                strOut += "</select>";
             }
             return new RawString(strOut);
         }

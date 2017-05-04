@@ -1,6 +1,7 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using System.Web.UI.HtmlControls
+@using DotNetNuke.Entities.Portals
 @using NBrightDNN
 
 
@@ -41,6 +42,81 @@
     <div class='dnnFormItem'>
         <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
     </div>
+
+
+    <hr />
+
+<h1>@ResourceKey("Settings.attachroles")</h1>
+    @RolesDropDownList(info,"genxml/dropdownlist/roleselect","", Model.GetUrlParam("roleselect"))
+    <p>
+        <a href="#" id="btnRoleSelectAll">@ResourceKey("Settings.selectall")</a> -
+        <a href="#" id="btnRoleDeselectAll">@ResourceKey("Settings.deselectall")</a>
+    </p>
+    <div id="roletree1"></div>
+    <div>
+        <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
+        <div id="rolemsg"></div>
+    </div>
+
+    <div id="roledata">
+        <input id="rolelist" type="hidden" value="" />
+        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
+        <input id="currenttabid" type="hidden" value="@(tabid)" />
+        <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")" />
+    </div>
+
+    <script>
+
+        @TreeViewTabsFancyTreeRoles(Model.GetUrlParam("roleselect"), PortalSettings.Current.PortalId)
+
+        $(function(){
+
+            $("#roletree1").fancytree({
+                checkbox: true,
+                selectMode: 2,
+                source: roletreeData,
+                select: function (event, data) {
+                    // Display list of selected nodes
+                    var selNodes = data.tree.getSelectedNodes();
+                    // convert to title/key array
+                    var selKeys = $.map(selNodes, function (node) {
+                        return node.key;
+                    });
+                    $("#rolelist").val(selKeys.join(", "));
+                },
+                click: function (event, data) {
+                    // We should not toggle, if target was "checkbox", because this
+                    // would result in double-toggle (i.e. no toggle)
+                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
+                        data.node.toggleSelected();
+                    }
+                },
+                keydown: function (event, data) {
+                    if (event.which === 32) {
+                        data.node.toggleSelected();
+                        return false;
+                    }
+                }
+            });
+
+            $("#btnRoleDeselectAll").click(function () {
+                $("#roletree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(false);
+                });
+                return false;
+            });
+            $("#btnRoleSelectAll").click(function () {
+                $("#roletree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(true);
+                });
+                return false;
+            });            
+
+        });
+
+
+    </script>
+
 
     <hr />
 
@@ -126,6 +202,17 @@
                     NBrightMod_nbxget('clonemodule', '#clonedata', '#clonemsg');
                 });
 
+                $('#rolemodule').click(function () {
+                    NBrightMod_nbxget('attachroles', '#roledata', '#rolemsg');
+                });
+                $('#roleselect').change(function () {
+                    var url = window.location.href;
+                    if (url.indexOf('&roleselect=') > 1) url = url.substr(0, url.indexOf('&roleselect='));
+                    url += '&roleselect=' + $('#roleselect').val();
+                    window.location.href = url;
+                });
+                
+
                 $('#resetsettings').click(function () {
                     NBrightMod_nbxget('resetsettings', '#clonedata', '#toolsmsg');
                 });
@@ -141,6 +228,10 @@
             function NBrightMod_nbxgetCompleted(e) {
 
                 if (e.cmd == 'clonemodule') {
+                    // so something
+                }
+
+                if (e.cmd == 'rolemodule') {
                     // so something
                 }
 
