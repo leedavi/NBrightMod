@@ -46,80 +46,6 @@
 
     <hr />
 
-<h1>@ResourceKey("Settings.attachroles")</h1>
-    @RolesDropDownList(info,"genxml/dropdownlist/roleselect","", Model.GetUrlParam("roleselect"))
-    <p>
-        <a href="#" id="btnRoleSelectAll">@ResourceKey("Settings.selectall")</a> -
-        <a href="#" id="btnRoleDeselectAll">@ResourceKey("Settings.deselectall")</a>
-    </p>
-    <div id="roletree1"></div>
-    <div>
-        <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
-        <div id="rolemsg"></div>
-    </div>
-
-    <div id="roledata">
-        <input id="rolelist" type="hidden" value="" />
-        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
-        <input id="currenttabid" type="hidden" value="@(tabid)" />
-        <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")" />
-    </div>
-
-    <script>
-
-        @TreeViewTabsFancyTreeRoles(Model.GetUrlParam("roleselect"), PortalSettings.Current.PortalId)
-
-        $(function(){
-
-            $("#roletree1").fancytree({
-                checkbox: true,
-                selectMode: 2,
-                source: roletreeData,
-                select: function (event, data) {
-                    // Display list of selected nodes
-                    var selNodes = data.tree.getSelectedNodes();
-                    // convert to title/key array
-                    var selKeys = $.map(selNodes, function (node) {
-                        return node.key;
-                    });
-                    $("#rolelist").val(selKeys.join(", "));
-                },
-                click: function (event, data) {
-                    // We should not toggle, if target was "checkbox", because this
-                    // would result in double-toggle (i.e. no toggle)
-                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
-                        data.node.toggleSelected();
-                    }
-                },
-                keydown: function (event, data) {
-                    if (event.which === 32) {
-                        data.node.toggleSelected();
-                        return false;
-                    }
-                }
-            });
-
-            $("#btnRoleDeselectAll").click(function () {
-                $("#roletree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(false);
-                });
-                return false;
-            });
-            $("#btnRoleSelectAll").click(function () {
-                $("#roletree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(true);
-                });
-                return false;
-            });            
-
-        });
-
-
-    </script>
-
-
-    <hr />
-
     <h1>@ResourceKey("Settings.clonemodule")</h1>
     <p>
         <a href="#" id="btnSelectAll">@ResourceKey("Settings.selectall")</a> -
@@ -190,7 +116,84 @@
 
 
 
-        <script>
+    <hr />
+
+<h1>@ResourceKey("Settings.attachroles")</h1>
+<div>@ResourceKey("Settings.rolesmsg")</div>
+    @RolesDropDownList(info, "genxml/dropdownlist/roleselect", "", Model.GetUrlParam("roleselect"))
+    <p>
+        <a href="#" id="btnRoleSelectAll">@ResourceKey("Settings.selectall")</a> -
+        <a href="#" id="btnRoleDeselectAll">@ResourceKey("Settings.deselectall")</a>
+    </p>
+    <div id="roletree1"></div>
+    <div>
+        <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
+        <div id="rolemsg"></div>
+    </div>
+
+    <div id="roledata">
+        <input id="rolelist" type="hidden" value="" />
+        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
+        <input id="currenttabid" type="hidden" value="@(tabid)" />
+        <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")" />
+    </div>
+
+    <script>
+
+        @TreeViewTabsFancyTreeRoles(Model.GetUrlParam("roleselect"), PortalSettings.Current.PortalId)
+
+        $(function(){
+
+            $("#roletree1").fancytree({
+                checkbox: true,
+                selectMode: 2,
+                source: roletreeData,
+                select: function (event, data) {
+                    // Display list of selected nodes
+                    var selNodes = data.tree.getSelectedNodes();
+                    // convert to title/key array
+                    var selKeys = $.map(selNodes, function (node) {
+                        return node.key;
+                    });
+                    $("#rolelist").val(selKeys.join(", "));
+                },
+                click: function (event, data) {
+                    // We should not toggle, if target was "checkbox", because this
+                    // would result in double-toggle (i.e. no toggle)
+                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
+                        data.node.toggleSelected();
+                    }
+                },
+                keydown: function (event, data) {
+                    if (event.which === 32) {
+                        data.node.toggleSelected();
+                        return false;
+                    }
+                }
+            });
+
+            $("#btnRoleDeselectAll").click(function () {
+                $("#roletree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(false);
+                });
+                return false;
+            });
+            $("#btnRoleSelectAll").click(function () {
+                $("#roletree1").fancytree("getTree").visit(function (node) {
+                    node.setSelected(true);
+                });
+                return false;
+            });
+
+        });
+
+
+    </script>
+
+
+
+
+    <script>
             $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
 
             $(document).ready(function () {

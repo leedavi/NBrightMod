@@ -379,11 +379,9 @@ namespace NBrightMod.render
             var datatext = "";
             foreach (var role in roles)
             {
-                datavalue += role.RoleID + ",";
-                datatext += role.RoleName + ",";
+                datavalue += "," + role.RoleID;
+                datatext += "," + role.RoleName;
             }
-            datavalue = datavalue.TrimEnd(',');
-            datatext = datatext.TrimEnd(',');
 
             var datav = datavalue.Split(',');
             var datat = datatext.Split(',');

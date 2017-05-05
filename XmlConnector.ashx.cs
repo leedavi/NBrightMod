@@ -1323,7 +1323,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                 }
 
-                return "";
+                return "OK";
             }
             catch (Exception ex)
             {

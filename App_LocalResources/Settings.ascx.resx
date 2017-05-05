@@ -192,4 +192,7 @@
   <data name="rolemodule.Text" xml:space="preserve">
     <value>Add and Remove Role to ALL NBrightMod modules</value>
   </data>
+  <data name="rolesmsg.Text" xml:space="preserve">
+    <value>Use Attach Roles to add and remove roles from ALL NBrightMod module in this portal.  Select the role and the page where you want to apply the role and the role will be applied to ALL NBrightMod modules on that page.  If the page is NOT selected then the role will be removed from ALL NBrightMod modules on that page.  This function will both ADD the role and give EDIT rights.</value>
+  </data>
 </root>
