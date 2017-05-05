@@ -44,7 +44,7 @@ namespace Nevoweb.DNN.NBrightMod
             base.OnInit(e);
 
             // refresh view by clearing all cache, and redirtect back to view 
-            if (Utils.RequestParam(Context, "refreshview") == "1" && Request.ApplicationPath != null)
+            if ((Utils.RequestParam(Context, "refreshview") == "1" || Utils.RequestParam(Context, "version") != "") && Request.ApplicationPath != null)
             {
                 string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
                 Utils.RemoveCache("dnnsearchindexflag" + ModuleId);
@@ -59,8 +59,25 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     langparam = "&language=" + Utils.RequestParam(Context, "language");
                 }
+                Session["nbrightmodversion"] = Utils.RequestParam(Context, "version");
+                if (Utils.RequestParam(Context, "version") == "2")
+                {
+                    // accept verison changes
+                    var objCtrl = new NBrightDataController();
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATALANG");
+                    foreach (var nbi in l)
+                    {
+                        LocalUtils.VersionValidate(nbi);
+                    }
+                    foreach (var nbi in l2)
+                    {
+                        LocalUtils.VersionValidate(nbi);
+                    }
+                }
                 Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + langparam, true);
             }
+
 
             // clear cache if debug mode
             var settings = LocalUtils.GetSettings(ModuleId.ToString(""));

@@ -141,4 +141,13 @@
   <data name="ThemeManager.Text" xml:space="preserve">
     <value>AppTheme Manager</value>
   </data>
+  <data name="Version0.Text" xml:space="preserve">
+    <value>View Original</value>
+  </data>
+  <data name="Version1.Text" xml:space="preserve">
+    <value>View New Version</value>
+  </data>
+  <data name="Version2.Text" xml:space="preserve">
+    <value>Validate New Version</value>
+  </data>
 </root>

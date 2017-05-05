@@ -27,14 +27,187 @@ using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using System.Text;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using DotNetNuke.Security.Roles;
 
 namespace NBrightMod.common
 {
 
     public static class LocalUtils
     {
+        #region "Version Control"
 
+        public static bool VersionUserCanValidate(int moduleid)
+        {
+            if (UserController.Instance.GetCurrentUserInfo().IsInRole("Manager") || UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators"))
+            {
+                // manager and admin can always update without creating a verison.
+                return true;
+            }
+
+            var moduleInfo = DnnUtils.GetModuleinfo(moduleid);
+            if (moduleInfo != null)
+            {
+                var validateRoles = new List<string>();
+                var permissionsList2 = moduleInfo.ModulePermissions.ToList();
+                foreach (var p in permissionsList2)
+                {
+                    if (p.RoleName.StartsWith("Validate"))
+                    {
+                        validateRoles.Add(p.RoleName);
+                    }
+                }
+                if (validateRoles.Count >= 1)
+                {
+                    foreach (var rolename in validateRoles)
+                    {
+                        if (UserController.Instance.GetCurrentUserInfo().IsInRole(rolename)) return true;
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
+        public static bool VersionUserMustCreateVersion(int moduleid)
+        {
+            if (VersionUserCanValidate(moduleid))
+            {
+                // user can validate, so we don;t need to create a verison.
+                return false;
+            }
+
+            var moduleInfo = DnnUtils.GetModuleinfo(moduleid);
+            if (moduleInfo != null)
+            {
+                var versionRoles = new List<string>();
+                var permissionsList2 = moduleInfo.ModulePermissions.ToList();
+                foreach (var p in permissionsList2)
+                {
+                    if (p.RoleName.StartsWith("Version"))
+                    {
+                        versionRoles.Add(p.RoleName);
+                    }
+                }
+                if (versionRoles.Count >= 1)
+                {
+                    foreach (var rolename in versionRoles)
+                    {
+                        if (UserController.Instance.GetCurrentUserInfo().IsInRole(rolename)) return true;
+                    }
+                }
+            }
+
+            return false; // user does NOT have a "Version*" role for this module, so assume they can validate.
+        }
+
+
+        /// <summary>
+        /// Get the data version record
+        /// </summary>
+        /// <param name="nbrightInfo">original data record</param>
+        /// <returns>The version record or the orginal if no version</returns>
+        public static NBrightInfo VersionGet(NBrightInfo nbrightInfo)
+        {
+            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0)
+            {
+                var objCtrl = new NBrightDataController();
+                var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
+                if (nbi != null)
+                {
+                    return nbi;
+                }
+            }
+            return nbrightInfo;
+        }
+        /// <summary>
+        /// Create Version of Data record
+        /// </summary>
+        /// <param name="nbrightInfo">original data record</param>
+        /// <returns>The version record</returns>
+        public static NBrightInfo VersionUpdate(NBrightInfo nbrightInfo)
+        {
+            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA"))
+            {
+                var objCtrl = new NBrightDataController();
+                if (nbrightInfo.XrefItemId > 0)
+                {
+                    var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
+                    if (nbi != null)
+                    {
+                        // update existing verison
+                        nbrightInfo.ItemID = nbi.ItemID;
+                        objCtrl.Update(nbrightInfo);
+                    }
+                }
+                else
+                {
+                    // create new verison
+                    nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
+                    nbrightInfo.XrefItemId = nbrightInfo.ItemID;
+                    nbrightInfo.ItemID = -1;
+                    if (nbrightInfo.ParentItemId > 0)
+                    {
+                        var pnbi = objCtrl.GetData(nbrightInfo.ParentItemId);
+                        nbrightInfo.ParentItemId = pnbi.XrefItemId;
+                    }
+                    var verisonId = objCtrl.Update(nbrightInfo);
+                    nbrightInfo.ItemID = verisonId;
+
+                    // update original with versionid
+                    var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
+                    if (nbi != null)
+                    {
+                        nbi.XrefItemId = verisonId;
+                        objCtrl.Update(nbi);
+                    }
+                }
+            }
+            return nbrightInfo;
+        }
+        /// <summary>
+        /// Delete version record
+        /// </summary>
+        /// <param name="nbrightInfo">original data record</param>
+        public static void VersionDelete(NBrightInfo nbrightInfo)
+        {
+            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0 && nbrightInfo.ModuleId > 0)
+            {
+                var objCtrl = new NBrightDataController();
+                var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
+                if (nbi?.TypeCode == "vNBrightModDATA") // only delete version records. moduleid set to 0 on version records.
+                {
+                    objCtrl.Delete(nbi.ItemID);
+                    nbrightInfo.XrefItemId = 0;
+                    objCtrl.Update(nbrightInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validate the version record, delete orignial data, activates version data.
+        /// </summary>
+        /// <param name="nbrightInfo">original data record</param>
+        public static void VersionValidate(NBrightInfo nbrightInfo)
+        {
+            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0 && nbrightInfo.ModuleId > 0)
+            {
+                var objCtrl = new NBrightDataController();
+                var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
+                if (nbi?.TypeCode == "vNBrightModDATA") // only delete version records. moduleid set to 0 on version records.
+                {
+                    nbi.XrefItemId = 0;
+                    nbi.TypeCode = "NBrightModDATA";
+                    objCtrl.Update(nbi);
+                    objCtrl.Delete(nbrightInfo.ItemID);
+                }
+            }
+        }
+
+
+        #endregion 
 
         #region "functions"
 

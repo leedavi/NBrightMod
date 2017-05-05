@@ -1633,13 +1633,28 @@ namespace Nevoweb.DNN.NBrightMod
                         // update record with ajax data
                         nbi.UpdateAjax(strIn);
                         nbi.TextData = ""; // clear any output DB caching
-                        objCtrl.Update(nbi);
+                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbi);
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbi);
+                        }
+
 
                         // do langauge record
                         nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
                         nbi.UpdateAjax(strIn,"", ignoresecurityfilter);
                         nbi.TextData = ""; // clear any output DB caching
-                        objCtrl.Update(nbi);
+                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbi);
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbi);
+                        }
 
                         objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
 

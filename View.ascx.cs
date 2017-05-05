@@ -26,6 +26,7 @@ using NBrightCore.common;
 using NBrightCore.render;
 using NBrightDNN;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Users;
 using DotNetNuke.Security;
 using DotNetNuke.Services.Localization;
 using NBrightMod.common;
@@ -142,6 +143,23 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(pgnum)) pageNumber = Convert.ToInt32(pgnum);
 
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
+
+                if (Request.IsAuthenticated && Session["nbrightmodversion"] != null && Session["nbrightmodversion"].ToString() == "1")
+                {
+                    // get any version data.
+                    var length = (l.Count -1);
+                    for (int i = 0; i < length; i++)
+                    {
+                        var nbi = l[i];
+                        if (nbi.XrefItemId > 0)
+                        {
+                            var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang);
+                            l[i] = vnbi;
+                        }
+                    }
+
+                }
+
                 strOut = LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture(), debug);
 
                 if (!debug)
@@ -172,6 +190,23 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
+
+                if (Request.IsAuthenticated && Session["nbrightmodversion"] != null)
+                {
+                    var objCtrl = new NBrightDataController();
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
+                    if (l.Count > 0)
+                    {
+                        actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
+                        actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
+                        if (LocalUtils.VersionUserCanValidate(ModuleId))
+                        {
+                            actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
+                        }
+                    }
+
+                }
+
 
                 actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
                 actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "action_source.gif", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
