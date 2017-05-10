@@ -51,7 +51,7 @@ namespace Nevoweb.DNN.NBrightMod
 
             var strOut = "";
 
-            var moduleid = Utils.RequestQueryStringParam(context, "mid");
+            var moduleidparam = Utils.RequestQueryStringParam(context, "mid");
             var paramCmd = Utils.RequestQueryStringParam(context, "cmd");
             var lang = Utils.RequestQueryStringParam(context, "lang");
             var language = Utils.RequestQueryStringParam(context, "language");
@@ -73,6 +73,9 @@ namespace Nevoweb.DNN.NBrightMod
 
             #region "Do processing of command"
 
+            var ajaxInfo = LocalUtils.GetAjaxFields(context);
+            var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
+
             strOut = "ERROR!! - No Security rights for current user!";
             switch (paramCmd)
             {
@@ -86,10 +89,10 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = GetSettings(context);
                     break;                    
                 case "savesettings":
-                    if (LocalUtils.CheckRights()) strOut = SaveSettings(context);
+                    if (LocalUtils.CheckRights(moduleid)) strOut = SaveSettings(context);
                     break;
                 case "resetsettings":
-                    if (LocalUtils.CheckRights()) strOut = ResetSettings(context);
+                    if (LocalUtils.CheckRights(moduleid)) strOut = ResetSettings(context);
                     break;
                 case "getdetail":
                     strOut = GetData(context);
@@ -104,13 +107,13 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = GetData(context);
                     break;
                 case "addnew":
-                    if (LocalUtils.CheckRights()) strOut = GetData(context, true);
+                    if (LocalUtils.CheckRights(moduleid)) strOut = GetData(context, true);
                     break;
                 case "deleterecord":
-                    if (LocalUtils.CheckRights()) strOut = DeleteData(context);
+                    if (LocalUtils.CheckRights(moduleid)) strOut = DeleteData(context);
                     break;
                 case "savedata":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         SaveImages(context);
                         SaveDocs(context);
@@ -118,13 +121,10 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "savelistdata":
-                    if (LocalUtils.CheckRights())
-                    {
                         strOut = SaveListData(context);
-                    }
                     break;
                 case "selectlang":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         SaveImages(context);
                         SaveDocs(context);
@@ -132,22 +132,22 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "fileupload":
-                    if (LocalUtils.CheckRights()) FileUpload(context, moduleid);
+                    if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam);
                     break;
                 case "clientfileupload":
-                    UploadWholeFile(context, moduleid,false,false,60);
+                    UploadWholeFile(context, moduleidparam,false,false,60);
                     break;
                 case "fileuploadsecure":
-                    if (LocalUtils.CheckRights()) FileUpload(context, moduleid,false,true);
+                    if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam, false,true);
                     break;
                 case "addselectedfiles":
-                    if (LocalUtils.CheckRights()) AddSelectedFiles(context);
+                    if (LocalUtils.CheckRights(moduleid)) AddSelectedFiles(context);
                     break;
                 case "replaceselectedfiles":
-                    if (LocalUtils.CheckRights()) ReplaceSelectedFiles(context);
+                    if (LocalUtils.CheckRights(moduleid)) ReplaceSelectedFiles(context);
                     break;
                 case "deleteselectedfiles":
-                    if (LocalUtils.CheckRights()) DeleteSelectedFiles(context);
+                    if (LocalUtils.CheckRights(moduleid)) DeleteSelectedFiles(context);
                     break;
                 case "getfiles":
                         strOut = GetFiles(context, true);
@@ -156,21 +156,21 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = GetFolderFiles(context, true);                    
                     break;
                 case "savetheme":
-                    if (LocalUtils.CheckRights()) strOut = SaveTheme(context);
+                    if (LocalUtils.CheckRights(moduleid)) strOut = SaveTheme(context);
                     break;
                 case "exporttheme":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         var zipfile = DoThemeExport(context);
                         strOut = "<a href='/DesktopModules/NBright/NBrightMod/XmlConnector.ashx?cmd=downloadfile&filename=/NBrightTemp/" + Path.GetFileName(zipfile) + "'>Download Theme</a>";
                     }
                     break;
                 case "importtheme":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
-                        var fname1 = FileUpload(context, moduleid,true);
+                        var fname1 = FileUpload(context, moduleidparam, true);
                         strOut = DoThemeImport(fname1);
-                        LocalUtils.ClearRazorCache(moduleid);
+                        LocalUtils.ClearRazorCache(moduleidparam);
                     }
                     break;
                 case "downloadfile":
@@ -204,7 +204,7 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = SendEmail(context);
                     break;
                 case "doportalvalidation":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         LocalUtils.ResetValidationFlag();
                         LocalUtils.ValidateModuleData();
@@ -212,62 +212,62 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "createtemplate":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         CreatePortalTemplates(context);
                         strOut = "OK";
                     }
                     break;
                 case "makethemesys":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = MoveThemeToSystem(context);
                     }
                     break;                    
                 case "gettemplatemenu":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = GetTemplateMenu(context);
                     }
                     break;
                 case "savetemplatedata":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = SaveTemplateMenu(context);
                     }
                     break;
                 case "deleteportalresx":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = DeletePortalResx(context);
                     }
                     break;
                 case "deleteportaltempl":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = DeletePortalTemplate(context);
                     }
                     break;
                 case "deletemoduletempl":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = DeleteModuleTemplate(context);
                     }
                     break;
                 case "deletetheme":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = DeleteTheme(context);
                     }
                     break;
                 case "clonemodule":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = CloneModule(context);
                     }
                     break;
                 case "attachroles":
-                    if (LocalUtils.CheckRights())
+                    if (LocalUtils.CheckRights(moduleid))
                     {
                         strOut = AttachRolesToModule(context);
                     }
@@ -595,7 +595,12 @@ namespace Nevoweb.DNN.NBrightMod
                             obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
                         }
                     }
-
+                    // get any version data.
+                    if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith("NBrightModDATA"))
+                    {
+                        var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang,true);
+                        if (nbi != null) obj = nbi;
+                    }
                     strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
                 }
                 else
@@ -628,9 +633,28 @@ namespace Nevoweb.DNN.NBrightMod
                             l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
                         }
 
+                        // get any version data.
+                        var length = l.Count;
+                        for (int i = 0; i < length; i++)
+                        {
+                            var nbi = l[i];
+                            if (nbi.XrefItemId > 0)
+                            {
+                                var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang,true);
+                                l[i] = vnbi;
+                            }
+                        }
+                        // get any "added" version records
+                        var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "aNBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                        foreach (var nbi in l2)
+                        {
+                            l.Add(nbi);
+                        }
+
+
                     }
 
-                    strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
+                        strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
                 }
 
                 // debug data out by writing out to file (REMOVE FOR PROUCTION)
@@ -1658,11 +1682,11 @@ namespace Nevoweb.DNN.NBrightMod
 
                         objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
 
-                        Utils.RemoveCache("dnnsearchindexflag" + moduleid);
-
+                        Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
                         LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
-
                         LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+                        DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
+
 
                     }
                 }
@@ -1681,46 +1705,66 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 var objCtrl = new NBrightDataController();
-                var moduleid = "";
                 // get data passed back by ajax
                 var ajaxList = LocalUtils.GetAjaxDataList(context);
                 var lp = 1;
+                var clearModuleCache = 0;
                 foreach (var ajaxData in ajaxList)
                 {
                     var ajaxInfo = LocalUtils.GetAjaxFields(ajaxData);
 
                     var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
-                    moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                    var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
                     var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                     if (lang == "") lang = _lang;
 
-                    var ignoresecurityfilter = LocalUtils.CheckRights();
-
-                    if (Utils.IsNumeric(itemid))
+                    if (LocalUtils.CheckRights(moduleid))
                     {
-                        // get DB record
-                        var nbi = objCtrl.Get(Convert.ToInt32(itemid));
-                        if (nbi != null)
+                        var ignoresecurityfilter = LocalUtils.CheckRights(moduleid);
+
+                        if (Utils.IsNumeric(itemid))
                         {
-                            // update record with ajax data
-                            nbi.UpdateAjax(ajaxData);
-                            nbi.SetXmlProperty("genxml/hidden/sortrecordorder",lp.ToString("0000")); // always recalc custom sort field
-                            objCtrl.Update(nbi);
+                            // get DB record
+                            var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                            if (nbi != null)
+                            {
+                                // update record with ajax data
+                                nbi.UpdateAjax(ajaxData);
+                                nbi.SetXmlProperty("genxml/hidden/sortrecordorder", lp.ToString("0000")); // always recalc custom sort field
+                                if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                                {
+                                    LocalUtils.VersionUpdate(nbi);
+                                }
+                                else
+                                {
+                                    objCtrl.Update(nbi);
+                                }
 
-                            // do langauge record
-                            nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
-                            nbi.UpdateAjax(ajaxData,"", ignoresecurityfilter);
-                            objCtrl.Update(nbi);
+                                // do langauge record
+                                nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang, true);
+                                nbi.UpdateAjax(ajaxData, "", ignoresecurityfilter);
+                                if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                                {
+                                    LocalUtils.VersionUpdate(nbi);
+                                }
+                                else
+                                {
+                                    objCtrl.Update(nbi);
+                                }
 
-                            objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
+                                objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
+                                clearModuleCache = nbi.ModuleId;
+                            }
                         }
                     }
                     lp += 1;
                 }
-                if (moduleid != "")
+                if (clearModuleCache > 0)
                 {
-                    LocalUtils.ClearRazorCache(moduleid);
-                    LocalUtils.ClearRazorSateliteCache(moduleid);
+                    Utils.RemoveCache("dnnsearchindexflag" + clearModuleCache);
+                    LocalUtils.ClearRazorCache(clearModuleCache.ToString(""));
+                    LocalUtils.ClearRazorSateliteCache(clearModuleCache.ToString(""));
+                    DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
                 }
                 return "";
             }

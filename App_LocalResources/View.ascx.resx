@@ -150,4 +150,7 @@
   <data name="Version2.Text" xml:space="preserve">
     <value>Validate New Version</value>
   </data>
+  <data name="Version3.Text" xml:space="preserve">
+    <value>DELETE New Version</value>
+  </data>
 </root>

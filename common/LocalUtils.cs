@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Resources;
@@ -29,6 +30,8 @@ using RazorEngine.Templating;
 using System.Text;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using DotNetNuke.Security;
+using DotNetNuke.Security.Permissions;
 using DotNetNuke.Security.Roles;
 
 namespace NBrightMod.common
@@ -111,14 +114,16 @@ namespace NBrightMod.common
         /// <returns>The version record or the orginal if no version</returns>
         public static NBrightInfo VersionGet(NBrightInfo nbrightInfo)
         {
-            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0)
+            var baseid = nbrightInfo.XrefItemId;
+            if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA"))
             {
-                var objCtrl = new NBrightDataController();
-                var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                if (nbi != null)
-                {
-                    return nbi;
-                }
+                baseid = nbrightInfo.ItemID;
+            }
+            var objCtrl = new NBrightDataController();
+            var nbi = objCtrl.GetData(baseid);
+            if (nbi != null)
+            {
+                return nbi;
             }
             return nbrightInfo;
         }
@@ -129,55 +134,75 @@ namespace NBrightMod.common
         /// <returns>The version record</returns>
         public static NBrightInfo VersionUpdate(NBrightInfo nbrightInfo)
         {
-            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA"))
+            var baseid = nbrightInfo.XrefItemId;
+            if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA") || nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
             {
-                var objCtrl = new NBrightDataController();
-                if (nbrightInfo.XrefItemId > 0)
+                baseid = nbrightInfo.ItemID;
+            }
+
+            var objCtrl = new NBrightDataController();
+            var insertnewversion = true;
+            if (nbrightInfo.XrefItemId > 0 || nbrightInfo.TypeCode.StartsWith("vNBrightModDATA") || nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
+            {
+                var nbi = objCtrl.Get(baseid);
+                if (nbi != null && nbi.XrefItemId != nbi.ItemID)
                 {
-                    var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                    if (nbi != null)
-                    {
-                        // update existing verison
-                        nbrightInfo.ItemID = nbi.ItemID;
-                        objCtrl.Update(nbrightInfo);
-                    }
+                    // update existing verison
+                    nbrightInfo.ItemID = nbi.ItemID;
+                    nbrightInfo.XrefItemId = nbi.XrefItemId;
+                    nbrightInfo.ParentItemId = nbi.ParentItemId;
+                    if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA")) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
+                    objCtrl.Update(nbrightInfo);
+                    insertnewversion = false;
                 }
                 else
                 {
-                    // create new verison
-                    nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
-                    nbrightInfo.XrefItemId = nbrightInfo.ItemID;
-                    nbrightInfo.ItemID = -1;
-                    if (nbrightInfo.ParentItemId > 0)
-                    {
-                        var pnbi = objCtrl.GetData(nbrightInfo.ParentItemId);
-                        nbrightInfo.ParentItemId = pnbi.XrefItemId;
-                    }
-                    var verisonId = objCtrl.Update(nbrightInfo);
-                    nbrightInfo.ItemID = verisonId;
+                    // invalid itemid, clear 
+                    nbrightInfo.XrefItemId = 0;
+                    objCtrl.Update(nbrightInfo);
+                }
+            }
 
-                    // update original with versionid
-                    var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                    if (nbi != null)
-                    {
-                        nbi.XrefItemId = verisonId;
-                        objCtrl.Update(nbi);
-                    }
+            if (insertnewversion)
+            {
+                var nbi = objCtrl.Get(nbrightInfo.ItemID);
+                // create new verison
+                if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA")) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
+                nbrightInfo.XrefItemId = nbi.ItemID;
+                nbrightInfo.ItemID = -1;
+                if (nbrightInfo.ParentItemId > 0)
+                {
+                    var pnbi = objCtrl.Get(nbrightInfo.ParentItemId);
+                    nbrightInfo.ParentItemId = pnbi.XrefItemId;
+                }
+                var verisonId = objCtrl.Update(nbrightInfo);
+                nbrightInfo.ItemID = verisonId;
+
+                // update original with versionid
+                if (nbi != null)
+                {
+                    nbi.XrefItemId = verisonId;
+                    objCtrl.Update(nbi);
                 }
             }
             return nbrightInfo;
         }
+
         /// <summary>
         /// Delete version record
         /// </summary>
         /// <param name="nbrightInfo">original data record</param>
         public static void VersionDelete(NBrightInfo nbrightInfo)
         {
-            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0 && nbrightInfo.ModuleId > 0)
+            var objCtrl = new NBrightDataController();
+            if (nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
             {
-                var objCtrl = new NBrightDataController();
+                objCtrl.Delete(nbrightInfo.ItemID);
+            }
+            else
+            {
                 var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                if (nbi?.TypeCode == "vNBrightModDATA") // only delete version records. moduleid set to 0 on version records.
+                if (nbi != null && (nbi.TypeCode.StartsWith("vNBrightModDATA"))) // only delete version records. 
                 {
                     objCtrl.Delete(nbi.ItemID);
                     nbrightInfo.XrefItemId = 0;
@@ -192,20 +217,24 @@ namespace NBrightMod.common
         /// <param name="nbrightInfo">original data record</param>
         public static void VersionValidate(NBrightInfo nbrightInfo)
         {
-            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA") && nbrightInfo.XrefItemId > 0 && nbrightInfo.ModuleId > 0)
+            var objCtrl = new NBrightDataController();
+            if (nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
             {
-                var objCtrl = new NBrightDataController();
+                nbrightInfo.TypeCode = nbrightInfo.TypeCode.Replace("aNBrightModDATA", "NBrightModDATA");
+                objCtrl.Update(nbrightInfo);
+            }
+            else
+            {
                 var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                if (nbi?.TypeCode == "vNBrightModDATA") // only delete version records. moduleid set to 0 on version records.
+                if (nbi != null && (nbi.TypeCode.StartsWith("vNBrightModDATA")))
                 {
                     nbi.XrefItemId = 0;
-                    nbi.TypeCode = "NBrightModDATA";
+                    nbi.TypeCode = nbi.TypeCode.Replace("vNBrightModDATA", "NBrightModDATA");
                     objCtrl.Update(nbi);
                     objCtrl.Delete(nbrightInfo.ItemID);
                 }
             }
         }
-
 
         #endregion 
 
@@ -215,10 +244,17 @@ namespace NBrightMod.common
         {
             if (!Utils.IsNumeric(moduleid)) moduleid = "-1";
 
+            var prefix = "";
+            if (VersionUserMustCreateVersion(Convert.ToInt32(moduleid)))
+            {
+                prefix = "a";
+            }
+
+
             var objCtrl = new NBrightDataController();
             var nbi = new NBrightInfo(true);
             nbi.PortalId = PortalSettings.Current.PortalId;
-            nbi.TypeCode = "NBrightModDATA";
+            nbi.TypeCode = prefix + "NBrightModDATA";
             nbi.ModuleId = Convert.ToInt32(moduleid);
             nbi.ItemID = -1;
             nbi.GUIDKey = "";
@@ -237,10 +273,16 @@ namespace NBrightMod.common
 
         public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang)
         {
+            var prefix = "";
+            if (VersionUserMustCreateVersion(moduleid))
+            {
+                prefix = "a";
+            }
+
             var objCtrl = new NBrightDataController();
             var nbi2 = new NBrightInfo(true);
             nbi2.PortalId = PortalSettings.Current.PortalId;
-            nbi2.TypeCode = "NBrightModDATALANG";
+            nbi2.TypeCode = prefix + "NBrightModDATALANG";
             nbi2.ModuleId = moduleid;
             nbi2.ItemID = -1;
             nbi2.Lang = lang;
@@ -355,11 +397,22 @@ namespace NBrightMod.common
             return rtnList;
         }
 
-        public static Boolean CheckRights()
+        public static Boolean CheckRights(int moduleid = 0)
         {
-            if (UserController.Instance.GetCurrentUserInfo().IsInRole("Manager") || UserController.Instance.GetCurrentUserInfo().IsInRole("Editor") || UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators"))
+            if (moduleid == 0)
             {
-                return true;
+                if (UserController.Instance.GetCurrentUserInfo().IsInRole("Manager") || UserController.Instance.GetCurrentUserInfo().IsInRole("Editor") || UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators"))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                var moduleInfo = DnnUtils.GetModuleinfo(Convert.ToInt32(moduleid));
+                if (moduleInfo != null)
+                {
+                    return ModulePermissionController.HasModuleAccess(SecurityAccessLevel.Edit, "CONTENT", moduleInfo);
+                }
             }
             return false;
         }

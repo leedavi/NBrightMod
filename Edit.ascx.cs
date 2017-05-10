@@ -66,14 +66,55 @@ namespace Nevoweb.DNN.NBrightMod
                     var objCtrl = new NBrightDataController();
                     var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
                     var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATALANG");
-                    foreach (var nbi in l)
-                    {
-                        LocalUtils.VersionValidate(nbi);
-                    }
+                    // lang records first, so we don;t auto delete lang on base record delete.
                     foreach (var nbi in l2)
                     {
                         LocalUtils.VersionValidate(nbi);
                     }
+                    foreach (var nbi in l)
+                    {
+                        LocalUtils.VersionValidate(nbi);
+                    }
+                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
+                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATALANG");
+                    // lang records first, so we don;t auto delete lang on base record delete.
+                    foreach (var nbi in l2)
+                    {
+                        LocalUtils.VersionValidate(nbi);
+                    }
+                    foreach (var nbi in l)
+                    {
+                        LocalUtils.VersionValidate(nbi);
+                    }
+                }
+                if (Utils.RequestParam(Context, "version") == "3")
+                {
+                    // DELETE verison changes
+                    var objCtrl = new NBrightDataController();
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATALANG");
+                    // lang records first, so we don;t auto delete lang on base record delete.
+                    foreach (var nbi in l2)
+                    {
+                        LocalUtils.VersionDelete(nbi);
+                    }
+                    foreach (var nbi in l)
+                    {
+                        LocalUtils.VersionDelete(nbi);
+                    }
+
+                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
+                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATALANG");
+                    // lang records first, so we don;t auto delete lang on base record delete.
+                    foreach (var nbi in l2)
+                    {
+                        LocalUtils.VersionDelete(nbi);
+                    }
+                    foreach (var nbi in l)
+                    {
+                        LocalUtils.VersionDelete(nbi);
+                    }
+
                 }
                 Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + langparam, true);
             }

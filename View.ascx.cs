@@ -147,15 +147,21 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Request.IsAuthenticated && Session["nbrightmodversion"] != null && Session["nbrightmodversion"].ToString() == "1")
                 {
                     // get any version data.
-                    var length = (l.Count -1);
+                    var length = l.Count;
                     for (int i = 0; i < length; i++)
                     {
                         var nbi = l[i];
                         if (nbi.XrefItemId > 0)
                         {
-                            var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang);
+                            var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang, true);
                             l[i] = vnbi;
                         }
+                    }
+                    // get any "added" version records
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
+                    foreach (var nbi in l2)
+                    {
+                        l.Add(nbi);
                     }
 
                 }
@@ -191,11 +197,12 @@ namespace Nevoweb.DNN.NBrightMod
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
 
-                if (Request.IsAuthenticated && Session["nbrightmodversion"] != null)
+                if (Request.IsAuthenticated && (LocalUtils.VersionUserCanValidate(ModuleId) || LocalUtils.VersionUserMustCreateVersion(ModuleId)))
                 {
                     var objCtrl = new NBrightDataController();
                     var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
-                    if (l.Count > 0)
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
+                    if (l.Count > 0 || l2.Count > 0)
                     {
                         actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
                         actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
@@ -203,6 +210,7 @@ namespace Nevoweb.DNN.NBrightMod
                         {
                             actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
                         }
+                        actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
                     }
 
                 }
