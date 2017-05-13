@@ -76,6 +76,11 @@ namespace Nevoweb.DNN.NBrightMod
             var ajaxInfo = LocalUtils.GetAjaxFields(context);
             var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
 
+            if (moduleid <= 0 && Utils.IsNumeric(moduleidparam))
+            {
+                moduleid = Convert.ToInt32(moduleidparam);
+            }
+
             strOut = "ERROR!! - No Security rights for current user!";
             switch (paramCmd)
             {
@@ -598,8 +603,24 @@ namespace Nevoweb.DNN.NBrightMod
                     // get any version data.
                     if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith("NBrightModDATA"))
                     {
-                        var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang,true);
-                        if (nbi != null) obj = nbi;
+                        var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang, true);
+                        if (nbi == null)
+                        {
+                            // found invalid itemid, clean it up.
+                            obj.XrefItemId = 0;
+                            objCtrl.Update(obj);
+                        }
+                        else
+                        {
+                            if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                            {
+                                obj = null;
+                            }
+                            else
+                            {
+                                obj = nbi;
+                            }
+                        }
                     }
                     strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
                 }
@@ -635,15 +656,38 @@ namespace Nevoweb.DNN.NBrightMod
 
                         // get any version data.
                         var length = l.Count;
+                        var removeList = new List<int>();
                         for (int i = 0; i < length; i++)
                         {
                             var nbi = l[i];
                             if (nbi.XrefItemId > 0)
                             {
-                                var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang,true);
-                                l[i] = vnbi;
+                                if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                                {
+                                    removeList.Add(i);
+                                }
+                                else
+                                {
+                                    var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang, true);
+                                    if (vnbi == null)
+                                    {
+                                        // found invalid itemid, clean it up.
+                                        nbi.XrefItemId = 0;
+                                        objCtrl.Update(nbi);
+                                    }
+                                    else
+                                    {
+                                        l[i] = vnbi;
+                                    }
+                                }
                             }
                         }
+                        // remove deleted record.
+                        for (int i = removeList.Count - 1; i >= 0; i--)
+                        {
+                            l.RemoveAt(i + 1);
+                        }
+
                         // get any "added" version records
                         var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "aNBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
                         foreach (var nbi in l2)
@@ -654,7 +698,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                     }
 
-                        strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
+                    strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
                 }
 
                 // debug data out by writing out to file (REMOVE FOR PROUCTION)
@@ -1793,12 +1837,22 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (Utils.IsNumeric(itemid))
                 {
-                    // delete DB record
-                    objCtrl.Delete(Convert.ToInt32(itemid));
+                    var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                    if (nbi != null)
+                    {
+                        // delete DB record
+                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        {
+                            LocalUtils.VersionMarkDeleted(nbi);
+                        }
+                        else
+                        {
+                            objCtrl.Delete(Convert.ToInt32(itemid));
+                        }
 
-                    LocalUtils.ClearRazorCache(moduleid);
-                    LocalUtils.ClearRazorSateliteCache(moduleid);
-
+                        LocalUtils.ClearRazorCache(moduleid);
+                        LocalUtils.ClearRazorSateliteCache(moduleid);
+                    }
                 }
                 return "";
 
@@ -2017,11 +2071,25 @@ namespace Nevoweb.DNN.NBrightMod
 
                     // replace image xml 
                     nbi.ReplaceXmlNode(strXml, "genxml/imgs", "genxml");
-                    objCtrl.Update(nbi);
+                    if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                    {
+                        LocalUtils.VersionUpdate(nbi);
+                    }
+                    else
+                    {
+                        objCtrl.Update(nbi);
+                    }
                     if (nbilang != null)
                     {
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/imgs", "genxml");
-                        objCtrl.Update(nbilang);
+                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbilang);
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbilang);
+                        }
                     }
                 }
             }
@@ -2328,11 +2396,25 @@ namespace Nevoweb.DNN.NBrightMod
 
                     // replace image xml 
                     nbi.ReplaceXmlNode(strXml, "genxml/docs", "genxml");
-                    objCtrl.Update(nbi);
+                    if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                    {
+                        LocalUtils.VersionUpdate(nbi);
+                    }
+                    else
+                    {
+                        objCtrl.Update(nbi);
+                    }
                     if (nbilang != null)
                     {
                         nbilang.ReplaceXmlNode(strXmlLang, "genxml/docs", "genxml");
-                        objCtrl.Update(nbilang);
+                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbilang);
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbilang);
+                        }
                     }
                 }
             }

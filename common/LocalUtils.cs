@@ -236,6 +236,23 @@ namespace NBrightMod.common
             }
         }
 
+        public static void VersionMarkDeleted(NBrightInfo nbrightInfo)
+        {
+            var objCtrl = new NBrightDataController();
+            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA"))
+            {
+                nbrightInfo.SetXmlProperty("genxml/versiondelete","True");
+                objCtrl.Update(nbrightInfo);
+                // create a version, so we know we have version change.
+                VersionUpdate(nbrightInfo);
+            }
+            else
+            {
+                objCtrl.Delete(nbrightInfo.ItemID);
+            }
+        }
+
+
         #endregion 
 
         #region "functions"

@@ -43,6 +43,7 @@ function NBrightMod_nbxgetCompleted(e) {
         // Action after getdetail command
         $('#displayreturn').val('detail');
 
+        $('.selecteditlanguage').unbind('click');
         $('.selecteditlanguage').click(function () {
             $('#savedreturnaction').val(""); // set flag to return on save of data
             savedata();
@@ -50,41 +51,52 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });
 
+        $('#savedata').unbind('click');
         $('#savedata').click(function () {
             savedata();
         });
 
+        $('#savedataexit').unbind('click');
         $('#savedataexit').click(function (e) {
             e.preventDefault();
             $('#savedreturnaction').val('exit'); // set flag to exit on save of data
             $('#savedata').trigger("click");
         });
 
+        $('#savedatareturn').unbind('click');
         $('#savedatareturn').click(function (e) {
             e.preventDefault();
             $('#savedreturnaction').val('return'); // set flag to return on save of data
             $('#savedata').trigger("click");
         });
 
-        $('#return').click(function() {
+        $('#return').unbind('click');
+        $('#return').click(function () {
             $('.processing').show();
             $('#selecteditemid').val('');
             NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
         });
 
+        $('#exitedit').unbind('click');
         $('#exitedit').click(function () {
             $('.processing').show();
             window.location.href = $('#exiturl').val();
         });
 
-        $('#delete').click(function() {
+        $('#delete').unbind('click');
+        $('#delete').click(function () {
             NBrightMod_nbxget('deleterecord', '#editdata');
         });
 
+        $('.sortelementUp').unbind('click');
         $('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent()); });
+        $('.sortelementDown').unbind('click');
         $('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent()); });
+        $('.removeelement').unbind('click');
         $('.removeelement').click(function () { removeelement($(this).parent().parent().parent()); });
+        $('#undoimage').unbind('click');
         $('#undoimage').click(function () { undoremove('.imageitem', '#imagelist'); });
+        $('#undodoc').unbind('click');
         $('#undodoc').click(function () { undoremove('.docitem', '#doclist'); });
 
         ActivateFileLoader();
@@ -107,6 +119,7 @@ function NBrightMod_nbxgetCompleted(e) {
         if (e.cmd == 'addnew') $('#newitem').val(''); // clear item so if new was just created we don;t create another record
 
         // assign event on data return, otherwise the elemet will not be there, so it can't bind the event
+        $('.edititem').unbind('click');
         $('.edititem').click(function () {
             $('.processing').show();
             $('#selecteditemid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being edited
@@ -114,24 +127,29 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('getdetail', '#selectparams', '#editdata'); // do ajax call to get edit form
         });
 
+        $('.sortelementUp').unbind('click');
         $('.sortelementUp').click(function () { moveUp($(this).parent().parent().parent()); });
+        $('.sortelementDown').unbind('click');
         $('.sortelementDown').click(function () { moveDown($(this).parent().parent().parent()); });
 
+        $('#exitedit').unbind('click');
         $('#exitedit').click(function () {
             $('.processing').show();
             window.location.href = $('#exiturl').val();
         });
 
+        $('#savelistdata').unbind('click');
         $('#savelistdata').click(function () {
             NBrightMod_nbxget('savelistdata', '#editdatalist > tbody', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         });
 
+        $('.selecteditlistlanguage').unbind('click');
         $('.selecteditlistlanguage').click(function () {
             $('#editlang').val($(this).attr('lang'));
             NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
         });
 
-
+        $('#addnew').unbind('click');
         $('#addnew').click(function () {
             $('.processing').show();
             $('#newitem').val('new');
@@ -139,6 +157,7 @@ function NBrightMod_nbxgetCompleted(e) {
             NBrightMod_nbxget('addnew', '#selectparams', '#editdata');
         });
 
+        $('.deleteitemclick').unbind('click');
         $('.deleteitemclick').click(function () {
             $('#selecteddeleteid').val($(this).attr("itemid")); // assign the selected itemid, so the server knows what item is being deleted
             NBrightMod_nbxget('deleterecord', '#editdata');
@@ -149,6 +168,7 @@ function NBrightMod_nbxgetCompleted(e) {
     }
 
     // check if save has been done!
+    $('#savereturn').unbind('change');
     $('#savereturn').change(function () {
         if ($('#savedreturnaction').val() == "exit") {
             $('#savedreturnaction').val('');
@@ -245,6 +265,7 @@ function undoremove(itemselector, destinationselector) {
 
 function ActivateFileLoader() {
 
+    $('.filelistclick').unbind('click');
     $('.filelistclick').click(function () {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
@@ -259,6 +280,7 @@ function ActivateFileLoader() {
         $("#NBrightModModal").appendTo("body");
     });
 
+    $('.fileclick').unbind('click');
     $('.fileclick').click(function () {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
@@ -268,6 +290,7 @@ function ActivateFileLoader() {
         savedata();
     });
 
+    $('.imagelistclick').unbind('click');
     $('.imagelistclick').click(function () {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
@@ -282,6 +305,7 @@ function ActivateFileLoader() {
         $("#NBrightModModal").appendTo("body");
     });
 
+    $('.imageclick').unbind('click');
     $('.imageclick').click(function () {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
@@ -291,12 +315,9 @@ function ActivateFileLoader() {
         savedata();
     });
 
-    $('#fileselectlist').change(function () {
-        // may need to do something here to stop display of image and docs when switching.
-    });
-
     // Only show file operation when the file list has been loaded
-    $('#fileselectlist').change(function() {
+    $('#fileselectlist').unbind('change');
+    $('#fileselectlist').change(function () {
          $('#fileoperation').show();
          $('#fileprocessingmsg').hide();
     });
@@ -306,6 +327,7 @@ function ActivateFileLoader() {
 function ActivateFileReturn(e) {
 
     if (e.cmd == 'getfolderfiles') {
+        $('.fileselectitem').unbind('click');
         $('.fileselectitem').click(function () {
             //if we have a allow1selection class on the file list then one 1 can be selected, so hide all.
             if ($('.allow1selection')[0]) {
@@ -337,19 +359,25 @@ function ActivateFileReturn(e) {
     }
 
     if (e.cmd == 'getfiles') {
+        $('.sortelementUp').unbind();
+        $('.sortelementDown').unbind();
         $(this).children().find('.sortelementUp').click(function () { moveUp($(this).parent()); });
         $(this).children().find('.sortelementDown').click(function () { moveDown($(this).parent()); });
+        $('.removefile').unbind('click');
         $('.removefile').click(function () { removeelement($(this).parent().parent()); });
+        $('#undofile').unbind('click');
         $('#undofile').click(function () { undoremove('.fileitem', '#filelistul'); });
     }
 
 }
 
 function ActivateFileUploadButtons() {
+    $('.fileupload-button').unbind('click');
     $('.fileupload-button').click(function () {
         $('#fileupload').trigger('click');
     });
 
+    $('#fileupload').unbind('change');
     $('#fileupload').change(function () {
         $('.processing').show();
         $('#fileselectlist').append('<div id="loader" class="processing"><i class="glyphicon glyphicon-cog"></i></div>');
@@ -393,14 +421,17 @@ function ActivateFileUploadButtons() {
 
     });
 
+    $('#addselectedfiles').unbind('click');
     $('#addselectedfiles').click(function () {
         NBrightMod_nbxget('addselectedfiles', '#selectparams', '#filelist');
     });
 
+    $('#replaceselectedfiles').unbind('click');
     $('#replaceselectedfiles').click(function () {
         NBrightMod_nbxget('replaceselectedfiles', '#selectparams', '#filelist');
     });
 
+    $('#deleteselectedfiles').unbind('click');
     $('#deleteselectedfiles').click(function () {
         $('#fileselectlist').append('<div id="loader" class="processing"><i class="glyphicon glyphicon-cog"></i></div>');
         NBrightMod_nbxget('deleteselectedfiles', '#selectparams', '#filelist');

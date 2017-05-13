@@ -103,6 +103,15 @@ namespace Nevoweb.DNN.NBrightMod
 
             var strOut = "";
             var cacheKey = "nbrightmodview-" + PortalSettings.Current.PortalId + "-" + ModuleId + "-" + Utils.GetCurrentCulture() + "-" + eid;
+            var razorCacheKey = settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture();
+            if (LocalUtils.VersionUserCanValidate(ModuleId) || LocalUtils.VersionUserMustCreateVersion(ModuleId))
+            {
+                // add userid for users with version rights.
+                cacheKey += "-" + UserId;
+                razorCacheKey += "-" + UserId;
+            }
+
+
             if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey, ModuleId.ToString());
 
             if (String.IsNullOrWhiteSpace(strOut)) // check if we already have razor cache
@@ -148,15 +157,29 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // get any version data.
                     var length = l.Count;
+                    var removeList = new List<int>();
                     for (int i = 0; i < length; i++)
                     {
                         var nbi = l[i];
                         if (nbi.XrefItemId > 0)
                         {
-                            var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang, true);
-                            l[i] = vnbi;
+                            if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                            {
+                                removeList.Add(i);
+                            }
+                            else
+                            {
+                                var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang, true);
+                                l[i] = vnbi;
+                            }
                         }
                     }
+                    // remove deleted record.
+                    for (int i = removeList.Count - 1; i >= 0; i--)
+                    {
+                        l.RemoveAt(i + 1);
+                    }
+
                     // get any "added" version records
                     var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA", "", orderby, 0, 0, 0, 0, Utils.GetCurrentCulture());
                     foreach (var nbi in l2)
@@ -166,7 +189,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 }
 
-                strOut = LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), l, Utils.GetCurrentCulture(), debug);
+                strOut = LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), razorCacheKey , l, Utils.GetCurrentCulture(), debug);
 
                 if (!debug)
                 {

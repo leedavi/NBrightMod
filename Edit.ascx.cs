@@ -69,6 +69,11 @@ namespace Nevoweb.DNN.NBrightMod
                     // lang records first, so we don;t auto delete lang on base record delete.
                     foreach (var nbi in l2)
                     {
+                        if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                        {
+                            // remove deleted data record.
+                            objCtrl.Delete(nbi.ItemID);
+                        }
                         LocalUtils.VersionValidate(nbi);
                     }
                     foreach (var nbi in l)
@@ -100,6 +105,12 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     foreach (var nbi in l)
                     {
+                        if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                        {
+                            // remove deleted flag from data record.
+                            nbi.RemoveXmlNode("genxml/versiondelete");
+                            objCtrl.Update(nbi);
+                        }
                         LocalUtils.VersionDelete(nbi);
                     }
 
