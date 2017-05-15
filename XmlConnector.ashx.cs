@@ -655,6 +655,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
 
                         // get any version data.
+                        var isVersion = false;
                         var length = l.Count;
                         var removeList = new List<int>();
                         for (int i = 0; i < length; i++)
@@ -662,9 +663,10 @@ namespace Nevoweb.DNN.NBrightMod
                             var nbi = l[i];
                             if (nbi.XrefItemId > 0)
                             {
+                                isVersion = true;
                                 if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
                                 {
-                                    removeList.Add(i);
+                                    removeList.Add(nbi.ItemID);
                                 }
                                 else
                                 {
@@ -672,8 +674,10 @@ namespace Nevoweb.DNN.NBrightMod
                                     if (vnbi == null)
                                     {
                                         // found invalid itemid, clean it up.
+                                        var nbiClean = objCtrl.Get(nbi.ItemID);
+                                        nbiClean.XrefItemId = 0;
+                                        objCtrl.Update(nbiClean);
                                         nbi.XrefItemId = 0;
-                                        objCtrl.Update(nbi);
                                     }
                                     else
                                     {
@@ -683,9 +687,12 @@ namespace Nevoweb.DNN.NBrightMod
                             }
                         }
                         // remove deleted record.
-                        for (int i = removeList.Count - 1; i >= 0; i--)
+                        for (int i = length - 1; i >= 0; i--)
                         {
-                            l.RemoveAt(i + 1);
+                            if (removeList.Contains(l[i].ItemID))
+                            {
+                                l.RemoveAt(i);
+                            }
                         }
 
                         // get any "added" version records
@@ -693,6 +700,19 @@ namespace Nevoweb.DNN.NBrightMod
                         foreach (var nbi in l2)
                         {
                             l.Add(nbi);
+                            isVersion = true;
+                        }
+
+                        if (isVersion && !String.IsNullOrWhiteSpace(orderby))
+                        {
+                            // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
+                            var filter2 = " and ( ";
+                            foreach (var nbi in l)
+                            {
+                                filter2 += " NB1.ItemId = " + nbi.ItemID + " or ";
+                            }
+                            filter2 = filter2.Substring(0, filter2.Length - 3) + ") ";
+                            l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "", filter2, orderby, returnlimit, 0, 0, 0, editlang);
                         }
 
 
@@ -1694,6 +1714,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // get DB record
                     var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                    nbi = LocalUtils.VersionGet(nbi);
                     if (nbi != null)
                     {
                         // get data passed back by ajax
@@ -1712,7 +1733,7 @@ namespace Nevoweb.DNN.NBrightMod
 
 
                         // do langauge record
-                        nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                        nbi = objCtrl.GetDataLang(nbi.ItemID, lang, true);
                         nbi.UpdateAjax(strIn,"", ignoresecurityfilter);
                         nbi.TextData = ""; // clear any output DB caching
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
@@ -2055,9 +2076,10 @@ namespace Nevoweb.DNN.NBrightMod
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                nbi = LocalUtils.VersionGet(nbi);
                 if (nbi != null)
                 {
-                    var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang,true);
                     // build xml for data records
                     var strXml = "<genxml><imgs>";
                     var strXmlLang = "<genxml><imgs>";
@@ -2211,15 +2233,33 @@ namespace Nevoweb.DNN.NBrightMod
         {
             //get uploaded params
             var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
+            var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+            if (lang == "") lang = _lang;
 
             if (Utils.IsNumeric(itemid))
             {
                 var objCtrl = new NBrightDataController();
                 var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                var baseid = dataRecord.ItemID;
+                dataRecord = LocalUtils.VersionGet(dataRecord);
                 if (dataRecord != null)
                 {
                     dataRecord.RemoveXmlNode("genxml/imgs");
-                    objCtrl.Update(dataRecord);
+                    if (LocalUtils.VersionUserMustCreateVersion(dataRecord.ModuleId))
+                    {
+                        LocalUtils.VersionUpdate(dataRecord);
+                        // create a version lang record
+                        var nbilang = objCtrl.GetDataLang(baseid, lang);
+                        if (nbilang != null)
+                        {
+                            LocalUtils.VersionUpdate(nbilang);
+                        }
+                    }
+                    else
+                    {
+                        objCtrl.Update(dataRecord);
+                    }
+
                     AddSelectedImages(ajaxInfo);
                 }
             }
@@ -2338,6 +2378,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemId);
+            dataRecord = LocalUtils.VersionGet(dataRecord);
             if (dataRecord != null)
             {
                 var f = Path.GetFileName(imagepath);
@@ -2380,9 +2421,10 @@ namespace Nevoweb.DNN.NBrightMod
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
+                nbi = LocalUtils.VersionGet(nbi);
                 if (nbi != null)
                 {
-                    var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang,true);
                     // build xml for data records
                     var strXml = "<genxml><docs>";
                     var strXmlLang = "<genxml><docs>";
@@ -2591,6 +2633,7 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 var objCtrl = new NBrightDataController();
                 var dataRecord = objCtrl.Get(Convert.ToInt32(itemid));
+                dataRecord = LocalUtils.VersionGet(dataRecord);
                 if (dataRecord != null)
                 {
                     dataRecord.RemoveXmlNode("genxml/docs");
@@ -2716,6 +2759,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemId);
+            dataRecord = LocalUtils.VersionGet(dataRecord);
             if (dataRecord != null)
             {
                 var r = Path.GetFileNameWithoutExtension(docpath);

@@ -114,16 +114,19 @@ namespace NBrightMod.common
         /// <returns>The version record or the orginal if no version</returns>
         public static NBrightInfo VersionGet(NBrightInfo nbrightInfo)
         {
-            var baseid = nbrightInfo.XrefItemId;
-            if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA"))
+            if (nbrightInfo != null)
             {
-                baseid = nbrightInfo.ItemID;
-            }
-            var objCtrl = new NBrightDataController();
-            var nbi = objCtrl.GetData(baseid);
-            if (nbi != null)
-            {
-                return nbi;
+                var baseid = nbrightInfo.XrefItemId;
+                if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA"))
+                {
+                    baseid = nbrightInfo.ItemID;
+                }
+                var objCtrl = new NBrightDataController();
+                var nbi = objCtrl.GetData(baseid);
+                if (nbi != null)
+                {
+                    return nbi;
+                }
             }
             return nbrightInfo;
         }
@@ -248,7 +251,36 @@ namespace NBrightMod.common
             }
             else
             {
-                objCtrl.Delete(nbrightInfo.ItemID);
+                // base record
+                var nbi = objCtrl.Get(nbrightInfo.XrefItemId);
+                if (nbi != null)
+                {
+                    // lang record
+                    var l = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATALANG", " and NB1.ParentItemId = " + nbi.ItemID + " ");
+                    if (l.Any())
+                    {
+                        foreach (var nbiCleanLang in l)
+                        {
+                            if (nbiCleanLang.ParentItemId == nbi.ItemID)
+                            {
+                                nbiCleanLang.XrefItemId = 0;
+                                objCtrl.Update(nbiCleanLang);
+                            }
+                        }
+                    }
+                    // mark base record as deleted
+                    nbi.XrefItemId = 0; // clear removed versionid
+                    nbi.SetXmlProperty("genxml/versiondelete", "True");
+                    objCtrl.Update(nbi);
+                    objCtrl.Delete(nbrightInfo.ItemID);
+                    // create a version, so we know we have version change.
+                    VersionUpdate(nbi);
+                }
+                else
+                {
+                    // record must have been added as version, just remove it.
+                    objCtrl.Delete(nbrightInfo.ItemID);
+                }
             }
         }
 

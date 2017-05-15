@@ -165,7 +165,7 @@ namespace Nevoweb.DNN.NBrightMod
                         {
                             if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
                             {
-                                removeList.Add(i);
+                                removeList.Add(nbi.ItemID);
                             }
                             else
                             {
@@ -175,9 +175,12 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                     }
                     // remove deleted record.
-                    for (int i = removeList.Count - 1; i >= 0; i--)
+                    for (int i = length - 1; i >= 0; i--)
                     {
-                        l.RemoveAt(i + 1);
+                        if (removeList.Contains(l[i].ItemID))
+                        {
+                            l.RemoveAt(i);
+                        }
                     }
 
                     // get any "added" version records
@@ -185,6 +188,18 @@ namespace Nevoweb.DNN.NBrightMod
                     foreach (var nbi in l2)
                     {
                         l.Add(nbi);
+                    }
+
+                    if (!String.IsNullOrWhiteSpace(orderby))
+                    {
+                        // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
+                        var filter2 = " and ( ";
+                        foreach (var nbi in l)
+                        {
+                            filter2 += " NB1.ItemId = " + nbi.ItemID + " or ";
+                        }
+                        filter2 = filter2.Substring(0, filter2.Length - 3) + ") ";
+                        l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "", filter2, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
                     }
 
                 }
