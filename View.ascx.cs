@@ -242,14 +242,29 @@ namespace Nevoweb.DNN.NBrightMod
                     var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
                     if (l.Count > 0 || l2.Count > 0)
                     {
-                        actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
-                        actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
+                        actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "translate.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
+                        actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "translated.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
                         if (LocalUtils.VersionUserCanValidate(ModuleId))
                         {
-                            actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
+                            actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "grant.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
+                            actions.Add(GetNextActionID(), Localization.GetString("Version4", this.LocalResourceFile), "", "", "error-icn.png", EditUrl() + "?version=4", false, SecurityAccessLevel.Edit, true, false);
+                            actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
                         }
-                        actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
+                        else
+                        {
+                            actions.Add(GetNextActionID(), Localization.GetString("Version5", this.LocalResourceFile), "", "", "icon-validate-success.png", EditUrl() + "?version=5", false, SecurityAccessLevel.Edit, true, false);
+                            if (settings.GetXmlPropertyBool("genxml/versionemailsent"))
+                            {
+                                actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
+                            }
+                            else
+                            {
+                                actions.Add(GetNextActionID(), Localization.GetString("Version6", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=6", false, SecurityAccessLevel.Edit, true, false);
+                            }
+
+                        }
                     }
+                    actions.Add(GetNextActionID(), Localization.GetString("auditreport", this.LocalResourceFile), "", "", "about.gif", EditUrl() + "?auditlog=1", false, SecurityAccessLevel.Edit, true, false);
 
                 }
 

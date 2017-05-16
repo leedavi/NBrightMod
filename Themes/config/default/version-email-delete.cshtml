@@ -1,0 +1,32 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<style>
+body {margin:20px;color:#595959;font-size:14px;font-family:Segoe UI, Arial, Helvetica;line-height:18px;}
+h2 {font-size:30px;color:#242a31;line-height:30px;font-family:Segoe UI, Arial, Helvetica;}
+.datatable {margin:20px 0;border:none;}
+.datatable th {padding:10px 20px;background:#f7f7f7;}
+.datatable td {padding:10px 20px;}
+</style>
+
+<h2>@ResourceKey("Settings.version-email-delete-subject")</h2>
+<b>@ResourceKey("Settings.version-email-delete-msg")</b>
+<table class="datatable" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+        <th align="right"><label>URL</label></th>
+        <td>
+            <a href="@info.GetXmlProperty("genxml/versionurl")" target="_blank">@info.GetXmlProperty("genxml/versionurl")</a>
+        </td>
+    </tr>
+</table>

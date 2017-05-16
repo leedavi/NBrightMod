@@ -153,4 +153,16 @@
   <data name="Version3.Text" xml:space="preserve">
     <value>DELETE New Version</value>
   </data>
+  <data name="auditreport.Text" xml:space="preserve">
+    <value>Audit Report</value>
+  </data>
+  <data name="Version4.Text" xml:space="preserve">
+    <value>Decline New Version</value>
+  </data>
+  <data name="Version5.Text" xml:space="preserve">
+    <value>Request Change Validation</value>
+  </data>
+  <data name="Version6.Text" xml:space="preserve">
+    <value>DELETE Changes</value>
+  </data>
 </root>

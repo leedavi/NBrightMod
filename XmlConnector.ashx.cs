@@ -599,26 +599,28 @@ namespace Nevoweb.DNN.NBrightMod
                             LocalUtils.CreateLangaugeDataRecord(obj.ItemID, Convert.ToInt32(moduleid), editlang);
                             obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
                         }
-                    }
-                    // get any version data.
-                    if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith("NBrightModDATA"))
-                    {
-                        var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang, true);
-                        if (nbi == null)
+                        // get any version data.
+                        if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith("NBrightModDATA"))
                         {
-                            // found invalid itemid, clean it up.
-                            obj.XrefItemId = 0;
-                            objCtrl.Update(obj);
-                        }
-                        else
-                        {
-                            if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                            var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang, true);
+                            if (nbi == null)
                             {
-                                obj = null;
+                                // found invalid itemid, clean it up.
+                                var nbiClean = objCtrl.Get(obj.ItemID);
+                                nbiClean.XrefItemId = 0;
+                                objCtrl.Update(nbiClean);
+                                obj.XrefItemId = 0;
                             }
                             else
                             {
-                                obj = nbi;
+                                if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                                {
+                                    obj = null;
+                                }
+                                else
+                                {
+                                    obj = nbi;
+                                }
                             }
                         }
                     }
@@ -703,7 +705,7 @@ namespace Nevoweb.DNN.NBrightMod
                             isVersion = true;
                         }
 
-                        if (isVersion && !String.IsNullOrWhiteSpace(orderby))
+                        if (isVersion && !String.IsNullOrWhiteSpace(orderby) && l.Count > 1)
                         {
                             // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
                             var filter2 = " and ( ";

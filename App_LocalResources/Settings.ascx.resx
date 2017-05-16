@@ -195,4 +195,70 @@
   <data name="rolesmsg.Text" xml:space="preserve">
     <value>Use Attach Roles to add and remove roles from ALL NBrightMod module in this portal.  Select the role and the page where you want to apply the role and the role will be applied to ALL NBrightMod modules on that page.  If the page is NOT selected then the role will be removed from ALL NBrightMod modules on that page.  This function will both ADD the role and give EDIT rights.</value>
   </data>
+  <data name="auditcode0.Text" xml:space="preserve">
+    <value>Reset to Original</value>
+  </data>
+  <data name="auditcode1.Text" xml:space="preserve">
+    <value>Request Validation</value>
+  </data>
+  <data name="auditcode2.Text" xml:space="preserve">
+    <value>Delete New Version</value>
+  </data>
+  <data name="auditcode3.Text" xml:space="preserve">
+    <value>Validate New Version</value>
+  </data>
+  <data name="auditcode4.Text" xml:space="preserve">
+    <value>Decline New Version</value>
+  </data>
+  <data name="auditcode5.Text" xml:space="preserve">
+    <value>Clear Audit</value>
+  </data>
+  <data name="auditicon0.Text" xml:space="preserve">
+    <value>delete.gif</value>
+  </data>
+  <data name="auditicon1.Text" xml:space="preserve">
+    <value>icon-validate-success.png</value>
+  </data>
+  <data name="auditicon2.Text" xml:space="preserve">
+    <value>delete.gif</value>
+  </data>
+  <data name="auditicon3.Text" xml:space="preserve">
+    <value>grant.gif</value>
+  </data>
+  <data name="auditicon4.Text" xml:space="preserve">
+    <value>error-icn.png</value>
+  </data>
+  <data name="auditicon5.Text" xml:space="preserve">
+    <value>warning-icn.png</value>
+  </data>
+  <data name="auditreport.Text" xml:space="preserve">
+    <value>Audit Report</value>
+  </data>
+  <data name="version-by.Text" xml:space="preserve">
+    <value>Change made by:</value>
+  </data>
+  <data name="version-email-decline-msg.Text" xml:space="preserve">
+    <value>The new content version has been DECLINED, plase adjust the content to resubmit the changes. </value>
+  </data>
+  <data name="version-email-decline-subject.Text" xml:space="preserve">
+    <value>Content Version Declined</value>
+  </data>
+  <data name="version-email-delete-msg.Text" xml:space="preserve">
+    <value>The new content version has been DECLINED and removed from the system. </value>
+  </data>
+  <data name="version-email-delete-subject.Text" xml:space="preserve">
+    <value>Content Version Declined and Removed</value>
+  </data>
+  <data name="version-email-new-msg.Text" xml:space="preserve">
+    <value>New content version has been created and awaiting validation.</value>
+  </data>
+  <data name="version-email-new-subject.Text" xml:space="preserve">
+    <value>New Content Version Created</value>
+  </data>
+  <data name="version-email-validate-msg.Text" xml:space="preserve">
+    <value>The new content version has been ACCEPTED and moved LIVE.</value>
+  </data>
+  <data name="version-email-validate-subject.Text" xml:space="preserve">
+    <value>New Content Version Accepted</value>
+  </data>
 </root>

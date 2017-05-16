@@ -36,6 +36,7 @@ namespace Nevoweb.DNN.NBrightMod
     /// -----------------------------------------------------------------------------
     public partial class Edit : Base.NBrightModBase
     {
+        private bool _doSkinRedirect = false;
 
         #region Event Handlers
 
@@ -92,8 +93,10 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         LocalUtils.VersionValidate(nbi);
                     }
+                    LocalUtils.VersionSendEmail(ModuleId, "version-email-validate.cshtml");
+                    LocalUtils.VersionAuditLog(ModuleId, AuditCode.Validate);
                 }
-                if (Utils.RequestParam(Context, "version") == "3")
+                if (Utils.RequestParam(Context, "version") == "3" || Utils.RequestParam(Context, "version") == "6")
                 {
                     // DELETE verison changes
                     var objCtrl = new NBrightDataController();
@@ -151,8 +154,32 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         objCtrl.Delete(nbi.ItemID);
                     }
-
+                    if (Utils.RequestParam(Context, "version") == "3")
+                    {
+                        // don't send email for reset by versioner (version=6)
+                        LocalUtils.VersionSendEmail(ModuleId, "version-email-delete.cshtml");
+                        LocalUtils.VersionAuditLog(ModuleId, AuditCode.Delete);
+                    }
+                    if (Utils.RequestParam(Context, "version") == "6")
+                    {
+                        LocalUtils.VersionAuditLog(ModuleId, AuditCode.Reset);
+                    }
                 }
+
+                if (Utils.RequestParam(Context, "version") == "4")
+                {
+                    // DECLINE verison changes and send email.
+                    LocalUtils.VersionSendEmail(ModuleId, "version-email-decline.cshtml");
+                    LocalUtils.VersionAuditLog(ModuleId, AuditCode.Decline);
+                }
+
+                if (Utils.RequestParam(Context, "version") == "5")
+                {
+                    // Request Validation.
+                    LocalUtils.VersionSendEmail(ModuleId, "version-email-new.cshtml");
+                    LocalUtils.VersionAuditLog(ModuleId, AuditCode.Request);
+                }
+
                 Response.Redirect(baseUrl + "?tabid=" + Utils.RequestParam(Context,"TabId") + langparam, true);
             }
 
@@ -173,8 +200,17 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.IsNumeric(itemid))
                     Response.Redirect(EditUrl("itemid", itemid, Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
                 else
-                    Response.Redirect(EditUrl(Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
-
+                {
+                    if (Utils.RequestParam(Context, "auditlog") != "")
+                    {
+                        Response.Redirect(EditUrl("auditlog", "1", Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
+                    }
+                    else
+                    {
+                        Response.Redirect(EditUrl(Utils.RequestParam(Context, "ctl")) + skinSrcAdmin, false);
+                    }
+                }
+                _doSkinRedirect = true;
                 Context.ApplicationInstance.CompleteRequest(); // do this to stop iis throwing error
             }
 
@@ -186,57 +222,71 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 base.OnLoad(e);
-                if (Page.IsPostBack == false)
+                if (Page.IsPostBack == false && _doSkinRedirect == false)
                 {
-                    var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
-                    var objCtrl = new NBrightDataController();
-
-                    #region "Single Page Edit"
-                    // if we don;t have a editlist.cshtml, then it's a single page edit, so set the flag, otherwise cancel flag.
-                    var oldsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
-                    var listtemplate = LocalUtils.GetTemplateData("editlist.cshtml", Utils.GetCurrentCulture(), settings.ToDictionary());
-                    if (listtemplate == "")
-                        settings.SetXmlProperty("genxml/hidden/singlepageedit", "true");
-                    else
-                        settings.SetXmlProperty("genxml/hidden/singlepageedit", "false");
-
-                    var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
-
-                    if (newsinglepageflag != oldsinglepageflag || !Utils.IsNumeric(settings.GetXmlProperty("genxml/hidden/singlepageitemid")))
+                    if (Utils.RequestParam(Context, "auditlog") != "")
                     {
-                        settings.SetXmlProperty("genxml/hidden/singlepageitemid", "");
-                        if (newsinglepageflag)
-                        {
-                            // check to see if we have existing record, if so use the first.
-                            var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
-                            if (l.Any())
-                            {
-                                var firstnbi = l.First();
-                                settings.SetXmlProperty("genxml/hidden/singlepageitemid", firstnbi.ItemID.ToString(""));
-                            }
-                        }
-                        // change in flag so need to save to DB
-                        objCtrl.Update(settings);
+                        var strOut = LocalUtils.VersionGetAuditLog(base.ModuleId);
+                        var lit = new Literal();
+                        lit.Text = strOut;
+                        phData.Controls.Add(lit);
                     }
-
-                    // if we have a singlepageedit theme then create/set the record itemid
-                    if (newsinglepageflag)
+                    else
                     {
-                        var singlepageitemid = settings.GetXmlProperty("genxml/hidden/singlepageitemid");
-                        if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""));
-                        if (Utils.IsNumeric(singlepageitemid))
+
+                        var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
+                        var objCtrl = new NBrightDataController();
+
+                        #region "Single Page Edit"
+
+                        // if we don;t have a editlist.cshtml, then it's a single page edit, so set the flag, otherwise cancel flag.
+                        var oldsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                        var listtemplate = LocalUtils.GetTemplateData("editlist.cshtml", Utils.GetCurrentCulture(), settings.ToDictionary());
+                        if (listtemplate == "")
+                            settings.SetXmlProperty("genxml/hidden/singlepageedit", "true");
+                        else
+                            settings.SetXmlProperty("genxml/hidden/singlepageedit", "false");
+
+                        var newsinglepageflag = settings.GetXmlPropertyBool("genxml/hidden/singlepageedit");
+                        var singlepageitemidtest = settings.GetXmlPropertyInt("genxml/hidden/singlepageitemid");
+                        var nbiTest = objCtrl.Get(Convert.ToInt32(singlepageitemidtest));
+
+                        if (newsinglepageflag != oldsinglepageflag || nbiTest == null)
                         {
-                            settings.SetXmlProperty("genxml/hidden/singlepageitemid", singlepageitemid);
+                            settings.SetXmlProperty("genxml/hidden/singlepageitemid", "");
+                            if (newsinglepageflag)
+                            {
+                                // check to see if we have existing record, if so use the first.
+                                var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
+                                if (l.Any())
+                                {
+                                    var firstnbi = l.First();
+                                    settings.SetXmlProperty("genxml/hidden/singlepageitemid", firstnbi.ItemID.ToString(""));
+                                }
+                            }
+                            // change in flag so need to save to DB
                             objCtrl.Update(settings);
                         }
+
+                        // if we have a singlepageedit theme then create/set the record itemid
+                        if (newsinglepageflag)
+                        {
+                            var singlepageitemid = settings.GetXmlProperty("genxml/hidden/singlepageitemid");
+                            if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""));
+                            if (Utils.IsNumeric(singlepageitemid))
+                            {
+                                settings.SetXmlProperty("genxml/hidden/singlepageitemid", singlepageitemid);
+                                objCtrl.Update(settings);
+                            }
+                        }
+
+                        #endregion
+
+                        var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(), true); // debug mode, don;t use cache for edit
+                        var lit = new Literal();
+                        lit.Text = strOut;
+                        phData.Controls.Add(lit);
                     }
-
-                    #endregion
-
-                    var strOut = LocalUtils.RazorTemplRender("editbody.cshtml", ModuleId.ToString(""), settings.GetXmlProperty("genxml/dropdownlist/themefolder") + Utils.GetCurrentCulture(), new NBrightInfo(), Utils.GetCurrentCulture(),true); // debug mode, don;t use cache for edit
-                    var lit = new Literal();
-                    lit.Text = strOut;
-                    phData.Controls.Add(lit);
                 }
             }
             catch (Exception exc) //Module failed to load

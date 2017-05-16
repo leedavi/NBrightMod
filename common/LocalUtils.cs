@@ -30,12 +30,14 @@ using RazorEngine.Templating;
 using System.Text;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using DotNetNuke.Entities.Modules;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Security.Roles;
 
 namespace NBrightMod.common
 {
+    public enum AuditCode { Reset, Request, Delete, Validate, Decline, ClearAudit};
 
     public static class LocalUtils
     {
@@ -284,6 +286,185 @@ namespace NBrightMod.common
             }
         }
 
+        public static void VersionSendEmail(int moduleid, string emailtemplatename)
+        {
+            var nbi = LocalUtils.GetSettings(moduleid.ToString());
+            var objCtrl = new NBrightDataController();
+            if (emailtemplatename.ToLower() == "version-email-delete.cshtml" || emailtemplatename.ToLower() == "version-email-validate.cshtml" || emailtemplatename.ToLower() == "version-email-decline.cshtml")
+            {
+                nbi.RemoveXmlNode("genxml/versionemailsent");
+                nbi.RemoveXmlNode("genxml/versiondisplayname");
+                nbi.RemoveXmlNode("genxml/versionusername");
+                objCtrl.Update(nbi);
+            }
+
+            nbi.ModuleId = moduleid;
+
+            var moduleInfo = DnnUtils.GetModuleinfo(moduleid);
+            if (moduleInfo != null)
+            {
+                // set flag for email sent
+                if (emailtemplatename.ToLower() == "version-email-new.cshtml")
+                {
+                    nbi.SetXmlProperty("genxml/versionemailsent", "True");
+                    nbi.SetXmlProperty("genxml/versionurl", DotNetNuke.Common.Globals.NavigateURL(moduleInfo.TabID));
+                    nbi.SetXmlProperty("genxml/versiondisplayname", UserController.Instance.GetCurrentUserInfo().DisplayName);
+                    nbi.SetXmlProperty("genxml/versionusername", UserController.Instance.GetCurrentUserInfo().Username);
+                    objCtrl.Update(nbi);
+                }
+
+                // get roles for module
+                var versionRoles = new List<string>();
+                var permissionsList2 = moduleInfo.ModulePermissions.ToList();
+                foreach (var p in permissionsList2)
+                {
+                    versionRoles.Add(p.RoleName);
+                }
+
+                // send email for only Manager and Validate roles.
+                var emailsentlist = new List<string>();
+                var roles = RoleController.Instance.GetRoles(nbi.PortalId);
+                foreach (var role in roles)
+                {
+                    if ((role.RoleName == "Manager" || role.RoleName.StartsWith("Validate")) && versionRoles.Contains(role.RoleName))
+                    {
+                        var usersInRole = RoleController.Instance.GetUsersByRole(nbi.PortalId, role.RoleName);
+                        foreach (var u in usersInRole)
+                        {
+                            var useremail = u.Email;
+                            if (!emailsentlist.Contains(useremail))
+                            {
+                                var userlang = u.Profile.PreferredLocale;
+                                if (userlang == "") userlang = PortalSettings.Current.DefaultLanguage;
+                                if (userlang == "") userlang = Utils.GetCurrentCulture();
+                                var emailsubject = PortalSettings.Current.PortalName + ": " + DnnUtils.GetResourceString("/DesktopModules/NBright/NBrightMod/App_LocalResources/", "Settings." + emailtemplatename.ToLower().Replace(".cshtml", "") + "-subject", "Text", userlang);
+                                var emailbody = LocalUtils.RazorTemplRender("config." + emailtemplatename, moduleid.ToString(), "", nbi, userlang);
+                                DotNetNuke.Services.Mail.Mail.SendMail(PortalSettings.Current.Email.Trim(), useremail.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                                emailsentlist.Add(useremail);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void VersionAuditLog(int moduleid, AuditCode action)
+        {
+            var auditFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\AuditData";
+            Utils.CreateFolder(auditFolder); // creates is not there
+            using (StreamWriter w = File.AppendText(auditFolder + "\\" + moduleid + ".txt"))
+            {
+                int i = (int)action;
+                var msg = i + "," + UserController.Instance.GetCurrentUserInfo().Username + "," ;
+                msg += UserController.Instance.GetCurrentUserInfo().UserID + ",";
+                w.WriteLine(DateTime.Now.ToString("s") + "," + msg);
+            }
+        }
+
+        public static string VersionGetAuditLog(int moduleid)
+        {
+            var l = GetAuditLog(moduleid);
+            return LocalUtils.RazorTemplRenderList("config.auditreport.cshtml", moduleid.ToString(""), "", l, Utils.GetCurrentCulture(),true);
+        }
+
+        public static List<NBrightInfo> GetAuditLog(int moduleid)
+        {
+            var rtnList = new List<NBrightInfo>();
+            var rtnList2 = new List<NBrightInfo>();
+            string line;
+            if (File.Exists(PortalSettings.Current.HomeDirectoryMapPath + "\\NBrightMod\\AuditData\\" + moduleid + ".txt"))
+            {
+                using (StreamReader r = File.OpenText(PortalSettings.Current.HomeDirectoryMapPath + "\\NBrightMod\\AuditData\\" + moduleid + ".txt"))
+                {
+                    var objUserCtrl = new UserController();
+                    while ((line = r.ReadLine()) != null)
+                    {
+                        var nbi = new NBrightInfo(true);
+
+                        var sline = line.Split(',');
+                        if (sline.Count() == 5)
+                        {
+                            try
+                            {
+                                var strdate = sline[0];
+                                if (Utils.IsDate(strdate))
+                                {
+                                    var auditdate = Convert.ToDateTime(strdate);
+                                    var action = sline[1];
+                                    var username = sline[2];
+                                    var userid = sline[3];
+                                    if (Utils.IsNumeric(userid) && Utils.IsNumeric(action))
+                                    {
+                                        var uInfo = UserController.Instance.GetUser(PortalSettings.Current.PortalId, Convert.ToInt32(userid));
+                                        if (uInfo != null)
+                                        {
+                                            nbi.SetXmlProperty("genxml/auditdate",strdate);
+                                            nbi.SetXmlProperty("genxml/userid", userid);
+                                            nbi.SetXmlProperty("genxml/displayname", uInfo.DisplayName );
+                                            nbi.SetXmlProperty("genxml/username", uInfo.Username);
+                                            nbi.SetXmlProperty("genxml/auditaction", DnnUtils.GetResourceString("/DesktopModules/NBright/NBrightMod/App_LocalResources/", "Settings.auditcode" + action,"Text",Utils.GetCurrentCulture()));
+                                            nbi.SetXmlProperty("genxml/auditicon", DnnUtils.GetResourceString("/DesktopModules/NBright/NBrightMod/App_LocalResources/", "Settings.auditicon" + action, "Text", Utils.GetCurrentCulture()));
+                                            nbi.SetXmlProperty("genxml/auditline", line);
+                                            rtnList2.Add(nbi);
+                                        }
+                                    }
+
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                // don't report errors
+                            }
+                        }
+                    }
+                }
+
+                // purge log file by delete and recreate.
+                var auditFolder = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\AuditData";
+                var auditFile = auditFolder + "\\" + moduleid + ".txt";
+                if (File.Exists(auditFile))
+                {
+                    File.Delete(auditFile);
+                    System.Threading.Thread.Sleep(1000);
+                }
+
+                // set into reverse order
+                var lp = 0;
+                for (int i = rtnList2.Count - 1; i >= 0; i--)
+                {
+                    if (lp < 200)
+                    {
+                        rtnList.Add(rtnList2[i]);
+                        lp += 1;
+                    }
+                }
+
+                //purge audit (200)
+                if (rtnList2.Any())
+                {
+                    using (StreamWriter w = File.AppendText(auditFile))
+                    {
+                        var lp2 = 0;
+                        var start = rtnList2.Count - 200;
+                        if (start < 0) start = 0;
+                        foreach (var nbi in rtnList2)
+                        {
+                            if (lp2 >= start)
+                            {
+                                w.WriteLine(nbi.GetXmlProperty("genxml/auditline"));
+                            }
+                            lp2 += 1;
+                        }
+                    }
+                }
+
+
+
+            }
+            return rtnList;
+        }
+
+
 
         #endregion 
 
@@ -312,7 +493,7 @@ namespace NBrightMod.common
 
             foreach (var lang in DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId))
             {
-                var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang);
+                var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang, prefix);
             }
 
             LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
@@ -320,14 +501,8 @@ namespace NBrightMod.common
             return nbi.ItemID.ToString("");
         }
 
-        public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang)
+        public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang,string prefix = "")
         {
-            var prefix = "";
-            if (VersionUserMustCreateVersion(moduleid))
-            {
-                prefix = "a";
-            }
-
             var objCtrl = new NBrightDataController();
             var nbi2 = new NBrightInfo(true);
             nbi2.PortalId = PortalSettings.Current.PortalId;
@@ -367,6 +542,7 @@ namespace NBrightMod.common
             }
             return templ;
         }
+
 
         public static NBrightInfo GetAjaxFields(HttpContext context, bool ignoresecurityfilter = false, bool filterlinks = false)
         {

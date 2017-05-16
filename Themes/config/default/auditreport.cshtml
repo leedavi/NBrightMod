@@ -1,0 +1,77 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+
+<style>
+    body {
+        margin: 20px;
+        color: #595959;
+        font-size: 14px;
+        font-family: Segoe UI, Arial, Helvetica;
+        line-height: 18px;
+    }
+
+    h2 {
+        font-size: 30px;
+        color: #242a31;
+        line-height: 30px;
+        font-family: Segoe UI, Arial, Helvetica;
+    }
+
+    .datatable {
+        margin: 10px 0;
+        border: none;
+    }
+
+    .datatable th {
+        padding: 2px 10px;
+        background: #f7f7f7;
+    }
+
+    .datatable td {
+        padding: 2px 10px;
+    }
+</style>
+
+<script>
+
+    function goBack() {
+        window.history.back();
+    }
+
+    $(document).ready(function () {
+        $('.heading_wrapper').hide();
+    });
+
+</script>
+
+<div class="buttons "><button id="return" type="button" class="btn btn-default" onclick="goBack()"><span class="glyphicon glyphicon-log-out"></span> Return</button></div>
+
+
+<h2>@ResourceKey("Settings.auditreport")</h2>
+<table class="datatable" border="0" cellspacing="0" cellpadding="0">
+    @foreach (NBrightInfo nbi in Model.List)
+    {
+        <tr>
+            <td>
+            <span><img src="/images/@nbi.GetXmlProperty("genxml/auditicon")" /></span>
+            </td>
+            <td>
+                <span>@nbi.GetXmlProperty("genxml/auditdate")</span>
+            </td>
+            <td>
+                <span>@nbi.GetXmlProperty("genxml/displayname") &nbsp;(@nbi.GetXmlProperty("genxml/username"))</span>
+            </td>
+            <td>
+                <span>@nbi.GetXmlProperty("genxml/auditaction")</span>
+            </td>
+        </tr>
+    }
+</table>

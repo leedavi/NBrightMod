@@ -273,6 +273,8 @@
     <None Include="Themes\config\default\tools.cshtml" />
     <None Include="Themes\config\default\settingspageheader.cshtml" />
     <None Include="Themes\config\default\settings.cshtml" />
+    <None Include="Themes\config\default\version-email-decline.cshtml" />
+    <None Include="Themes\config\default\auditreport.cshtml" />
     <None Include="Themes\ContactDetailsSat\default\view.cshtml" />
     <None Include="Themes\ContactDetails\default\editbody.cshtml" />
     <None Include="Themes\ContactDetails\default\editfields.cshtml" />
@@ -405,6 +407,9 @@
     <None Include="Themes\FAQ\default\editpageheader.cshtml" />
     <None Include="Themes\FAQ\default\settings.cshtml" />
     <None Include="Themes\FAQ\default\view.cshtml" />
+    <None Include="Themes\config\default\version-email-delete.cshtml" />
+    <None Include="Themes\config\default\version-email-validate.cshtml" />
+    <None Include="Themes\config\default\version-email-new.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\settings.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
