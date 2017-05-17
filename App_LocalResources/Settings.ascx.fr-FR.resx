@@ -156,4 +156,118 @@
   <data name="openinlightbox.Text" xml:space="preserve">
     <value>Ouvrir les images dans une popup</value>
   </data>
+  <data name="activatedetail.Text" xml:space="preserve">
+    <value>Activer page Détails</value>
+  </data>
+  <data name="attachroles.Text" xml:space="preserve">
+    <value>Affecter des rôles NBrightMod</value>
+  </data>
+  <data name="auditcode0.Text" xml:space="preserve">
+    <value>Revenir à l'original</value>
+  </data>
+  <data name="auditcode1.Text" xml:space="preserve">
+    <value>Demander une validation de contenu</value>
+  </data>
+  <data name="auditcode2.Text" xml:space="preserve">
+    <value>Supprimer la nouvelle version</value>
+  </data>
+  <data name="auditcode3.Text" xml:space="preserve">
+    <value>Valider la nouvelle version</value>
+  </data>
+  <data name="auditcode4.Text" xml:space="preserve">
+    <value>Refuser la nouvelle version</value>
+  </data>
+  <data name="auditcode5.Text" xml:space="preserve">
+    <value>Effacer l'historique des validations</value>
+  </data>
+  <data name="auditicon0.Text" xml:space="preserve">
+    <value>delete.gif</value>
+  </data>
+  <data name="auditicon1.Text" xml:space="preserve">
+    <value>icon-validate-success.png</value>
+  </data>
+  <data name="auditicon2.Text" xml:space="preserve">
+    <value>delete.gif</value>
+  </data>
+  <data name="auditicon3.Text" xml:space="preserve">
+    <value>grant.gif</value>
+  </data>
+  <data name="auditicon4.Text" xml:space="preserve">
+    <value>error-icn.png</value>
+  </data>
+  <data name="auditicon5.Text" xml:space="preserve">
+    <value>warning-icn.png</value>
+  </data>
+  <data name="auditreport.Text" xml:space="preserve">
+    <value>Rapport des validations</value>
+  </data>
+  <data name="clonemodule.Text" xml:space="preserve">
+    <value>Cloner le module</value>
+  </data>
+  <data name="clonesupdated.Text" xml:space="preserve">
+    <value>Mise à jour OK</value>
+  </data>
+  <data name="deselectall.Text" xml:space="preserve">
+    <value>Tout déselectionner</value>
+  </data>
+  <data name="doportalvalidation.Text" xml:space="preserve">
+    <value>Run Portal Validation</value>
+  </data>
+  <data name="encryptfilename.Text" xml:space="preserve">
+    <value>Nom de fichier encrypté</value>
+  </data>
+  <data name="imguploadfolder.Text" xml:space="preserve">
+    <value>Dossier de chargement</value>
+  </data>
+  <data name="portalconfig.Text" xml:space="preserve">
+    <value>NBrightMod Portal Config.</value>
+  </data>
+  <data name="portalconfigmsg.Text" xml:space="preserve">
+    <value>Portal configuration for NBrightMod modules.</value>
+  </data>
+  <data name="resetvalidationflag.Text" xml:space="preserve">
+    <value>Run Portal Data Validation</value>
+  </data>
+  <data name="rolemodule.Text" xml:space="preserve">
+    <value>Add and Remove Role to ALL NBrightMod modules</value>
+  </data>
+  <data name="rolesmsg.Text" xml:space="preserve">
+    <value>Use Attach Roles to add and remove roles from ALL NBrightMod module in this portal.  Select the role and the page where you want to apply the role and the role will be applied to ALL NBrightMod modules on that page.  If the page is NOT selected then the role will be removed from ALL NBrightMod modules on that page.  This function will both ADD the role and give EDIT rights.</value>
+  </data>
+  <data name="selectall.Text" xml:space="preserve">
+    <value>Tout sélectionner</value>
+  </data>
+  <data name="sourcepage.Text" xml:space="preserve">
+    <value>Page source</value>
+  </data>
+  <data name="version-by.Text" xml:space="preserve">
+    <value>Modification effectuée par :</value>
+  </data>
+  <data name="version-email-decline-msg.Text" xml:space="preserve">
+    <value>La nouvelle version de contenu a été refusée, vous devez modifier le contenu avant de le soumettre à nouveau.</value>
+  </data>
+  <data name="version-email-decline-subject.Text" xml:space="preserve">
+    <value>Version de contenu refusée</value>
+  </data>
+  <data name="version-email-delete-msg.Text" xml:space="preserve">
+    <value>La nouvelle version de contenu a été refusée et supprimée.</value>
+  </data>
+  <data name="version-email-delete-subject.Text" xml:space="preserve">
+    <value>Version de contenu refusée et supprimée</value>
+  </data>
+  <data name="version-email-new-msg.Text" xml:space="preserve">
+    <value>La nouvelle version de contenu a été créée et est en attente de validation.</value>
+  </data>
+  <data name="version-email-new-subject.Text" xml:space="preserve">
+    <value>Nouvelle version de contenu créée</value>
+  </data>
+  <data name="version-email-validate-msg.Text" xml:space="preserve">
+    <value>La nouvelle version de contenu a été validée et publiée.</value>
+  </data>
+  <data name="version-email-validate-subject.Text" xml:space="preserve">
+    <value>Nouvelle version de contenu validée</value>
+  </data>
+  <data name="versionemail.Text" xml:space="preserve">
+    <value>Envoyer des notifications pour les versions de contenu</value>
+  </data>
 </root>

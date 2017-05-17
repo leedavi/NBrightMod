@@ -270,4 +270,115 @@
   <data name="linktitle.Text" xml:space="preserve">
     <value>Texte du lien</value>
   </data>
+  <data name="completed.Text" xml:space="preserve">
+    <value>Effectué</value>
+  </data>
+  <data name="count.Text" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="createnew.Text" xml:space="preserve">
+    <value>Create New AppTheme</value>
+  </data>
+  <data name="cssfilechange.Text" xml:space="preserve">
+    <value>The page header templates for this module may need editing to use this .css template.</value>
+  </data>
+  <data name="date.Text1" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="defaulttemplateloaded.Text" xml:space="preserve">
+    <value>Default template loaded</value>
+  </data>
+  <data name="delete.Text1" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="deletemoduletempl.Text" xml:space="preserve">
+    <value>Remove Module template file</value>
+  </data>
+  <data name="deleteportalmsg.Text" xml:space="preserve">
+    <value>This will DELETE ALL Portal and Module level templates.</value>
+  </data>
+  <data name="deleteportalresx.Text" xml:space="preserve">
+    <value>Remove Portal resx file</value>
+  </data>
+  <data name="deleteportaltempl.Text" xml:space="preserve">
+    <value>Remove Portal template file</value>
+  </data>
+  <data name="deletetheme.Text" xml:space="preserve">
+    <value>Delete Portal AppTheme</value>
+  </data>
+  <data name="editmodtheme.Text" xml:space="preserve">
+    <value>Edit Module Level AppTheme</value>
+  </data>
+  <data name="editresx.Text" xml:space="preserve">
+    <value>Edit resx</value>
+  </data>
+  <data name="edittheme.Text" xml:space="preserve">
+    <value>Edit Portal Level AppTheme</value>
+  </data>
+  <data name="exporttheme.Text" xml:space="preserve">
+    <value>Export AppTheme</value>
+  </data>
+  <data name="hide.Text" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="importtheme.Text" xml:space="preserve">
+    <value>Import AppTheme</value>
+  </data>
+  <data name="lblcreatenew.Help" xml:space="preserve">
+    <value>Create new Theme: Create a new portal level theme based on an existing theme.</value>
+  </data>
+  <data name="lbldeletetheme.Help" xml:space="preserve">
+    <value>Delete Portal Level apptheme folder.</value>
+  </data>
+  <data name="lbldeletetheme.Text" xml:space="preserve">
+    <value>Delete Theme</value>
+  </data>
+  <data name="lbleditmodtheme.Help" xml:space="preserve">
+    <value>Modify AppTheme: Create/Edit a MODULE level adapted version.</value>
+  </data>
+  <data name="lbledittheme.Help" xml:space="preserve">
+    <value>Modify Existing AppTheme: Create a PORTAL level adapted version.</value>
+  </data>
+  <data name="lblexporttheme.Help" xml:space="preserve">
+    <value>Export a apptheme to a zip file</value>
+  </data>
+  <data name="lblimporttheme.Help" xml:space="preserve">
+    <value>Import a apptheme from a zip file</value>
+  </data>
+  <data name="lblmakethemesys.Help" xml:space="preserve">
+    <value>Moves a portal apptheme into the DesktopModule area at system level and makes it available in ALL portals.</value>
+  </data>
+  <data name="lblnewname.Help" xml:space="preserve">
+    <value>Name of New AppTheme</value>
+  </data>
+  <data name="lblnewname.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="lblthemelevel.Help" xml:space="preserve">
+    <value>Where the apptheme to action is </value>
+  </data>
+  <data name="makethemesys.Text" xml:space="preserve">
+    <value>Move AppTheme to System</value>
+  </data>
+  <data name="modulelevel.Text" xml:space="preserve">
+    <value>Module Level</value>
+  </data>
+  <data name="moduletemplateloaded.Text" xml:space="preserve">
+    <value>Module template loaded</value>
+  </data>
+  <data name="next.Text" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="portallevel.Text" xml:space="preserve">
+    <value>Portal Level</value>
+  </data>
+  <data name="portaltemplateloaded.Text" xml:space="preserve">
+    <value>Portal template loaded</value>
+  </data>
+  <data name="summary.Text" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="systemtemplateloaded.Text" xml:space="preserve">
+    <value>System template loaded</value>
+  </data>
 </root>

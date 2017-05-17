@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="auditreport.Text" xml:space="preserve">
+    <value>Audit Report</value>
+  </data>
   <data name="EditModule.Text" xml:space="preserve">
     <value>Editer</value>
   </data>
@@ -129,7 +132,37 @@
   <data name="notheme.Text" xml:space="preserve">
     <value>Aucun thème appliqué. Veuillez sélectionner un thème dans les paramètres du module.</value>
   </data>
+  <data name="Refresh.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
   <data name="settings.Text" xml:space="preserve">
     <value>Paramètres</value>
+  </data>
+  <data name="ThemeManager.Text" xml:space="preserve">
+    <value>AppTheme Manager</value>
+  </data>
+  <data name="Tools.Text" xml:space="preserve">
+    <value>Outils</value>
+  </data>
+  <data name="Version0.Text" xml:space="preserve">
+    <value>Afficher l'original</value>
+  </data>
+  <data name="Version1.Text" xml:space="preserve">
+    <value>Afficher la nouvelle version</value>
+  </data>
+  <data name="Version2.Text" xml:space="preserve">
+    <value>Valider la nouvelle version</value>
+  </data>
+  <data name="Version3.Text" xml:space="preserve">
+    <value>Supprimer la nouvelle version</value>
+  </data>
+  <data name="Version4.Text" xml:space="preserve">
+    <value>Refuser la nouvelle version</value>
+  </data>
+  <data name="Version5.Text" xml:space="preserve">
+    <value>Demander une validation de contenu</value>
+  </data>
+  <data name="Version6.Text" xml:space="preserve">
+    <value>Supprimer les modifications</value>
   </data>
 </root>
