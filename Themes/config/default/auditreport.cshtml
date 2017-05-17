@@ -52,7 +52,7 @@
 
 </script>
 
-<div class="buttons "><button id="return" type="button" class="btn btn-default" onclick="goBack()"><span class="glyphicon glyphicon-log-out"></span> Return</button></div>
+<div class="buttons "><button id="returnback" type="button" class="btn btn-default" onclick="goBack()"><span class="glyphicon glyphicon-log-out"></span> Return</button></div>
 
 
 <h2>@ResourceKey("Settings.auditreport")</h2>
@@ -64,7 +64,7 @@
             <span><img src="/images/@nbi.GetXmlProperty("genxml/auditicon")" /></span>
             </td>
             <td>
-                <span>@nbi.GetXmlProperty("genxml/auditdate")</span>
+                <span>@nbi.GetXmlProperty("genxml/auditdate").Replace("T"," ")</span>
             </td>
             <td>
                 <span>@nbi.GetXmlProperty("genxml/displayname") &nbsp;(@nbi.GetXmlProperty("genxml/username"))</span>

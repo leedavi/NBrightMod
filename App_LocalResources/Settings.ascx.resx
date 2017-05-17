@@ -261,4 +261,13 @@
   <data name="version-email-validate-subject.Text" xml:space="preserve">
     <value>New Content Version Accepted</value>
   </data>
+  <data name="portalconfig.Text" xml:space="preserve">
+    <value>NBrightMod Portal Config.</value>
+  </data>
+  <data name="portalconfigmsg.Text" xml:space="preserve">
+    <value>Portal configuration for NBrightMod modules.</value>
+  </data>
+  <data name="versionemail.Text" xml:space="preserve">
+    <value>Send Emails for Version Control</value>
+  </data>
 </root>

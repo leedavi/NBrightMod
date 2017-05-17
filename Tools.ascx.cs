@@ -72,7 +72,8 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ValidateModuleData();
                     }
 
-                    var strOut = LocalUtils.RazorTemplRender("config.tools.cshtml", ModuleId.ToString(""), "", settings, Utils.GetCurrentCulture(), settings.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var nbiconfig = LocalUtils.GetConfig(false); 
+                    var strOut = LocalUtils.RazorTemplRender("config.tools.cshtml", ModuleId.ToString(""), "", nbiconfig, Utils.GetCurrentCulture(), true);
                     var lit = new Literal();
                     lit.Text = strOut;
                     phData.Controls.Add(lit);

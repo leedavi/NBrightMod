@@ -99,6 +99,9 @@ namespace Nevoweb.DNN.NBrightMod
                 case "resetsettings":
                     if (LocalUtils.CheckRights(moduleid)) strOut = ResetSettings(context);
                     break;
+                case "saveconfig":
+                    if (LocalUtils.CheckRights(moduleid)) strOut = SaveConfig(context);
+                    break;
                 case "getdetail":
                     strOut = GetData(context);
                     break;
@@ -347,6 +350,29 @@ namespace Nevoweb.DNN.NBrightMod
                 strOut = LocalUtils.RazorTemplRender(razortemplate, moduleid, "settings", obj, _lang);
 
                 return strOut;
+
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
+        private String SaveConfig(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+
+                var nbiconfig = LocalUtils.GetConfig(false);
+                // update record with ajax data
+                var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+                nbiconfig.UpdateAjax(strIn);
+
+                objCtrl.Update(nbiconfig);
+
+                return "";
 
             }
             catch (Exception ex)

@@ -2,6 +2,7 @@
 @using System.Linq
 @using System.Web.UI.HtmlControls
 @using DotNetNuke.Entities.Portals
+@using NBrightCore
 @using NBrightDNN
 
 
@@ -23,229 +24,262 @@
 
 <div id="nbrightmodtools">
 
-    @EditButtons("ex")
+@EditButtons("s,ex")
 
 <hr/>
 
-    <div class='dnnFormItem'>
-        Ref: @info.GetXmlProperty("genxml/hidden/modref")
-    </div>
+<h1>@ResourceKey("Settings.portalconfig")</h1>
+<div>@ResourceKey("Settings.portalconfigmsg")</div>
 
-    <div id="nbrightmodtoolsdata">
-        <div>
-            <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
-        </div>
-    </div>
+<div id="toolsconfigdata">
 
-    <hr/>
+    <table class='datatable'>
+        <tr>
+            <td>
+                @ResourceKey("Settings.versionemail")
+            </td>
+            <td>
+                @CheckBox(info, "genxml/checkbox/versionemails","")
+            </td>
+        </tr>
+    </table>
 
-    <div class='dnnFormItem'>
-        <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
-    </div>
+</div>
+<hr/>
 
 
-    <hr />
+<div class='dnnFormItem'>
+    Ref: @info.GetXmlProperty("genxml/hidden/modref")
+</div>
 
-    <h1>@ResourceKey("Settings.clonemodule")</h1>
-    <p>
-        <a href="#" id="btnSelectAll">@ResourceKey("Settings.selectall")</a> -
-        <a href="#" id="btnDeselectAll">@ResourceKey("Settings.deselectall")</a>
-    </p>
-    <div id="tree1"></div>
+<div id="nbrightmodtoolsdata">
     <div>
-        <button id="clonemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.clonemodule")</button>
-        <div id="clonemsg"></div>
+        <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
     </div>
+</div>
 
-    <div id="clonedata">
-        <input id="clonelist" type="hidden" value="" />
-        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
-        <input id="currenttabid" type="hidden" value="@(tabid)" />
-    </div>
+<hr/>
 
-    <script>
+<div class='dnnFormItem'>
+    <button id="resetsettings" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.reset")</button>
+</div>
 
-        @TreeViewTabsFancyTreeClones(@Model.GetUrlParam("mid"))
 
-        $(function(){
+<hr/>
 
-            $("#tree1").fancytree({
-                checkbox: true,
-                selectMode: 2,
-                source: treeData,
-                select: function (event, data) {
-                    // Display list of selected nodes
-                    var selNodes = data.tree.getSelectedNodes();
-                    // convert to title/key array
-                    var selKeys = $.map(selNodes, function (node) {
-                        return node.key;
-                    });
-                    $("#clonelist").val(selKeys.join(", "));
-                },
-                click: function (event, data) {
-                    // We should not toggle, if target was "checkbox", because this
-                    // would result in double-toggle (i.e. no toggle)
-                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
-                        data.node.toggleSelected();
-                    }
-                },
-                keydown: function (event, data) {
-                    if (event.which === 32) {
-                        data.node.toggleSelected();
-                        return false;
-                    }
+<h1>@ResourceKey("Settings.clonemodule")</h1>
+<p>
+    <a href="#" id="btnSelectAll">@ResourceKey("Settings.selectall")</a> -
+    <a href="#" id="btnDeselectAll">@ResourceKey("Settings.deselectall")</a>
+</p>
+<div id="tree1"></div>
+<div>
+    <button id="clonemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.clonemodule")</button>
+    <div id="clonemsg"></div>
+</div>
+
+<div id="clonedata">
+    <input id="clonelist" type="hidden" value=""/>
+    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")"/>
+    <input id="currenttabid" type="hidden" value="@(tabid)"/>
+</div>
+
+<script>
+
+    @TreeViewTabsFancyTreeClones(@Model.GetUrlParam("mid"))
+
+    $(function() {
+
+        $("#tree1").fancytree({
+            checkbox: true,
+            selectMode: 2,
+            source: treeData,
+            select: function(event, data) {
+                // Display list of selected nodes
+                var selNodes = data.tree.getSelectedNodes();
+                // convert to title/key array
+                var selKeys = $.map(selNodes, function(node) {
+                    return node.key;
+                });
+                $("#clonelist").val(selKeys.join(", "));
+            },
+            click: function(event, data) {
+                // We should not toggle, if target was "checkbox", because this
+                // would result in double-toggle (i.e. no toggle)
+                if ($.ui.fancytree.getEventTargetType(event) === "title") {
+                    data.node.toggleSelected();
                 }
-            });
-
-            $("#btnDeselectAll").click(function () {
-                $("#tree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(false);
-                });
-                return false;
-            });
-            $("#btnSelectAll").click(function () {
-                $("#tree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(true);
-                });
-                return false;
-            });
-
+            },
+            keydown: function(event, data) {
+                if (event.which === 32) {
+                    data.node.toggleSelected();
+                    return false;
+                }
+            }
         });
 
-    </script>
+        $("#btnDeselectAll").click(function() {
+            $("#tree1").fancytree("getTree").visit(function(node) {
+                node.setSelected(false);
+            });
+            return false;
+        });
+        $("#btnSelectAll").click(function() {
+            $("#tree1").fancytree("getTree").visit(function(node) {
+                node.setSelected(true);
+            });
+            return false;
+        });
+
+    });
+
+</script>
 
 
 
-    <hr />
+<hr/>
 
 <h1>@ResourceKey("Settings.attachroles")</h1>
 <div>@ResourceKey("Settings.rolesmsg")</div>
-    @RolesDropDownList(info, "genxml/dropdownlist/roleselect", "", Model.GetUrlParam("roleselect"))
-    <p>
-        <a href="#" id="btnRoleSelectAll">@ResourceKey("Settings.selectall")</a> -
-        <a href="#" id="btnRoleDeselectAll">@ResourceKey("Settings.deselectall")</a>
-    </p>
-    <div id="roletree1"></div>
-    <div>
-        <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
-        <div id="rolemsg"></div>
-    </div>
+@RolesDropDownList(info, "genxml/dropdownlist/roleselect", "", Model.GetUrlParam("roleselect"))
+<p>
+    <a href="#" id="btnRoleSelectAll">@ResourceKey("Settings.selectall")</a> -
+    <a href="#" id="btnRoleDeselectAll">@ResourceKey("Settings.deselectall")</a>
+</p>
+<div id="roletree1"></div>
+<div>
+    <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
+    <div id="rolemsg"></div>
+</div>
 
-    <div id="roledata">
-        <input id="rolelist" type="hidden" value="" />
-        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
-        <input id="currenttabid" type="hidden" value="@(tabid)" />
-        <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")" />
-    </div>
+<div id="roledata">
+    <input id="rolelist" type="hidden" value=""/>
+    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")"/>
+    <input id="currenttabid" type="hidden" value="@(tabid)"/>
+    <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")"/>
+</div>
 
-    <script>
+<script>
 
-        @TreeViewTabsFancyTreeRoles(Model.GetUrlParam("roleselect"), PortalSettings.Current.PortalId)
+    @TreeViewTabsFancyTreeRoles(Model.GetUrlParam("roleselect"), PortalSettings.Current.PortalId)
 
-        $(function(){
+    $(function() {
 
-            $("#roletree1").fancytree({
-                checkbox: true,
-                selectMode: 2,
-                source: roletreeData,
-                select: function (event, data) {
-                    // Display list of selected nodes
-                    var selNodes = data.tree.getSelectedNodes();
-                    // convert to title/key array
-                    var selKeys = $.map(selNodes, function (node) {
-                        return node.key;
-                    });
-                    $("#rolelist").val(selKeys.join(", "));
-                },
-                click: function (event, data) {
-                    // We should not toggle, if target was "checkbox", because this
-                    // would result in double-toggle (i.e. no toggle)
-                    if ($.ui.fancytree.getEventTargetType(event) === "title") {
-                        data.node.toggleSelected();
-                    }
-                },
-                keydown: function (event, data) {
-                    if (event.which === 32) {
-                        data.node.toggleSelected();
-                        return false;
-                    }
+        $("#roletree1").fancytree({
+            checkbox: true,
+            selectMode: 2,
+            source: roletreeData,
+            select: function(event, data) {
+                // Display list of selected nodes
+                var selNodes = data.tree.getSelectedNodes();
+                // convert to title/key array
+                var selKeys = $.map(selNodes, function(node) {
+                    return node.key;
+                });
+                $("#rolelist").val(selKeys.join(", "));
+            },
+            click: function(event, data) {
+                // We should not toggle, if target was "checkbox", because this
+                // would result in double-toggle (i.e. no toggle)
+                if ($.ui.fancytree.getEventTargetType(event) === "title") {
+                    data.node.toggleSelected();
                 }
-            });
+            },
+            keydown: function(event, data) {
+                if (event.which === 32) {
+                    data.node.toggleSelected();
+                    return false;
+                }
+            }
+        });
 
-            $("#btnRoleDeselectAll").click(function () {
-                $("#roletree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(false);
-                });
-                return false;
+        $("#btnRoleDeselectAll").click(function() {
+            $("#roletree1").fancytree("getTree").visit(function(node) {
+                node.setSelected(false);
             });
-            $("#btnRoleSelectAll").click(function () {
-                $("#roletree1").fancytree("getTree").visit(function (node) {
-                    node.setSelected(true);
-                });
-                return false;
+            return false;
+        });
+        $("#btnRoleSelectAll").click(function() {
+            $("#roletree1").fancytree("getTree").visit(function(node) {
+                node.setSelected(true);
             });
+            return false;
+        });
 
+    });
+
+
+</script>
+
+
+
+<script>
+    $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
+
+    $(document).ready(function() {
+        $('#doportalvalidation').unbind('click');
+        $('#doportalvalidation').click(function () {
+            NBrightMod_nbxget('doportalvalidation', '#toolsmsg');
+        });
+
+        $('#clonemodule').unbind('click');
+        $('#clonemodule').click(function () {
+            NBrightMod_nbxget('clonemodule', '#clonedata', '#clonemsg');
+        });
+
+        $('#rolemodule').unbind('click');
+        $('#rolemodule').click(function () {
+            NBrightMod_nbxget('attachroles', '#roledata', '#rolemsg');
+        });
+        $('#roleselect').unbind('change');
+        $('#roleselect').change(function () {
+            var url = window.location.href;
+            if (url.indexOf('&roleselect=') > 1) url = url.substr(0, url.indexOf('&roleselect='));
+            url += '&roleselect=' + $('#roleselect').val();
+            window.location.href = url;
         });
 
 
-    </script>
+        $('#resetsettings').unbind('click');
+        $('#resetsettings').click(function () {
+            NBrightMod_nbxget('resetsettings', '#clonedata', '#toolsmsg');
+        });
+
+        // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
+        $('#exitedit').unbind('click');
+        $('#exitedit').click(function () {
+            window.location.href = $('#exiturl').val();
+        });
+
+        $('#savedata').unbind('click');
+        $('#savedata').click(function () {
+            NBrightMod_nbxget('saveconfig', '#toolsconfigdata', '');
+        });
 
 
+    });
+
+    function NBrightMod_nbxgetCompleted(e) {
+
+        if (e.cmd == 'clonemodule') {
+            // so something
+        }
+
+        if (e.cmd == 'rolemodule') {
+            // so something
+        }
+
+        if (e.cmd == 'resetsettings') {
+            window.location.href = $('#exiturl').val();
+        }
+
+        if (e.cmd == 'saveconfig') {
+            window.location.href = $('#exiturl').val();
+        }
+
+    };
 
 
-    <script>
-            $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
-
-            $(document).ready(function () {
-                $('#doportalvalidation').click(function () {
-                    NBrightMod_nbxget('doportalvalidation', '#toolsmsg');
-                });
-
-                $('#clonemodule').click(function () {
-                    NBrightMod_nbxget('clonemodule', '#clonedata', '#clonemsg');
-                });
-
-                $('#rolemodule').click(function () {
-                    NBrightMod_nbxget('attachroles', '#roledata', '#rolemsg');
-                });
-                $('#roleselect').change(function () {
-                    var url = window.location.href;
-                    if (url.indexOf('&roleselect=') > 1) url = url.substr(0, url.indexOf('&roleselect='));
-                    url += '&roleselect=' + $('#roleselect').val();
-                    window.location.href = url;
-                });
-                
-
-                $('#resetsettings').click(function () {
-                    NBrightMod_nbxget('resetsettings', '#clonedata', '#toolsmsg');
-                });
-
-                // copy of event in NBrightMod.js but not activated in there because we don;t load editdata.
-                $('#exitedit').click(function () {
-                    window.location.href = $('#exiturl').val();
-                });
-                
-
-            });
-
-            function NBrightMod_nbxgetCompleted(e) {
-
-                if (e.cmd == 'clonemodule') {
-                    // so something
-                }
-
-                if (e.cmd == 'rolemodule') {
-                    // so something
-                }
-
-                if (e.cmd == 'resetsettings') {
-                    window.location.href = $('#exiturl').val();
-                }
-
-
-            };
-
-
-        </script>
+</script>
 </div>
 

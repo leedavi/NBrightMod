@@ -288,59 +288,64 @@ namespace NBrightMod.common
 
         public static void VersionSendEmail(int moduleid, string emailtemplatename)
         {
-            var nbi = LocalUtils.GetSettings(moduleid.ToString());
-            var objCtrl = new NBrightDataController();
-            if (emailtemplatename.ToLower() == "version-email-delete.cshtml" || emailtemplatename.ToLower() == "version-email-validate.cshtml" || emailtemplatename.ToLower() == "version-email-decline.cshtml")
+            var nbiconfig = LocalUtils.GetConfig(false);
+            if (nbiconfig.GetXmlPropertyBool("genxml/checkbox/versionemails"))
             {
-                nbi.RemoveXmlNode("genxml/versionemailsent");
-                nbi.RemoveXmlNode("genxml/versiondisplayname");
-                nbi.RemoveXmlNode("genxml/versionusername");
-                objCtrl.Update(nbi);
-            }
 
-            nbi.ModuleId = moduleid;
-
-            var moduleInfo = DnnUtils.GetModuleinfo(moduleid);
-            if (moduleInfo != null)
-            {
-                // set flag for email sent
-                if (emailtemplatename.ToLower() == "version-email-new.cshtml")
+                var nbi = LocalUtils.GetSettings(moduleid.ToString());
+                var objCtrl = new NBrightDataController();
+                if (emailtemplatename.ToLower() == "version-email-delete.cshtml" || emailtemplatename.ToLower() == "version-email-validate.cshtml" || emailtemplatename.ToLower() == "version-email-decline.cshtml")
                 {
-                    nbi.SetXmlProperty("genxml/versionemailsent", "True");
-                    nbi.SetXmlProperty("genxml/versionurl", DotNetNuke.Common.Globals.NavigateURL(moduleInfo.TabID));
-                    nbi.SetXmlProperty("genxml/versiondisplayname", UserController.Instance.GetCurrentUserInfo().DisplayName);
-                    nbi.SetXmlProperty("genxml/versionusername", UserController.Instance.GetCurrentUserInfo().Username);
+                    nbi.RemoveXmlNode("genxml/versionemailsent");
+                    nbi.RemoveXmlNode("genxml/versiondisplayname");
+                    nbi.RemoveXmlNode("genxml/versionusername");
                     objCtrl.Update(nbi);
                 }
 
-                // get roles for module
-                var versionRoles = new List<string>();
-                var permissionsList2 = moduleInfo.ModulePermissions.ToList();
-                foreach (var p in permissionsList2)
-                {
-                    versionRoles.Add(p.RoleName);
-                }
+                nbi.ModuleId = moduleid;
 
-                // send email for only Manager and Validate roles.
-                var emailsentlist = new List<string>();
-                var roles = RoleController.Instance.GetRoles(nbi.PortalId);
-                foreach (var role in roles)
+                var moduleInfo = DnnUtils.GetModuleinfo(moduleid);
+                if (moduleInfo != null)
                 {
-                    if ((role.RoleName == "Manager" || role.RoleName.StartsWith("Validate")) && versionRoles.Contains(role.RoleName))
+                    // set flag for email sent
+                    if (emailtemplatename.ToLower() == "version-email-new.cshtml")
                     {
-                        var usersInRole = RoleController.Instance.GetUsersByRole(nbi.PortalId, role.RoleName);
-                        foreach (var u in usersInRole)
+                        nbi.SetXmlProperty("genxml/versionemailsent", "True");
+                        nbi.SetXmlProperty("genxml/versionurl", DotNetNuke.Common.Globals.NavigateURL(moduleInfo.TabID));
+                        nbi.SetXmlProperty("genxml/versiondisplayname", UserController.Instance.GetCurrentUserInfo().DisplayName);
+                        nbi.SetXmlProperty("genxml/versionusername", UserController.Instance.GetCurrentUserInfo().Username);
+                        objCtrl.Update(nbi);
+                    }
+
+                    // get roles for module
+                    var versionRoles = new List<string>();
+                    var permissionsList2 = moduleInfo.ModulePermissions.ToList();
+                    foreach (var p in permissionsList2)
+                    {
+                        versionRoles.Add(p.RoleName);
+                    }
+
+                    // send email for only Manager and Validate roles.
+                    var emailsentlist = new List<string>();
+                    var roles = RoleController.Instance.GetRoles(nbi.PortalId);
+                    foreach (var role in roles)
+                    {
+                        if ((role.RoleName == "Manager" || role.RoleName.StartsWith("Validate")) && versionRoles.Contains(role.RoleName))
                         {
-                            var useremail = u.Email;
-                            if (!emailsentlist.Contains(useremail))
+                            var usersInRole = RoleController.Instance.GetUsersByRole(nbi.PortalId, role.RoleName);
+                            foreach (var u in usersInRole)
                             {
-                                var userlang = u.Profile.PreferredLocale;
-                                if (userlang == "") userlang = PortalSettings.Current.DefaultLanguage;
-                                if (userlang == "") userlang = Utils.GetCurrentCulture();
-                                var emailsubject = PortalSettings.Current.PortalName + ": " + DnnUtils.GetResourceString("/DesktopModules/NBright/NBrightMod/App_LocalResources/", "Settings." + emailtemplatename.ToLower().Replace(".cshtml", "") + "-subject", "Text", userlang);
-                                var emailbody = LocalUtils.RazorTemplRender("config." + emailtemplatename, moduleid.ToString(), "", nbi, userlang);
-                                DotNetNuke.Services.Mail.Mail.SendMail(PortalSettings.Current.Email.Trim(), useremail.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
-                                emailsentlist.Add(useremail);
+                                var useremail = u.Email;
+                                if (!emailsentlist.Contains(useremail))
+                                {
+                                    var userlang = u.Profile.PreferredLocale;
+                                    if (userlang == "") userlang = PortalSettings.Current.DefaultLanguage;
+                                    if (userlang == "") userlang = Utils.GetCurrentCulture();
+                                    var emailsubject = PortalSettings.Current.PortalName + ": " + DnnUtils.GetResourceString("/DesktopModules/NBright/NBrightMod/App_LocalResources/", "Settings." + emailtemplatename.ToLower().Replace(".cshtml", "") + "-subject", "Text", userlang);
+                                    var emailbody = LocalUtils.RazorTemplRender("config." + emailtemplatename, moduleid.ToString(), "", nbi, userlang);
+                                    DotNetNuke.Services.Mail.Mail.SendMail(PortalSettings.Current.Email.Trim(), useremail.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                                    emailsentlist.Add(useremail);
+                                }
                             }
                         }
                     }
@@ -680,6 +685,29 @@ namespace NBrightMod.common
             }
             return new NBrightInfo(true);
         }
+
+        public static NBrightInfo GetConfig(Boolean useCache = true)
+        {
+            var rtnCache = Utils.GetCache("nbrightmodconfig*" + PortalSettings.Current.PortalId);
+            if (rtnCache != null && useCache) return (NBrightInfo)rtnCache;
+            // get template
+                var objCtrl = new NBrightDataController();
+            var nbiconfig = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "CONFIG", "NBrightModConfig");
+            if (nbiconfig == null)
+            {
+                nbiconfig = new NBrightInfo(true);
+                nbiconfig.ItemID = -1;
+                nbiconfig.GUIDKey = "NBrightModConfig";
+                nbiconfig.TypeCode = "CONFIG";
+                nbiconfig.ModuleId = -1;
+                nbiconfig.PortalId = PortalSettings.Current.PortalId;
+                objCtrl.Update(nbiconfig);
+            }
+            Utils.SetCache("nbrightmodconfig*" + PortalSettings.Current.PortalId, nbiconfig);
+
+            return nbiconfig;
+        }
+
 
         [Obsolete("Not used anymore", true)]
         public static String GetDatabaseCache(int portalid, int moduleid, String lang, int userid = -1, Boolean useCache = true)

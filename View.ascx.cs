@@ -41,6 +41,7 @@ namespace Nevoweb.DNN.NBrightMod
     /// -----------------------------------------------------------------------------
     public partial class View : Base.NBrightModBase, IActionable
     {
+        private bool _versionRecordExist = false;
 
         #region Event Handlers
 
@@ -48,6 +49,18 @@ namespace Nevoweb.DNN.NBrightMod
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
+
+            // check for version records 
+            if (Request.IsAuthenticated && (LocalUtils.VersionUserCanValidate(ModuleId) || LocalUtils.VersionUserMustCreateVersion(ModuleId)))
+            {
+                var objCtrl = new NBrightDataController();
+                var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
+                var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
+                if (l.Count > 0 || l2.Count > 0)
+                {
+                    _versionRecordExist = true;
+                }
+            }
 
             LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod","view");
         }
@@ -213,6 +226,12 @@ namespace Nevoweb.DNN.NBrightMod
                 }
             }
 
+            if (_versionRecordExist)
+            {
+                //inject JS to mark container.
+                strOut = "<div class='actionMenu'><ul class='dnn_mact' style='left:0;top:0;position:absolute;'><li><a href='javascript:void(0)' style='background-color:#cd1719;'><i class='fa fa-exclamation-circle'></i></a></li></ul></div>" + strOut;
+            }
+
             var lit = new Literal();
             lit.Text = strOut;
             phData.Controls.Add(lit);
@@ -235,39 +254,31 @@ namespace Nevoweb.DNN.NBrightMod
                     actions.Add(GetNextActionID(), Localization.GetString("EditModule", this.LocalResourceFile), "", "", "", EditUrl(), false, SecurityAccessLevel.Edit, true, false);
                 }
 
-                if (Request.IsAuthenticated && (LocalUtils.VersionUserCanValidate(ModuleId) || LocalUtils.VersionUserMustCreateVersion(ModuleId)))
+                if (_versionRecordExist)
                 {
-                    var objCtrl = new NBrightDataController();
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
-                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
-                    if (l.Count > 0 || l2.Count > 0)
+                    actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "translate.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
+                    actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "translated.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
+                    if (LocalUtils.VersionUserCanValidate(ModuleId))
                     {
-                        actions.Add(GetNextActionID(), Localization.GetString("Version1", this.LocalResourceFile), "", "", "translate.gif", EditUrl() + "?version=1", false, SecurityAccessLevel.Edit, true, false);
-                        actions.Add(GetNextActionID(), Localization.GetString("Version0", this.LocalResourceFile), "", "", "translated.gif", EditUrl() + "?version=0", false, SecurityAccessLevel.Edit, true, false);
-                        if (LocalUtils.VersionUserCanValidate(ModuleId))
+                        actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "grant.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
+                        actions.Add(GetNextActionID(), Localization.GetString("Version4", this.LocalResourceFile), "", "", "error-icn.png", EditUrl() + "?version=4", false, SecurityAccessLevel.Edit, true, false);
+                        actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
+                    }
+                    else
+                    {
+                        actions.Add(GetNextActionID(), Localization.GetString("Version5", this.LocalResourceFile), "", "", "icon-validate-success.png", EditUrl() + "?version=5", false, SecurityAccessLevel.Edit, true, false);
+                        if (settings.GetXmlPropertyBool("genxml/versionemailsent"))
                         {
-                            actions.Add(GetNextActionID(), Localization.GetString("Version2", this.LocalResourceFile), "", "", "grant.gif", EditUrl() + "?version=2", false, SecurityAccessLevel.Edit, true, false);
-                            actions.Add(GetNextActionID(), Localization.GetString("Version4", this.LocalResourceFile), "", "", "error-icn.png", EditUrl() + "?version=4", false, SecurityAccessLevel.Edit, true, false);
                             actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
                         }
                         else
                         {
-                            actions.Add(GetNextActionID(), Localization.GetString("Version5", this.LocalResourceFile), "", "", "icon-validate-success.png", EditUrl() + "?version=5", false, SecurityAccessLevel.Edit, true, false);
-                            if (settings.GetXmlPropertyBool("genxml/versionemailsent"))
-                            {
-                                actions.Add(GetNextActionID(), Localization.GetString("Version3", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=3", false, SecurityAccessLevel.Edit, true, false);
-                            }
-                            else
-                            {
-                                actions.Add(GetNextActionID(), Localization.GetString("Version6", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=6", false, SecurityAccessLevel.Edit, true, false);
-                            }
-
+                            actions.Add(GetNextActionID(), Localization.GetString("Version6", this.LocalResourceFile), "", "", "delete.gif", EditUrl() + "?version=6", false, SecurityAccessLevel.Edit, true, false);
                         }
+
                     }
-                    actions.Add(GetNextActionID(), Localization.GetString("auditreport", this.LocalResourceFile), "", "", "about.gif", EditUrl() + "?auditlog=1", false, SecurityAccessLevel.Edit, true, false);
-
                 }
-
+                actions.Add(GetNextActionID(), Localization.GetString("auditreport", this.LocalResourceFile), "", "", "about.gif", EditUrl() + "?auditlog=1", false, SecurityAccessLevel.Edit, true, false);
 
                 actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
                 actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "action_source.gif", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
