@@ -4,6 +4,7 @@
 @using System.Web
 @using System.Web.Configuration
 @using System.Xml
+@using DotNetNuke.Entities.Users
 @using NBrightDNN
 @using RazorEngine.Text
 
@@ -19,6 +20,17 @@
     }
 
 }
+
+<!-- LOAD JS HERE, so if we have a user logged in we can load jquery.  Other JS need loading after.-->
+@if (UserController.Instance.GetCurrentUserInfo().UserID == -1)
+{
+    <script src="/Resources/libraries/jQuery/01_09_01/jquery.js?cdv=39" type="text/javascript"></script>
+    <script src="/Resources/libraries/jQuery-UI/01_11_03/jquery-ui.js?cdv=39" type="text/javascript"></script>
+}
+<script src="/Resources/Shared/Scripts/jquery/jquery.fileupload.js?cdv=39" type="text/javascript"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/config/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/ContactFormWithDoc/js/NBrightFileUpload.js"></script>
+
 
 @if (langcode != "" && langcode != "en")
 {

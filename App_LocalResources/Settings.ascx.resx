@@ -270,4 +270,7 @@
   <data name="versionemail.Text" xml:space="preserve">
     <value>Send Emails for Version Control</value>
   </data>
+  <data name="fullckeditor.Text" xml:space="preserve">
+    <value>Use FULL ckeditor Menu Bar</value>
+  </data>
 </root>
