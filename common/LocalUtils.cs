@@ -369,7 +369,14 @@ namespace NBrightMod.common
         public static string VersionGetAuditLog(int moduleid)
         {
             var l = GetAuditLog(moduleid);
-            return LocalUtils.RazorTemplRenderList("config.auditreport.cshtml", moduleid.ToString(""), "", l, Utils.GetCurrentCulture(),true);
+            if (l.Any())
+            {
+                return LocalUtils.RazorTemplRenderList("config.auditreport.cshtml", moduleid.ToString(""), "", l, Utils.GetCurrentCulture(), true);
+            }
+            else
+            {
+                return "";
+            }
         }
 
         public static List<NBrightInfo> GetAuditLog(int moduleid)
@@ -429,8 +436,7 @@ namespace NBrightMod.common
                 var auditFile = auditFolder + "\\" + moduleid + ".txt";
                 if (File.Exists(auditFile))
                 {
-                    File.Delete(auditFile);
-                    System.Threading.Thread.Sleep(1000);
+                        File.WriteAllText(auditFile, String.Empty);
                 }
 
                 // set into reverse order
@@ -464,8 +470,7 @@ namespace NBrightMod.common
                 }
 
 
-
-            }
+        }
             return rtnList;
         }
 
