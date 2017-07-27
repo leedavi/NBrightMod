@@ -31,7 +31,7 @@ This module depends on the NBright template system.  It must be installed for th
 			</releaseNotes>
       <dependencies>
         <dependency type="CoreVersion">08.00.00</dependency>
-        <dependency type="managedPackage" version="8.1.5">NBrightTemplateSys</dependency>
+        <dependency type="managedPackage" version="8.2.1">NBrightTemplateSys</dependency>
       </dependencies>
       <components>
 				<component type="ResourceFile">
