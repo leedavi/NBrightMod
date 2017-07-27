@@ -562,7 +562,7 @@ namespace NBrightMod.common
 
         public static NBrightInfo GetAjaxFields(String ajaxData,String mergeWithXml = "",bool ignoresecurityfilter = false, bool filterlinks = false)
         {
-            var xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml,"genxml", ignoresecurityfilter, filterlinks);
+            string xmlData = GenXmlFunctions.GetGenXmlByAjax(ajaxData, mergeWithXml,"genxml", ignoresecurityfilter, filterlinks);
             var objInfo = new NBrightInfo();
 
             objInfo.ItemID = -1;
