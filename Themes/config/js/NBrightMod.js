@@ -46,7 +46,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('.selecteditlanguage').unbind('click');
         $('.selecteditlanguage').click(function () {
             $('#savedreturnaction').val(""); // set flag to return on save of data
-            //savedata();
+            savedata();
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });

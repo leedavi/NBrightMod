@@ -41,9 +41,9 @@
 @NBrightTextArea(info, "genxml/lang/genxml/textbox/******", "rows='4' ")
       ]]>
     </data>
-    <data name="RichTextBox" text="RichTextBox" title="RichTextBox(NBrightInfo info, String xpath, String attributes)">
+    <data name="CkEditor" text="CkEditor" title="CkEditor(NBrightInfo info, String xpath, String attributes)">
       <![CDATA[ 
-@RichTextBox(info, "genxml/lang/genxml/textbox/******", "")
+@CkEditor(info, "genxml/lang/genxml/textbox/******", "")
       ]]>
     </data>
     <data name="HiddenField" text="HiddenField" title="HiddenField(NBrightInfo info, String xpath, String attributes, String defaultValue)">

@@ -32,7 +32,7 @@
             <label>@ResourceKey("Edit.infodesc")</label><img src='/Images/Flags/@(info.Lang).gif' width='16px' />
             <div id="richtexteditor">
                 @CheckBox(info, "genxml/checkbox/hidedescription", "ResourceKey:Edit.hidedescription", "True")
-                @RichTextBox(info, "genxml/lang/genxml/textbox/infodesc", "")
+                @CkEditor(info, "genxml/lang/genxml/textbox/infodesc", "")
             </div>
         </div>
 
