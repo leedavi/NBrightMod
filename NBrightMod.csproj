@@ -11,6 +11,8 @@
     <AssemblyName>NBrightMod</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,6 +75,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="common\LocalUtils.cs" />
+    <Compile Include="Components\AjaxInterface.cs" />
     <Compile Include="Components\NBrightController.cs" />
     <Compile Include="ThemeManager.ascx.cs">
       <DependentUpon>ThemeManager.ascx</DependentUpon>
@@ -172,6 +175,10 @@
     <EmbeddedResource Include="Themes\SimpleArticles\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\Socopa\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\Socopa\resx\theme.ascx.resx" />
+    <EmbeddedResource Include="Themes\Socopa\resx\View.ascx.fr-FR.resx" />
+    <EmbeddedResource Include="Themes\Socopa\resx\View.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ThemeManager.ascx">
@@ -208,6 +215,10 @@
     <Content Include="Themes\HtmlContent\img\fancybox_sprite%402x.png" />
     <Content Include="Themes\HtmlContent\img\fancybox_sprite.png" />
     <Content Include="Themes\HtmlContent\js\jquery.fancybox.pack.js" />
+    <Content Include="Themes\Socopa\css\defaultform.css" />
+    <Content Include="Themes\Socopa\css\flatform.css" />
+    <Content Include="Themes\Socopa\img\asterisk.png" />
+    <Content Include="Themes\Socopa\img\invalid.png" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -426,6 +437,16 @@
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
+    <None Include="Themes\Socopa\default\clientemail.cshtml" />
+    <None Include="Themes\Socopa\default\editbody.cshtml" />
+    <None Include="Themes\Socopa\default\editfields.cshtml" />
+    <None Include="Themes\Socopa\default\editlist.cshtml" />
+    <None Include="Themes\Socopa\default\editpageheader.cshtml" />
+    <None Include="Themes\Socopa\default\manageremail.cshtml" />
+    <None Include="Themes\Socopa\default\settings.cshtml" />
+    <None Include="Themes\Socopa\default\view.cshtml" />
+    <None Include="Themes\Socopa\default\viewpageheader.cshtml" />
+    <None Include="Themes\Socopa\img\Thumbs.db" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>
@@ -441,8 +462,11 @@
     <Folder Include="Themes\FlexsliderSat\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
+    <Folder Include="Themes\Socopa\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetFileName)" "..\..\..\..\..\bin\$(TargetFileName)"
 
@@ -456,6 +480,13 @@ copy "NBrightCore.dll" "..\..\..\..\..\bin\NBrightCore.dll"
 
 </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

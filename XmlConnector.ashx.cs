@@ -33,6 +33,7 @@ using DotNetNuke.UI.WebControls;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Security.Roles;
+using Nevoweb.DNN.NBrightMod.Components;
 
 namespace Nevoweb.DNN.NBrightMod
 {
@@ -81,7 +82,7 @@ namespace Nevoweb.DNN.NBrightMod
                 moduleid = Convert.ToInt32(moduleidparam);
             }
 
-            strOut = "ERROR!! - No Security rights for current user!";
+            strOut = "** No Action **";
             switch (paramCmd)
             {
                 case "test":
@@ -280,6 +281,18 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = AttachRolesToModule(context);
                     }
                     break;
+            }
+
+
+            if (strOut == "** No Action **")
+            {
+                var settings = LocalUtils.GetSettings(moduleid.ToString(""));
+                if (settings.GetXmlProperty("genxml/textbox/assembly").Trim(' ') != "" && settings.GetXmlProperty("genxml/textbox/namespace").Trim(' ') != "")
+                {
+                    var handle = Activator.CreateInstance(settings.GetXmlProperty("genxml/textbox/assembly"), settings.GetXmlProperty("genxml/textbox/namespace"));
+                    var objProvider = (AjaxInterface)handle.Unwrap();
+                    strOut = objProvider.ProcessCommand(paramCmd, context, Utils.GetCurrentCulture());
+                }
             }
 
             #endregion

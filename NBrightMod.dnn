@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
 	<packages>
-		<package name="NBrightMod" type="Module" version="8.1.1">
+		<package name="NBrightMod" type="Module" version="8.2.0">
 			<friendlyName>NBrightMod</friendlyName>
 			<description>NBrightMod, generic Module for NBright Solutions</description>
 			<iconFile />

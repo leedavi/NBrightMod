@@ -273,4 +273,10 @@
   <data name="fullckeditor.Text" xml:space="preserve">
     <value>Use FULL ckeditor Menu Bar</value>
   </data>
+  <data name="assembly.Text" xml:space="preserve">
+    <value>API Provider: Assembly</value>
+  </data>
+  <data name="namespace.Text" xml:space="preserve">
+    <value>API Provider: namespace.class</value>
+  </data>
 </root>
