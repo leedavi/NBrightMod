@@ -8,6 +8,14 @@
 }
 
 <div>
+    <div class='dnnFormItem'>
+        @DnnLabel("lblthemeuploadfolder", "Settings.themeuploadfolder")
+        @CheckBox(info, "genxml/checkbox/activatethemeuploadfolder", "", "class='activatethemeuploadfolder'", true)
+    </div>
+    <div class='dnnFormItem themeuploadfolder'>
+        @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+        @TextBox(info, "genxml/textbox/themeuploadfolder", "", info.GetXmlProperty("genxml/dropdownlist/themefolder"))
+    </div>
     <div>
         @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize", "class='form-control' width='100px' maxlength='5' ", "1154")
     </div>
@@ -17,9 +25,9 @@
     <div>
         @DnnLabel("lblheight", "Settings.height")@NBrightTextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "575")
     </div>
-    <hr />
+    <hr/>
     <div>
-        animation : @DropDownList(info, "genxml/dropdownlist/animation","fade,slide", "fade,slide", " update='save' class='form-control' ")
+        animation : @DropDownList(info, "genxml/dropdownlist/animation", "fade,slide", "fade,slide", " update='save' class='form-control' ")
     </div>
     <div>
         easing : @NBrightTextBox(info, "genxml/textbox/easing", "class='form-control' ", "swing")
@@ -28,10 +36,10 @@
         direction : @DropDownList(info, "genxml/dropdownlist/direction", "horizontal,vertical", "horizontal, vertical", " update='save' class='form-control' ")
     </div>
     <div>
-        reverse : @DropDownList(info, "genxml/dropdownlist/reverse", "true,false", "true,false", " update='save' class='form-control' ","false")
+        reverse : @DropDownList(info, "genxml/dropdownlist/reverse", "true,false", "true,false", " update='save' class='form-control' ", "false")
     </div>
     <div>
-        animationLoop : @DropDownList(info, "genxml/dropdownlist/animationloop", "true,false", "true,false", " update='save' class='form-control' ","true")
+        animationLoop : @DropDownList(info, "genxml/dropdownlist/animationloop", "true,false", "true,false", " update='save' class='form-control' ", "true")
     </div>
     <div>
         smoothHeight : @DropDownList(info, "genxml/dropdownlist/smoothheight", "true,false", "true,false", " update='save' class='form-control' ", "false")
@@ -59,18 +67,40 @@
     </div>
     <div>
         directionNav : @DropDownList(info, "genxml/dropdownlist/directionnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
-    </div>     
+    </div>
 
-    <hr />
+    <hr/>
     <div>
         @DnnLabel("lblstyletext", "Settings.styletext")
         <textarea rows="50" id="styletext" class="" update="save" type="text" style="height: 250px; width: 100%"></textarea>
     </div>
 
-    <div style="display:none">
+    <div style="display: none">
         <!-- set flag so upload of files replaces the current selected -->
         @CheckBox(info, "genxml/checkbox/replaceimages", "", "", true);
     </div>
 
 </div>
 
+<script>
+
+            $(document).ready(function () {
+
+                if ($('.activatethemeuploadfolder').is(":checked")) {
+                    $('.themeuploadfolder').show();
+                } else {
+                    $('.themeuploadfolder').hide();
+                }
+                $('.activatethemeuploadfolder').unbind("click");
+                $('.activatethemeuploadfolder').click(function () {
+                    if ($(this).is(":checked"))
+                    {
+                        $('.themeuploadfolder').show();
+                    } else {
+                        $('.themeuploadfolder').hide();
+                    }
+                });
+            });
+
+
+</script>

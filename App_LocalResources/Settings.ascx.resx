@@ -279,4 +279,7 @@
   <data name="namespace.Text" xml:space="preserve">
     <value>API Provider: namespace.class</value>
   </data>
+  <data name="themeuploadfolder.Text" xml:space="preserve">
+    <value>Activate Theme Upload Folder</value>
+  </data>
 </root>

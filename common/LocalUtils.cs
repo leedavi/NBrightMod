@@ -1079,12 +1079,16 @@ namespace NBrightMod.common
             var tempFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
             var tempFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
-
-            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
-            if (settingUploadFolder == "")
+            
+            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/themeuploadfolder");
+            if (settingUploadFolder == "" || !settings.GetXmlPropertyBool("genxml/checkbox/activatethemeuploadfolder"))
             {
-                settingUploadFolder = "images";
-                settings.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
+                settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
+                if (settingUploadFolder == "")
+                {
+                    settingUploadFolder = "images";
+                    settings.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
+                }
             }
 
             var uploadFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
