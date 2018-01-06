@@ -217,7 +217,14 @@ namespace Nevoweb.DNN.NBrightMod
 
                 }
 
-                strOut = LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), razorCacheKey , l, Utils.GetCurrentCulture(), debug);
+                    var divclass = "";
+                if (settings.GetXmlProperty("genxml/textbox/wrapperclass") != "")
+                {
+                    divclass = "class='" + settings.GetXmlProperty("genxml/textbox/wrapperclass") + "'";
+                }
+                strOut = "<div id='" + settings.GetXmlProperty("genxml/hidden/modref") + "'  " + divclass + ">";
+                strOut += LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), razorCacheKey , l, Utils.GetCurrentCulture(), debug);
+                strOut += "</div>";
 
                 if (!debug)
                 {

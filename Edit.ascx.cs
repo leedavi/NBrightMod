@@ -272,7 +272,7 @@ namespace Nevoweb.DNN.NBrightMod
                         if (newsinglepageflag)
                         {
                             var singlepageitemid = settings.GetXmlProperty("genxml/hidden/singlepageitemid");
-                            if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""));
+                            if (!Utils.IsNumeric(singlepageitemid)) singlepageitemid = LocalUtils.AddNew(ModuleId.ToString(""), "NBrightModDATA",ModuleKey);
                             if (Utils.IsNumeric(singlepageitemid))
                             {
                                 settings.SetXmlProperty("genxml/hidden/singlepageitemid", singlepageitemid);

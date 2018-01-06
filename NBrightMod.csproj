@@ -175,10 +175,6 @@
     <EmbeddedResource Include="Themes\SimpleArticles\resx\View.ascx.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\Socopa\resx\Settings.ascx.resx" />
-    <EmbeddedResource Include="Themes\Socopa\resx\theme.ascx.resx" />
-    <EmbeddedResource Include="Themes\Socopa\resx\View.ascx.fr-FR.resx" />
-    <EmbeddedResource Include="Themes\Socopa\resx\View.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ThemeManager.ascx">
@@ -215,10 +211,6 @@
     <Content Include="Themes\HtmlContent\img\fancybox_sprite%402x.png" />
     <Content Include="Themes\HtmlContent\img\fancybox_sprite.png" />
     <Content Include="Themes\HtmlContent\js\jquery.fancybox.pack.js" />
-    <Content Include="Themes\Socopa\css\defaultform.css" />
-    <Content Include="Themes\Socopa\css\flatform.css" />
-    <Content Include="Themes\Socopa\img\asterisk.png" />
-    <Content Include="Themes\Socopa\img\invalid.png" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -339,6 +331,7 @@
     <None Include="Themes\Flexslider\default\editlist.cshtml" />
     <None Include="Themes\Flexslider\default\editpageheader.cshtml" />
     <None Include="Themes\Flexslider\default\imgselectlist.cshtml" />
+    <None Include="Themes\Flexslider\default\editlistheader.cshtml" />
     <None Include="Themes\Flexslider\default\settings.cshtml" />
     <None Include="Themes\Flexslider\default\view.cshtml" />
     <None Include="Themes\Flexslider\default\viewpageheader.cshtml" />
@@ -437,16 +430,6 @@
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
-    <None Include="Themes\Socopa\default\clientemail.cshtml" />
-    <None Include="Themes\Socopa\default\editbody.cshtml" />
-    <None Include="Themes\Socopa\default\editfields.cshtml" />
-    <None Include="Themes\Socopa\default\editlist.cshtml" />
-    <None Include="Themes\Socopa\default\editpageheader.cshtml" />
-    <None Include="Themes\Socopa\default\manageremail.cshtml" />
-    <None Include="Themes\Socopa\default\settings.cshtml" />
-    <None Include="Themes\Socopa\default\view.cshtml" />
-    <None Include="Themes\Socopa\default\viewpageheader.cshtml" />
-    <None Include="Themes\Socopa\img\Thumbs.db" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>
@@ -462,11 +445,8 @@
     <Folder Include="Themes\FlexsliderSat\js\" />
     <Folder Include="Themes\GoogleMap\css\" />
     <Folder Include="Themes\GoogleMap\js\" />
-    <Folder Include="Themes\Socopa\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
-  
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetFileName)" "..\..\..\..\..\bin\$(TargetFileName)"
 

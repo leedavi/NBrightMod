@@ -62,8 +62,8 @@ namespace Nevoweb.DNN.NBrightMod
 
             #region "setup language"
 
-                // Ajax can break context with DNN, so reset the context language to match the client.
-                // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
+            // Ajax can break context with DNN, so reset the context language to match the client.
+            // NOTE: "genxml/hidden/lang" should be set in the template for langauge to work OK.
             SetContextLangauge(context);
 
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(_lang);
@@ -89,11 +89,11 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = "<root>" + UserController.Instance.GetCurrentUserInfo().Username + "</root>";
                     break;
                 case "getsettings":
-                    strOut = GetSettings(context,true);
+                    strOut = GetSettings(context, true);
                     break;
                 case "gettheme":
                     strOut = GetSettings(context);
-                    break;                    
+                    break;
                 case "savesettings":
                     if (LocalUtils.CheckRights(moduleid)) strOut = SaveSettings(context);
                     break;
@@ -110,6 +110,9 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = GetData(context);
                     break;
                 case "getlist":
+                    strOut = GetData(context);
+                    break;
+                case "getlistheader":
                     strOut = GetData(context);
                     break;
                 case "getimagelist":
@@ -130,7 +133,10 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     break;
                 case "savelistdata":
-                        strOut = SaveListData(context);
+                    strOut = SaveListData(context);
+                    break;
+                case "savelistdataheader":
+                    strOut = SaveHeaderData(context);
                     break;
                 case "selectlang":
                     if (LocalUtils.CheckRights(moduleid))
@@ -144,10 +150,10 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam);
                     break;
                 case "clientfileupload":
-                    UploadWholeFile(context, moduleidparam,false,false,60);
+                    UploadWholeFile(context, moduleidparam, false, false, 60);
                     break;
                 case "fileuploadsecure":
-                    if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam, false,true);
+                    if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam, false, true);
                     break;
                 case "addselectedfiles":
                     if (LocalUtils.CheckRights(moduleid)) AddSelectedFiles(context);
@@ -159,10 +165,10 @@ namespace Nevoweb.DNN.NBrightMod
                     if (LocalUtils.CheckRights(moduleid)) DeleteSelectedFiles(context);
                     break;
                 case "getfiles":
-                        strOut = GetFiles(context, true);
-                        break;
+                    strOut = GetFiles(context, true);
+                    break;
                 case "getfolderfiles":
-                        strOut = GetFolderFiles(context, true);                    
+                    strOut = GetFolderFiles(context, true);
                     break;
                 case "savetheme":
                     if (LocalUtils.CheckRights(moduleid)) strOut = SaveTheme(context);
@@ -195,7 +201,7 @@ namespace Nevoweb.DNN.NBrightMod
                         if (downloadname == "") downloadname = Path.GetFileName(fpath);
                         UpdateDownloadCount(Convert.ToInt32(itemid), fileindex, 1);
                         LocalUtils.ClearRazorCache(nbi.ModuleId.ToString());
-                        Utils.ForceDocDownload(fpath, downloadname, context.Response); 
+                        Utils.ForceDocDownload(fpath, downloadname, context.Response);
                     }
                     else
                     {
@@ -204,13 +210,13 @@ namespace Nevoweb.DNN.NBrightMod
                             var fpath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\" + filename;
                             var downloadname = Utils.RequestQueryStringParam(context, "downloadname");
                             if (downloadname == "") downloadname = Path.GetFileName(fpath);
-                            Utils.ForceDocDownload(fpath, downloadname, context.Response); 
+                            Utils.ForceDocDownload(fpath, downloadname, context.Response);
                         }
                     }
                     strOut = "File Download Error, filename: " + filename + ", itemid: " + itemid + ", fileindex: " + fileindex + " ";
                     break;
                 case "sendemail":
-                        strOut = SendEmail(context);
+                    strOut = SendEmail(context);
                     break;
                 case "doportalvalidation":
                     if (LocalUtils.CheckRights(moduleid))
@@ -232,7 +238,7 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         strOut = MoveThemeToSystem(context);
                     }
-                    break;                    
+                    break;
                 case "gettemplatemenu":
                     if (LocalUtils.CheckRights(moduleid))
                     {
@@ -332,8 +338,9 @@ namespace Nevoweb.DNN.NBrightMod
             // set langauge if we have it passed.
             if (ajaxInfo == null) ajaxInfo = new NBrightInfo(true);
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/currentlang");
-            if (lang == "") lang = Utils.RequestParam(HttpContext.Current,"langauge"); // fallbacl
+            if (lang == "") lang = Utils.RequestParam(HttpContext.Current, "langauge"); // fallbacl
             if (lang == "") lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang"); // fallbacl
+            if (lang == "") lang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
             if (lang == "") lang = Utils.GetCurrentCulture(); // fallback, but very often en-US on ajax call
             if (lang != "") _lang = lang;
             // set the context  culturecode, so any DNN functions use the correct culture 
@@ -410,7 +417,7 @@ namespace Nevoweb.DNN.NBrightMod
                     var nbi = LocalUtils.GetSettings(moduleid);
                     if (nbi.ModuleId == 0) // new setting record
                     {
-                        nbi = CreateSettingsInfo(moduleid,nbi);
+                        nbi = CreateSettingsInfo(moduleid, nbi);
                     }
                     // get data passed back by ajax
                     var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
@@ -426,7 +433,7 @@ namespace Nevoweb.DNN.NBrightMod
                         if (satnbi != null)
                         {
                             nbi.XrefItemId = satnbi.ItemID;
-                            nbi.SetXmlProperty("genxml/hidden/moduleiddatasource",satnbi.ModuleId.ToString());
+                            nbi.SetXmlProperty("genxml/hidden/moduleiddatasource", satnbi.ModuleId.ToString());
                         }
                     }
 
@@ -541,7 +548,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 if (Utils.IsNumeric(moduleid))
@@ -555,7 +562,7 @@ namespace Nevoweb.DNN.NBrightMod
                     }
                     if (nbi.ModuleId > 0)
                     {
-                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context),"",true,false);
+                        nbi.UpdateAjax(LocalUtils.GetAjaxData(context), "", true, false);
                         objCtrl.Update(nbi);
                         LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
                     }
@@ -568,7 +575,7 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
         }
-        
+
         private NBrightInfo CreateSettingsInfo(String moduleid, NBrightInfo settings)
         {
             var modref = Utils.GetUniqueKey(10);
@@ -586,6 +593,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
+                var entitytype = "NBrightModDATA";
                 var objCtrl = new NBrightDataController();
                 var strOut = "";
                 //get uploaded params
@@ -598,6 +606,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
                 var displayreturn = ajaxInfo.GetXmlProperty("genxml/hidden/displayreturn");
                 var uploadtype = ajaxInfo.GetXmlProperty("genxml/hidden/uploadtype");
+                var modref = ajaxInfo.GetXmlProperty("genxml/hidden/modref");
 
                 if (editlang == "") editlang = _lang;
 
@@ -606,15 +615,8 @@ namespace Nevoweb.DNN.NBrightMod
                 if (clearCache) LocalUtils.ClearRazorCache(moduleid);
 
 
-                if (newitem == "new")
-                {
-                    selecteditemid = "new"; // return list on new record
-                    AddNew(moduleid);
-                }
-
                 var strTemplate = "editlist.cshtml";
                 if (Utils.IsNumeric(selecteditemid)) strTemplate = "editfields.cshtml";
-
 
                 switch (displayreturn.ToLower())
                 {
@@ -623,6 +625,24 @@ namespace Nevoweb.DNN.NBrightMod
                         strTemplate = "editlist.cshtml";
                         selecteditemid = "";
                         break;
+                    case "listheader":
+                        // removed selected itemid if we want to return to the list.
+                        strTemplate = "editlistheader.cshtml";
+                        selecteditemid = "";
+                        entitytype = "NBrightModHEADER";
+                        var headerdataitem = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, entitytype, modref);
+                        if (headerdataitem != null)
+                        {
+                            selecteditemid = headerdataitem.ItemID.ToString("");
+                        }
+                        break;
+                }
+
+
+                if (newitem == "new")
+                {
+                    selecteditemid = "new"; // return list on new record
+                    AddNew(moduleid, entitytype,modref);
                 }
 
                 if (Utils.IsNumeric(selecteditemid))
@@ -635,13 +655,13 @@ namespace Nevoweb.DNN.NBrightMod
                         var lnode = obj.XMLDoc.SelectSingleNode("genxml/lang");
                         if (lnode == null)
                         {
-                            LocalUtils.CreateLangaugeDataRecord(obj.ItemID, Convert.ToInt32(moduleid), editlang);
+                            LocalUtils.CreateLangaugeDataRecord(obj.ItemID, Convert.ToInt32(moduleid), editlang,"", entitytype, modref);
                             obj = objCtrl.Get(Convert.ToInt32(selecteditemid), editlang);
                         }
                         // get any version data.
-                        if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith("NBrightModDATA"))
+                        if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith(entitytype))
                         {
-                            var nbi = objCtrl.GetData(obj.XrefItemId, "vNBrightModDATALANG", obj.Lang, true);
+                            var nbi = objCtrl.GetData(obj.XrefItemId, "v" + entitytype + "LANG", obj.Lang, true);
                             if (nbi == null)
                             {
                                 // found invalid itemid, clean it up.
@@ -663,7 +683,7 @@ namespace Nevoweb.DNN.NBrightMod
                             }
                         }
                     }
-                    strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, _lang);
+                    strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang + selecteditemid, obj, editlang);
                 }
                 else
                 {
@@ -676,7 +696,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                     // Return list of items
                     var returnlimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
                     if (l.Any())
                     {
                         // check we have a base data recxord, if so create langauge record.
@@ -686,15 +706,14 @@ namespace Nevoweb.DNN.NBrightMod
                             var lnode = nbi.XMLDoc.SelectSingleNode("genxml/lang");
                             if (lnode == null)
                             {
-                                LocalUtils.CreateLangaugeDataRecord(nbi.ItemID, Convert.ToInt32(moduleid), editlang);
+                                LocalUtils.CreateLangaugeDataRecord(nbi.ItemID, Convert.ToInt32(moduleid), editlang, "", entitytype, modref);
                                 nolang = true;
                             }
                         }
                         if (nolang) // reload if we found invalid data list
                         {
-                            l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "NBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                            l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
                         }
-
                         // get any version data.
                         var isVersion = false;
                         var length = l.Count;
@@ -711,7 +730,7 @@ namespace Nevoweb.DNN.NBrightMod
                                 }
                                 else
                                 {
-                                    var vnbi = objCtrl.GetData(nbi.XrefItemId, "vNBrightModDATALANG", nbi.Lang, true);
+                                    var vnbi = objCtrl.GetData(nbi.XrefItemId, nbi.Lang);
                                     if (vnbi == null)
                                     {
                                         // found invalid itemid, clean it up.
@@ -737,7 +756,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
 
                         // get any "added" version records
-                        var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "aNBrightModDATA", "", orderby, returnlimit, 0, 0, 0, editlang);
+                        var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "a" + entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
                         foreach (var nbi in l2)
                         {
                             l.Add(nbi);
@@ -756,10 +775,9 @@ namespace Nevoweb.DNN.NBrightMod
                             l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "", filter2, orderby, returnlimit, 0, 0, 0, editlang);
                         }
 
-
                     }
 
-                    strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, _lang);
+                    strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, editlang);
                 }
 
                 // debug data out by writing out to file (REMOVE FOR PROUCTION)
@@ -780,7 +798,7 @@ namespace Nevoweb.DNN.NBrightMod
             #region "init params from ajax"
             var strOut = "";
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -818,7 +836,7 @@ namespace Nevoweb.DNN.NBrightMod
             if (modulelevel)
             {
                 templfilename = moduleref + templfilename; // module level templates prefixed with moduleref
-                templData.SetXmlProperty("genxml/modulelevel","True",TypeCode.String,true,true,false);
+                templData.SetXmlProperty("genxml/modulelevel", "True", TypeCode.String, true, true, false);
             }
             else
             {
@@ -884,7 +902,7 @@ namespace Nevoweb.DNN.NBrightMod
             templData.SetXmlProperty("genxml/editlang", editlang);
             templData.SetXmlProperty("genxml/templtext", razorTempl2);
             templData.SetXmlProperty("genxml/templfullpath", templfullpath);
-            templData.SetXmlProperty("genxml/templrelpath", templrelpath);            
+            templData.SetXmlProperty("genxml/templrelpath", templrelpath);
             templData.SetXmlProperty("genxml/templfilename", templfilename);
             var displayname = templfilename;
             if (moduleref != "") displayname = templfilename.Replace(moduleref, "");
@@ -892,7 +910,7 @@ namespace Nevoweb.DNN.NBrightMod
             templData.SetXmlProperty("genxml/resxfilename", resxfilename);
             templData.SetXmlProperty("genxml/hidden/currentedittab", currentedittab);
             templData.SetXmlProperty("genxml/themefolder", themefolder);
-            
+
 
             // get template files
             templData.RemoveXmlNode("genxml/files");
@@ -907,12 +925,12 @@ namespace Nevoweb.DNN.NBrightMod
             templData = GetListOfTemplateFiles(templData, themefolder, "js", moduleref);
             templData = GetListOfTemplateFiles(templData, themefolder, "resx", moduleref);
 
-            strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang,true);
+            strOut = LocalUtils.RazorTemplRender(razortemplname, "-1", "", templData, _lang, true);
 
             return strOut;
         }
 
-        private NBrightInfo GetListOfTemplateFiles(NBrightInfo templData,String themefolder,String themesubfolder,String modref)
+        private NBrightInfo GetListOfTemplateFiles(NBrightInfo templData, String themefolder, String themesubfolder, String modref)
         {
             var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/" + themesubfolder);
             var systemtheme = "True";
@@ -968,7 +986,7 @@ namespace Nevoweb.DNN.NBrightMod
         {
             #region "init params from ajax"
             //get uploaded params
-            var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+            var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var newname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -1105,7 +1123,7 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 var xmlupdateresx = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateresx"); // get data pased back by ajax
                 xmlupdateresx = GenXmlFunctions.DecodeCDataTag(xmlupdateresx); // convert CDATA
-                var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx,""); // Convert to genxml format
+                var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx, ""); // Convert to genxml format
 
                 var nbi = new NBrightInfo();
                 nbi.XMLData = xmlData;
@@ -1120,7 +1138,7 @@ namespace Nevoweb.DNN.NBrightMod
                             resx.AddResource(nbi.GetXmlProperty("genxml/textbox/resxkey" + lp), nbi.GetXmlProperty("genxml/textbox/resxvalue" + lp));
                         }
                         lp += 1;
-                    }                    
+                    }
                 }
 
 
@@ -1281,7 +1299,7 @@ namespace Nevoweb.DNN.NBrightMod
                             }
                             if (remoavesystfolder)
                             {
-                                Directory.Delete(systhemeFolderName,true);
+                                Directory.Delete(systhemeFolderName, true);
                             }
                         }
 
@@ -1313,7 +1331,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 // delete existing clones not selected.
                 var tabList = DotNetNuke.Entities.Tabs.TabController.GetTabsBySortOrder(DotNetNuke.Entities.Portals.PortalSettings.Current.PortalId, Utils.GetCurrentCulture(), true);
-                foreach  (var tabinfo in tabList)
+                foreach (var tabinfo in tabList)
                 {
                     if (tabinfo.TabID != currenttabid)
                     {
@@ -1370,7 +1388,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var selectedRoleId = ajaxInfo.GetXmlPropertyInt("genxml/hidden/roleid");
                 var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
                 var currenttabid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/currenttabid");
-                var tablist = rolelist.Replace(" ","").Split(',');
+                var tablist = rolelist.Replace(" ", "").Split(',');
 
                 var mlist = objmodules.GetAllTabsModules(PortalSettings.Current.PortalId, false);
                 foreach (ModuleInfo moduleInfo in mlist)
@@ -1468,7 +1486,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var objCtrl = new NBrightDataController();
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
 
                 var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
@@ -1518,7 +1536,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
                         if (modsettings != null)
                         {
-                            modsettings.SetXmlProperty("genxml/dropdownlist/themefolder",newname);
+                            modsettings.SetXmlProperty("genxml/dropdownlist/themefolder", newname);
                             objCtrl.Update(modsettings);
                             LocalUtils.ClearRazorCache(modsettings.ItemID.ToString());
                             LocalUtils.ClearFileCache(modsettings.ItemID);
@@ -1559,7 +1577,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var strOut = "";
 
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
 
                 var portalthemefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/portalthemefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
@@ -1623,7 +1641,7 @@ namespace Nevoweb.DNN.NBrightMod
                         }
                     }
 
-                    if (strOut=="") strOut = " Theme Moved to System Level and available on ALL portals";
+                    if (strOut == "") strOut = " Theme Moved to System Level and available on ALL portals";
                 }
 
 
@@ -1642,7 +1660,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,false);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context, true, false);
                 var theme = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
                 var updatetype = ajaxInfo.GetXmlProperty("genxml/hidden/updatetype");
                 var exportname = ajaxInfo.GetXmlProperty("genxml/textbox/newname");
@@ -1655,7 +1673,7 @@ namespace Nevoweb.DNN.NBrightMod
                     var xmlOut = "<root>";
                     xmlOut += LocalUtils.ExportTheme(theme);
                     xmlOut += "</root>";
-                    Utils.SaveFile(rtnfile,xmlOut);
+                    Utils.SaveFile(rtnfile, xmlOut);
                 }
                 return rtnfile;
             }
@@ -1686,13 +1704,13 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
             var theme = Path.GetFileNameWithoutExtension(importfile);
-            theme = theme.Replace("NBrightMod_Theme_","");
+            theme = theme.Replace("NBrightMod_Theme_", "");
 
             return LocalUtils.ImportTheme(theme);
         }
 
 
-        private void CopyFileInFolder(String sourcePath, String targetPath,Boolean move = false)
+        private void CopyFileInFolder(String sourcePath, String targetPath, Boolean move = false)
         {
             // To copy a folder's contents to a new location:
             // Create a new target folder, if necessary.
@@ -1728,9 +1746,9 @@ namespace Nevoweb.DNN.NBrightMod
 
 
 
-        private String AddNew(String moduleid)
+        private String AddNew(String moduleid,string entitytype, string moduleref)
         {
-            return LocalUtils.AddNew(moduleid);
+            return LocalUtils.AddNew(moduleid, entitytype, moduleref);
         }
 
         private String SaveData(HttpContext context)
@@ -1775,7 +1793,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                         // do langauge record
                         nbi = objCtrl.GetDataLang(nbi.ItemID, lang, true);
-                        nbi.UpdateAjax(strIn,"", ignoresecurityfilter);
+                        nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
                         nbi.TextData = ""; // clear any output DB caching
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                         {
@@ -1881,6 +1899,69 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+        private String SaveHeaderData(HttpContext context)
+        {
+            try
+            {
+                var objCtrl = new NBrightDataController();
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                var modref = ajaxInfo.GetXmlProperty("genxml/hidden/modref");
+                var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+                if (lang == "") lang = _lang;
+                var itemid = "0";
+
+                var ignoresecurityfilter = LocalUtils.CheckRights();
+
+                // get DB record
+                var nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
+                if (nbi == null)
+                {
+                    itemid = AddNew(moduleid, "NBrightModHEADER", modref);
+                    nbi = objCtrl.GetData(Convert.ToInt32(itemid));
+                }
+
+                // get data passed back by ajax
+                var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+                // update record with ajax data
+                nbi.UpdateAjax(strIn);
+                nbi.TextData = ""; // clear any output DB caching
+                var parentitemid = objCtrl.Update(nbi);
+
+
+                // do langauge record
+                var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang);
+                if (nbilang == null)
+                {
+                    itemid = AddNew(moduleid, "NBrightModHEADERLANG", modref);
+                    nbilang = objCtrl.GetData(Convert.ToInt32(itemid));
+                    nbilang.Lang = _lang;
+                }
+                nbilang.ParentItemId = parentitemid;
+                nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
+                nbilang.TextData = ""; // clear any output DB caching
+                objCtrl.Update(nbilang);
+
+                objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
+
+                Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
+                LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+                LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+                DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
+
+                return "";
+
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
         private String DeleteData(HttpContext context)
         {
             try
@@ -1971,7 +2052,7 @@ namespace Nevoweb.DNN.NBrightMod
             try
             {
                 //get uploaded params
-                var ajaxInfo = LocalUtils.GetAjaxFields(context,true,true);
+                var ajaxInfo = LocalUtils.GetAjaxFields(context, true, true);
 
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
@@ -2113,14 +2194,14 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var strAjaxXml = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateimages");
                 strAjaxXml = GenXmlFunctions.DecodeCDataTag(strAjaxXml);
-                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml,true,false);
+                var imgList = LocalUtils.GetGenXmlListByAjax(strAjaxXml, true, false);
 
                 // get DB record
                 var nbi = objCtrl.Get(Convert.ToInt32(itemid));
                 nbi = LocalUtils.VersionGet(nbi);
                 if (nbi != null)
                 {
-                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang,true);
+                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang, true);
                     // build xml for data records
                     var strXml = "<genxml><imgs>";
                     var strXmlLang = "<genxml><imgs>";
@@ -2465,7 +2546,7 @@ namespace Nevoweb.DNN.NBrightMod
                 nbi = LocalUtils.VersionGet(nbi);
                 if (nbi != null)
                 {
-                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang,true);
+                    var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang, true);
                     // build xml for data records
                     var strXml = "<genxml><docs>";
                     var strXmlLang = "<genxml><docs>";
@@ -2584,7 +2665,7 @@ namespace Nevoweb.DNN.NBrightMod
                 if (allowedfiletypes == "") allowedfiletypes = "*";
                 var allowedfiletypeslist = allowedfiletypes.ToLower().Split(',');
 
- 
+
                 FileInfo[] files;
                 DirectoryInfo dirInfo = new DirectoryInfo(uploadfolder);
                 if (allowedfiletypes == "*")
@@ -2718,7 +2799,7 @@ namespace Nevoweb.DNN.NBrightMod
                                 var fname = File.ReadAllLines(docpath + ".txt");
                                 if (fname.Length > 0)
                                 {
-                                    filedisplayname =  fname[0];
+                                    filedisplayname = fname[0];
                                 }
                             }
 
@@ -2796,7 +2877,7 @@ namespace Nevoweb.DNN.NBrightMod
             }
         }
 
-        private void AddNewDoc(int itemId,String filename, String docurl, String docpath)
+        private void AddNewDoc(int itemId, String filename, String docurl, String docpath)
         {
             var objCtrl = new NBrightDataController();
             var dataRecord = objCtrl.Get(itemId);
@@ -2804,7 +2885,7 @@ namespace Nevoweb.DNN.NBrightMod
             if (dataRecord != null)
             {
                 var r = Path.GetFileNameWithoutExtension(docpath);
-                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + filename + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath,"") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden><textbox></textbox></genxml></docs></genxml>";
+                var strXml = "<genxml><docs><genxml><hidden><ref>" + r.Replace(" ", "-") + "</ref><filename>" + filename + "</filename><folderfilename>" + docpath.Replace(PortalSettings.Current.HomeDirectoryMapPath, "") + "</folderfilename><docpath>" + docpath + "</docpath><docurl>" + docurl + "</docurl></hidden><textbox></textbox></genxml></docs></genxml>";
                 if (dataRecord.XMLDoc.SelectSingleNode("genxml/docs") == null)
                 {
                     dataRecord.AddXmlNode(strXml, "genxml/docs", "genxml");
@@ -2954,7 +3035,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var fullfilename = "";
                 if (encrptfilename)
                 {
-                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + Guid.NewGuid(); 
+                    fullfilename = uploadfolder.TrimEnd('\\') + "\\" + Guid.NewGuid();
                     File.WriteAllText(fullfilename + ".txt", file.FileName);
                 }
                 else
@@ -2984,7 +3065,7 @@ namespace Nevoweb.DNN.NBrightMod
                     catch (Exception)
                     {
                         // ignore
-                    }                    
+                    }
                 }
 
                 if (passbackfilename) return fullfilename;
@@ -2996,7 +3077,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         #endregion
 
-        
+
 
 
     }

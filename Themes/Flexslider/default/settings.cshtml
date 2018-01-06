@@ -7,70 +7,68 @@
     var info = (NBrightInfo)Model.List.First();
 }
 
-<div>
+ <div>
     <div class='dnnFormItem'>
-        @DnnLabel("lblthemeuploadfolder", "Settings.themeuploadfolder")
-        @CheckBox(info, "genxml/checkbox/activatethemeuploadfolder", "", "class='activatethemeuploadfolder'", true)
-    </div>
-    <div class='dnnFormItem themeuploadfolder'>
         @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
-        @TextBox(info, "genxml/textbox/themeuploadfolder", "", info.GetXmlProperty("genxml/dropdownlist/themefolder"))
+        @TextBox(info, "genxml/textbox/settinguploadfolder", "", "slider")
     </div>
-    <div>
+     <div class='dnnFormItem'>
         @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize", "class='form-control' width='100px' maxlength='5' ", "1154")
     </div>
-    <div>
+     <div class='dnnFormItem'>
         @DnnLabel("lblwidth", "Settings.width")@NBrightTextBox(info, "genxml/textbox/width", "class='form-control' width='100px' maxlength='5' ", "1154")
     </div>
-    <div>
+     <div class='dnnFormItem'>
         @DnnLabel("lblheight", "Settings.height")@NBrightTextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "575")
     </div>
     <hr/>
-    <div>
-        animation : @DropDownList(info, "genxml/dropdownlist/animation", "fade,slide", "fade,slide", " update='save' class='form-control' ")
-    </div>
-    <div>
-        easing : @NBrightTextBox(info, "genxml/textbox/easing", "class='form-control' ", "swing")
-    </div>
-    <div>
-        direction : @DropDownList(info, "genxml/dropdownlist/direction", "horizontal,vertical", "horizontal, vertical", " update='save' class='form-control' ")
-    </div>
-    <div>
-        reverse : @DropDownList(info, "genxml/dropdownlist/reverse", "true,false", "true,false", " update='save' class='form-control' ", "false")
-    </div>
-    <div>
-        animationLoop : @DropDownList(info, "genxml/dropdownlist/animationloop", "true,false", "true,false", " update='save' class='form-control' ", "true")
-    </div>
-    <div>
-        smoothHeight : @DropDownList(info, "genxml/dropdownlist/smoothheight", "true,false", "true,false", " update='save' class='form-control' ", "false")
-    </div>
-    <div>
-        startAt : @NBrightTextBox(info, "genxml/textbox/startat", "class='form-control' ", "0")
-    </div>
-    <div>
-        slideshow : @DropDownList(info, "genxml/dropdownlist/slideshow", "true,false", "true,false", " update='save' class='form-control' ", "true")
-    </div>
-    <div>
-        slideshowSpeed : @NBrightTextBox(info, "genxml/textbox/slideshowspeed", "class='form-control' ", "7000")
-    </div>
-    <div>
-        animationSpeed : @NBrightTextBox(info, "genxml/textbox/animationspeed", "class='form-control' ", "600")
-    </div>
-    <div>
-        initDelay : @NBrightTextBox(info, "genxml/textbox/initdelay", "class='form-control' ", "0")
-    </div>
-    <div>
-        randomize : @DropDownList(info, "genxml/dropdownlist/randomize", "true,false", "true,false", " update='save' class='form-control' ", "false")
-    </div>
-    <div>
-        controlNav : @DropDownList(info, "genxml/dropdownlist/controlnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
-    </div>
-    <div>
-        directionNav : @DropDownList(info, "genxml/dropdownlist/directionnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
-    </div>
+
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>animation</span> </label></div> @DropDownList(info, "genxml/dropdownlist/animation", "fade,slide", "fade,slide", " update='save' class='form-control' ")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>easing</span> </label></div> @NBrightTextBox(info, "genxml/textbox/easing", "class='form-control' ", "swing")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>direction</span> </label></div> @DropDownList(info, "genxml/dropdownlist/direction", "horizontal,vertical", "horizontal, vertical", " update='save' class='form-control' ")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>reverse</span> </label></div> @DropDownList(info, "genxml/dropdownlist/reverse", "true,false", "true,false", " update='save' class='form-control' ", "false")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>animationLoop</span> </label></div> @DropDownList(info, "genxml/dropdownlist/animationloop", "true,false", "true,false", " update='save' class='form-control' ", "true")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>smoothHeight</span> </label></div> @DropDownList(info, "genxml/dropdownlist/smoothheight", "true,false", "true,false", " update='save' class='form-control' ", "false")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>startAt</span> </label></div> @NBrightTextBox(info, "genxml/textbox/startat", "class='form-control' ", "0")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>slideshow</span> </label></div> @DropDownList(info, "genxml/dropdownlist/slideshow", "true,false", "true,false", " update='save' class='form-control' ", "true")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>slideshowSpeed</span> </label></div> @NBrightTextBox(info, "genxml/textbox/slideshowspeed", "class='form-control' ", "7000")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>animationSpeed</span> </label></div> @NBrightTextBox(info, "genxml/textbox/animationspeed", "class='form-control' ", "600")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>initDelay</span> </label></div> @NBrightTextBox(info, "genxml/textbox/initdelay", "class='form-control' ", "0")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>randomize</span> </label></div> @DropDownList(info, "genxml/dropdownlist/randomize", "true,false", "true,false", " update='save' class='form-control' ", "false")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>controlNav</span> </label></div> @DropDownList(info, "genxml/dropdownlist/controlnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
+     </div>
+     <div class='dnnFormItem'>
+         <div class="dnnLabel"><label><span>directionNav</span> </label></div> @DropDownList(info, "genxml/dropdownlist/directionnav", "true,false", "true,false", " update='save' class='form-control' ", "true")
+     </div>
+
 
     <hr/>
-    <div>
+     <div class='dnnFormItem'>
         @DnnLabel("lblstyletext", "Settings.styletext")
         <textarea rows="50" id="styletext" class="" update="save" type="text" style="height: 250px; width: 100%"></textarea>
     </div>
@@ -82,25 +80,3 @@
 
 </div>
 
-<script>
-
-            $(document).ready(function () {
-
-                if ($('.activatethemeuploadfolder').is(":checked")) {
-                    $('.themeuploadfolder').show();
-                } else {
-                    $('.themeuploadfolder').hide();
-                }
-                $('.activatethemeuploadfolder').unbind("click");
-                $('.activatethemeuploadfolder').click(function () {
-                    if ($(this).is(":checked"))
-                    {
-                        $('.themeuploadfolder').show();
-                    } else {
-                        $('.themeuploadfolder').hide();
-                    }
-                });
-            });
-
-
-</script>

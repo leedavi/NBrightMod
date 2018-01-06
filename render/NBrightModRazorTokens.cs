@@ -499,6 +499,63 @@ namespace NBrightMod.render
             return false;
         }
 
+
+        public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "Default", bool includefilename = true)
+        {
+            if (subfoldername == "")
+            {
+                var fileext = Path.GetExtension(filename);
+                if (fileext != null)
+                {
+                    subfoldername = fileext.Trim('.');
+                }
+                else
+                {
+                    subfoldername = "Default";
+                }
+            }
+
+            var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+            var path1 = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + moduleref + filename;
+            if (File.Exists(path1))
+            {
+                if (includefilename)
+                {
+                    return new RawString(path1);
+                }
+                else
+                {
+                    return new RawString(path1.Replace("\\" + moduleref + filename, "") + "\\");
+                }
+            }
+            var path2 = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + filename;
+            if (File.Exists(path2))
+            {
+                if (includefilename)
+                {
+                    return new RawString(path2);
+                }
+                else
+                {
+                    return new RawString(path2.Replace("\\" + filename, "") + "\\");
+                }
+            }
+            var path3 = controlMapPath.TrimEnd('\\') + "\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + filename;
+            if (File.Exists(path3))
+            {
+                if (includefilename)
+                {
+                    return new RawString(path3);
+                }
+                else
+                {
+                    return new RawString(path3.Replace("\\" + filename, "") + "\\");
+                }
+            }
+
+            return new RawString("");
+        }
+
     }
 
 

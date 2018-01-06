@@ -282,4 +282,7 @@
   <data name="themeuploadfolder.Text" xml:space="preserve">
     <value>Activate Theme Upload Folder</value>
   </data>
+  <data name="wrapperclass.Text" xml:space="preserve">
+    <value>Wrapper Div Class</value>
+  </data>
 </root>

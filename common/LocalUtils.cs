@@ -480,7 +480,7 @@ namespace NBrightMod.common
 
         #region "functions"
 
-        public static String AddNew(String moduleid)
+        public static String AddNew(String moduleid, string entitytype, string moduleref)
         {
             if (!Utils.IsNumeric(moduleid)) moduleid = "-1";
 
@@ -494,16 +494,16 @@ namespace NBrightMod.common
             var objCtrl = new NBrightDataController();
             var nbi = new NBrightInfo(true);
             nbi.PortalId = PortalSettings.Current.PortalId;
-            nbi.TypeCode = prefix + "NBrightModDATA";
+            nbi.TypeCode = prefix + entitytype;
             nbi.ModuleId = Convert.ToInt32(moduleid);
             nbi.ItemID = -1;
-            nbi.GUIDKey = "";
+            nbi.GUIDKey = moduleref;
             var itemId = objCtrl.Update(nbi);
             nbi.ItemID = itemId;
 
             foreach (var lang in DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId))
             {
-                var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang, prefix);
+                var nbi2 = CreateLangaugeDataRecord(itemId, Convert.ToInt32(moduleid), lang, prefix, entitytype, moduleref);
             }
 
             LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
@@ -511,17 +511,17 @@ namespace NBrightMod.common
             return nbi.ItemID.ToString("");
         }
 
-        public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang,string prefix = "")
+        public static NBrightInfo CreateLangaugeDataRecord(int parentItemId, int moduleid,String lang,string prefix = "",string entityType = "NBrightModDATA",string moduleref = "")
         {
             var objCtrl = new NBrightDataController();
             var nbi2 = new NBrightInfo(true);
             nbi2.PortalId = PortalSettings.Current.PortalId;
-            nbi2.TypeCode = prefix + "NBrightModDATALANG";
+            nbi2.TypeCode = prefix + entityType + "LANG";
             nbi2.ModuleId = moduleid;
             nbi2.ItemID = -1;
             nbi2.Lang = lang;
             nbi2.ParentItemId = parentItemId;
-            nbi2.GUIDKey = "";
+            nbi2.GUIDKey = moduleref;
             nbi2.ItemID = objCtrl.Update(nbi2);
             return nbi2;
         }
@@ -880,6 +880,26 @@ namespace NBrightMod.common
                     var razorTemplateKey = "NBrightModKey" + moduleid + razorTemplName + PortalSettings.Current.PortalId.ToString() + lang;
 
                     var modRazor = new NBrightRazor(objList.Cast<object>().ToList(), settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+
+                    var modref = settingInfo.GetXmlProperty("genxml/hidden/modref");
+                    var objCtrl = new NBrightDataController();
+                    var headerdataitem = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
+                    var headerdata = new NBrightInfo();
+                    if (headerdataitem == null)
+                    {
+                        headerdata.GUIDKey = modref;
+                        headerdata.TypeCode = "NBrightModHEADER";
+                        headerdata.Lang = lang;
+                        if (Utils.IsNumeric(moduleid))
+                        {
+                            headerdata.ModuleId = Convert.ToInt32(moduleid);
+                        }
+                    }
+                    else
+                    {
+                        headerdata = objCtrl.Get(headerdataitem.ItemID, lang);
+                    }
+                    modRazor.HeaderData = headerdata;
                     var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     if (cacheKey != "") // only cache if we have a key.
@@ -919,6 +939,14 @@ namespace NBrightMod.common
                     var l = new List<object>();
                     l.Add(obj);
                     var modRazor = new NBrightRazor(l, settingInfo.ToDictionary(), HttpContext.Current.Request.QueryString);
+                    if (obj.TypeCode == "NBrightModHEADER")
+                    {
+                        if (Utils.IsNumeric(moduleid))
+                        {
+                            obj.ModuleId = Convert.ToInt32(moduleid);
+                        }
+                        modRazor.HeaderData = obj;
+                    }
                     var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, debug);
 
                     if (cacheKey != "") // only cache if we have a key.
@@ -1080,15 +1108,10 @@ namespace NBrightMod.common
             var tempFolderMapPath = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
             
-            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/themeuploadfolder");
-            if (settingUploadFolder == "" || !settings.GetXmlPropertyBool("genxml/checkbox/activatethemeuploadfolder"))
+            var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
+            if (settingUploadFolder == "")
             {
-                settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
-                if (settingUploadFolder == "")
-                {
-                    settingUploadFolder = "images";
-                    settings.SetXmlProperty("genxml/textbox/settinguploadfolder", settingUploadFolder);
-                }
+                settingUploadFolder = "images";
             }
 
             var uploadFolder = objPortal.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
