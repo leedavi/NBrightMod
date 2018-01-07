@@ -114,12 +114,12 @@ namespace NBrightMod.common
         /// </summary>
         /// <param name="nbrightInfo">original data record</param>
         /// <returns>The version record or the orginal if no version</returns>
-        public static NBrightInfo VersionGet(NBrightInfo nbrightInfo)
+        public static NBrightInfo VersionGet(NBrightInfo nbrightInfo, string entityType = "NBrightModDATA")
         {
             if (nbrightInfo != null)
             {
                 var baseid = nbrightInfo.XrefItemId;
-                if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA"))
+                if (nbrightInfo.TypeCode.StartsWith("v" + entityType))
                 {
                     baseid = nbrightInfo.ItemID;
                 }
@@ -137,17 +137,19 @@ namespace NBrightMod.common
         /// </summary>
         /// <param name="nbrightInfo">original data record</param>
         /// <returns>The version record</returns>
-        public static NBrightInfo VersionUpdate(NBrightInfo nbrightInfo)
+        public static NBrightInfo VersionUpdate(NBrightInfo nbrightInfo, string entityType = "NBrightModDATA")
         {
+            var etypecode = nbrightInfo.TypeCode;
+            var pitemId = nbrightInfo.ParentItemId;
             var baseid = nbrightInfo.XrefItemId;
-            if (nbrightInfo.TypeCode.StartsWith("vNBrightModDATA") || nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
+            if (nbrightInfo.TypeCode.StartsWith("v" + entityType) || nbrightInfo.TypeCode.StartsWith("a" + entityType))
             {
                 baseid = nbrightInfo.ItemID;
             }
 
             var objCtrl = new NBrightDataController();
             var insertnewversion = true;
-            if (nbrightInfo.XrefItemId > 0 || nbrightInfo.TypeCode.StartsWith("vNBrightModDATA") || nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
+            if (nbrightInfo.XrefItemId > 0 || nbrightInfo.TypeCode.StartsWith("v" + entityType) || nbrightInfo.TypeCode.StartsWith("a" + entityType))
             {
                 var nbi = objCtrl.Get(baseid);
                 if (nbi != null && nbi.XrefItemId != nbi.ItemID)
@@ -156,7 +158,7 @@ namespace NBrightMod.common
                     nbrightInfo.ItemID = nbi.ItemID;
                     nbrightInfo.XrefItemId = nbi.XrefItemId;
                     nbrightInfo.ParentItemId = nbi.ParentItemId;
-                    if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA")) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
+                    if (nbrightInfo.TypeCode.StartsWith(entityType)) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
                     objCtrl.Update(nbrightInfo);
                     insertnewversion = false;
                 }
@@ -171,43 +173,140 @@ namespace NBrightMod.common
             if (insertnewversion)
             {
                 var nbi = objCtrl.Get(nbrightInfo.ItemID);
-                // create new verison
-                if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA")) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
-                nbrightInfo.XrefItemId = nbi.ItemID;
-                nbrightInfo.ItemID = -1;
-                if (nbrightInfo.ParentItemId > 0)
-                {
-                    var pnbi = objCtrl.Get(nbrightInfo.ParentItemId);
-                    nbrightInfo.ParentItemId = pnbi.XrefItemId;
-                }
-                var verisonId = objCtrl.Update(nbrightInfo);
-                nbrightInfo.ItemID = verisonId;
-
-                // update original with versionid
                 if (nbi != null)
                 {
+                    // create new verison
+                    if (nbrightInfo.TypeCode.StartsWith(entityType)) nbrightInfo.TypeCode = "v" + nbrightInfo.TypeCode;
+                    nbrightInfo.XrefItemId = nbi.ItemID;
+                    nbrightInfo.ItemID = -1;
+                    if (nbrightInfo.ParentItemId > 0)
+                    {
+                        var pnbi = objCtrl.Get(nbrightInfo.ParentItemId);
+                        nbrightInfo.ParentItemId = pnbi.XrefItemId;
+                    }
+
+                    var verisonId = objCtrl.Update(nbrightInfo);
+                    nbrightInfo.ItemID = verisonId;
+
+                    // update original with versionid
                     nbi.XrefItemId = verisonId;
                     objCtrl.Update(nbi);
+
+                    // read all unchanged LANG records and create version record.
+                    if (nbrightInfo.Lang != "")
+                    {
+                        var langlist = objCtrl.GetList(nbrightInfo.PortalId, -1, etypecode, "and NB1.ParentItemId = '" + pitemId + "' and NB1.Lang != '" + nbrightInfo.Lang + "' ");
+                        foreach (var langnbi in langlist)
+                        {
+                            if (langnbi.XrefItemId >= 0) // fix any linked record that should not be.
+                            {
+                                var dummy = objCtrl.Get(langnbi.XrefItemId);
+                                if (dummy == null)
+                                {
+                                    langnbi.XrefItemId = 0;
+                                    objCtrl.Update(langnbi);
+                                }
+
+                            }
+                            if (langnbi.XrefItemId == 0) // only if not created
+                            {
+                                var langitemid = langnbi.ItemID;
+                                var newlangnbi = langnbi;
+                                newlangnbi.TypeCode = "v" + etypecode;
+                                newlangnbi.XrefItemId = langnbi.ItemID;
+                                newlangnbi.ItemID = -1;
+                                if (newlangnbi.ParentItemId > 0)
+                                {
+                                    var pnbi = objCtrl.Get(newlangnbi.ParentItemId);
+                                    newlangnbi.ParentItemId = pnbi.XrefItemId;
+                                }
+                                var langnbi2 = objCtrl.Get(langitemid);
+                                langnbi2.XrefItemId = objCtrl.Update(newlangnbi);
+                                objCtrl.Update(langnbi2);
+                            }
+                        }
+                    }
                 }
             }
             return nbrightInfo;
+        }
+
+        public static void DoVersionDelete(int ModuleId, string entityType)
+        {
+            // DELETE verison changes
+            var objCtrl = new NBrightDataController();
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, entityType);
+            var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, entityType + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                LocalUtils.VersionDelete(nbi);
+            }
+            foreach (var nbi in l)
+            {
+                if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                {
+                    // remove deleted flag from data record.
+                    nbi.RemoveXmlNode("genxml/versiondelete");
+                    objCtrl.Update(nbi);
+                }
+                LocalUtils.VersionDelete(nbi);
+            }
+
+            l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a"+ entityType);
+            l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a" + entityType + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                LocalUtils.VersionDelete(nbi);
+            }
+            foreach (var nbi in l)
+            {
+                LocalUtils.VersionDelete(nbi);
+            }
+
+            // DELETE any record that remain (Corrupted records.)
+            l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "v" + entityType);
+            l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "v" + entityType + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                objCtrl.Delete(nbi.ItemID);
+            }
+            foreach (var nbi in l)
+            {
+                objCtrl.Delete(nbi.ItemID);
+            }
+            // DELETE any record that remain (Corrupted records.)
+            l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a" + entityType);
+            l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a" + entityType + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                objCtrl.Delete(nbi.ItemID);
+            }
+            foreach (var nbi in l)
+            {
+                objCtrl.Delete(nbi.ItemID);
+            }
+
         }
 
         /// <summary>
         /// Delete version record
         /// </summary>
         /// <param name="nbrightInfo">original data record</param>
-        public static void VersionDelete(NBrightInfo nbrightInfo)
+        public static void VersionDelete(NBrightInfo nbrightInfo, string entityType = "NBrightModDATA")
         {
             var objCtrl = new NBrightDataController();
-            if (nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
+            if (nbrightInfo.TypeCode.StartsWith("a" + entityType))
             {
                 objCtrl.Delete(nbrightInfo.ItemID);
             }
             else
             {
                 var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                if (nbi != null && (nbi.TypeCode.StartsWith("vNBrightModDATA"))) // only delete version records. 
+                if (nbi != null && (nbi.TypeCode.StartsWith("v" + entityType))) // only delete version records. 
                 {
                     objCtrl.Delete(nbi.ItemID);
                     nbrightInfo.XrefItemId = 0;
@@ -220,31 +319,31 @@ namespace NBrightMod.common
         /// Validate the version record, delete orignial data, activates version data.
         /// </summary>
         /// <param name="nbrightInfo">original data record</param>
-        public static void VersionValidate(NBrightInfo nbrightInfo)
+        public static void VersionValidate(NBrightInfo nbrightInfo, string entityType = "NBrightModDATA")
         {
             var objCtrl = new NBrightDataController();
-            if (nbrightInfo.TypeCode.StartsWith("aNBrightModDATA"))
+            if (nbrightInfo.TypeCode.StartsWith("a" + entityType))
             {
-                nbrightInfo.TypeCode = nbrightInfo.TypeCode.Replace("aNBrightModDATA", "NBrightModDATA");
+                nbrightInfo.TypeCode = nbrightInfo.TypeCode.Replace("a" + entityType, entityType);
                 objCtrl.Update(nbrightInfo);
             }
             else
             {
                 var nbi = objCtrl.GetData(nbrightInfo.XrefItemId);
-                if (nbi != null && (nbi.TypeCode.StartsWith("vNBrightModDATA")))
+                if (nbi != null && (nbi.TypeCode.StartsWith("v" + entityType)))
                 {
                     nbi.XrefItemId = 0;
-                    nbi.TypeCode = nbi.TypeCode.Replace("vNBrightModDATA", "NBrightModDATA");
+                    nbi.TypeCode = nbi.TypeCode.Replace("v" + entityType, entityType);
                     objCtrl.Update(nbi);
                     objCtrl.Delete(nbrightInfo.ItemID);
                 }
             }
         }
 
-        public static void VersionMarkDeleted(NBrightInfo nbrightInfo)
+        public static void VersionMarkDeleted(NBrightInfo nbrightInfo, string entityType = "NBrightModDATA")
         {
             var objCtrl = new NBrightDataController();
-            if (nbrightInfo.TypeCode.StartsWith("NBrightModDATA"))
+            if (nbrightInfo.TypeCode.StartsWith(entityType))
             {
                 nbrightInfo.SetXmlProperty("genxml/versiondelete","True");
                 objCtrl.Update(nbrightInfo);
@@ -258,7 +357,7 @@ namespace NBrightMod.common
                 if (nbi != null)
                 {
                     // lang record
-                    var l = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATALANG", " and NB1.ParentItemId = " + nbi.ItemID + " ");
+                    var l = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, entityType + "LANG", " and NB1.ParentItemId = " + nbi.ItemID + " ");
                     if (l.Any())
                     {
                         foreach (var nbiCleanLang in l)
@@ -884,6 +983,15 @@ namespace NBrightMod.common
                     var modref = settingInfo.GetXmlProperty("genxml/hidden/modref");
                     var objCtrl = new NBrightDataController();
                     var headerdataitem = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
+                    if (headerdataitem == null)
+                    {
+                        // try loading new record created by versioner
+                        headerdataitem = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "aNBrightModHEADER", modref);
+                    }
+                    else
+                    {
+                        headerdataitem = LocalUtils.VersionGet(headerdataitem, "NBrightModHEADER");
+                    }
                     var headerdata = new NBrightInfo();
                     if (headerdataitem == null)
                     {

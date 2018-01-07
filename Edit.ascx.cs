@@ -98,62 +98,8 @@ namespace Nevoweb.DNN.NBrightMod
                 }
                 if (Utils.RequestParam(Context, "version") == "3" || Utils.RequestParam(Context, "version") == "6")
                 {
-                    // DELETE verison changes
-                    var objCtrl = new NBrightDataController();
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
-                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        LocalUtils.VersionDelete(nbi);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
-                        {
-                            // remove deleted flag from data record.
-                            nbi.RemoveXmlNode("genxml/versiondelete");
-                            objCtrl.Update(nbi);
-                        }
-                        LocalUtils.VersionDelete(nbi);
-                    }
-
-                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
-                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        LocalUtils.VersionDelete(nbi);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        LocalUtils.VersionDelete(nbi);
-                    }
-
-                    // DELETE any record that remain (Corrupted records.)
-                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
-                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        objCtrl.Delete(nbi.ItemID);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        objCtrl.Delete(nbi.ItemID);
-                    }
-                    // DELETE any record that remain (Corrupted records.)
-                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
-                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        objCtrl.Delete(nbi.ItemID);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        objCtrl.Delete(nbi.ItemID);
-                    }
+                    LocalUtils.DoVersionDelete(ModuleId, "NBrightModDATA");
+                    LocalUtils.DoVersionDelete(ModuleId, "NBrightModHEADER");
                     if (Utils.RequestParam(Context, "version") == "3")
                     {
                         // don't send email for reset by versioner (version=6)

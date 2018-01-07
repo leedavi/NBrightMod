@@ -39,6 +39,10 @@ function NBrightMod_nbxgetCompleted(e) {
         NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
     }
 
+    if (e.cmd == 'getlistheader') {
+        NBrightMod_nbxget('getlist', '#selectparams', '#editdata');
+    }
+
     if (e.cmd == 'savedataexit') {
         $('#selecteditemid').val('');
         NBrightMod_nbxget('getlist', '#selectparams', '#editdata'); // do ajax call to get edit form
@@ -51,7 +55,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('.selecteditlanguage').unbind('click');
         $('.selecteditlanguage').click(function () {
             $('#savedreturnaction').val(""); // set flag to return on save of data
-            savedata();
+            storedata();
             $('#editlang').val($(this).attr('lang')); // alter lang after, so we get correct data record
             NBrightMod_nbxget('selectlang', '#editdata'); // do ajax call to save current edit form
         });
@@ -152,7 +156,7 @@ function NBrightMod_nbxgetCompleted(e) {
         $('.selecteditlistlanguage').click(function () {
             $('#editlang').val($(this).attr('lang'));
             $('#editlang_h').val($(this).attr('lang'));
-            NBrightMod_nbxget('savelistdata', '#editdatalist', '#rtnmsg', '.datalistitem'); // do ajax post of list data.
+            NBrightMod_nbxget('getlistheader', '#editdatalistheader', '#rtnmsg'); // do ajax post of list header data.
         });
 
         $('#addnew').unbind('click');
@@ -210,15 +214,18 @@ function NBrightMod_nbxgetCompleted(e) {
 }
 
 function savedata() {
+    storedata();
+    NBrightMod_nbxget('savedata', '#editdata', '#savereturn');
+}
+
+function storedata() {
 
     //NOTE: Richtext field use a temp field to save data to the server, this is triggered by the event
     // These events are defined by the @Richtext razor token and act on #savedata, .selecteditlanguage, .flieclick, .imageclick
-
     var xmlrtn = $.fn.genxmlajaxitems('#imagelist > tbody', '.imageitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     var xmlrtn2 = $.fn.genxmlajaxitems('#doclist > tbody', '.docitem').replace(/<\!\[CDATA\[/g, "**CDATASTART**").replace(/\]\]>/g, "**CDATAEND**");
     $('#xmlupdateimages').val(xmlrtn);
     $('#xmlupdatedocs').val(xmlrtn2);
-    NBrightMod_nbxget('savedata', '#editdata', '#savereturn');
 }
 
 function moveUp(item) {

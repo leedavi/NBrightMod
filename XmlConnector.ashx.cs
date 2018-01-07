@@ -139,12 +139,14 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = SaveHeaderData(context);
                     break;
                 case "selectlang":
-                    if (LocalUtils.CheckRights(moduleid))
-                    {
-                        SaveImages(context);
-                        SaveDocs(context);
-                        strOut = SaveData(context);
-                    }
+                    // DO NOT save on langauge changem this will always create the version records.
+
+                    //if (LocalUtils.CheckRights(moduleid))
+                    //{
+                    //    SaveImages(context);
+                    //    SaveDocs(context);
+                    //    strOut = SaveData(context);
+                    //}
                     break;
                 case "fileupload":
                     if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam);
@@ -1920,6 +1922,20 @@ namespace Nevoweb.DNN.NBrightMod
                 var nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
                 if (nbi == null)
                 {
+                    // try loading new record created by versioner
+                    nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "aNBrightModHEADER", modref);
+                }
+                else
+                {
+                    nbi = LocalUtils.VersionGet(nbi, "NBrightModHEADER");
+                }
+
+                if (nbi != null)
+                {
+                    itemid = nbi.ItemID.ToString("");
+                }
+                else
+                {                    
                     itemid = AddNew(moduleid, "NBrightModHEADER", modref);
                     nbi = objCtrl.GetData(Convert.ToInt32(itemid));
                 }
@@ -1929,23 +1945,34 @@ namespace Nevoweb.DNN.NBrightMod
                 // update record with ajax data
                 nbi.UpdateAjax(strIn);
                 nbi.TextData = ""; // clear any output DB caching
-                var parentitemid = objCtrl.Update(nbi);
+                if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                {
+                    LocalUtils.VersionUpdate(nbi, "NBrightModHEADER");
+                }
+                else
+                {
+                    objCtrl.Update(nbi);
+                }
 
 
                 // do langauge record
-                var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang);
-                if (nbilang == null)
+                var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                if (nbilang != null) // should be created on addnew function
                 {
-                    itemid = AddNew(moduleid, "NBrightModHEADERLANG", modref);
-                    nbilang = objCtrl.GetData(Convert.ToInt32(itemid));
-                    nbilang.Lang = _lang;
-                }
-                nbilang.ParentItemId = parentitemid;
-                nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
-                nbilang.TextData = ""; // clear any output DB caching
-                objCtrl.Update(nbilang);
+                    nbilang.ParentItemId = nbi.ItemID;
+                    nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
+                    nbilang.TextData = ""; // clear any output DB caching
+                    if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
+                    {
+                        LocalUtils.VersionUpdate(nbilang, "NBrightModHEADER");
+                    }
+                    else
+                    {
+                        objCtrl.Update(nbilang);
+                    }
 
-                objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
+                    objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
+                }
 
                 Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
                 LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
