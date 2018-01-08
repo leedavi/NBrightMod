@@ -360,6 +360,7 @@
     <None Include="Themes\HtmlContent\default\editbody.cshtml" />
     <None Include="Themes\HtmlContent\default\editfields.cshtml" />
     <None Include="Themes\HtmlContent\default\editlist.cshtml" />
+    <None Include="Themes\HtmlContent\default\editlistheader.cshtml" />
     <None Include="Themes\HtmlContent\default\editpageheader.cshtml" />
     <None Include="Themes\HtmlContent\default\imgselectlist.cshtml" />
     <None Include="Themes\HtmlContent\default\settings.cshtml" />
