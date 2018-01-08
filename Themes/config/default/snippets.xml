@@ -182,9 +182,9 @@ var tabddl = GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
 @info.GetXmlProperty("genxml/textbox/******")
       ]]>
     </data>
-    <data name="GetTemplateFilePath" text="GetTemplateFilePath" title="GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername, bool includefilename = true)">
+    <data name="GetTemplateFilePath" text="GetTemplateFilePath" title="GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername, bool includefilename = true, bool relativepath = true)">
       <![CDATA[ 
-    @GetTemplateFilePath(Model.GetSetting("themefolder"), "settings.cshtml", Model.GetSetting("modref"), "Default", true)
+    @GetTemplateFilePath(Model.GetSetting("themefolder"), "settings.cshtml", Model.GetSetting("modref"), "Default", true, true)
       ]]>
     </data>
 

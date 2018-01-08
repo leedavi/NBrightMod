@@ -500,7 +500,7 @@ namespace NBrightMod.render
         }
 
 
-        public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "Default", bool includefilename = true)
+        public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "Default", bool includefilename = true, bool relativepath = true)
         {
             if (subfoldername == "")
             {
@@ -519,37 +519,79 @@ namespace NBrightMod.render
             var path1 = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + moduleref + filename;
             if (File.Exists(path1))
             {
-                if (includefilename)
+                if (relativepath)
                 {
-                    return new RawString(path1);
+                    if (!includefilename)
+                    {
+                        path1 = path1.Replace("\\" + filename, "") + "\\";
+                    }
+                    System.Uri uri1 = new Uri(path1);
+                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                    return new RawString(relativeUri.ToString());
                 }
                 else
                 {
-                    return new RawString(path1.Replace("\\" + moduleref + filename, "") + "\\");
+                    if (includefilename)
+                    {
+                        return new RawString(path1);
+                    }
+                    else
+                    {
+                        return new RawString(path1.Replace("\\" + filename, "") + "\\");
+                    }
                 }
             }
             var path2 = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + filename;
             if (File.Exists(path2))
             {
-                if (includefilename)
+                if (relativepath)
                 {
-                    return new RawString(path2);
+                    if (!includefilename)
+                    {
+                        path2 = path2.Replace("\\" + filename, "") + "\\";
+                    }
+                    System.Uri uri1 = new Uri(path2);
+                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                    return new RawString(relativeUri.ToString());
                 }
                 else
                 {
-                    return new RawString(path2.Replace("\\" + filename, "") + "\\");
+                    if (includefilename)
+                    {
+                        return new RawString(path2);
+                    }
+                    else
+                    {
+                        return new RawString(path2.Replace("\\" + filename, "") + "\\");
+                    }
                 }
             }
             var path3 = controlMapPath.TrimEnd('\\') + "\\Themes\\" + themeFolder + "\\" + subfoldername + "\\" + filename;
             if (File.Exists(path3))
             {
-                if (includefilename)
+                if (relativepath)
                 {
-                    return new RawString(path3);
+                    if (!includefilename)
+                    {
+                        path3 = path3.Replace("\\" + filename, "") + "\\";
+                    }
+                    System.Uri uri1 = new Uri(path3);
+                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    Uri relativeUri = uri2.MakeRelativeUri(uri1);
+                    return new RawString(relativeUri.ToString());
                 }
                 else
                 {
-                    return new RawString(path3.Replace("\\" + filename, "") + "\\");
+                    if (includefilename)
+                    {
+                        return new RawString(path3);
+                    }
+                    else
+                    {
+                        return new RawString(path3.Replace("\\" + filename, "") + "\\");
+                    }
                 }
             }
 
