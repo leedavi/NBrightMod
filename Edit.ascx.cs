@@ -64,37 +64,8 @@ namespace Nevoweb.DNN.NBrightMod
                 if (Utils.RequestParam(Context, "version") == "2")
                 {
                     // accept verison changes
-                    var objCtrl = new NBrightDataController();
-                    var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATA");
-                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "NBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        LocalUtils.VersionValidate(nbi);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
-                        {
-                            // remove deleted data record.
-                            objCtrl.Delete(nbi.XrefItemId);
-                            objCtrl.Delete(nbi.ItemID);
-                        }
-                        LocalUtils.VersionValidate(nbi);
-                    }
-                    l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
-                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATALANG");
-                    // lang records first, so we don;t auto delete lang on base record delete.
-                    foreach (var nbi in l2)
-                    {
-                        LocalUtils.VersionValidate(nbi);
-                    }
-                    foreach (var nbi in l)
-                    {
-                        LocalUtils.VersionValidate(nbi);
-                    }
-                    LocalUtils.VersionSendEmail(ModuleId, "version-email-validate.cshtml");
-                    LocalUtils.VersionAuditLog(ModuleId, AuditCode.Validate);
+                    LocalUtils.DoValidate(ModuleId, "NBrightModDATA");
+                    LocalUtils.DoValidate(ModuleId, "NBrightModHEADER");
                 }
                 if (Utils.RequestParam(Context, "version") == "3" || Utils.RequestParam(Context, "version") == "6")
                 {

@@ -695,6 +695,7 @@ namespace Nevoweb.DNN.NBrightMod
                     if (cachedlist != null && cachedlist.ContainsKey("orderby")) orderby = cachedlist["orderby"];
 
                     var settings = LocalUtils.GetSettings(moduleid);
+                    var isVersion = false;
 
                     // Return list of items
                     var returnlimit = settings.GetXmlPropertyInt("genxml/textbox/returnlimit");
@@ -717,7 +718,6 @@ namespace Nevoweb.DNN.NBrightMod
                             l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
                         }
                         // get any version data.
-                        var isVersion = false;
                         var length = l.Count;
                         var removeList = new List<int>();
                         for (int i = 0; i < length; i++)
@@ -757,26 +757,26 @@ namespace Nevoweb.DNN.NBrightMod
                             }
                         }
 
-                        // get any "added" version records
-                        var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "a" + entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
-                        foreach (var nbi in l2)
-                        {
-                            l.Add(nbi);
-                            isVersion = true;
-                        }
+                    }
 
-                        if (isVersion && !String.IsNullOrWhiteSpace(orderby) && l.Count > 1)
-                        {
-                            // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
-                            var filter2 = " and ( ";
-                            foreach (var nbi in l)
-                            {
-                                filter2 += " NB1.ItemId = " + nbi.ItemID + " or ";
-                            }
-                            filter2 = filter2.Substring(0, filter2.Length - 3) + ") ";
-                            l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "", filter2, orderby, returnlimit, 0, 0, 0, editlang);
-                        }
+                    // get any "added" version records
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "a" + entitytype, "", orderby, returnlimit, 0, 0, 0, editlang);
+                    foreach (var nbi in l2)
+                    {
+                        l.Add(nbi);
+                        isVersion = true;
+                    }
 
+                    if (isVersion && !String.IsNullOrWhiteSpace(orderby) && l.Count > 1)
+                    {
+                        // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
+                        var filter2 = " and ( ";
+                        foreach (var nbi in l)
+                        {
+                            filter2 += " NB1.ItemId = " + nbi.ItemID + " or ";
+                        }
+                        filter2 = filter2.Substring(0, filter2.Length - 3) + ") ";
+                        l = objCtrl.GetList(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "", filter2, orderby, returnlimit, 0, 0, 0, editlang);
                     }
 
                     strOut = LocalUtils.RazorTemplRenderList(strTemplate, moduleid, _lang + editlang, l, editlang);
@@ -1959,7 +1959,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
                 if (nbilang != null) // should be created on addnew function
                 {
-                    nbilang.ParentItemId = nbi.ItemID;
+                    nbilang.ParentItemId = Convert.ToInt32(itemid);
                     nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
                     nbilang.TextData = ""; // clear any output DB caching
                     if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))

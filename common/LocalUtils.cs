@@ -43,6 +43,18 @@ namespace NBrightMod.common
     {
         #region "Version Control"
 
+        public static bool HasVersion(int ModuleId)
+        {
+            var objCtrl = new NBrightDataController();
+            var c = objCtrl.GetListCount(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
+            c += objCtrl.GetListCount(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
+            c += objCtrl.GetListCount(PortalSettings.Current.PortalId, ModuleId, "vNBrightModHEADER");
+            c += objCtrl.GetListCount(PortalSettings.Current.PortalId, ModuleId, "aNBrightModHEADER");
+
+            if (c > 0) return true;
+            return false;
+        }
+
         public static bool VersionUserCanValidate(int moduleid)
         {
             if (UserController.Instance.GetCurrentUserInfo().IsInRole("Manager") || UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators"))
@@ -125,10 +137,14 @@ namespace NBrightMod.common
                 }
                 var objCtrl = new NBrightDataController();
                 var nbi = objCtrl.GetData(baseid);
-                if (nbi != null)
+                if (nbi == null)
                 {
-                    return nbi;
+                    // if null then there is an issue with the DB xrefitemid
+                    nbrightInfo.XrefItemId = 0;
+                    objCtrl.Update(nbrightInfo);
+                    return nbrightInfo;
                 }
+                return nbi;
             }
             return nbrightInfo;
         }
@@ -198,16 +214,6 @@ namespace NBrightMod.common
                         var langlist = objCtrl.GetList(nbrightInfo.PortalId, -1, etypecode, "and NB1.ParentItemId = '" + pitemId + "' and NB1.Lang != '" + nbrightInfo.Lang + "' ");
                         foreach (var langnbi in langlist)
                         {
-                            if (langnbi.XrefItemId >= 0) // fix any linked record that should not be.
-                            {
-                                var dummy = objCtrl.Get(langnbi.XrefItemId);
-                                if (dummy == null)
-                                {
-                                    langnbi.XrefItemId = 0;
-                                    objCtrl.Update(langnbi);
-                                }
-
-                            }
                             if (langnbi.XrefItemId == 0) // only if not created
                             {
                                 var langitemid = langnbi.ItemID;
@@ -224,6 +230,18 @@ namespace NBrightMod.common
                                 langnbi2.XrefItemId = objCtrl.Update(newlangnbi);
                                 objCtrl.Update(langnbi2);
                             }
+
+                            if (langnbi.XrefItemId >= 0) // fix any linked record that should not be.
+                            {
+                                var dummy = objCtrl.Get(langnbi.XrefItemId);
+                                if (dummy == null)
+                                {
+                                    langnbi.XrefItemId = 0;
+                                    objCtrl.Update(langnbi);
+                                }
+
+                            }
+
                         }
                     }
                 }
@@ -290,6 +308,42 @@ namespace NBrightMod.common
                 objCtrl.Delete(nbi.ItemID);
             }
 
+        }
+
+        public static void DoValidate(int ModuleId,string entitytype)
+        {
+            // accept verison changes
+            var objCtrl = new NBrightDataController();
+            var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, entitytype);
+            var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, entitytype + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                LocalUtils.VersionValidate(nbi, entitytype);
+            }
+            foreach (var nbi in l)
+            {
+                if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                {
+                    // remove deleted data record.
+                    objCtrl.Delete(nbi.XrefItemId);
+                    objCtrl.Delete(nbi.ItemID);
+                }
+                LocalUtils.VersionValidate(nbi, entitytype);
+            }
+            l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a" + entitytype);
+            l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "a" + entitytype + "LANG");
+            // lang records first, so we don;t auto delete lang on base record delete.
+            foreach (var nbi in l2)
+            {
+                LocalUtils.VersionValidate(nbi, entitytype);
+            }
+            foreach (var nbi in l)
+            {
+                LocalUtils.VersionValidate(nbi, entitytype);
+            }
+            LocalUtils.VersionSendEmail(ModuleId, "version-email-validate.cshtml");
+            LocalUtils.VersionAuditLog(ModuleId, AuditCode.Validate);
         }
 
         /// <summary>

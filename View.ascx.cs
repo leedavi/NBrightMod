@@ -53,13 +53,7 @@ namespace Nevoweb.DNN.NBrightMod
             // check for version records 
             if (Request.IsAuthenticated && (LocalUtils.VersionUserCanValidate(ModuleId) || LocalUtils.VersionUserMustCreateVersion(ModuleId)))
             {
-                var objCtrl = new NBrightDataController();
-                var l = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "vNBrightModDATA");
-                var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, ModuleId, "aNBrightModDATA");
-                if (l.Count > 0 || l2.Count > 0)
-                {
-                    _versionRecordExist = true;
-                }
+                    _versionRecordExist = LocalUtils.HasVersion(ModuleId);
             }
 
             LocalUtils.IncludePageHeaders(base.ModuleId.ToString(""), this.Page, "NBrightMod","view");
