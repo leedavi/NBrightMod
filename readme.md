@@ -1,14 +1,41 @@
 # NBrightMod Module
 
+## Image Uploading Folder
+
+The image upload folder is defined by the theme using the "settings.cshtml" template.  A textbox called "settinguploadfolder" is created and this is used for the image upload folder.
+
+Example of code required to define the upload folder.
+
+```
+    <div class='dnnFormItem'>
+        @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+        @TextBox(info, "genxml/textbox/settinguploadfolder", "", "slider")
+    </div>
+```
+
+The default for the textbox can be defined as the default of the textbox and will be applied to all new modules using this template.
+
+If no "settinguploadfolder" textbox is found, then a default of "images" is used.
+
 ## List Header
 
 An “App Theme” can have a list of records, each list may have a header record which can be used to inject data into the output html.  This header record is an independent record to the list data records.
 
 To create a header record you need to add a "editlistheader.cshtml" template to the theme, under the Default folder.
 
-here is an example of a template:
+This template is injected via the "editlist.cshtml" template.
 
+Example of injecting the "editlistheader.cshtml" via the @RenderTemplate token.
 
+```
+@EditButtons("a,sl,ex")
+
+@RenderTemplate(GetTemplateFilePath(Model.GetSetting("themefolder"), "editlistheader.cshtml", Model.GetSetting("modref"), "Default", true, true).ToString(), Model)
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlist-shared.cshtml", Model)
+```
+
+here is an example of a "editlistheader.cshtml" template:
 
 ```
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
@@ -52,10 +79,6 @@ here is an example of a template:
 </div>
 
 ```
-
-
-
-
 
 
 

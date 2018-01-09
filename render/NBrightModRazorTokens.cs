@@ -526,9 +526,9 @@ namespace NBrightMod.render
                         path1 = path1.Replace("\\" + filename, "") + "\\";
                     }
                     System.Uri uri1 = new Uri(path1);
-                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    System.Uri uri2 = new Uri(System.Web.Hosting.HostingEnvironment.MapPath("\\"));
                     Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                    return new RawString(relativeUri.ToString());
+                    return new RawString("/" + relativeUri.ToString());
                 }
                 else
                 {
@@ -552,9 +552,9 @@ namespace NBrightMod.render
                         path2 = path2.Replace("\\" + filename, "") + "\\";
                     }
                     System.Uri uri1 = new Uri(path2);
-                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    System.Uri uri2 = new Uri(System.Web.Hosting.HostingEnvironment.MapPath("\\"));
                     Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                    return new RawString(relativeUri.ToString());
+                    return new RawString("/" + relativeUri.ToString());
                 }
                 else
                 {
@@ -578,9 +578,9 @@ namespace NBrightMod.render
                         path3 = path3.Replace("\\" + filename, "") + "\\";
                     }
                     System.Uri uri1 = new Uri(path3);
-                    System.Uri uri2 = new Uri(PortalSettings.Current.HomeSystemDirectoryMapPath);
+                    System.Uri uri2 = new Uri(System.Web.Hosting.HostingEnvironment.MapPath("\\"));
                     Uri relativeUri = uri2.MakeRelativeUri(uri1);
-                    return new RawString(relativeUri.ToString());
+                    return new RawString("/" + relativeUri.ToString());
                 }
                 else
                 {

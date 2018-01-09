@@ -13,5 +13,6 @@
 
 @EditButtons("a,sl,ex")
 
+@RenderTemplate(GetTemplateFilePath(Model.GetSetting("themefolder"), "editlistheader.cshtml", Model.GetSetting("modref"), "Default", true, true).ToString(), Model)
 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editlist-shared.cshtml", Model)
