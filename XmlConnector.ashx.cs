@@ -113,7 +113,7 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = GetData(context);
                     break;
                 case "getlistheader":
-                    strOut = GetData(context);
+                    strOut = GetHeaderData(context);
                     break;
                 case "getimagelist":
                     strOut = GetData(context);
@@ -139,14 +139,7 @@ namespace Nevoweb.DNN.NBrightMod
                     strOut = SaveHeaderData(context);
                     break;
                 case "selectlang":
-                    // DO NOT save on langauge changem this will always create the version records.
-
-                    //if (LocalUtils.CheckRights(moduleid))
-                    //{
-                    //    SaveImages(context);
-                    //    SaveDocs(context);
-                    //    strOut = SaveData(context);
-                    //}
+                    // DO NOT save on language change, this will always create the version records.
                     break;
                 case "fileupload":
                     if (LocalUtils.CheckRights(moduleid)) FileUpload(context, moduleidparam);
@@ -225,6 +218,7 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         LocalUtils.ResetValidationFlag();
                         LocalUtils.ValidateModuleData();
+                        LocalUtils.ValidateLangaugeRecords(PortalSettings.Current.PortalId, _lang);
                         strOut = "Portal Validation Ativated";
                     }
                     break;
@@ -589,6 +583,70 @@ namespace Nevoweb.DNN.NBrightMod
             settings.Lang = "";
             settings.GUIDKey = modref;
             return settings;
+        }
+
+        private String GetHeaderData(HttpContext context, bool clearCache = false)
+        {
+            try
+            {
+                var entitytype = "NBrightModDATA";
+                var objCtrl = new NBrightDataController();
+                var strOut = "";
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                var editlang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
+                var modref = ajaxInfo.GetXmlProperty("genxml/hidden/modref");
+
+                if (editlang == "") editlang = _lang;
+
+                if (moduleid == "") moduleid = "-1";
+
+                if (clearCache) LocalUtils.ClearRazorCache(moduleid);
+
+                var itemid = -1;
+                var strTemplate = "editlistheader.cshtml";
+                entitytype = "NBrightModHEADER";
+                var obj = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, entitytype, modref);
+                if (obj != null)
+                {
+                    itemid = obj.ItemID;
+                    // get any version data.
+                    if (obj.XrefItemId > 0 && obj.TypeCode.StartsWith(entitytype))
+                    {
+                        var nbi = objCtrl.GetData(obj.XrefItemId, "v" + entitytype + "LANG", obj.Lang, true);
+                        if (nbi == null)
+                        {
+                            // found invalid itemid, clean it up.
+                            var nbiClean = objCtrl.Get(obj.ItemID);
+                            nbiClean.XrefItemId = 0;
+                            objCtrl.Update(nbiClean);
+                            obj.XrefItemId = 0;
+                        }
+                        else
+                        {
+                            if (nbi.GetXmlPropertyBool("genxml/versiondelete"))
+                            {
+                                obj = null;
+                            }
+                            else
+                            {
+                                obj = nbi;
+                            }
+                        }
+                    }
+                    strOut = LocalUtils.RazorTemplRender(strTemplate, moduleid, _lang + itemid + editlang, obj, editlang);
+                }
+
+                return strOut;
+
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
         }
 
         private String GetData(HttpContext context, bool clearCache = false)
@@ -1905,79 +1963,83 @@ namespace Nevoweb.DNN.NBrightMod
         {
             try
             {
-                var objCtrl = new NBrightDataController();
-
                 //get uploaded params
                 var ajaxInfo = LocalUtils.GetAjaxFields(context);
-
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var modref = ajaxInfo.GetXmlProperty("genxml/hidden/modref");
-                var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
-                if (lang == "") lang = _lang;
-                var itemid = "0";
 
-                var ignoresecurityfilter = LocalUtils.CheckRights();
+                if (moduleid != "" && modref != "")
+                {
 
-                // get DB record
-                var nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
-                if (nbi == null)
-                {
-                    // try loading new record created by versioner
-                    nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "aNBrightModHEADER", modref);
-                }
-                else
-                {
-                    nbi = LocalUtils.VersionGet(nbi, "NBrightModHEADER");
-                }
+                    var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
+                    if (lang == "") lang = _lang;
+                    var itemid = "0";
 
-                if (nbi != null)
-                {
-                    itemid = nbi.ItemID.ToString("");
-                }
-                else
-                {                    
-                    itemid = AddNew(moduleid, "NBrightModHEADER", modref);
-                    nbi = objCtrl.GetData(Convert.ToInt32(itemid));
-                }
+                    var objCtrl = new NBrightDataController();
 
-                // get data passed back by ajax
-                var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-                // update record with ajax data
-                nbi.UpdateAjax(strIn);
-                nbi.TextData = ""; // clear any output DB caching
-                if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
-                {
-                    LocalUtils.VersionUpdate(nbi, "NBrightModHEADER");
-                }
-                else
-                {
-                    objCtrl.Update(nbi);
-                }
+                    var ignoresecurityfilter = LocalUtils.CheckRights();
 
-
-                // do langauge record
-                var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
-                if (nbilang != null) // should be created on addnew function
-                {
-                    nbilang.ParentItemId = Convert.ToInt32(itemid);
-                    nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
-                    nbilang.TextData = ""; // clear any output DB caching
-                    if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
+                    // get DB record
+                    var nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "NBrightModHEADER", modref);
+                    if (nbi == null)
                     {
-                        LocalUtils.VersionUpdate(nbilang, "NBrightModHEADER");
+                        // try loading new record created by versioner
+                        nbi = objCtrl.GetByGuidKey(PortalSettings.Current.PortalId, -1, "aNBrightModHEADER", modref);
                     }
                     else
                     {
-                        objCtrl.Update(nbilang);
+                        nbi = LocalUtils.VersionGet(nbi, "NBrightModHEADER");
                     }
 
-                    objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
-                }
+                    if (nbi != null)
+                    {
+                        itemid = nbi.ItemID.ToString("");
+                    }
+                    else
+                    {
+                        itemid = AddNew(moduleid, "NBrightModHEADER", modref);
+                        nbi = objCtrl.GetData(Convert.ToInt32(itemid));
+                    }
 
-                Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
-                LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
-                LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
-                DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
+                    // get data passed back by ajax
+                    var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
+                    // update record with ajax data
+                    nbi.UpdateAjax(strIn);
+                    nbi.TextData = ""; // clear any output DB caching
+                    if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                    {
+                        LocalUtils.VersionUpdate(nbi, "NBrightModHEADER");
+                    }
+                    else
+                    {
+                        objCtrl.Update(nbi);
+                    }
+
+
+                    // do langauge record
+                    var nbilang = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang);
+                    if (nbilang != null) // should be created on addnew function
+                    {
+                        nbilang.ParentItemId = Convert.ToInt32(itemid);
+                        nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
+                        nbilang.TextData = ""; // clear any output DB caching
+                        if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbilang, "NBrightModHEADER");
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbilang);
+                        }
+
+                        objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
+                    }
+
+                    Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+                    DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
+                }
 
                 return "";
 

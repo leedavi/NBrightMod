@@ -61,6 +61,7 @@
 </div>
 
 <div id="nbrightmodtoolsdata">
+    <input id="lang" type="hidden" value="@Model.GetUrlParam("language")" />
     <div>
         <button id="doportalvalidation" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.doportalvalidation")</button>
     </div>
@@ -227,7 +228,7 @@
     $(document).ready(function() {
         $('#doportalvalidation').unbind('click');
         $('#doportalvalidation').click(function () {
-            NBrightMod_nbxget('doportalvalidation', '#toolsmsg');
+            NBrightMod_nbxget('doportalvalidation', '#nbrightmodtoolsdata');
         });
 
         $('#clonemodule').unbind('click');

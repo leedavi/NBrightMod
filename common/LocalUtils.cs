@@ -1328,6 +1328,7 @@ namespace NBrightMod.common
         }
 
 
+
         /// <summary>
         /// do any validation of data required.  
         /// </summary>
@@ -1518,6 +1519,47 @@ namespace NBrightMod.common
 
 
         }
+
+        public static void ValidateLangaugeRecords(int portalId, string baselang)
+        {
+            var objCtrl = new NBrightDataController();
+            var l = objCtrl.GetList(portalId, -1, "NBrightModDATA");
+            foreach (var i in l)
+            {
+                ValidateLangaugeItemRecord(i.ItemID, baselang);
+            }
+            var l2 = objCtrl.GetList(portalId, -1, "NBrightModHEADER");
+            foreach (var i in l2)
+            {
+                ValidateLangaugeItemRecord(i.ItemID, baselang);
+            }
+            
+        }
+
+        public static void ValidateLangaugeItemRecord(int itemid, string baselang)
+        {
+            var objCtrl = new NBrightDataController();
+            var objBase = objCtrl.GetData(itemid);
+            if (objBase != null)
+            {
+                var objSettings = objCtrl.GetByType(objBase.PortalId, objBase.ModuleId, "SETTINGS");
+                if (objSettings != null)
+                {
+                    foreach (var toLang in DnnUtils.GetCultureCodeList(objBase.PortalId))
+                    {
+                        var obj = objCtrl.GetDataLang(objBase.ItemID, toLang, true);
+                        if (obj == null)
+                        {
+                            LocalUtils.CreateLangaugeDataRecord(objBase.ItemID, objBase.ModuleId, toLang, "", objBase.TypeCode, objSettings.GUIDKey);
+                        }
+                    }
+                    objCtrl.FillEmptyLanguageFields(objBase.ItemID, baselang);
+                }
+            }
+
+
+        }
+
 
         /// <summary>
         /// Get Export XML data for theme
