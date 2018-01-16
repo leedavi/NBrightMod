@@ -231,6 +231,10 @@ namespace NBrightMod.render
                 {
                     strOut += "<button type='button' class='btn btn-sm btn-success imageclick' data-toggle='modal' data-target='#NBrightModModal' ><span class='glyphicon glyphicon-folder-open'></span> " + ResourceKey("Edit.browse") + "</button>";
                 }
+                if (button.ToLower() == "upload1image")
+                {
+                    strOut += "<button type='button' class='btn btn-sm btn-success image1click' data-toggle='modal' data-target='#NBrightModModal' ><span class='glyphicon glyphicon-folder-open'></span> " + ResourceKey("Edit.browse") + "</button>";
+                }
                 if (button.ToLower() == "uploaddoc")
                 {
                     strOut += "<button type='button' class='btn btn-sm btn-success fileclick' data-toggle='modal' data-target='#NBrightModModal' ><span class='glyphicon glyphicon-folder-open'></span> " + ResourceKey("Edit.browse") + "</button>";

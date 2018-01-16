@@ -1,0 +1,37 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div>
+    <div class='dnnFormItem'>
+        @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+        @TextBox(info, "genxml/textbox/settinguploadfolder", "", "slider")
+    </div>
+    <div class="dnnFormItem">
+        @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize","class='form-control' width='100px' maxlength='5' ","1400")
+    </div>
+    <div class="dnnFormItem">
+        @DnnLabel("lblwidth","Settings.width")@NBrightTextBox(info, "genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","1400")
+    </div>
+    <div class="dnnFormItem">
+        @DnnLabel("lblheight", "Settings.height")@NBrightTextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "575")
+    </div>
+    <div class="dnnFormItem">
+        <div class="dnnLabel"><label><span>Crop from</span></label></div>
+        @DropDownList(info, "genxml/dropdownlist/crop", "top,center,bottom", "top,center,bottom", " update='save' class='form-control' ", "center")
+    </div>
+    <div class="dnnFormItem">
+      <div class="dnnLabel"><label><span>Add mask</span></label></div>
+      @CheckBox(info, "genxml/checkbox/mask", "", "",false)
+    </div>
+       
+    <div style="display:none">
+        <!-- set flag so upload of files replaces the current selected -->
+        @CheckBox(info, "genxml/checkbox/replaceimages", "", "",true);
+    </div>
+</div>
+

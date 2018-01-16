@@ -1,0 +1,76 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "ResponsiveSlides.view.cshtml", Model.ModuleId.ToString(""))
+
+@{
+    var msg = "";
+    if (Model.Settings != null && !Model.Settings.ContainsKey("imgresize")) // test specific theme setting to check for settings.
+    {
+        msg = ResourceKey("View.nosettings").ToString();
+    }
+        var divid = "NBrightMod" + @Model.GetSetting("modref");
+}
+@(msg)
+
+<div class="slider-container">
+<ul class="rslides" id="@(divid)">
+
+        @{
+            var lp = 1;
+        }
+        @foreach (NBrightInfo info in Model.List)
+        {
+            var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+
+            if (imageurl != "")
+            {
+            var width = Model.GetSetting("width");
+            var height = Model.GetSetting("height");
+            <li style="background:url('/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)') center center no-repeat;
+				          -webkit-background-size: cover;
+				          -moz-background-size: cover;
+				        -o-background-size: cover;
+				  background-size: cover;">
+            <div class="caption">
+                <h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+                <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+                <p>@BreakOf(info, "genxml/lang/genxml/textbox/text")</p>
+                @if (info.GetXmlProperty("genxml/lang/genxml/textbox/linktext") != "")
+                {
+                    var tabddl = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+                    <a href="@(tabddl)" class="bigbutton">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktext")</a>
+                }
+            </div>
+            </li>
+            }
+
+            lp+=1;
+        }
+
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+$("#@(divid)").responsiveSlides({
+  speed: 1000,
+  timeout: 4000,
+  pager: true,
+  nav: false
+});
+
+var vheight = $(window).height();
+$('.slider-container').css('height', vheight - $('.header').height() + 'px');
+
+});
+
+$(window).resize(function() {
+  var vheight = $(window).height();
+  $('.slider-container').css('height', vheight - $('.header').height() + 'px');
+});
+
+</script>

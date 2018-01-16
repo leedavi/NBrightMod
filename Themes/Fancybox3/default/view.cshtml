@@ -1,0 +1,66 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Fancybox3.view.cshtml", Model.ModuleId.ToString(""))
+
+@{
+    var hinfo = (NBrightInfo)Model.HeaderData;
+    if (hinfo == null)
+    {
+        hinfo = new NBrightInfo();
+    }
+}
+
+<div class="gallery-wrapper">
+
+@if (hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title") != "")
+{
+<h2>@hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+<hr />
+}
+
+<div class="gallery">
+
+@foreach (NBrightInfo info in Model.List)
+{
+var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+if (imageurl != "")
+{
+var group = Model.GetSetting("modref");
+var width = Model.GetSetting("width");
+var height = Model.GetSetting("height");
+var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+<a data-fancybox="@(group)" data-caption="@(title)" href="@(imageurl)">
+<img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
+</a>
+}
+}
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+
+$("[data-fancybox]").fancybox({
+  lang : 'fr',
+  i18n : {
+      'fr' : {
+          CLOSE       : 'Fermer',
+          NEXT        : 'Suivant',
+          PREV        : 'Précédent',
+          ERROR       : 'Le contenu demandé ne peut pas être chargé.<br />Veuillez réessayer plus tard.',
+          PLAY_START  : 'Démarrer le diaporama',
+          PLAY_STOP   : 'Mettre en pause le diaporama',
+          FULL_SCREEN : 'Plein écran',
+          THUMBS      : 'Vignettes',
+          DOWNLOAD    : 'Télécharger',
+          SHARE       : 'Partager',
+          ZOOM        : 'Zoomer'
+      }
+  }
+});
+
+</script>

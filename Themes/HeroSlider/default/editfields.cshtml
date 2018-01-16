@@ -1,0 +1,47 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang" ></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("sr,s,d,r")
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1-shared.cshtml", Model)
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+        
+        <div class="form-group">
+            <label>@ResourceKey("Theme.titleline1")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/title")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.titleline2")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/title2")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.text")</label>
+            <div>@NBrightTextArea(info, "genxml/lang/genxml/textbox/text", "rows='4' ")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.linktext")</label>
+            <div>@NBrightTextBox(info, "genxml/lang/genxml/textbox/linktext")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.sitepage")</label>
+            <div>@TabSelectList(info,"genxml/dropdownlist/linktab","class='form-control'",true)</div>
+        </div>
+
+    </div>
+</div>
+</div>

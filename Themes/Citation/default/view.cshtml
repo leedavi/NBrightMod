@@ -1,0 +1,13 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using NBrightDNN
+
+@foreach (NBrightInfo info in Model.List)
+{
+<div class="citation">
+<h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+@if (info.GetXmlProperty("genxml/lang/genxml/textbox/title2") != "")
+{
+<h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+}
+</div>
+}

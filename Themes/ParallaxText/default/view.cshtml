@@ -1,0 +1,52 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web
+@using System.Web.Configuration
+@using NBrightDNN
+@using RazorEngine.Text
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/ContactDetails/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+    var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+    var width = Model.GetSetting("width");
+    var height = Model.GetSetting("height");
+}
+
+<div class="parallax-window" data-parallax="scroll" data-speed="0.2" data-image-src="@(imageurl)">
+<div class="parallax-content">
+
+<h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+
+<hr />
+
+@if (info.GetXmlProperty("genxml/lang/genxml/textbox/text") != "") {
+<div class="parallax-text">@BreakOf(info, "genxml/lang/genxml/textbox/text")</div>
+}
+
+@if (info.GetXmlProperty("genxml/lang/genxml/textbox/extra") != "") {
+<div class="parallax-extra">@info.GetXmlProperty("genxml/lang/genxml/textbox/extra")</div>
+}
+
+<div class="parallax-link">@linksection(info)</div>
+
+</div>
+</div>
+
+@helper linksection(NBrightInfo info)
+{
+    if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
+    {
+        var tabddlvalue = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+        <a href="@(tabddlvalue)">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktitle")</a>
+    }
+    if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
+    {
+        var externalURL = info.GetXmlProperty("genxml/lang/genxml/textbox/externalhref");
+        <a href="@(externalURL)" target="_blank">@info.GetXmlProperty("genxml/lang/genxml/textbox/linktitle")</a>
+    }
+
+}

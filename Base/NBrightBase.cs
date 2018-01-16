@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Tabs;
 using NBrightCore.common;
 using NBrightDNN;
 using NBrightMod.common;
@@ -20,7 +21,7 @@ namespace Nevoweb.DNN.NBrightMod.Base
 
         public DotNetNuke.Framework.CDefault BasePage
         {
-            get { return (DotNetNuke.Framework.CDefault) this.Page; }
+            get{return (DotNetNuke.Framework.CDefault) this.Page;}
         }
 
     }

@@ -322,7 +322,17 @@ function ActivateFileLoader() {
     $('.imageclick').click(function () {
         $('#fileoperation').hide();
         $('#fileprocessingmsg').show();
+        $('#singlefile').val('False');
+        $('#savedreturnaction').val('images'); // set flag to return on save of data
 
+        savedata();
+    });
+
+    $('.image1click').unbind('click');
+    $('.image1click').click(function () {
+        $('#fileoperation').hide();
+        $('#fileprocessingmsg').show();
+        $('#singlefile').val('True');
         $('#savedreturnaction').val('images'); // set flag to return on save of data
 
         savedata();

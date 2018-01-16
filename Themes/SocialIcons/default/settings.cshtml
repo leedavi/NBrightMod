@@ -1,0 +1,17 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SocialLinks/resx/")
+
+@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<div>
+  @DnnLabel("lblwhiteversion","Theme.whiteversion")@CheckBox(info,"genxml/checkbox/colored","","",true)
+</div>

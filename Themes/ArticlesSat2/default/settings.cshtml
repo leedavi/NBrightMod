@@ -1,0 +1,18 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div>
+    <div class="dnnFormItem">
+        @DnnLabel("lblreturnlimit", "Settings.returnlimit")@TextBox(info, "genxml/textbox/returnlimit","class='form-control' width='100px' maxlength='5' ","2")
+    </div>
+    <div class="dnnFormItem">
+        @DnnLabel("lblsourcepage", "Settings.sourcepage")@TabSelectList(info, "genxml/dropdownlist/sourcepage","class='form-control'",true)
+    </div>
+</div>
+

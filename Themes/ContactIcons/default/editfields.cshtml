@@ -1,0 +1,82 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID" ></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
+<input id="lang" type="hidden" value="@info.Lang" ></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("sx,s,ex")
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+
+        <div class="form-group">
+            <label>@ResourceKey("Theme.company")</label>
+            @NBrightTextBox(info, "genxml/textbox/company")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.address")</label>
+            @NBrightTextBox(info, "genxml/textbox/address1")
+            @NBrightTextBox(info, "genxml/textbox/address2")
+            @NBrightTextBox(info, "genxml/textbox/address3")
+            @NBrightTextBox(info, "genxml/textbox/address4")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.tel")</label>
+            @NBrightTextBox(info, "genxml/textbox/tel")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.tel2")</label>
+            @NBrightTextBox(info, "genxml/textbox/tel2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.fax")</label>
+            @NBrightTextBox(info, "genxml/textbox/fax")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.email")</label>
+            @NBrightTextBox(info, "genxml/textbox/email")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contact1")</label>
+            @NBrightTextBox(info, "genxml/textbox/contact1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contactport")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactport1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contactemail")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactemail1")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contact2")</label>
+            @NBrightTextBox(info, "genxml/textbox/contact2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contactport")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactport2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.contactemail")</label>
+            @NBrightTextBox(info, "genxml/textbox/contactemail2")
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.extrainfos")</label>
+            <div>@NBrightTextArea(info, "genxml/lang/genxml/textbox/extrainfos", "rows='4' ")</div>
+        </div>
+    </div>
+    </div>
+</div>

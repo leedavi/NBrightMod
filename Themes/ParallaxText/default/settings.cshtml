@@ -1,0 +1,22 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
+@using System.Linq
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div class='dnnFormItem'>
+    @DnnLabel("lblUploadFolder", "Settings.uploadfolder")
+    @TextBox(info, "genxml/textbox/settinguploadfolder", "", "slider")
+</div>
+<div class="dnnFormItem">
+    @DnnLabel("lblimgresize", "Settings.imgresize")@NBrightTextBox(info, "genxml/textbox/imgresize", "class='form-control' width='100px' maxlength='5' ", "1400")
+</div>
+<div class="dnnFormItem">
+    @DnnLabel("lblwidth", "Settings.width")@NBrightTextBox(info, "genxml/textbox/width", "class='form-control' width='100px' maxlength='5' ", "1400")
+</div>
+<div class="dnnFormItem">
+    @DnnLabel("lblheight", "Settings.height")@NBrightTextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "575")
+</div>

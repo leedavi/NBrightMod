@@ -1,0 +1,50 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
+@using System.Linq
+@using DotNetNuke.Services.Scheduling
+@using NBrightDNN
+
+@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@EditButtons("r")
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+        <div class="form-group">
+            <label>@ResourceKey("Edit.date")</label>
+            <div>@info.ModifiedDate</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.firstname")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/firstname")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.lastname")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/lastname")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.email")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/clientemail")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.tel")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/tel")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.subject")</label>
+            <div>@info.GetXmlProperty("genxml/textbox/subject")</div>
+        </div>
+        <div class="form-group">
+            <label>@ResourceKey("Theme.message")</label>
+            <div>@BreakOf(info,"genxml/textbox/emailsendermsg")</div>
+        </div>
+    </div>
+</div>
+</div>

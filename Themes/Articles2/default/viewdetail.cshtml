@@ -1,0 +1,114 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System
+@using System.Linq
+@using System.Xml
+@using NBrightDNN
+
+@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Articles2.view.cshtml", Model.ModuleId.ToString(""))
+@AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "Articles2.view.cshtml", Model.ModuleId.ToString(""))
+
+@helper imageindex(NBrightInfo x, String index)
+{
+var imageurl = x.GetXmlProperty("genxml/imgs/genxml[" + index + "]/hidden/imageurl");
+var openinlightbox = x.GetXmlPropertyBool("genxml/checkbox/openinlightbox");
+var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + index + "]/textbox/imgcaption");
+
+if (imageurl != "")
+{
+    if (openinlightbox)
+    {
+            <a data-fancybox="group@(x.ItemID)" data-caption="@(caption)" href="@(imageurl)">
+                <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=820&h=360" alt="@(caption)" />
+            </a>
+    }
+    else
+    {
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=820&h=360" alt="@(caption)" />
+    }
+}
+}
+
+@helper imagedisplay(NBrightInfo x)
+{
+var imgList = x.XMLDoc.SelectNodes("genxml/imgs/genxml");
+if (imgList != null)
+{
+    var openinlightbox = x.GetXmlPropertyBool("genxml/checkbox/openinlightbox");
+    var c = 1;
+    foreach (XmlNode i in imgList)
+    {
+    if (c > 1) {
+        var nbi = new NBrightInfo();
+        nbi.XMLData = i.OuterXml;
+        var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+        var caption = x.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + c + "]/textbox/imgcaption");
+
+        if (imageurl != "")
+        {
+                if (openinlightbox)
+                {
+                    <div class="articlegalimg">
+                    <a data-fancybox="group@(x.ItemID)" data-caption="@(caption)" href="@(imageurl)">
+                        <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=120&h=120" alt="@(caption)" />
+                    </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="articlegalimg">
+                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=120&h=120" alt="@(caption)" />
+                    </div>
+                }
+        }
+    }
+    c += 1;
+
+    }
+}
+}
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div class="articlediv">
+
+  <h1>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h1>
+  <p class="articleinfos"><span>@ResourceKey("Theme.published") </span>@info.GetXmlProperty("genxml/textbox/eventdate")<span> @ResourceKey("Theme.in") </span>@info.GetXmlProperty("genxml/lang/genxml/textbox/theme")</p>
+
+  <div class="articleimg">@imageindex(info, "1")</div>
+  
+  <div class="articlecontent">@HtmlOf(info, "genxml/lang/genxml/textbox/ckeditor1")</div>
+
+  <a href="javascript:history.back()" class="bigbutton">@ResourceKey("Edit.return")</a>
+
+  <div class="articlegal">
+    @imagedisplay(info)
+  </div>
+
+</div>
+
+<script type="text/javascript">
+
+$("[data-fancybox]").fancybox({
+  lang : 'fr',
+  i18n : {
+      'fr' : {
+          CLOSE       : 'Fermer',
+          NEXT        : 'Suivant',
+          PREV        : 'Précédent',
+          ERROR       : 'Le contenu demandé ne peut pas être chargé.<br />Veuillez réessayer plus tard.',
+          PLAY_START  : 'Démarrer le diaporama',
+          PLAY_STOP   : 'Mettre en pause le diaporama',
+          FULL_SCREEN : 'Plein écran',
+          THUMBS      : 'Vignettes',
+          DOWNLOAD    : 'Télécharger',
+          SHARE       : 'Partager',
+          ZOOM        : 'Zoomer'
+      }
+  }
+});
+
+</script>
