@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,40 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="facebook.Text" xml:space="preserve">
-    <value>URL Facebook</value>
-  </data>
-  <data name="twitter.Text" xml:space="preserve">
-    <value>URL Twitter</value>
-  </data>
-  <data name="linkedin.Text" xml:space="preserve">
-    <value>URL LinkedIn</value>
-  </data>
-  <data name="googleplus.Text" xml:space="preserve">
-    <value>URL GooglePlus</value>
-  </data>
-  <data name="youtube.Text" xml:space="preserve">
-    <value>URL YouTube</value>
-  </data>
-  <data name="pinterest.Text" xml:space="preserve">
-    <value>URL Pinterest</value>
-  </data>
-  <data name="flickr.Text" xml:space="preserve">
-    <value>URL Flickr</value>
-  </data>
-  <data name="viadeo.Text" xml:space="preserve">
-    <value>URL Viadeo</value>
-  </data>
-  <data name="vimeo.Text" xml:space="preserve">
-    <value>URL Vimeo</value>
-  </data>
-  <data name="tripadvisor.Text" xml:space="preserve">
-    <value>URL TripAdvisor</value>
-  </data>
-  <data name="rss.Text" xml:space="preserve">
-    <value>URL RSS</value>
-  </data>
-  <data name="coloredversion.Text" xml:space="preserve">
-    <value>Colored version</value>
-  </data>
 </root>

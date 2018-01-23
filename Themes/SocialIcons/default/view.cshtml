@@ -6,22 +6,18 @@
 @using NBrightDNN
 @using RazorEngine.Text
 
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SocialLinks/resx/")
-
 @{
     var info = (NBrightInfo)Model.List.First();
-}
-
-<a href="javascript:void(0)" id="toTop" class="bigbutton backtotop"><i class="fas fa-chevron-up"></i></a>
-<h4>@ResourceKey("Settings.followus")</h4>
-
-@{
     var socialclass = "socialicons";
     if (Model.GetSetting("colored") == "True")
     {
         socialclass = "socialicons si-colored";
     }
+}
+
+@if (info.GetXmlProperty("genxml/lang/genxml/textbox/title") != "")
+{
+<h4>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h4>
 }
 
 <div class="@(socialclass)">
@@ -71,13 +67,4 @@
         <a href="@info.GetXmlProperty("genxml/textbox/rss")" class="rssicon" target="_blank"><i class="fas fa-rss-square"></i></a>
     }
 
-    <div class="clearfix"></div>
 </div>
-
-<script type="text/javascript">
-$(document).ready(function() {
-  $("#toTop").click(function () {
-   $("html, body").animate({scrollTop: 0}, 1000);
-  });
-});
-</script>

@@ -138,9 +138,6 @@
   <data name="flickr.Text" xml:space="preserve">
     <value>URL Flickr</value>
   </data>
-  <data name="picasa.Text" xml:space="preserve">
-    <value>URL Picasa</value>
-  </data>
   <data name="viadeo.Text" xml:space="preserve">
     <value>URL Viadeo</value>
   </data>
@@ -153,13 +150,7 @@
   <data name="rss.Text" xml:space="preserve">
     <value>URL RSS</value>
   </data>
-  <data name="followus.Text" xml:space="preserve">
-    <value>Suivez-nous</value>
-  </data>
-  <data name="top.Text" xml:space="preserve">
-    <value>Haut</value>
-  </data>
-  <data name="whiteversion.Text" xml:space="preserve">
-    <value>White Version</value>
+  <data name="coloredversion.Text" xml:space="preserve">
+    <value>Icones en couleur</value>
   </data>
 </root>

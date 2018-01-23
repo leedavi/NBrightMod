@@ -3,7 +3,6 @@
 @using NBrightDNN
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/SocialLinks/resx/")
 
 @AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
 
@@ -13,5 +12,5 @@
 
 <input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
 <div>
-  @DnnLabel("lblwhiteversion","Theme.whiteversion")@CheckBox(info,"genxml/checkbox/colored","","",true)
+  @DnnLabel("lblcoloredversion","Theme.coloredversion")@CheckBox(info,"genxml/checkbox/colored","","",true)
 </div>
