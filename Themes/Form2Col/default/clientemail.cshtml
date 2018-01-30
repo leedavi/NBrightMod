@@ -1,4 +1,4 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
-@RenderTemplate("/Portals/wiseopro2018/NBrightMod/Themes/Form2Col/default/manageremail.cshtml", Model)
+@RenderTemplate(GetTemplateFilePath(Model.GetSetting("themefolder"), "manageremail.cshtml", Model.GetSetting("modref")).ToString(), Model)

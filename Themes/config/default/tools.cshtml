@@ -156,16 +156,21 @@
 </p>
 <div id="roletree1"></div>
 <div>
+
+    <div id="roledata">
+        <input id="rolelist" type="hidden" value="" />
+        <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")" />
+        <input id="currenttabid" type="hidden" value="@(tabid)" />
+        <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")" />
+            @ResourceKey("Settings.ignoresat")
+            @CheckBox(info, "genxml/checkbox/ignoresat", "", "", true)
+    </div>
+
+
     <button id="rolemodule" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.rolemodule")</button>
     <div id="rolemsg"></div>
 </div>
 
-<div id="roledata">
-    <input id="rolelist" type="hidden" value=""/>
-    <input id="moduleid" type="hidden" value="@Model.GetUrlParam("mid")"/>
-    <input id="currenttabid" type="hidden" value="@(tabid)"/>
-    <input id="roleid" type="hidden" value="@Model.GetUrlParam("roleselect")"/>
-</div>
 
 <script>
 

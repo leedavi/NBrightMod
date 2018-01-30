@@ -599,7 +599,12 @@ namespace NBrightMod.render
                 }
             }
 
-            return new RawString("");
+            // Just default back to system path.
+            if (includefilename)
+            {
+                return new RawString(" CANNOT find file: " + filename);
+            }
+            return new RawString(path3.Replace("\\" + filename, "") + "\\");
         }
 
     }

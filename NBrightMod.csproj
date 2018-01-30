@@ -152,6 +152,9 @@
     <EmbeddedResource Include="Themes\Flexslider\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\Flexslider\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\Flexslider\resx\View.ascx.resx" />
+    <EmbeddedResource Include="Themes\Form2Col\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\Form2Col\resx\Theme.ascx.fr-FR.resx" />
+    <EmbeddedResource Include="Themes\Form2Col\resx\Theme.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMapMultipoint\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
@@ -203,6 +206,7 @@
     <Content Include="Themes\Flexslider\css\bg_direction_nav.png" />
     <Content Include="Themes\Flexslider\css\flexslider.css" />
     <Content Include="Themes\Flexslider\js\flexslider.min.js" />
+    <Content Include="Themes\Form2Col\css\flatform.css" />
     <Content Include="Themes\HtmlContent\css\jquery.fancybox.css" />
     <Content Include="Themes\HtmlContent\img\blank.gif" />
     <Content Include="Themes\HtmlContent\img\fancybox_loading%402x.gif" />
@@ -335,6 +339,15 @@
     <None Include="Themes\Flexslider\default\settings.cshtml" />
     <None Include="Themes\Flexslider\default\view.cshtml" />
     <None Include="Themes\Flexslider\default\viewpageheader.cshtml" />
+    <None Include="Themes\Form2Col\default\clientemail.cshtml" />
+    <None Include="Themes\Form2Col\default\editbody.cshtml" />
+    <None Include="Themes\Form2Col\default\editfields.cshtml" />
+    <None Include="Themes\Form2Col\default\editlist.cshtml" />
+    <None Include="Themes\Form2Col\default\editpageheader.cshtml" />
+    <None Include="Themes\Form2Col\default\manageremail.cshtml" />
+    <None Include="Themes\Form2Col\default\settings.cshtml" />
+    <None Include="Themes\Form2Col\default\view.cshtml" />
+    <None Include="Themes\Form2Col\default\viewpageheader.cshtml" />
     <None Include="Themes\GoogleMapMultipoint\default\editbody.cshtml" />
     <None Include="Themes\GoogleMapMultipoint\default\editfields.cshtml" />
     <None Include="Themes\GoogleMapMultipoint\default\editlist.cshtml" />

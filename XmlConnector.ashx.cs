@@ -1124,22 +1124,25 @@ namespace Nevoweb.DNN.NBrightMod
                     Directory.CreateDirectory(sourcesystemresx);
                 }
                 var xmlupdateresx = ajaxInfo.GetXmlProperty("genxml/hidden/xmlupdateresx"); // get data pased back by ajax
-                xmlupdateresx = GenXmlFunctions.DecodeCDataTag(xmlupdateresx); // convert CDATA
-                var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx, ""); // Convert to genxml format
-
-                var nbi = new NBrightInfo();
-                nbi.XMLData = xmlData;
-                // set simple base if no file exists
-                using (ResXResourceWriter resx = new ResXResourceWriter(sourcesystemresx + "\\" + resxfilename))
+                if (xmlupdateresx != "")
                 {
-                    var lp = 1;
-                    while (nbi.XMLDoc != null && nbi.XMLDoc.SelectSingleNode("genxml/textbox/resxkey" + lp) != null)
+                    xmlupdateresx = GenXmlFunctions.DecodeCDataTag(xmlupdateresx); // convert CDATA
+                    var xmlData = GenXmlFunctions.GetGenXmlByAjax(xmlupdateresx, ""); // Convert to genxml format
+
+                    var nbi = new NBrightInfo();
+                    nbi.XMLData = xmlData;
+                    // set simple base if no file exists
+                    using (ResXResourceWriter resx = new ResXResourceWriter(sourcesystemresx + "\\" + resxfilename))
                     {
-                        if (nbi.GetXmlProperty("genxml/textbox/resxkey" + lp) != "")
+                        var lp = 1;
+                        while (nbi.XMLDoc != null && nbi.XMLDoc.SelectSingleNode("genxml/textbox/resxkey" + lp) != null)
                         {
-                            resx.AddResource(nbi.GetXmlProperty("genxml/textbox/resxkey" + lp), nbi.GetXmlProperty("genxml/textbox/resxvalue" + lp));
+                            if (nbi.GetXmlProperty("genxml/textbox/resxkey" + lp) != "")
+                            {
+                                resx.AddResource(nbi.GetXmlProperty("genxml/textbox/resxkey" + lp), nbi.GetXmlProperty("genxml/textbox/resxvalue" + lp));
+                            }
+                            lp += 1;
                         }
-                        lp += 1;
                     }
                 }
 
@@ -1391,81 +1394,94 @@ namespace Nevoweb.DNN.NBrightMod
                 var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
                 var currenttabid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/currenttabid");
                 var tablist = rolelist.Replace(" ", "").Split(',');
+                var ignoresat = ajaxInfo.GetXmlPropertyBool("genxml/checkbox/ignoresat");
 
                 var mlist = objmodules.GetAllTabsModules(PortalSettings.Current.PortalId, false);
                 foreach (ModuleInfo moduleInfo in mlist)
                 {
                     if (moduleInfo.ModuleDefinition.DefinitionName == "NBrightMod")
                     {
-                        var roleexist = false;
-                        var permissionID = -1;
-                        var PermissionsList2 = moduleInfo.ModulePermissions.ToList();
-                        var role = RoleController.Instance.GetRoleById(PortalSettings.Current.PortalId, selectedRoleId);
-                        if (role != null)
+
+                        // get module settings
+                        var settings = LocalUtils.GetSettings(moduleInfo.ModuleID.ToString(""));
+                        bool isSat = false;
+                        if (settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != "" && settings.GetXmlProperty("genxml/dropdownlist/datasourceref") != settings.GetXmlProperty("genxml/hidden/modref"))
                         {
-                            foreach (var p in PermissionsList2)
-                            {
-                                if (p.RoleName == role.RoleName)
-                                {
-                                    permissionID = p.PermissionID;
-                                    roleexist = true;
-                                }
-                            }
+                            isSat = true;
+                        }
+                        bool processroleupdate = !(ignoresat && isSat);
 
-                            if (tablist.Contains(moduleInfo.TabID.ToString()))
+                        if (processroleupdate)
+                        {
+                            
+                            var roleexist = false;
+                            var permissionID = -1;
+                            var PermissionsList2 = moduleInfo.ModulePermissions.ToList();
+                            var role = RoleController.Instance.GetRoleById(PortalSettings.Current.PortalId, selectedRoleId);
+                            if (role != null)
                             {
-                                // ADD Role
-                                if (!roleexist)
+                                foreach (var p in PermissionsList2)
                                 {
-                                    ArrayList permissions = PermissionController.GetPermissionsByPortalDesktopModule();
-                                    foreach (PermissionInfo permission in permissions)
+                                    if (p.RoleName == role.RoleName)
                                     {
-                                        if (permission.PermissionKey == "DEPLOY")
-                                        {
-                                            var objPermission = new ModulePermissionInfo(permission)
-                                            {
+                                        permissionID = p.PermissionID;
+                                        roleexist = true;
+                                    }
+                                }
 
-                                                ModuleID = moduleInfo.DesktopModuleID,
-                                                RoleID = role.RoleID,
-                                                RoleName = role.RoleName,
-                                                AllowAccess = true,
-                                                UserID = Null.NullInteger,
-                                                DisplayName = Null.NullString
-                                            };
-                                            var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
-                                            objmodules.UpdateModule(moduleInfo);
+                                if (tablist.Contains(moduleInfo.TabID.ToString()))
+                                {
+                                    // ADD Role
+                                    if (!roleexist)
+                                    {
+                                        ArrayList permissions = PermissionController.GetPermissionsByPortalDesktopModule();
+                                        foreach (PermissionInfo permission in permissions)
+                                        {
+                                            if (permission.PermissionKey == "DEPLOY")
+                                            {
+                                                var objPermission = new ModulePermissionInfo(permission)
+                                                {
+
+                                                    ModuleID = moduleInfo.DesktopModuleID,
+                                                    RoleID = role.RoleID,
+                                                    RoleName = role.RoleName,
+                                                    AllowAccess = true,
+                                                    UserID = Null.NullInteger,
+                                                    DisplayName = Null.NullString
+                                                };
+                                                var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
+                                                objmodules.UpdateModule(moduleInfo);
+                                            }
+                                        }
+                                        var permissionController = new PermissionController();
+                                        ArrayList systemModuleEditPermissions = permissionController.GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", "EDIT");
+                                        foreach (PermissionInfo permission in systemModuleEditPermissions)
+                                        {
+                                            if (permission.PermissionKey == "EDIT")
+                                            {
+                                                var objPermission = new ModulePermissionInfo(permission)
+                                                {
+                                                    ModuleID = moduleInfo.DesktopModuleID,
+                                                    RoleID = role.RoleID,
+                                                    RoleName = role.RoleName,
+                                                    AllowAccess = true,
+                                                    UserID = Null.NullInteger,
+                                                    DisplayName = Null.NullString
+                                                };
+                                                var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
+                                                objmodules.UpdateModule(moduleInfo);
+                                            }
                                         }
                                     }
-                                    var permissionController = new PermissionController();
-                                    ArrayList systemModuleEditPermissions = permissionController.GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", "EDIT");
-                                    foreach (PermissionInfo permission in systemModuleEditPermissions)
-                                    {
-                                        if (permission.PermissionKey == "EDIT")
-                                        {
-                                            var objPermission = new ModulePermissionInfo(permission)
-                                            {
-                                                ModuleID = moduleInfo.DesktopModuleID,
-                                                RoleID = role.RoleID,
-                                                RoleName = role.RoleName,
-                                                AllowAccess = true,
-                                                UserID = Null.NullInteger,
-                                                DisplayName = Null.NullString
-                                            };
-                                            var permId = moduleInfo.ModulePermissions.Add(objPermission, true);
-                                            objmodules.UpdateModule(moduleInfo);
-                                        }
-                                    }
-
-
                                 }
-                            }
-                            else
-                            {
-                                //REMOVE Role
-                                if (roleexist && permissionID > -1)
+                                else
                                 {
-                                    moduleInfo.ModulePermissions.Remove(permissionID, role.RoleID, Null.NullInteger);
-                                    objmodules.UpdateModule(moduleInfo);
+                                    //REMOVE Role
+                                    if (roleexist && permissionID > -1)
+                                    {
+                                        moduleInfo.ModulePermissions.Remove(permissionID, role.RoleID, Null.NullInteger);
+                                        objmodules.UpdateModule(moduleInfo);
+                                    }
                                 }
                             }
                         }

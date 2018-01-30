@@ -285,4 +285,7 @@
   <data name="wrapperclass.Text" xml:space="preserve">
     <value>Wrapper Div Class</value>
   </data>
+  <data name="ignoresat.Text" xml:space="preserve">
+    <value>Ignore Satelite modules</value>
+  </data>
 </root>

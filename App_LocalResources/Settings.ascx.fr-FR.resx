@@ -270,4 +270,7 @@
   <data name="versionemail.Text" xml:space="preserve">
     <value>Envoyer des notifications pour les versions de contenu</value>
   </data>
+  <data name="ignoresat.Text" xml:space="preserve">
+    <value>Ignorer les modules satelite</value>
+  </data>
 </root>

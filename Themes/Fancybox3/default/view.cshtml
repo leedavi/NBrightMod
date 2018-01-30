@@ -1,43 +1,51 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
 @using NBrightDNN
+@using System.Xml
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Fancybox3.view.cshtml", Model.ModuleId.ToString(""))
 
 @{
-    var hinfo = (NBrightInfo)Model.HeaderData;
-    if (hinfo == null)
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@helper imagedisplay(NBrightInfo info)
+{
+var imgList = info.XMLDoc.SelectNodes("genxml/imgs/genxml");
+if (imgList != null)
+{
+    var width = Model.GetSetting("width");
+    var height = Model.GetSetting("height");
+    var imglp = 1;
+    foreach (XmlNode i in imgList)
     {
-        hinfo = new NBrightInfo();
+        var nbi = new NBrightInfo();
+        nbi.XMLData = i.OuterXml;
+        var group = Model.GetSetting("modref");
+        var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+        var imgcaption = info.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption");
+        if (imageurl != "")
+        {
+            <a data-fancybox="@(group)" data-caption="@(imgcaption)" href="@(imageurl)">
+            <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(imgcaption)" />
+            </a>
+        }
+        imglp += 1;
     }
+}
 }
 
 <div class="gallery-wrapper">
 
-@if (hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title") != "")
+@if (info.GetXmlProperty("genxml/lang/genxml/textbox/title") != "")
 {
-<h2>@hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+<h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
 <hr />
 }
 
 <div class="gallery">
-
-@foreach (NBrightInfo info in Model.List)
-{
-var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
-if (imageurl != "")
-{
-var group = Model.GetSetting("modref");
-var width = Model.GetSetting("width");
-var height = Model.GetSetting("height");
-var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
-<a data-fancybox="@(group)" data-caption="@(title)" href="@(imageurl)">
-<img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
-</a>
-}
-}
-
+@imagedisplay(info)
 </div>
 
 </div>
