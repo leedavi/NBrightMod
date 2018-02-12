@@ -153,13 +153,16 @@
   <data name="linktab.Text" xml:space="preserve">
     <value>Page du site</value>
   </data>
+  <data name="linkanchor.Text" xml:space="preserve">
+    <value>Ancre dans la page (id)</value>
+  </data>
   <data name="linkhref.Text" xml:space="preserve">
-    <value>URL (http://www.mylink.com)</value>
+    <value>URL (http://www.monlien.com)</value>
   </data>
   <data name="linkpdf.Text" xml:space="preserve">
     <value>PDF</value>
   </data>
-  <data name="linktext.Text" xml:space="preserve">
+  <data name="linktitle.Text" xml:space="preserve">
     <value>Texte du lien</value>
   </data>
   <data name="title.Text" xml:space="preserve">
@@ -380,5 +383,8 @@
   </data>
   <data name="systemtemplateloaded.Text" xml:space="preserve">
     <value>System template loaded</value>
+  </data>
+  <data name="back.Text" xml:space="preserve">
+    <value>Retour</value>
   </data>
 </root>

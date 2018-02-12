@@ -503,7 +503,6 @@ namespace NBrightMod.render
             return false;
         }
 
-
         public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "Default", bool includefilename = true, bool relativepath = true)
         {
             if (subfoldername == "")
@@ -605,6 +604,23 @@ namespace NBrightMod.render
                 return new RawString(" CANNOT find file: " + filename);
             }
             return new RawString(path3.Replace("\\" + filename, "") + "\\");
+        }
+
+        public IEncodedString GetTemplatePathFile(string filename, NBrightRazor model, string subfoldername = "Default")
+        {
+            return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername,true,false);
+        }
+        public IEncodedString GetTemplateRelPathFile(string filename, NBrightRazor model, string subfoldername = "Default")
+        {
+            return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername,true,true);
+        }
+        public IEncodedString GetTemplatePath(string filename, NBrightRazor model, string subfoldername = "Default")
+        {
+            return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername, false,false);
+        }
+        public IEncodedString GetTemplateRelPath(string filename, NBrightRazor model, string subfoldername = "Default")
+        {
+            return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername, false, true);
         }
 
     }

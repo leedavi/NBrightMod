@@ -369,7 +369,13 @@
   <data name="linktitle.Text" xml:space="preserve">
     <value>Link Title</value>
   </data>
+  <data name="linkanchor.Text" xml:space="preserve">
+    <value>Anchor (id)</value>
+  </data>
   <data name="summary.Text" xml:space="preserve">
     <value>Summary</value>
+  </data>
+  <data name="back.Text" xml:space="preserve">
+    <value>Back</value>
   </data>
 </root>

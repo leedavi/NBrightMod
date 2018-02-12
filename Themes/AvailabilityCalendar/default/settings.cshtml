@@ -1,0 +1,19 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div>
+    <div >
+        <div class='dnnFormItem'>
+            @DnnLabel("lblmonthstoshow", "Theme.monthstoshow")
+            @TextBox(info, "genxml/textbox/monthstoshow", "", "[2, 6]")
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+
+@RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/editpageheader-shared.cshtml", Model)
+
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.plugin.min.js"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick.min.js"></script>
+<link href="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/css/smoothness.datepick.css" rel="stylesheet"/>
+
+@{
+    var lang = @Model.GetUrlParam("language");
+}
+
+@if (System.IO.File.Exists("jquery.datepick-" + lang + ".js"))
+{
+    <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick-@(lang).js"></script>
+}
+else
+{
+    if (lang.Substring(0, 2) != "en") // default en
+    {
+        <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick-@(lang.Substring(0,2)).js"></script>
+    }
+}
+
+

@@ -7,13 +7,16 @@
 /* Normal Display */
 .newspaper-wrapper{}
 .newspaper-wrapperdiv{margin-bottom:30px;}
+
+/* Layout 1 */
 .newspaper-imgdivtop, .newspaper-imgdivbottom{text-align:center;}
 .newspaper-imgdivtop img{margin:0 10px 40px 10px;}
 .newspaper-imgdivbottom img{margin:40px 10px 0 10px;}
 .newspaper-imgdivfloatleft{float:left;text-align:center;}
 .newspaper-imgdivfloatright{float:right;text-align:center;}
-.newspaper-imgdivfloatleft img{display:block;margin:20px 40px 20px 0;}
-.newspaper-imgdivfloatright img{display:block;margin:20px 0 20px 40px;}
+.newspaper-imgdivfloatleft img{display:block;/*margin:20px 40px 20px 0;*/}
+.newspaper-imgdivfloatright img{display:block;/*margin:20px 0 20px 40px;*/}
+
 /* Centre for different size images */
 .newspaper-center1{float:right;position:relative;left:-50%;text-align:left;}
 .newspaper-center2{position:relative;left:50%;}

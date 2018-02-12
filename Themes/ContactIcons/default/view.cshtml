@@ -51,31 +51,27 @@
 
 @if (info.GetXmlProperty("genxml/textbox/contact1") != "") {
 <div class="contact-item">
-  <div class="contact-item">
-    <span><i class="fas fa-user fa-fw fa-lg"></i></span>
-    @info.GetXmlProperty("genxml/textbox/contact1")
-    @if (info.GetXmlProperty("genxml/textbox/contactport1") != "") {
-    <br />@ResourceKey("Theme.contactport")@: : @info.GetXmlProperty("genxml/textbox/contactport1")
-    }
-    @if (info.GetXmlProperty("genxml/textbox/contactemail1") != "") {
-    <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail1")
-    }
-  </div>
+  <span><i class="fas fa-user fa-fw fa-lg"></i></span>
+  @info.GetXmlProperty("genxml/textbox/contact1")
+  @if (info.GetXmlProperty("genxml/textbox/contactport1") != "") {
+  <br />@ResourceKey("Theme.contactport")@: : @info.GetXmlProperty("genxml/textbox/contactport1")
+  }
+  @if (info.GetXmlProperty("genxml/textbox/contactemail1") != "") {
+  <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail1")
+  }
 </div>
 }
 
 @if (info.GetXmlProperty("genxml/textbox/contact2") != "") {
 <div class="contact-item">
-  <div class="contact-item">
-    <span><i class="fas fa-user fa-fw fa-lg"></i></span>
-    @info.GetXmlProperty("genxml/textbox/contact2")
-    @if (info.GetXmlProperty("genxml/textbox/contactport2") != "") {
-    <br />@ResourceKey("Theme.contactport")@: : @info.GetXmlProperty("genxml/textbox/contactport2")
-    }
-    @if (info.GetXmlProperty("genxml/textbox/contactemail2") != "") {
-    <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail12")
-    }
-  </div>
+  <span><i class="fas fa-user fa-fw fa-lg"></i></span>
+  @info.GetXmlProperty("genxml/textbox/contact2")
+  @if (info.GetXmlProperty("genxml/textbox/contactport2") != "") {
+  <br />@ResourceKey("Theme.contactport")@: : @info.GetXmlProperty("genxml/textbox/contactport2")
+  }
+  @if (info.GetXmlProperty("genxml/textbox/contactemail2") != "") {
+  <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail12")
+  }
 </div>
 }
 

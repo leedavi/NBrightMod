@@ -1,0 +1,28 @@
+@using System.Security.Cryptography
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.plugin.min.js"></script>
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick.min.js"></script>
+@{
+    var lang = @Model.GetUrlParam("language");
+}
+
+@if (System.IO.File.Exists("jquery.datepick-" + lang + ".js"))
+{
+    <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick-@(lang).js"></script>
+}
+else
+{
+    if (lang.Substring(0, 2) != "en") // default en
+    {
+        <script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick-@(lang.Substring(0,2)).js"></script>
+    }
+}
+
+<script type="text/javascript" src="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/js/jquery.datepick.ext.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/js/datepick/css/ui.datepick.css"/>
+
+<!-- Global CSS -->
+<link href="/DesktopModules/NBright/NBrightMod/Themes/AvailabilityCalendar/css/calendar.css" rel="stylesheet">

@@ -1,0 +1,84 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/AvailablityCalendar/resx/")
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="itemid" type="hidden" value="@info.ItemID"></input>
+<input id="moduleid" type="hidden" value="@info.ModuleId"></input>
+<input id="lang" type="hidden" value="@info.Lang"></input>
+
+<input id="datedata" type="hidden" value="@info.GetXmlProperty("genxml/hidden/datedata")" update="save"></input>
+
+@EditCultureSelect("flag-list", "selecteditlanguage")
+
+@EditButtons("s,ex")
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <div class="box">
+
+            <div class="formrow">
+                <label>@ResourceKey("Edit.title")</label>
+                <div>
+                    @NBrightTextBox(info, "genxml/lang/genxml/textbox/title")
+                </div>
+                <label>@ResourceKey("Theme.legend")</label>
+                @NBrightTextBox(info, "genxml/lang/genxml/textbox/legend")
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        var firstPass = true;
+
+        $(function() {
+
+            $('#inlineDatepicker').datepick({ dateFormat: 'yyyy-mm-dd', multiSelect: 999, minDate: 0, maxDate: 750, monthsToShow: [3, 4], monthsOffset: 0, monthsToStep: 12, useMouseWheel: false, changeMonth: false, onSelect: showDate });
+
+            var lst = "@info.GetXmlProperty("genxml/hidden/datedata")";
+            if (lst != "") {                
+                var myArr = lst.split(',');
+                $('#inlineDatepicker').datepick('setDate', myArr);
+                var currentTime = new Date();
+                var year = currentTime.getFullYear();
+                $('#inlineDatepicker').datepick('showMonth', year, 1);
+            }
+
+            firstPass = false;
+
+        });
+
+        function showDate(date) {
+
+            if (!firstPass) {
+                firstPass = true; //don't cause an infinate loop, by calling this procedure within itself.
+                var currentTime = new Date();
+                var myArr = date;
+                var lastdate = new Date(myArr[myArr.length -1]);
+                var year = lastdate.getFullYear();
+                var lst = "";
+                for (var i = 0; i < myArr.length; i += 1) {
+                    var startTimeDate = new Date(myArr[i]);
+                    if (startTimeDate >= currentTime) {
+                        lst += startTimeDate.toISOString().substring(0, 10) + ',';
+                    }
+                }
+                $('#datedata').val(lst);
+                $('#inlineDatepicker').datepick('showMonth', year, 1);
+                firstPass = false;
+            }
+        }
+
+    });
+</script>

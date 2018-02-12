@@ -12,6 +12,7 @@
     @foreach (NBrightInfo info in Model.List)
         {
         var tabddlvalue = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+        var linkanchor = @info.GetXmlProperty("genxml/textbox/linkanchor");
         var externalURL = @info.GetXmlProperty("genxml/lang/genxml/textbox/externalhref");
         <li>
         @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 0)
@@ -20,7 +21,14 @@
         }
         @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 1)
         {
+          if (linkanchor != "")
+          {
+          <a href="@(tabddlvalue)#@(linkanchor)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+          }
+          else
+          {
           <a href="@(tabddlvalue)">@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</a>
+          }
         }
         @if (info.GetXmlPropertyInt("genxml/radiobuttonlist/rbllink") == 2)
         {
