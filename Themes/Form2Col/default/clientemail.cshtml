@@ -1,4 +1,4 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using NBrightDNN
 
-@RenderTemplate(GetTemplateFilePath(Model.GetSetting("themefolder"), "manageremail.cshtml", Model.GetSetting("modref")).ToString(), Model)
+@RenderTemplate(GetTemplateRelPathFile("manageremail.cshtml", Model).ToString(), Model)

@@ -503,7 +503,7 @@ namespace NBrightMod.render
             return false;
         }
 
-        public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "Default", bool includefilename = true, bool relativepath = true)
+        public IEncodedString GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername = "", bool includefilename = true, bool relativepath = true)
         {
             if (subfoldername == "")
             {
@@ -511,6 +511,10 @@ namespace NBrightMod.render
                 if (fileext != null)
                 {
                     subfoldername = fileext.Trim('.');
+                    if (subfoldername == "cshtml")
+                    {
+                        subfoldername = "Default";
+                    }
                 }
                 else
                 {
@@ -606,19 +610,19 @@ namespace NBrightMod.render
             return new RawString(path3.Replace("\\" + filename, "") + "\\");
         }
 
-        public IEncodedString GetTemplatePathFile(string filename, NBrightRazor model, string subfoldername = "Default")
+        public IEncodedString GetTemplatePathFile(string filename, NBrightRazor model, string subfoldername = "")
         {
             return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername,true,false);
         }
-        public IEncodedString GetTemplateRelPathFile(string filename, NBrightRazor model, string subfoldername = "Default")
+        public IEncodedString GetTemplateRelPathFile(string filename, NBrightRazor model, string subfoldername = "")
         {
             return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername,true,true);
         }
-        public IEncodedString GetTemplatePath(string filename, NBrightRazor model, string subfoldername = "Default")
+        public IEncodedString GetTemplatePath(string filename, NBrightRazor model, string subfoldername = "")
         {
             return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername, false,false);
         }
-        public IEncodedString GetTemplateRelPath(string filename, NBrightRazor model, string subfoldername = "Default")
+        public IEncodedString GetTemplateRelPath(string filename, NBrightRazor model, string subfoldername = "")
         {
             return GetTemplateFilePath(model.GetSetting("themefolder"), filename, model.GetSetting("modref"), subfoldername, false, true);
         }

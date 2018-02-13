@@ -483,8 +483,6 @@
     <None Include="Themes\Fancybox3Sat\default\viewpageheader.cshtml" />
     <None Include="Themes\Fancybox3\default\editbody.cshtml" />
     <None Include="Themes\Fancybox3\default\editfields.cshtml" />
-    <None Include="Themes\Fancybox3\default\editlist.cshtml" />
-    <None Include="Themes\Fancybox3\default\editlistheader.cshtml" />
     <None Include="Themes\Fancybox3\default\editpageheader.cshtml" />
     <None Include="Themes\Fancybox3\default\imgselectlist.cshtml" />
     <None Include="Themes\Fancybox3\default\settings.cshtml" />
@@ -637,6 +635,7 @@
     <None Include="Themes\config\default\version-email-delete.cshtml" />
     <None Include="Themes\config\default\version-email-validate.cshtml" />
     <None Include="Themes\config\default\version-email-new.cshtml" />
+    <None Include="Themes\Shared\linksdocs-shared.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\settings.cshtml" />
     <None Include="Themes\SimpleArticlesSat\default\view.cshtml" />
     <None Include="Themes\SimpleArticles\default\editbody.cshtml" />
@@ -666,10 +665,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Installation\" />
-    <Folder Include="Themes\AigueVivePay\css\" />
-    <Folder Include="Themes\AigueVivePay\default\" />
-    <Folder Include="Themes\AigueVivePay\js\" />
-    <Folder Include="Themes\AigueVivePay\resx\" />
     <Folder Include="Themes\ContactForm\js\" />
     <Folder Include="Themes\Documents\js\" />
     <Folder Include="Themes\FlexsliderSat\css\" />

@@ -4,7 +4,7 @@
 @using DotNetNuke.Services.Scheduling
 @using NBrightDNN
 
-@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+@AddMetaData("resourcepath",GetTemplateRelPath("Theme.ascx.resx", Model, "resx").ToString())
 
 @AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 

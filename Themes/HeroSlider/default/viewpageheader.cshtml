@@ -6,4 +6,4 @@
 @using NBrightDNN
 @using RazorEngine.Text
 
-<script type="text/javascript" src="@GetTemplateFilePath(Model.GetSetting("themefolder"), "responsiveslides.min.js", Model.GetSetting("modref"), "js", true)"></script>
+<script type="text/javascript" src="@GetTemplateRelPathFile("responsiveslides.min.js", Model,"js").ToString()"></script>

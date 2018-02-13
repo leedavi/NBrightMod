@@ -3,7 +3,7 @@
 @using NBrightCore.common
 @using NBrightDNN
 
-@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+@AddMetaData("resourcepath",GetTemplateRelPath("Theme.ascx.resx", Model, "resx").ToString())
 
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "ArticlesSat2.view.cshtml", Model.ModuleId.ToString(""))
 @AddPreProcessMetaData("filter", " and ((NB1.XMLData.value('(genxml/textbox/startdate)[1]','nvarchar(10)') = '' or NB1.XMLData.value('(genxml/textbox/enddate)[1]','nvarchar(10)') = '') or (NB1.XMLData.value('(genxml/textbox/startdate)[1]','datetime') <= GETDATE() and NB1.XMLData.value('(genxml/textbox/enddate)[1]','datetime') >= GETDATE())) ", "ArticlesSat2.view.cshtml", Model.ModuleId.ToString(""))

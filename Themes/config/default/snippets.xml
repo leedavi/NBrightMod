@@ -182,9 +182,29 @@ var tabddl = GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
 @info.GetXmlProperty("genxml/textbox/******")
       ]]>
     </data>
-    <data name="GetTemplateFilePath" text="GetTemplateFilePath" title="GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername, bool includefilename = true, bool relativepath = true)">
+    <data name="GetTemplateFilePath" text="GetTemplateFilePath" title="[Get the template path used in this App Theme] GetTemplateFilePath(string themeFolder, string filename, string moduleref, string subfoldername, bool includefilename = true, bool relativepath=true)">
       <![CDATA[ 
-    @GetTemplateFilePath(Model.GetSetting("themefolder"), "settings.cshtml", Model.GetSetting("modref"), "Default", true, true)
+    @GetTemplateFilePath(Model.GetSetting("themefolder"), "settings.cshtml", Model.GetSetting("modref"), "Default", true, true).ToString()
+      ]]>
+    </data>
+    <data name="GetTemplatePathFile" text="GetTemplatePathFile" title="[Get the template path and filename used in this App Theme] GetTemplatePathFile(string themeFolder, NBrightRazor model, string subfoldername)">
+      <![CDATA[ 
+    @GetTemplatePathFile("settings.cshtml", Model, "Default").ToString()
+      ]]>
+    </data>
+    <data name="GetTemplateRelPathFile" text="GetTemplateRelPathFile" title="[Get the Relative template path and filename used in this App Theme] GetTemplateRelPathFile(string themeFolder, NBrightRazor model, string subfoldername)">
+      <![CDATA[ 
+    @GetTemplateRelPathFile("settings.cshtml", Model, "Default").ToString()
+      ]]>
+    </data>
+    <data name="GetTemplatePath" text="GetTemplatePath" title="[Get the template path used in this App Theme] GetTemplatePath(string themeFolder, NBrightRazor model, string subfoldername)">
+      <![CDATA[ 
+    @GetTemplatePath("settings.cshtml", Model, "Default").ToString()
+      ]]>
+    </data>
+    <data name="GetTemplateRelPath" text="GetTemplateRelPath" title="[Get the relative template path and filename used in this App Theme] GetTemplateRelPath(string themeFolder, NBrightRazor model, string subfoldername)">
+      <![CDATA[ 
+    @GetTemplateRelPath("Theme.ascx.resx", Model, "resx").ToString()
       ]]>
     </data>
 

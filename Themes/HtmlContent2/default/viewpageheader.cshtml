@@ -6,7 +6,7 @@
 @using NBrightDNN
 @using RazorEngine.Text
 
-<link href="@GetTemplateFilePath(Model.GetSetting("themefolder"), "htmlcontent2.css", Model.GetSetting("modref"), "css", true)" rel="stylesheet"/>
+<link href="@GetTemplateRelPathFile("htmlcontent2.css", Model,"css").ToString()" rel="stylesheet"/>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>

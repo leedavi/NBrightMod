@@ -3,7 +3,7 @@
 @using NBrightCore.common
 @using NBrightDNN
 
-@AddMetaData("resourcepath",GetTemplateFilePath(Model.GetSetting("themefolder"), "Theme.resx", Model.GetSetting("modref"), "resx", false).ToString())
+@AddMetaData("resourcepath",GetTemplateRelPath("Theme.ascx.resx", Model, "resx").ToString())
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Articles2.view.cshtml", Model.ModuleId.ToString(""))

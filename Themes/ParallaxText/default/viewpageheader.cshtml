@@ -6,4 +6,4 @@
 @using NBrightDNN
 @using RazorEngine.Text
 
-<script type="text/javascript" src="@GetTemplateFilePath(Model.GetSetting("themefolder"), "parallax.min.js", Model.GetSetting("modref"), "js", true)"></script>
+<script type="text/javascript" src="@GetTemplateRelPathFile("parallax.min.js", Model,"js").ToString()"></script>
