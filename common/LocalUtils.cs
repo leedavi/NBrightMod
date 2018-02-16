@@ -1062,9 +1062,9 @@ namespace NBrightMod.common
                         headerdata = objCtrl.Get(headerdataitem.ItemID, lang);
                     }
                     modRazor.HeaderData = headerdata;
-                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, settingInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    var razorTemplOut = RazorRender(modRazor, razorTempl2, razorTemplateKey, debug);
 
-                    if (cacheKey != "") // only cache if we have a key.
+                    if (cacheKey != "" && !debug) // only cache if we have a key.
                     {
                         SetRazorCache(cachekey, razorTemplOut,moduleid);
                     }
@@ -1838,6 +1838,8 @@ namespace NBrightMod.common
         }
 
         #endregion
+
+
 
     }
 

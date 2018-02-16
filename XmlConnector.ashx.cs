@@ -289,6 +289,12 @@ namespace Nevoweb.DNN.NBrightMod
                         strOut = AttachRolesToModule(context);
                     }
                     break;
+                case "resetlanguage":
+                    if (LocalUtils.CheckRights(moduleid))
+                    {
+                        strOut = ResetLanguage(context);
+                    }
+                    break;                    
             }
 
 
@@ -1380,7 +1386,53 @@ namespace Nevoweb.DNN.NBrightMod
 
         }
 
+        private string ResetLanguage(HttpContext context)
+        {
+            try
+            {
 
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                string languagetoreset = ajaxInfo.GetXmlProperty("genxml/dropdownlist/langreset");
+                string languageresetto = ajaxInfo.GetXmlProperty("genxml/dropdownlist/langresetto");
+                if (languagetoreset != "" && languageresetto != "" && languageresetto != languagetoreset)
+                {
+
+                    var objCtrl = new NBrightDataController();
+
+                    var l2 = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "NBrightModDATALANG", " and NB1.lang = '" + languagetoreset + "'");
+                    foreach (var i in l2)
+                    {
+                        objCtrl.Delete(i.ItemID);
+                    }
+
+                    l2 = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "NBrightModDATALANG", " and NB1.lang = '" + languageresetto + "'");
+                    foreach (var i in l2)
+                    {
+                        var nbi = new NBrightInfo();
+                        nbi.ItemID = -1;
+                        nbi.GUIDKey = i.GUIDKey;
+                        nbi.Lang = languagetoreset;
+                        nbi.ModuleId = i.ModuleId;
+                        nbi.ParentItemId = i.ParentItemId;
+                        nbi.PortalId = i.PortalId;
+                        nbi.XrefItemId = i.XrefItemId;
+                        nbi.XMLData = i.XMLData;
+                        nbi.TypeCode = "NBrightModDATALANG";
+                        nbi.TextData = "";
+
+                        objCtrl.Update(nbi);
+
+                    }
+
+                    return "OK: " + l2.Count();
+                }
+                return "Invliad Data";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
         private String AttachRolesToModule(HttpContext context)
         {
             try

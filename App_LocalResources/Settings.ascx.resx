@@ -288,4 +288,7 @@
   <data name="ignoresat.Text" xml:space="preserve">
     <value>Ignore Satelite modules</value>
   </data>
+  <data name="resetlanguage.Text" xml:space="preserve">
+    <value>Reset Language</value>
+  </data>
 </root>

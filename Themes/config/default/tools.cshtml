@@ -66,6 +66,26 @@
     </div>
 </div>
 
+    <hr />
+
+    <div id="resetlangdata" class='dnnFormItem'>
+        <h4>Entire Portal Reset Langauge</h4>
+        <button id="resetlanguage" type="button" class="dnnSecondaryAction">@ResourceKey("Settings.resetlanguage")</button>
+        @{
+            var langlist = ",";
+            var langs = DnnUtils.GetCultureCodeList(PortalSettings.Current.PortalId);
+            foreach (var l in langs)
+            {
+                langlist += l + ",";
+            }
+            langlist = langlist.TrimEnd(',');
+        }
+
+        @DropDownList(info, "genxml/langreset", langlist, langlist)
+        <span> to </span>
+        @DropDownList(info, "genxml/langresetto", langlist, langlist)
+    </div>
+
 <hr/>
 
 <div class='dnnFormItem'>
@@ -267,6 +287,11 @@
         $('#savedata').unbind('click');
         $('#savedata').click(function () {
             NBrightMod_nbxget('saveconfig', '#toolsconfigdata', '');
+        });
+
+        $('#resetlanguage').unbind('click');
+        $('#resetlanguage').click(function () {
+            NBrightMod_nbxget('resetlanguage', '#resetlangdata', '#toolsmsg');
         });
 
 
