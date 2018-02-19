@@ -1,0 +1,48 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "GraphicBlocks.view.cshtml", Model.ModuleId.ToString(""))
+
+@{
+    var hinfo = (NBrightInfo)Model.HeaderData;
+    if (hinfo == null)
+    {
+        hinfo = new NBrightInfo();
+    }
+}
+
+<div class="gblockswrapper">
+
+@if (hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title") != "")
+{
+<h2>@hinfo.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+}
+
+<div class="gblocks">
+  @{
+      var lp = 1;
+  }
+  @foreach (NBrightInfo info in Model.List)
+  {
+      var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
+      var width = Model.GetSetting("width");
+      var height = Model.GetSetting("height");
+      var tabddl = @GetTabUrlByGuid(info, "/genxml/dropdownlist/linktab");
+      var cssclass = info.GetXmlProperty("genxml/textbox/cssclass");
+      <a href="@(tabddl)" class="@(cssclass)">
+      @if (imageurl != "")
+      {
+      <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" />
+      }
+      <div class="gblockstext">
+        <h2>@info.GetXmlProperty("genxml/lang/genxml/textbox/title")</h2>
+        <h3>@info.GetXmlProperty("genxml/lang/genxml/textbox/title2")</h3>
+      </div>
+      </a>
+
+      lp+=1;
+  }
+</div>
+
+</div>
