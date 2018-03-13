@@ -1,59 +1,81 @@
 @inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
 @using System.Linq
+@using System.Xml
 @using NBrightDNN
 
 @AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/App_LocalResources/")
-@AddMetaData("resourcepath","/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
+@AddMetaData("resourcepath", "/DesktopModules/NBright/NBrightMod/Themes/FancyboxGallery/resx/")
 @AddPreProcessMetaData("orderby", "ORDER BY NB1.XMLData.value('(genxml/hidden/sortrecordorder)[1]','int')", "Fancybox3Sat.view.cshtml", Model.ModuleId.ToString(""))
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+@helper imagedisplay(NBrightInfo info)
+{
+var imgList = info.XMLDoc.SelectNodes("genxml/imgs/genxml");
+if (imgList != null)
+{
+    var width = Model.GetSetting("width");
+    var height = Model.GetSetting("height");
+    var displaylimit = Model.GetSettingInt("returnlimit");
+    var imglp = 1;
+    foreach (XmlNode i in imgList)
+    {
+        if (imglp <= displaylimit)
+        {
+
+            var nbi = new NBrightInfo();
+            nbi.XMLData = i.OuterXml;
+            var group = Model.GetSetting("modref");
+            var imageurl = nbi.GetXmlProperty("genxml/hidden/imageurl");
+            var imgcaption = info.GetXmlProperty("genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption");
+            if (imageurl != "")
+            {
+                <a data-fancybox="@(group)" data-caption="@(imgcaption)" href="@(imageurl)">
+                    <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(imgcaption)"/>
+                </a>
+            }
+        }
+        imglp += 1;
+    }
+}
+}
 
 <div class="gallery-wrapper">
 
-<h2>@ResourceKey("View.gallery")</h2>
-<hr />
+    <h2>@ResourceKey("View.gallery")</h2>
+    <hr />
 
-<div class="gallery">
+    <div class="gallery">
 
-@foreach (NBrightInfo info in Model.List)
-{
-var imageurl = info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl");
-if (imageurl != "")
-{
-var group = Model.GetSetting("modref");
-var width = Model.GetSetting("width");
-var height = Model.GetSetting("height");
-var title = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
-<a data-fancybox="@(group)" data-caption="@(title)" href="@(imageurl)">
-<img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=@(width)&h=@(height)" alt="@(title)" />
-</a>
-}
-}
+        @imagedisplay(info)
 
-</div>
+    </div>
 
-<div class="gallery-link"><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.viewgallery")</a></div>
+    <div class="gallery-link"><a href="@GetTabUrlByGuid(Model.GetSetting("sourcepage"))">@ResourceKey("View.viewgallery")</a></div>
 
 </div>
 
 <script type="text/javascript">
 
-$("[data-fancybox]").fancybox({
-  lang : 'fr',
-  i18n : {
-      'fr' : {
-          CLOSE       : 'Fermer',
-          NEXT        : 'Suivant',
-          PREV        : 'Précédent',
-          ERROR       : 'Le contenu demandé ne peut pas être chargé.<br />Veuillez réessayer plus tard.',
-          PLAY_START  : 'Démarrer le diaporama',
-          PLAY_STOP   : 'Mettre en pause le diaporama',
-          FULL_SCREEN : 'Plein écran',
-          THUMBS      : 'Vignettes',
-          DOWNLOAD    : 'Télécharger',
-          SHARE       : 'Partager',
-          ZOOM        : 'Zoomer'
-      }
-  }
-});
+    $("[data-fancybox]").fancybox({
+        lang: 'fr',
+        i18n: {
+            'fr': {
+                CLOSE: 'Fermer',
+                NEXT: 'Suivant',
+                PREV: 'Précédent',
+                ERROR: 'Le contenu demandé ne peut pas être chargé.<br />Veuillez réessayer plus tard.',
+                PLAY_START: 'Démarrer le diaporama',
+                PLAY_STOP: 'Mettre en pause le diaporama',
+                FULL_SCREEN: 'Plein écran',
+                THUMBS: 'Vignettes',
+                DOWNLOAD: 'Télécharger',
+                SHARE: 'Partager',
+                ZOOM: 'Zoomer'
+            }
+        }
+    });
 
 </script>
-
