@@ -11,17 +11,25 @@
 
 <input id="moduleid" type="hidden" value="@info.ModuleId" ></input>
 <div>
-    <div>
-        @DnnLabel("lblwidth","Settings.width")@TextBox(info,"genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","100%")
+    <div class="dnnFormItem">
+        @DnnLabel("lblwidth","Settings.width")
+		@TextBox(info,"genxml/textbox/width","class='form-control' width='100px' maxlength='5' ","100%")
     </div>
-    <div>
-        @DnnLabel("lblheight","Settings.height")@TextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "400px")
+    <div class="dnnFormItem">
+        @DnnLabel("lblheight","Settings.height")
+		@TextBox(info, "genxml/textbox/height", "class='form-control' width='100px' maxlength='5' ", "400px")
     </div>
-    <div>
-        @DnnLabel("lblautozoomlimit","Settings.autozoomlimit")@TextBox(info, "genxml/textbox/autozoomlimit", "class='form-control' width='100px' maxlength='5' ")
+    <div class="dnnFormItem">
+        @DnnLabel("lblautozoomlimit","Settings.autozoomlimit")
+		@TextBox(info, "genxml/textbox/autozoomlimit", "class='form-control' width='100px' maxlength='5' ")
     </div>
-    <div>
-        @DnnLabel("lblscrollwheel","Settings.scrollwheel")@CheckBox(info,"genxml/checkbox/scrollwheel","","")
+    <div class="dnnFormItem">
+        @DnnLabel("lblscrollwheel","Settings.scrollwheel")
+		@CheckBox(info,"genxml/checkbox/scrollwheel","","")
+    </div>
+	<div class="dnnFormItem">
+      @DnnLabel("lblapikey","Settings.apikey")
+      @TextBox(info, "genxml/textbox/apikey", "", "")
     </div>
 </div>
 

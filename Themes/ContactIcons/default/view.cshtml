@@ -33,8 +33,10 @@
 </div>
 
 <div class="contact-item">
+  @if (info.GetXmlProperty("genxml/textbox/tel") != "") {
   <span><i class="fas fa-phone fa-fw fa-lg"></i></span>
-  @ResourceKey("Theme.tel") : @info.GetXmlProperty("genxml/textbox/tel")
+  @ResourceKey("Theme.tel")@: : @info.GetXmlProperty("genxml/textbox/tel")
+  }
   @if (info.GetXmlProperty("genxml/textbox/tel2") != "") {
   <br />@ResourceKey("Theme.tel2")@: : @info.GetXmlProperty("genxml/textbox/tel2")
   }
@@ -70,7 +72,7 @@
   <br />@ResourceKey("Theme.contactport")@: : @info.GetXmlProperty("genxml/textbox/contactport2")
   }
   @if (info.GetXmlProperty("genxml/textbox/contactemail2") != "") {
-  <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail12")
+  <br />@ResourceKey("Theme.contactemail")@: : @info.GetXmlProperty("genxml/textbox/contactemail2")
   }
 </div>
 }
