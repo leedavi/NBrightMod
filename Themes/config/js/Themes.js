@@ -1,11 +1,4 @@
 ﻿
-$(document).ready(function () {
-
-    // get list of records via ajax:  NBrightMod_nbxget({command}, {div of data passed to server}, {return html to this div} )
-    NBrightMod_nbxget('getsettings', '#selectparams', '#editdata');
-
-});
-
 $(document).on("NBrightMod_nbxgetcompleted", NBrightMod_nbxgetCompleted); // assign a completed event for the ajax calls
 
 function NBrightMod_nbxgetCompleted(e) {
