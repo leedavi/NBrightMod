@@ -173,6 +173,9 @@
     <EmbeddedResource Include="Themes\GoogleMapMultipoint\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Edit.ascx.resx" />
     <EmbeddedResource Include="Themes\GoogleMap\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\GraphicBlocks\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\GraphicBlocks\resx\Theme.ascx.fr-FR.resx" />
+    <EmbeddedResource Include="Themes\GraphicBlocks\resx\Theme.ascx.resx" />
     <EmbeddedResource Include="Themes\HeroHeader\resx\Settings.ascx.resx" />
     <EmbeddedResource Include="Themes\HeroHeader\resx\Theme.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\HeroHeader\resx\Theme.ascx.resx" />
@@ -207,6 +210,10 @@
     <EmbeddedResource Include="Themes\SocialIcons\resx\Theme.ascx.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.fr-FR.resx" />
     <EmbeddedResource Include="Themes\SocialLinks\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\Timeline\resx\Edit.ascx.resx" />
+    <EmbeddedResource Include="Themes\Timeline\resx\Settings.ascx.resx" />
+    <EmbeddedResource Include="Themes\Timeline\resx\View.ascx.fr-FR.resx" />
+    <EmbeddedResource Include="Themes\Timeline\resx\View.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ThemeManager.ascx">
@@ -540,6 +547,14 @@
     <None Include="Themes\FancyboxMultiGallery\default\settings.cshtml" />
     <None Include="Themes\FancyboxMultiGallery\default\view.cshtml" />
     <None Include="Themes\FancyboxMultiGallery\default\viewpageheader.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\editbody.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\editfields.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\editlist.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\editlistheader.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\editpageheader.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\imgselectlist.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\settings.cshtml" />
+    <None Include="Themes\GraphicBlocks\default\view.cshtml" />
     <None Include="Themes\HeroHeader\default\editbody.cshtml" />
     <None Include="Themes\HeroHeader\default\editfields.cshtml" />
     <None Include="Themes\HeroHeader\default\editpageheader.cshtml" />
@@ -658,6 +673,12 @@
     <None Include="Themes\SocialLinks\default\settings.cshtml" />
     <None Include="Themes\SocialLinks\default\view.cshtml" />
     <None Include="Themes\SocialLinks\default\viewpageheader.cshtml" />
+    <None Include="Themes\Timeline\default\editbody.cshtml" />
+    <None Include="Themes\Timeline\default\editfields.cshtml" />
+    <None Include="Themes\Timeline\default\editlist.cshtml" />
+    <None Include="Themes\Timeline\default\editpageheader.cshtml" />
+    <None Include="Themes\Timeline\default\view.cshtml" />
+    <None Include="Themes\Timeline\default\viewpageheader.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>

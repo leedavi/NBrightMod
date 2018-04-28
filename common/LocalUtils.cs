@@ -1692,6 +1692,11 @@ namespace NBrightMod.common
             {
                 objCtrl.Delete(i.ItemID);
             }
+            var l4 = objCtrl.GetList(PortalSettings.Current.PortalId, moduleid, "NBrightModHEADER");
+            foreach (var i in l4)
+            {
+                objCtrl.Delete(i.ItemID);
+            }
 
         }
 
