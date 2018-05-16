@@ -34,6 +34,8 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Security.Roles;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace NBrightMod.common
 {
@@ -1845,6 +1847,89 @@ namespace NBrightMod.common
         #endregion
 
 
+
+        #region "theme downloads"
+
+        public static string DownloadAllThemes(string url)
+        {
+            var strOut = "";
+            var list = GetWebsiteZipListing(url);
+            foreach (var zipname in list)
+            {
+                DownloadFileAndUnZip(zipname.GetXmlProperty("genxml/hidden/filename"));
+                strOut = "<h4>" + zipname + "</h4>";
+            }
+
+            return strOut;
+        }
+
+        public static string DownloadSingleThemes(string url,string downloadzip)
+        {
+            var strOut = "";
+            var list = GetWebsiteZipListing(url);
+            foreach (var zipname in list)
+            {
+                if (zipname.GetXmlProperty("genxml/hidden/filename") == downloadzip)
+                {
+                    DownloadFileAndUnZip(zipname.GetXmlProperty("genxml/hidden/filename"));
+                    strOut = "<h4>" + zipname + "</h4>";
+                }
+            }
+
+            return strOut;
+        }
+
+        public static List<NBrightInfo> GetWebsiteZipListing(string url)
+        {
+            var list = new List<NBrightInfo>();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    string html = reader.ReadToEnd();
+
+                    var dirnames = html.Replace("|","!").Replace("<br>", "|").Split('|');
+                    foreach (var dirname in dirnames)
+                    {
+                        if (dirname.Contains(".zip"))
+                        {
+                            Regex regex = new Regex("<A HREF=\".*\">(?<name>.*)</A>");
+                            MatchCollection matches = regex.Matches(dirname);
+                            if (matches.Count > 0)
+                            {
+                                foreach (Match match in matches)
+                                {
+                                    if (match.Success)
+                                    {
+                                        var nbi = new NBrightInfo(true);
+                                        nbi.SetXmlProperty("genxml/hidden/filename", match.Groups["name"].ToString());
+                                        list.Add(nbi);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return list;
+        }
+
+        public static void DownloadFileAndUnZip(string filename)
+        {
+            var downloadMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes");
+            var filepath = downloadMapPath + "\\" + filename ;
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("http://themes.nbrightproject.org/" + filename, filepath);
+            }
+            DnnUtils.UnZip(filename, downloadMapPath);
+            File.Delete(filename);
+        }
+
+
+        #endregion
 
     }
 

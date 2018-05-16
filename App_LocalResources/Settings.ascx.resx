@@ -291,4 +291,13 @@
   <data name="resetlanguage.Text" xml:space="preserve">
     <value>Reset Language</value>
   </data>
+  <data name="download.Text" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="downloadall.Text" xml:space="preserve">
+    <value>Download All</value>
+  </data>
+  <data name="installed.Text" xml:space="preserve">
+    <value>Installed</value>
+  </data>
 </root>

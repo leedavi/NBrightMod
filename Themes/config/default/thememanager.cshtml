@@ -41,26 +41,30 @@
         <div id="optionselectdiv">
             <div id="step1">
                 <div class="buttons">
-                    <button id="editmodtheme" type="button" class="btn btn-success" data-toggle="tooltip" title="@ResourceKey("Edit.lbleditmodtheme","","Help")" ><span class="glyphicon glyphicon-pencil"></span> @ResourceKey("Edit.editmodtheme")</button>
+                    <button id="editmodtheme" type="button" class="btn btn-success" data-toggle="tooltip" title="@ResourceKey("Edit.lbleditmodtheme","","Help")"><span class="glyphicon glyphicon-pencil"></span> @ResourceKey("Edit.editmodtheme")</button>
                 </div>
                 <div class="buttons">
-                    <button id="edittheme" type='button' class='btn btn-success' data-toggle="tooltip" title="@ResourceKey("Edit.lbledittheme","","Help")" ><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
+                    <button id="edittheme" type='button' class='btn btn-success' data-toggle="tooltip" title="@ResourceKey("Edit.lbledittheme","","Help")"><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='createnew' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblcreatenew","","Help")" ><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
+                    <button id='createnew' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblcreatenew","","Help")"><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='makethemesys' type='button' class='btn btn-info' data-toggle="tooltip" title="@ResourceKey("Edit.lblmakethemesys","","Help")" ><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
+                    <button id='makethemesys' type='button' class='btn btn-info' data-toggle="tooltip" title="@ResourceKey("Edit.lblmakethemesys","","Help")"><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='deletetheme' type='button' class='btn btn-danger' data-toggle="tooltip" title="@ResourceKey("Edit.lbldeletetheme","","Help")" ><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
+                    <button id='deletetheme' type='button' class='btn btn-danger' data-toggle="tooltip" title="@ResourceKey("Edit.lbldeletetheme","","Help")"><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
                 </div>
-                <hr/>
+                <hr />
                 <div class='buttons'>
-                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button' data-toggle="tooltip" title="@ResourceKey("Edit.lblimporttheme","","Help")" ><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
+                    <button id='displayserverthemes' type='button' class='btn btn-info' data-toggle="tooltip" title=""><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.downloadthemes")</button>
+                </div>
+                <hr />
+                <div class='buttons'>
+                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button' data-toggle="tooltip" title="@ResourceKey("Edit.lblimporttheme","","Help")"><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
                 </div>
                 <div class='buttons'>
-                    <button id='exporttheme' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblexporttheme","","Help")" ><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
+                    <button id='exporttheme' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblexporttheme","","Help")"><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
                 </div>
             </div>
 
@@ -197,6 +201,11 @@
                     $('.portalthemefolder').show();
                 });
 
+                $('#displayserverthemes').click(function () {
+                    $('#updatetype').val('themes');
+                    $('#step1').hide();
+                    NBrightMod_nbxget('displayserverthemes', '#nbrightmodthemedata', '#edittemplatediv');
+                });
 
                 // activate file upload
                 $('.fileupload-button').click(function () {

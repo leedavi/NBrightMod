@@ -378,4 +378,7 @@
   <data name="back.Text" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="downloadthemes.Text" xml:space="preserve">
+    <value>Download Themes</value>
+  </data>
 </root>

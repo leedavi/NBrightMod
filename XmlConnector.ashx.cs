@@ -294,6 +294,18 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         strOut = ResetLanguage(context);
                     }
+                    break;
+                case "downloadthemes":
+                    if (LocalUtils.CheckRights(moduleid))
+                    {
+                        strOut = DownloadThemes(context);
+                    }
+                    break;
+                case "displayserverthemes":
+                    if (LocalUtils.CheckRights(moduleid))
+                    {
+                        strOut = DisplayAllThemes(context);
+                    }
                     break;                    
             }
 
@@ -1433,6 +1445,7 @@ namespace Nevoweb.DNN.NBrightMod
                 return ex.ToString();
             }
         }
+
         private String AttachRolesToModule(HttpContext context)
         {
             try
@@ -3168,6 +3181,50 @@ namespace Nevoweb.DNN.NBrightMod
             return "";
         }
 
+
+        private string DownloadThemes(HttpContext context)
+        {
+            try
+            {
+                var rtnMsg = "";
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var downloadzip = ajaxInfo.GetXmlProperty("genxml/hidden/downloadzip");
+                var url = "http://themes.nbrightproject.org/";
+
+                if (downloadzip == "")
+                {
+                    rtnMsg += LocalUtils.DownloadAllThemes(url);
+                }
+                else
+                {
+                    rtnMsg += LocalUtils.DownloadSingleThemes(url,downloadzip);
+                }
+
+                return rtnMsg;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
+
+        private string DisplayAllThemes(HttpContext context)
+        {
+            try
+            {
+                var rtnMsg = "";
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+                var url = "http://themes.nbrightproject.org/";
+                var list = LocalUtils.GetWebsiteZipListing(url);
+                rtnMsg = LocalUtils.RazorTemplRenderList("themelist.cshtml", "-1", "", list, _lang, true);
+                return rtnMsg;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
 
 
         #endregion

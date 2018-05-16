@@ -434,6 +434,7 @@
     <None Include="Themes\Citation\default\editfields.cshtml" />
     <None Include="Themes\Citation\default\editpageheader.cshtml" />
     <None Include="Themes\Citation\default\view.cshtml" />
+    <None Include="Themes\config\default\themelist.cshtml" />
     <None Include="Themes\config\default\edittheme.cshtml" />
     <None Include="Themes\config\default\thememanager.cshtml" />
     <None Include="Themes\config\default\thememanagerpageheader.cshtml" />
