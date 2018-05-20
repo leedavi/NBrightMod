@@ -27,7 +27,7 @@
 
     <div>
         <div id="themedata">
-            <input id="moduleid" type="hidden" value="@info.ModuleId"/>
+            <input id="moduleid" type="hidden" value="@info.ModuleId" />
             <div class='dnnFormItem'>
                 @DnnLabel("lblthemefolder", "Settings.themefolder")
                 @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
@@ -55,7 +55,12 @@
             <div class='dnnFormItem'>
                 @DnnLabel("lblactivatedetail", "Settings.activatedetail")
                 @CheckBox(info, "genxml/checkbox/activatedetail", "", "", false)
-            </div>            
+            </div>
+
+            <div class='dnnFormItem'>
+                @DnnLabel("lblnotes", "Edit.notes")
+                @TextArea(info, "genxml/textbox/notes", "rows='5' class='form-control' ")
+            </div>
 
         </div>
     </div>

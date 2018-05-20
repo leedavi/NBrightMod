@@ -68,10 +68,13 @@
                 </b> 
             </td>
             <td>
-                <i class="glyphicon glyphicon-saved"></i>
+                @if (nbi.GetXmlPropertyBool("genxml/hidden/installed"))
+                {
+                    <i class="glyphicon glyphicon-saved"></i>
+                }
             </td>
             <td>
-                <div class="buttons "><button id="downloadallthemes" type="button" class="btn btn-default"><span class="glyphicon glyphicon-save"></span></button></div>
+                <div class="buttons "><button type="button" class="btn btn-default downloadsingletheme" downloadzip="@nbi.GetXmlProperty("genxml/hidden/filename")"><span class="glyphicon glyphicon-save"></span></button></div>
             </td>
         </tr>
     }

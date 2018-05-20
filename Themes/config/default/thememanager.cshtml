@@ -26,11 +26,11 @@
 <div id="nbrightmodtools">
 
     <div id="nbrightmodthemedata">
-        <input id="moduleid" type="hidden" value="@Model.ModuleId"/>
-        <input id="updatetype" type="hidden" value=""/>
-        <input id="templfilename" type="hidden" value="@info.GetXmlProperty("genxml/templfilename")" />  
+        <input id="moduleid" type="hidden" value="@Model.ModuleId" />
+        <input id="updatetype" type="hidden" value="" />
+        <input id="templfilename" type="hidden" value="@info.GetXmlProperty("genxml/templfilename")" />
         <input id="modulelevel" type="hidden" value="0" />
-        
+        <input id="downloadzip" type="hidden" value="" />        
 
         <div>
             <button id='refreshbutton' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span> @ResourceKey("Edit.return")</button>
@@ -39,34 +39,40 @@
         <hr />
 
         <div id="optionselectdiv">
-            <div id="step1">
-                <div class="buttons">
-                    <button id="editmodtheme" type="button" class="btn btn-success" data-toggle="tooltip" title="@ResourceKey("Edit.lbleditmodtheme","","Help")"><span class="glyphicon glyphicon-pencil"></span> @ResourceKey("Edit.editmodtheme")</button>
-                </div>
-                <div class="buttons">
-                    <button id="edittheme" type='button' class='btn btn-success' data-toggle="tooltip" title="@ResourceKey("Edit.lbledittheme","","Help")"><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
-                </div>
-                <div class='buttons'>
-                    <button id='createnew' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblcreatenew","","Help")"><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
-                </div>
-                <div class='buttons'>
-                    <button id='makethemesys' type='button' class='btn btn-info' data-toggle="tooltip" title="@ResourceKey("Edit.lblmakethemesys","","Help")"><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
-                </div>
-                <div class='buttons'>
-                    <button id='deletetheme' type='button' class='btn btn-danger' data-toggle="tooltip" title="@ResourceKey("Edit.lbldeletetheme","","Help")"><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
-                </div>
-                <hr />
-                <div class='buttons'>
-                    <button id='displayserverthemes' type='button' class='btn btn-info' data-toggle="tooltip" title=""><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.downloadthemes")</button>
-                </div>
-                <hr />
-                <div class='buttons'>
-                    <button id='importtheme' type='button' class='btn btn-warning fileupload-button' data-toggle="tooltip" title="@ResourceKey("Edit.lblimporttheme","","Help")"><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
-                </div>
-                <div class='buttons'>
-                    <button id='exporttheme' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblexporttheme","","Help")"><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
+
+            <div class="row">
+                <div class="col-md-12">
+                            <div class="form-horizontal dnnForm">
+                                <div class="col-sm-3">
+                                    <div id="step1" class="btn-group-vertical">
+                                        <button id="editmodtheme" type="button" class="btn btn-success" data-toggle="tooltip" title="@ResourceKey("Edit.lbleditmodtheme","","Help")"><span class="glyphicon glyphicon-pencil"></span> @ResourceKey("Edit.editmodtheme")</button>
+                                        <button id="edittheme" type='button' class='btn btn-success' data-toggle="tooltip" title="@ResourceKey("Edit.lbledittheme","","Help")"><span class='glyphicon glyphicon-pencil'></span> @ResourceKey("Edit.edittheme")</button>
+                                        <hr />
+                                        <button id='createnew' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblcreatenew","","Help")"><span class='glyphicon glyphicon-plus'></span> @ResourceKey("Edit.createnew")</button>
+                                        <button id='makethemesys' type='button' class='btn btn-info' data-toggle="tooltip" title="@ResourceKey("Edit.lblmakethemesys","","Help")"><span class='glyphicon glyphicon-link'></span> @ResourceKey("Edit.makethemesys")</button>
+                                        <button id='deletetheme' type='button' class='btn btn-danger' data-toggle="tooltip" title="@ResourceKey("Edit.lbldeletetheme","","Help")"><span class='glyphicon glyphicon-remove'></span> @ResourceKey("Edit.deletetheme")</button>
+                                        <hr />
+                                        <button id='displayserverthemes' type='button' class='btn btn-info' data-toggle="tooltip" title=""><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.downloadthemes")</button>
+                                        <hr />
+                                        <button id='importtheme' type='button' class='btn btn-warning fileupload-button' data-toggle="tooltip" title="@ResourceKey("Edit.lblimporttheme","","Help")"><span class='glyphicon glyphicon-log-in'></span> @ResourceKey("Edit.importtheme")</button>
+                                        <button id='exporttheme' type='button' class='btn btn-primary' data-toggle="tooltip" title="@ResourceKey("Edit.lblexporttheme","","Help")"><span class='glyphicon glyphicon-log-out'></span> @ResourceKey("Edit.exporttheme")</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9">
+                                    <h4>
+                                        <span>@ResourceKey("Edit.notes")&nbsp;&nbsp;</span>
+                                        <button id='savenotes' type='button' class='btn btn-primary'><span class='glyphicon glyphicon-save'></span> @ResourceKey("Edit.save")</button>
+                                    </h4>
+                                    @TextArea(info, "genxml/textbox/notes", "rows='15' class='form-control' ")
+                                    <div>
+                                        @ResourceKey("Edit.noteseen")
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
                 </div>
             </div>
+
 
             <div id="step2" style="display: none;">
                 <div id="newnamediv" style="display: none;">
@@ -80,7 +86,7 @@
                     @ThemePortalSelectList(info, "genxml/dropdownlist/portalthemefolder", " class='portalthemefolder' ")
                 </div>
                 <div class="fileupload">
-                    
+
                 </div>
 
                 <hr />
@@ -96,7 +102,7 @@
 
         <div id="edittemplatediv"></div>
 
-</div>
+    </div>
 
     <div id="thememsg"></div>
 
@@ -125,6 +131,11 @@
                     NBrightMod_nbxget('deletetheme', '#nbrightmodthemedata', '#edittemplatediv');
                 });
 
+                $('#savenotes').click(function () {
+                    NBrightMod_nbxget('savenotes', '#nbrightmodthemedata', '#edittemplatediv');
+                });
+                
+
                 $('#editmodtheme').click(function () {
                     $('.processing').show();
                     $('#updatetype').val('edit');
@@ -144,14 +155,20 @@
                 $('#edittheme').click(function () {
                     $('#updatetype').val('edit');
                     $('#step1').hide();
-                    $('#step2').show();
-                    $('#nextbutton').show();
+                    $('#step2').hide();
+                    $('#nextbutton').hide();
                     $('#makethemesysbutton').hide();
                     $('#deletethemebutton').hide();
                     $('#exportthemebutton').hide();
                     $('.themefolder').show();
                     $('.portalthemefolder').hide();
+                    $('.themefolder').val('');                    
+
+                    $('#modulelevel').val('0');
+                    $('#templfilename').val('view.cshtml'); // set default to view, should always be there!
+                    NBrightMod_nbxget('createtemplate', '#nbrightmodthemedata');
                 });
+
                 $('#createnew').click(function () {
                     $('#updatetype').val('new');
                     $('#step1').hide();
@@ -271,6 +288,30 @@
             });
 
             function NBrightMod_nbxgetCompleted(e) {
+
+                if (e.cmd == 'savenotes') {
+                    location.reload();
+                }
+
+                if (e.cmd == 'downloadthemes') {
+                    NBrightMod_nbxget('displayserverthemes', '#nbrightmodthemedata', '#edittemplatediv');
+                }
+
+                if (e.cmd == 'displayserverthemes') {
+                    $('.downloadsingletheme').click(function () {
+                        $('#updatetype').val('themes');
+                        $('#step1').hide();
+                        $('#downloadzip').val($(this).attr("downloadzip"));
+                        NBrightMod_nbxget('downloadthemes', '#nbrightmodthemedata', '#edittemplatediv');
+                    });
+                    $('#downloadallthemes').click(function () {
+                        $('#updatetype').val('themes');
+                        $('#step1').hide();
+                        $('#downloadzip').val('');
+                        NBrightMod_nbxget('downloadthemes', '#nbrightmodthemedata', '#edittemplatediv');
+                    });
+                }
+
 
                 if (e.cmd == 'createtemplate') {
                     NBrightMod_nbxget('gettemplatemenu', '#nbrightmodthemedata', '#edittemplatediv');

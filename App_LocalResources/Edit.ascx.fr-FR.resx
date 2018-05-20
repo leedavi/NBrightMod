@@ -270,9 +270,6 @@
   <data name="linktypecsv2.Text" xml:space="preserve">
     <value>Aucun,Lien interne,Lien externe</value>
   </data>
-  <data name="linktitle.Text" xml:space="preserve">
-    <value>Texte du lien</value>
-  </data>
   <data name="completed.Text" xml:space="preserve">
     <value>Effectué</value>
   </data>
@@ -386,5 +383,8 @@
   </data>
   <data name="back.Text" xml:space="preserve">
     <value>Retour</value>
+  </data>
+  <data name="bespoke.Text" xml:space="preserve">
+    <value>AppTheme personnalisé</value>
   </data>
 </root>

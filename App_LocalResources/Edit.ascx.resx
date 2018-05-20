@@ -381,4 +381,13 @@
   <data name="downloadthemes.Text" xml:space="preserve">
     <value>Download Themes</value>
   </data>
+  <data name="notes.Text" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="bespoke.Text" xml:space="preserve">
+    <value>Personalised AppTheme</value>
+  </data>
+  <data name="noteseen.Text" xml:space="preserve">
+    <value>These notes are seen by ALL editors.</value>
+  </data>
 </root>

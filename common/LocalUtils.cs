@@ -1904,6 +1904,16 @@ namespace NBrightMod.common
                                     {
                                         var nbi = new NBrightInfo(true);
                                         nbi.SetXmlProperty("genxml/hidden/filename", match.Groups["name"].ToString());
+
+                                        var downloadMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + match.Groups["name"].ToString());
+                                        if (Directory.Exists(downloadMapPath.ToLower().Replace(".zip", "")))
+                                        {
+                                            nbi.SetXmlProperty("genxml/hidden/installed", "True");
+                                        }
+                                        else
+                                        {
+                                            nbi.SetXmlProperty("genxml/hidden/installed", "False");
+                                        }
                                         list.Add(nbi);
                                     }
                                 }
@@ -1924,8 +1934,8 @@ namespace NBrightMod.common
             {
                 client.DownloadFile("http://themes.nbrightproject.org/" + filename, filepath);
             }
-            DnnUtils.UnZip(filename, downloadMapPath);
-            File.Delete(filename);
+            DnnUtils.UnZip(filepath, downloadMapPath);
+            File.Delete(filepath);
         }
 
 

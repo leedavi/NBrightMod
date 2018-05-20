@@ -306,7 +306,13 @@ namespace Nevoweb.DNN.NBrightMod
                     {
                         strOut = DisplayAllThemes(context);
                     }
-                    break;                    
+                    break;
+                case "savenotes":
+                    if (LocalUtils.CheckRights(moduleid))
+                    {
+                        strOut = SaveNotes(context);
+                    }
+                    break;
             }
 
 
@@ -421,6 +427,43 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
         }
+
+        private String SaveNotes(HttpContext context)
+        {
+            try
+            {
+
+                //get uploaded params
+                var ajaxInfo = LocalUtils.GetAjaxFields(context);
+
+                var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                if (Utils.IsNumeric(moduleid))
+                {
+                    // get DB record
+                    var nbi = LocalUtils.GetSettings(moduleid);
+                    if (nbi.ModuleId == 0) // new setting record
+                    {
+                        nbi = CreateSettingsInfo(moduleid, nbi);
+                    }
+
+                    nbi.SetXmlProperty("genxml/textbox/notes", ajaxInfo.GetXmlProperty("genxml/textbox/notes"));
+
+                    LocalUtils.UpdateSettings(nbi);
+                    LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
+                    LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+
+
+                }
+                return "";
+
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+
+        }
+
 
         private String SaveSettings(HttpContext context)
         {
@@ -836,7 +879,7 @@ namespace Nevoweb.DNN.NBrightMod
             var templData = new NBrightInfo(true);
 
             // for module level template we need to add the modref to the start of the template
-            if (modulelevel && Utils.IsNumeric(moduleid))
+            if (Utils.IsNumeric(moduleid))
             {
                 var objCtrl = new NBrightDataController();
 
@@ -1189,39 +1232,46 @@ namespace Nevoweb.DNN.NBrightMod
 
             var themefolder = ajaxInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             var templfilename = ajaxInfo.GetXmlProperty("genxml/hidden/templfilename");
+            var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
             var lang = ajaxInfo.GetXmlProperty("genxml/hidden/editlang");
             var fldrlang = lang;
             if (fldrlang == "") fldrlang = "default";
 
-            var fldrDefault = "";
-            if (templfilename.EndsWith(".cshtml"))
+            var objCtrl = new NBrightDataController();
+            var modInfo = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+            if (modInfo != null)
             {
-                fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
-            }
-            else
-            {
-                if (templfilename.EndsWith(".css"))
-                {
-                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
-                }
-                if (templfilename.EndsWith(".js"))
-                {
-                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
-                }
-                if (templfilename.EndsWith(".resx"))
-                {
-                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
-                }
-            }
-            if (fldrDefault != "")
-            {
-                if (File.Exists(fldrDefault + "\\" + templfilename))
-                {
-                    File.Delete(fldrDefault + "\\" + templfilename);
-                    LocalUtils.ClearModuleCacheByTheme(themefolder);
-                }
-            }
+                themefolder = modInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
 
+                var fldrDefault = "";
+                if (templfilename.EndsWith(".cshtml"))
+                {
+                    fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\" + fldrlang;
+                }
+                else
+                {
+                    if (templfilename.EndsWith(".css"))
+                    {
+                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\css";
+                    }
+                    if (templfilename.EndsWith(".js"))
+                    {
+                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\js";
+                    }
+                    if (templfilename.EndsWith(".resx"))
+                    {
+                        fldrDefault = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder + "\\resx";
+                    }
+                }
+                if (fldrDefault != "")
+                {
+                    if (File.Exists(fldrDefault + "\\" + templfilename))
+                    {
+                        File.Delete(fldrDefault + "\\" + templfilename);
+                        LocalUtils.ClearModuleCacheByTheme(themefolder);
+                    }
+                }
+            }
 
             return "OK";
         }
@@ -1578,18 +1628,16 @@ namespace Nevoweb.DNN.NBrightMod
                 var modulelevel = ajaxInfo.GetXmlPropertyBool("genxml/hidden/modulelevel");
                 var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
 
-                if (modulelevel && Utils.IsNumeric(moduleid))
+                // assign module themefolder.
+                var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
+                if (modsettings != null)
                 {
-                    // assign module themefolder.
-                    var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
-                    if (modsettings != null)
-                    {
-                        themefolder = modsettings.GetXmlProperty("genxml/dropdownlist/themefolder");
-                    }
+                    themefolder = modsettings.GetXmlProperty("genxml/dropdownlist/themefolder");
                 }
 
+                if (newname == "") newname = themefolder;
 
-                if (updatetype == "new" && newname != "" && themefolder != "")
+                if (updatetype == "new" && themefolder != "")
                 {
                     // create folders (if required)
                     var fldrRoot = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + newname;
@@ -1604,29 +1652,23 @@ namespace Nevoweb.DNN.NBrightMod
                     Utils.CreateFolder(fldrCss);
 
                     var sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/default");
-                    CopyFileInFolder(sourceRoot, fldrDefault);
+                    CopyFileInFolder(sourceRoot, fldrDefault,false,false);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/resx");
-                    CopyFileInFolder(sourceRoot, fldrResx);
+                    CopyFileInFolder(sourceRoot, fldrResx, false, false);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/js");
-                    CopyFileInFolder(sourceRoot, fldrJs);
+                    CopyFileInFolder(sourceRoot, fldrJs, false, false);
                     sourceRoot = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod/Themes/" + themefolder + "/css");
-                    CopyFileInFolder(sourceRoot, fldrCss);
+                    CopyFileInFolder(sourceRoot, fldrCss, false, false);
 
-                    // rename the settings theme so the module uses the new one.
-                    if (Utils.IsNumeric(moduleid))
+                    // assign module themefolder.
+                    if (modsettings != null)
                     {
-                        // assign module themefolder.
-                        var modsettings = objCtrl.GetByType(PortalSettings.Current.PortalId, moduleid, "SETTINGS");
-                        if (modsettings != null)
-                        {
-                            modsettings.SetXmlProperty("genxml/dropdownlist/themefolder", newname);
-                            objCtrl.Update(modsettings);
-                            LocalUtils.ClearRazorCache(modsettings.ItemID.ToString());
-                            LocalUtils.ClearFileCache(modsettings.ItemID);
-                        }
+                        // This works but is confusing when you don;t know it's happened.
+                        //modsettings.SetXmlProperty("genxml/dropdownlist/themefolder", newname);
+                        //objCtrl.Update(modsettings);
+                        LocalUtils.ClearRazorCache(modsettings.ItemID.ToString());
+                        LocalUtils.ClearFileCache(modsettings.ItemID);
                     }
-
-
                 }
 
                 if (updatetype == "edit" && themefolder != "")
@@ -1793,7 +1835,7 @@ namespace Nevoweb.DNN.NBrightMod
         }
 
 
-        private void CopyFileInFolder(String sourcePath, String targetPath, Boolean move = false)
+        private void CopyFileInFolder(String sourcePath, String targetPath, Boolean movefile = false, bool overwrite = true)
         {
             // To copy a folder's contents to a new location:
             // Create a new target folder, if necessary.
@@ -1818,8 +1860,8 @@ namespace Nevoweb.DNN.NBrightMod
                     // Use static Path methods to extract only the file name from the path.
                     var fileName = System.IO.Path.GetFileName(s);
                     var destFile = System.IO.Path.Combine(targetPath, fileName);
-                    System.IO.File.Copy(s, destFile, true);
-                    if (move)
+                    System.IO.File.Copy(s, destFile, overwrite);
+                    if (movefile)
                     {
                         File.Delete(s);
                     }

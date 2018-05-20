@@ -441,6 +441,24 @@ namespace NBrightMod.render
             return new RawString(strOut.ToString());
         }
 
+        public Boolean IsPersonalisedTemplate(String themefolder)
+        {
+            var themeMapPath = PortalSettings.Current.HomeDirectoryMapPath.Trim('\\') + "\\NBrightMod\\Themes\\" + themefolder;
+            if (Directory.Exists(themeMapPath))
+            {
+                var dirlist = Directory.GetDirectories(themeMapPath);
+                foreach (var d in dirlist)
+                {
+                    var filelist = Directory.GetFiles(d);
+                    if (filelist.Any())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public Boolean IsPortalTemplate(NBrightInfo info, String filename)
         {
             if (isPortalTemplate(info,filename)) return true;
