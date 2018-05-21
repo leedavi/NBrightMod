@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightMod", "NBrightMod.csproj", "{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightCore", "..\NBrightData\projects\NBrightCore\NBrightCore.csproj", "{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightDNN", "..\NBrightData\NBrightDNN.csproj", "{EC815D38-62CF-4B46-8177-CF40CE1AAB62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightDNN", "..\NBrightData\projects\NBrightDNN\NBrightDNN.csproj", "{EC815D38-62CF-4B46-8177-CF40CE1AAB62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBrightCore", "..\NBrightData\NBrightCore\NBrightCore.csproj", "{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,16 +19,19 @@ Global
 		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D1B48A8-5FD3-4DC9-AD85-16B009D141E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC815D38-62CF-4B46-8177-CF40CE1AAB62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B338113-6A9A-484D-A6C6-4D63FD5E58C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB70D8AE-E973-401C-A123-A5F8725988FC}
 	EndGlobalSection
 EndGlobal
