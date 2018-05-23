@@ -4,7 +4,8 @@ Themes/SecureHoliday/
 Themes/config/bootstrap/
 Themes/config/font-awesome/
 Installation/NBrightMod_Resources.zip
+.vs/NBrightMod/v15/sqlite3/storage.ide
 .vs/config/applicationhost.config
-Themes/Socopa/
-Themes/ReservationFormKnoe/
 .vs/
+!Themes/config/
+Themes/
