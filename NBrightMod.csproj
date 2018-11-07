@@ -142,6 +142,9 @@
     <Content Include="Edit.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <None Include="BuildScripts\build.bat" />
+    <None Include="BuildScripts\ModulePackage.targets" />
+    <None Include="BuildScripts\MSBuild.Community.Tasks.Targets" />
     <None Include="NBrightMod.dnn" />
     <Content Include="Themes\config\css\NBrightMod.css" />
     <Content Include="Themes\config\js\jquery.validate.min.js" />
@@ -168,6 +171,23 @@
     <None Include="Themes\config\default\version-email-delete.cshtml" />
     <None Include="Themes\config\default\version-email-validate.cshtml" />
     <None Include="Themes\config\default\version-email-new.cshtml" />
+    <None Include="Themes\Shared\docs-shared-count.cshtml" />
+    <None Include="Themes\Shared\docs-shared.cshtml" />
+    <None Include="Themes\Shared\docs1-shared.cshtml" />
+    <None Include="Themes\Shared\docselect-shared.cshtml" />
+    <None Include="Themes\Shared\docselect1-shared.cshtml" />
+    <None Include="Themes\Shared\editbody-shared.cshtml" />
+    <None Include="Themes\Shared\editlist-shared.cshtml" />
+    <None Include="Themes\Shared\editortext-shared.cshtml" />
+    <None Include="Themes\Shared\editpageheader-shared.cshtml" />
+    <None Include="Themes\Shared\header-shared.cshtml" />
+    <None Include="Themes\Shared\image-shared.cshtml" />
+    <None Include="Themes\Shared\image1-shared.cshtml" />
+    <None Include="Themes\Shared\imageselect-shared.cshtml" />
+    <None Include="Themes\Shared\imageselect1-shared.cshtml" />
+    <None Include="Themes\Shared\links-shared.cshtml" />
+    <None Include="Themes\Shared\linksdocs-shared.cshtml" />
+    <None Include="Themes\Shared\video-shared.cshtml" />
     <None Include="XmlConnector.ashx" />
   </ItemGroup>
   <ItemGroup>

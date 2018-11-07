@@ -390,4 +390,10 @@
   <data name="noteseen.Text" xml:space="preserve">
     <value>These notes are seen by ALL editors.</value>
   </data>
+  <data name="video.Text" xml:space="preserve">
+    <value>Video Embed</value>
+  </data>
+  <data name="videoembedcode.Text" xml:space="preserve">
+    <value>Video Embed code</value>
+  </data>
 </root>

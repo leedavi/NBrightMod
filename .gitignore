@@ -7,5 +7,6 @@ Installation/NBrightMod_Resources.zip
 .vs/NBrightMod/v15/sqlite3/storage.ide
 .vs/config/applicationhost.config
 .vs/
-!Themes/config/
 Themes/
+!Themes/config/
+!Themes/shared/

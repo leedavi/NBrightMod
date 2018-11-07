@@ -1,0 +1,33 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using System
+@using System.Web.UI.WebControls
+@using System.Xml
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<div class="panel panel-default">
+
+<div class="panel-heading">
+  <span class="panel-title">@ResourceKey("Edit.video")</span>
+</div>
+
+<div class="panel-body">
+
+<div class="row">
+<div class="col-xs-12 col-sm-12">
+    <div class="box">
+        <div class="form-group">
+            <label>@ResourceKey("Edit.videoembedcode")</label>
+            @NBrightTextArea(info, "genxml/textbox/videoembedcode", "rows='4' ")
+        </div>
+    </div>
+    </div>
+</div>
+
+</div>
+
+</div>

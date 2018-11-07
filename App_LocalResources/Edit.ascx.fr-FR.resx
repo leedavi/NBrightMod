@@ -387,4 +387,10 @@
   <data name="bespoke.Text" xml:space="preserve">
     <value>AppTheme personnalisé</value>
   </data>
+  <data name="video.Text" xml:space="preserve">
+    <value>Vidéo intégrée</value>
+  </data>
+  <data name="videoembedcode.Text" xml:space="preserve">
+    <value>Code Video Embed</value>
+  </data>
 </root>

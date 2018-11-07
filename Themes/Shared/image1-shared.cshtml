@@ -1,0 +1,80 @@
+@inherits NBrightMod.render.NBrightModRazorTokens<NBrightDNN.NBrightRazor>
+@using System.Linq
+@using NBrightDNN
+
+@{
+    var info = (NBrightInfo)Model.List.First();
+}
+
+<input id="xmlupdateimages" type="hidden" value=""></input>
+
+    <div class="imginput panel panel-default">
+
+    <div class="panel-heading clearfix">
+
+	@EditButtons("upload1image,undoimage", "imagebuttons pull-right")
+
+      <span class="panel-title">@ResourceKey("Edit.images")</span>
+    </div>
+
+    <div class="panel-body">
+
+                <div id="captionscheckbox" style="display: none;">
+                    @CheckBox(info, "genxml/checkbox/showcaptions", "ResourceKey:Edit.showcaptions", " ")
+                </div>
+
+
+
+                <div id="imageselectlist" style="display: none;"></div>
+
+                <div class="table-responsive">
+
+                                <table class="table table-bordered" id="imagelist">
+                                <tr>
+                                  <th>@ResourceKey("Edit.image")</th>
+                                  <th>@ResourceKey("Edit.alternativetext")</th>
+                                    @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                                    {
+                                        <th>@ResourceKey("Edit.width")</th>
+                                    }
+                                    @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                                    {
+                                        <th>@ResourceKey("Edit.height")</th>
+                                    }
+                                    <th></th>
+                                </tr>
+
+                    @{
+                        var imglp = 1;
+                        var imageurl = info.GetXmlProperty("genxml/imgs/genxml[" + imglp + "]/hidden/imageurl");
+                        if (imageurl != "")
+                        {
+                            
+                                  <tr class="imageitem">
+                                  <td>
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/ref"," update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/filename", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imageurl", " update='imgsave' ")
+                                  @HiddenField(info, "genxml/imgs/genxml[" + imglp + "]/hidden/imagepath", " update='imgsave' ")
+                                  <img src="/DesktopModules/NBright/NBrightData/NBrightThumb.ashx?src=@(imageurl)&w=100&h=50" /></td>
+                                  <td>@NBrightTextBox(info, "genxml/lang/genxml/imgs/genxml[" + imglp + "]/textbox/imgcaption", " update='imglang' ")</td>
+                                      @if (Model.GetSetting("imglistcolumns").Contains("w"))
+                                      {
+                                          <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgwidth", " update='imgsave' style='width:60px;' ", "150")</td>
+                                      }
+                                      @if (Model.GetSetting("imglistcolumns").Contains("h"))
+                                      {
+                                          <td>@NBrightTextBox(info, "genxml/imgs/genxml[" + imglp + "]/textbox/imgheight", " update='imgsave' style='width:60px;' ", "0")</td>
+                                      }
+                                      <td>@IconButtons(info, "de")</td>
+                                  </tr>
+                        }
+
+                    }
+
+                              </table>
+
+                </div>
+    </div>
+
+    </div>
