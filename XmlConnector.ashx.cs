@@ -1904,7 +1904,7 @@ namespace Nevoweb.DNN.NBrightMod
                         // get data passed back by ajax
                         var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
                         // update record with ajax data
-                        nbi.UpdateAjax(strIn);
+                        nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
                         nbi.TextData = ""; // clear any output DB caching
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                         {

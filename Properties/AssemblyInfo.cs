@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nevoweb")]
 [assembly: AssemblyProduct("NBrightMod")]
-[assembly: AssemblyCopyright("Nevoweb Copyright ©  2017")]
+[assembly: AssemblyCopyright("Nevoweb Copyright ©  2018")]
 [assembly: AssemblyTrademark("NWB")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("8.3.0.0")]
-[assembly: AssemblyFileVersion("8.3.0.0")]
+[assembly: AssemblyVersion("8.3.1.0")]
+[assembly: AssemblyFileVersion("8.3.1.0")]
