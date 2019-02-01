@@ -19,6 +19,13 @@
 <input id="currentedittab" type="hidden" value="@info.GetXmlProperty("genxml/hidden/currentedittab")" />
 <input id="resxfilename" type="hidden" value="@info.GetXmlProperty("genxml/resxfilename")" />
 
+<script>
+$(function() {
+  $( "#sideeditmenu" ).accordion({
+     heightStyle: "content"
+  });
+});
+</script>
 
 @if (info.GetXmlPropertyBool("genxml/modulelevel"))
 {
@@ -33,39 +40,16 @@ else
 @EditCultureSelect("flag-list", "selecteditlanguage", true)    
 </div>
 
-
 <div id="sideeditmenu">
-    <nav>
-        <ul>
-            <li>
-                <a href="#"><i class="fa fa-laptop"></i>General Files</a>
-                <h2><i class="fa fa-laptop"></i>General Files
-                </h2>
-                @TemplateFileSelect(info, "", "", "", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml")
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-laptop"></i>All Files</a>
-                <h2><i class="fa fa-laptop"></i>All Files
-                </h2>
-                @TemplateFileSelect(info, "", "", "", "")
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-laptop"></i>Snippet Input</a>
-                <h2><i class="fa fa-laptop"></i>Snippet Input
-                </h2>
-                @GetSnippets("", "", "", "root/input/*")
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-laptop"></i>Snippet Process</a>
-                <h2><i class="fa fa-laptop"></i>Snippet Process
-                </h2>
-                @GetSnippets("", "", "", "root/process/*")
-            </li>
-        </ul>
-    </nav>
+  <h3><i class="fa fa-file-code-o"></i>General Files</h3>
+  @TemplateFileSelect(info, "", "", "", "editfields.cshtml,settings.cshtml,viewpageheader.cshtml,view.cshtml")
+  <h3><i class="fa fa-file-code-o"></i>All Files</h3>
+  @TemplateFileSelect(info, "", "", "", "")
+  <h3><i class="fa fa-file-code-o"></i>Snippet Input</h3>
+  @GetSnippets("", "", "", "root/input/*")
+  <h3><i class="fa fa-file-code-o"></i>Snippet Process</h3>
+  @GetSnippets("", "", "", "root/process/*")
 </div>
-
-
 
 <div id="tabs">
 

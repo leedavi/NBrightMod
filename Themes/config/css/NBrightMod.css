@@ -34,13 +34,21 @@
 .nbm-checkbox label {padding-left:6px;font-weight:normal;}
 .nbm-rbl label {padding-left:6px;font-weight:normal;margin-right:10px;}
 
-/* dock */
+/* DNN9 Dock */
 #sideeditmenu {
-        margin: 0px;
-        padding: 0px;
-        position: fixed;
-        top: 50px;
-        height: 80%;
-        z-index: 99;
-        left: 0px;
-    }
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  z-index: 99;
+  left: 20px;
+}
+#sideeditmenu h3 {cursor:pointer;}
+#sideeditmenu h3 i.fa {margin-right:6px;}
+#sideeditmenu ul {padding:0;margin:10px 0 30px 0;}
+#sideeditmenu ul li {list-style-type:none;padding:5px 0;border-bottom:#ddd solid 1px;margin:0;}
+#sideeditmenu ul li:last-child {border-bottom:0;}
+#sideeditmenu ul li a.ismoduletemplate:before {font-family:'FontAwesome';content:"\f14b";color:turquoise;margin-right:4px;}
+#sideeditmenu ul li a.isportaltemplate:before {font-family:'FontAwesome';content:"\f14b";color:steelblue;margin-right:4px;}
+#sideeditmenu a {text-decoration:none !important;}
