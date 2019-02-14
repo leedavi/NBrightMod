@@ -36,10 +36,10 @@
       <HintPath>..\..\..\bin\DotNetNuke.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke.Web.DDRMenu">
-      <HintPath>..\..\..\..\..\..\Support\DNN6x\bin\DotNetNuke.Web.DDRMenu.dll</HintPath>
+      <HintPath>..\..\..\bin\DotNetNuke.Web.DDRMenu.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke.WebControls">
-      <HintPath>..\..\..\..\..\..\Support\DNN6x\bin\DotNetNuke.WebControls.dll</HintPath>
+      <HintPath>..\..\..\bin\DotNetNuke.WebControls.dll</HintPath>
     </Reference>
     <Reference Include="NBrightCore, Version=3.4.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="common\LocalUtils.cs" />
     <Compile Include="Components\AjaxInterface.cs" />
+    <Compile Include="Components\DDRMenuInterface.cs" />
     <Compile Include="Components\NBrightController.cs" />
     <Compile Include="ThemeManager.ascx.cs">
       <DependentUpon>ThemeManager.ascx</DependentUpon>
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Themes\config\default\editfields-Page-SEO.cshtml" />
     <None Include="Themes\config\default\themelist.cshtml" />
     <None Include="Themes\config\default\edittheme.cshtml" />
     <None Include="Themes\config\default\thememanager.cshtml" />

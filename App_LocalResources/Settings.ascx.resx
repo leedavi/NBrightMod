@@ -300,4 +300,7 @@
   <data name="installed.Text" xml:space="preserve">
     <value>Installed</value>
   </data>
+  <data name="categorymode.Text" xml:space="preserve">
+    <value>Category Mode.  (Each row in the module will appear as a sub-menu item for this page)</value>
+  </data>
 </root>

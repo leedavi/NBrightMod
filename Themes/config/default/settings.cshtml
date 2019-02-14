@@ -28,6 +28,7 @@
     <div>
         <div id="themedata">
             <input id="moduleid" type="hidden" value="@info.ModuleId" />
+            <input id="tabid" type="hidden" update="save" value="@Model.GetUrlParam("tabid")" />
             <div class='dnnFormItem'>
                 @DnnLabel("lblthemefolder", "Settings.themefolder")
                 @ThemeSelectList(info, "genxml/dropdownlist/themefolder", "/DesktopModules/NBright/NBrightMod/Themes", " ")
@@ -56,7 +57,10 @@
                 @DnnLabel("lblactivatedetail", "Settings.activatedetail")
                 @CheckBox(info, "genxml/checkbox/activatedetail", "", "", false)
             </div>
-
+            <div class='dnnFormItem'>
+                @DnnLabel("categorymode", "Settings.categorymode")
+                @CheckBox(info, "genxml/checkbox/categorymode", "", "", false)
+            </div>
             <div class='dnnFormItem'>
                 @DnnLabel("lblnotes", "Edit.notes")
                 @TextArea(info, "genxml/textbox/notes", "rows='5' class='form-control' ")
@@ -68,7 +72,7 @@
     <div id="settingsdata"></div>
 
     <div class='dnnFormItem'>
-        Ref: @info.GetXmlProperty("genxml/hidden/modref")
+        Ref: @info.GetXmlProperty("genxml/hidden/modref") / @info.GetXmlProperty("genxml/hidden/tabid")
     </div>
 
         <script>

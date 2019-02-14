@@ -1888,6 +1888,8 @@ namespace Nevoweb.DNN.NBrightMod
                 var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                 var selecteditemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
+                var settings = LocalUtils.GetSettings(moduleid);
+                var tabid = settings.GetXmlProperty("genxml/hidden/tabid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                 if (lang == "") lang = _lang;
 
@@ -1905,6 +1907,7 @@ namespace Nevoweb.DNN.NBrightMod
                         var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
                         // update record with ajax data
                         nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
+                        nbi.GUIDKey = tabid;
                         nbi.TextData = ""; // clear any output DB caching
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                         {
@@ -1919,6 +1922,7 @@ namespace Nevoweb.DNN.NBrightMod
                         // do langauge record
                         nbi = objCtrl.GetDataLang(nbi.ItemID, lang, true);
                         nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
+                        nbi.GUIDKey = tabid;
                         nbi.TextData = ""; // clear any output DB caching
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                         {
@@ -1964,6 +1968,8 @@ namespace Nevoweb.DNN.NBrightMod
 
                     var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                     var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
+                    var settings = LocalUtils.GetSettings(moduleid.ToString());
+                    var tabid = settings.GetXmlProperty("genxml/hidden/tabid");
                     var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                     if (lang == "") lang = _lang;
 
@@ -1979,6 +1985,7 @@ namespace Nevoweb.DNN.NBrightMod
                             {
                                 // update record with ajax data
                                 nbi.UpdateAjax(ajaxData);
+                                nbi.GUIDKey = tabid;
                                 nbi.SetXmlProperty("genxml/hidden/sortrecordorder", lp.ToString("0000")); // always recalc custom sort field
                                 if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                                 {
@@ -1991,6 +1998,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                                 // do langauge record
                                 nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang, true);
+                                nbi.GUIDKey = tabid;
                                 nbi.UpdateAjax(ajaxData, "", ignoresecurityfilter);
                                 if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                                 {

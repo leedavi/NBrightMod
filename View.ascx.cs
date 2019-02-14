@@ -217,7 +217,7 @@ namespace Nevoweb.DNN.NBrightMod
                     divclass = "class='" + settings.GetXmlProperty("genxml/textbox/wrapperclass") + "'";
                 }
                 strOut = "<div id='" + settings.GetXmlProperty("genxml/hidden/modref") + "'  " + divclass + ">";
-                strOut += LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), razorCacheKey , l, Utils.GetCurrentCulture(), debug);
+                strOut += LocalUtils.RazorTemplRenderList(displayview, ModuleId.ToString(""), "" , l, Utils.GetCurrentCulture(), debug);
                 strOut += "</div>";
 
                 if (!debug)
