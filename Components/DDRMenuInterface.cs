@@ -53,10 +53,10 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
                             var n = new MenuNode();
                             n.Parent = nod;
-                            n.TabId = 51;
+                            n.TabId = nod.TabId;
                             n.Text = pagename;
                             n.Title = pagetitle;
-                            n.Url = nod.Url + "/" + pagename + "?eid=" + dataInfo.ItemID;
+                            n.Url =  nod.Url + "/eid/" + dataInfo.ItemID + "/" + Utils.UrlFriendly(pagename);
                             n.Enabled = true;
                             n.Selected = false;
                             n.Breadcrumb = false;

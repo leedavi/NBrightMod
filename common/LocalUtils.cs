@@ -953,10 +953,10 @@ namespace NBrightMod.common
         public static void SetRazorCache(String cacheKey, String cachedata, string moduleid)
         {
             Utils.SetCache(cacheKey, cachedata);
-            var modCacheList = (List<String>) Utils.GetCache("nbrightmodcache*" + cacheKey);
+            var modCacheList = (List<String>) Utils.GetCache("nbrightmodcache*" + moduleid);
             if (modCacheList == null) modCacheList = new List<String>();
             if (!modCacheList.Contains(cacheKey)) modCacheList.Add(cacheKey);
-            Utils.SetCache("nbrightmodcache*" + cacheKey, modCacheList);
+            Utils.SetCache("nbrightmodcache*" + moduleid, modCacheList);
             SetFileCache(cacheKey, cachedata, moduleid);
         }
 
