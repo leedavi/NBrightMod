@@ -48,6 +48,7 @@ namespace Nevoweb.DNN.NBrightMod
 
         protected override void OnInit(EventArgs e)
         {
+
             base.OnInit(e);
 
             // check for version records 
@@ -65,6 +66,7 @@ namespace Nevoweb.DNN.NBrightMod
             {
 
                 base.OnLoad(e);
+
                 if (Page.IsPostBack == false)
                 {
                     // check we have settings
@@ -92,11 +94,29 @@ namespace Nevoweb.DNN.NBrightMod
         private void PageLoad()
         {
             var objCtrl = new NBrightDataController();
+
+            var eid = Utils.RequestQueryStringParam(Request, "eid");
+            // check for detail page display
+            if (Utils.IsNumeric(eid))
+            {
+                var info = objCtrl.Get(Convert.ToInt32(eid), Utils.GetCurrentCulture());
+
+                var pagetitle = info.GetXmlProperty("genxml/lang/genxml/textbox/pagetitle");
+                if (pagetitle == "") pagetitle = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                var tagwords = info.GetXmlProperty("genxml/lang/genxml/textbox/keywords");
+                var pagedescription = info.GetXmlProperty("genxml/lang/genxml/textbox/pagedescription");
+
+                DotNetNuke.Framework.CDefault tp = (DotNetNuke.Framework.CDefault)this.Page;
+                if (pagetitle != "") tp.Title = pagetitle;
+                if (pagedescription != "") tp.Description = pagedescription;
+                if (tagwords != "") tp.KeyWords = tagwords;
+
+            }
+
             var settings = LocalUtils.GetSettings(ModuleId.ToString());
             var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
             var activatedetail = settings.GetXmlPropertyBool("genxml/checkbox/activatedetail");
             // check for detail page display
-            var eid = Utils.RequestQueryStringParam(Request, "eid");
             var displayview = "view.cshtml";
             // check for detail page display
             if (Utils.IsNumeric(eid) && activatedetail)

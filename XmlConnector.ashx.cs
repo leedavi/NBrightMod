@@ -1889,7 +1889,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var selecteditemid = ajaxInfo.GetXmlProperty("genxml/hidden/selecteditemid");
                 var moduleid = ajaxInfo.GetXmlProperty("genxml/hidden/moduleid");
                 var settings = LocalUtils.GetSettings(moduleid);
-                var tabid = settings.GetXmlProperty("genxml/hidden/tabid");
+                var tabid = settings.GetXmlPropertyInt("genxml/hidden/tabid");
                 var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                 if (lang == "") lang = _lang;
 
@@ -1903,27 +1903,35 @@ namespace Nevoweb.DNN.NBrightMod
                     nbi = LocalUtils.VersionGet(nbi);
                     if (nbi != null)
                     {
+
                         // get data passed back by ajax
                         var strIn = HttpUtility.UrlDecode(Utils.RequestParam(context, "inputxml"));
-                        // update record with ajax data
-                        nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
-                        nbi.GUIDKey = tabid;
-                        nbi.TextData = ""; // clear any output DB caching
-                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
-                        {
-                            LocalUtils.VersionUpdate(nbi);
-                        }
-                        else
-                        {
-                            objCtrl.Update(nbi);
-                        }
-
 
                         // do langauge record
-                        nbi = objCtrl.GetDataLang(nbi.ItemID, lang, true);
+                        var nbilang = objCtrl.GetDataLang(nbi.ItemID, lang, true);
+                        nbilang.UpdateAjax(strIn, "", ignoresecurityfilter);
+                        nbilang.GUIDKey = tabid.ToString();
+                        nbilang.TextData = ""; // clear any output DB caching
+
+
+                        // update record with ajax data
                         nbi.UpdateAjax(strIn, "", ignoresecurityfilter);
-                        nbi.GUIDKey = tabid;
+                        nbi.GUIDKey = tabid.ToString();
                         nbi.TextData = ""; // clear any output DB caching
+                        
+                        // update url
+                        if (tabid > 0)
+                        {
+                            var pagetitle = nbilang.GetXmlProperty("genxml/textbox/pagetitle");
+                            if (pagetitle == "") pagetitle = nbilang.GetXmlProperty("genxml/textbox/title");
+
+                            TabInfo tabInfo = (new TabController()).GetTab(tabid, nbi.PortalId, false);
+                            tabInfo.CultureCode = Utils.GetCurrentCulture();
+                            var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid, Utils.UrlFriendly(pagetitle));
+                            nbilang.SetXmlProperty("genxml/url", url);
+                        }
+
+
                         if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                         {
                             LocalUtils.VersionUpdate(nbi);
@@ -1933,11 +1941,22 @@ namespace Nevoweb.DNN.NBrightMod
                             objCtrl.Update(nbi);
                         }
 
-                        objCtrl.FillEmptyLanguageFields(nbi.ParentItemId, nbi.Lang);
 
-                        Utils.RemoveCache("dnnsearchindexflag" + nbi.ModuleId);
-                        LocalUtils.ClearRazorCache(nbi.ModuleId.ToString(""));
-                        LocalUtils.ClearRazorSateliteCache(nbi.ModuleId.ToString(""));
+
+                        if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
+                        {
+                            LocalUtils.VersionUpdate(nbilang);
+                        }
+                        else
+                        {
+                            objCtrl.Update(nbilang);
+                        }
+
+                        objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
+
+                        Utils.RemoveCache("dnnsearchindexflag" + nbilang.ModuleId);
+                        LocalUtils.ClearRazorCache(nbilang.ModuleId.ToString(""));
+                        LocalUtils.ClearRazorSateliteCache(nbilang.ModuleId.ToString(""));
                         DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
 
 
