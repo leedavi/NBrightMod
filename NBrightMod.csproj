@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="readme.md" />
     <None Include="Themes\config\default\editfields-Page-SEO.cshtml" />
     <None Include="Themes\config\default\themelist.cshtml" />
     <None Include="Themes\config\default\edittheme.cshtml" />

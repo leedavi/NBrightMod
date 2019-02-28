@@ -90,3 +90,15 @@ Users with a role access that starts with "Version"  (e.g. "Version1") will not 
 Only when the users with "Manager" or "Validator" roles have accepted the change, will the change become visible to the public.
 
 
+## Page Meta data and url page name
+
+When a module displays a detail page, the page url link and page meta can be adapted.
+
+For page URL Name:  Use input field  "genxml/lang/genxml/textbox/pagename"
+For page Title:  Use input field  "genxml/lang/genxml/textbox/pagetitle"
+For page Description:  Use input field  "genxml/lang/genxml/textbox/pagedescription"
+For page keywords:  Use input field  "genxml/lang/genxml/textbox/pagekeywords"
+
+"pagename" and "pagetitle" will fallback tp the non-langauge, if that is not there they will fallback to "genxml/lang/genxml/textbox/title"
+
+

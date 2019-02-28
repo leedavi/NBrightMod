@@ -101,15 +101,24 @@ namespace Nevoweb.DNN.NBrightMod
             {
                 var info = objCtrl.Get(Convert.ToInt32(eid), Utils.GetCurrentCulture());
 
+                var pagename = info.GetXmlProperty("genxml/lang/genxml/textbox/pagename");
+                if (pagename == "") pagename = info.GetXmlProperty("genxml/textbox/pagename");
+                if (pagename == "") pagename = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
+                if (pagename == "") pagename = info.GetXmlProperty("genxml/textbox/title");
+
                 var pagetitle = info.GetXmlProperty("genxml/lang/genxml/textbox/pagetitle");
+                if (pagetitle == "") pagetitle = info.GetXmlProperty("genxml/textbox/pagetitle");
                 if (pagetitle == "") pagetitle = info.GetXmlProperty("genxml/lang/genxml/textbox/title");
-                var tagwords = info.GetXmlProperty("genxml/lang/genxml/textbox/keywords");
+                if (pagetitle == "") pagetitle = info.GetXmlProperty("genxml/textbox/title");
+
+                var pagekeywords = info.GetXmlProperty("genxml/lang/genxml/textbox/pagekeywords");
+
                 var pagedescription = info.GetXmlProperty("genxml/lang/genxml/textbox/pagedescription");
 
                 DotNetNuke.Framework.CDefault tp = (DotNetNuke.Framework.CDefault)this.Page;
                 if (pagetitle != "") tp.Title = pagetitle;
                 if (pagedescription != "") tp.Description = pagedescription;
-                if (tagwords != "") tp.KeyWords = tagwords;
+                if (pagekeywords != "") tp.KeyWords = pagekeywords;
 
             }
 

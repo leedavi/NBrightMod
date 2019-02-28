@@ -1922,12 +1922,14 @@ namespace Nevoweb.DNN.NBrightMod
                         // update url
                         if (tabid > 0)
                         {
-                            var pagetitle = nbilang.GetXmlProperty("genxml/textbox/pagetitle");
-                            if (pagetitle == "") pagetitle = nbilang.GetXmlProperty("genxml/textbox/title");
+                            var pagename = nbilang.GetXmlProperty("genxml/textbox/pagename");
+                            if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/pagename");
+                            if (pagename == "") pagename = nbilang.GetXmlProperty("genxml/textbox/title");
+                            if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/title");
 
                             TabInfo tabInfo = (new TabController()).GetTab(tabid, nbi.PortalId, false);
                             tabInfo.CultureCode = Utils.GetCurrentCulture();
-                            var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid, Utils.UrlFriendly(pagetitle));
+                            var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid, Utils.UrlFriendly(pagename));
                             nbilang.SetXmlProperty("genxml/url", url);
                         }
 
