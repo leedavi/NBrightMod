@@ -1928,8 +1928,8 @@ namespace Nevoweb.DNN.NBrightMod
                             if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/title");
 
                             TabInfo tabInfo = (new TabController()).GetTab(tabid, nbi.PortalId, false);
-                            tabInfo.CultureCode = Utils.GetCurrentCulture();
-                            var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid, Utils.UrlFriendly(pagename));
+                            tabInfo.CultureCode = lang;
+                            var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid + "&language=" + lang, Utils.UrlFriendly(pagename));
                             nbilang.SetXmlProperty("genxml/url", url);
                         }
 
@@ -1990,7 +1990,7 @@ namespace Nevoweb.DNN.NBrightMod
                     var itemid = ajaxInfo.GetXmlProperty("genxml/hidden/itemid");
                     var moduleid = ajaxInfo.GetXmlPropertyInt("genxml/hidden/moduleid");
                     var settings = LocalUtils.GetSettings(moduleid.ToString());
-                    var tabid = settings.GetXmlProperty("genxml/hidden/tabid");
+                    var tabid = settings.GetXmlPropertyInt("genxml/hidden/tabid");
                     var lang = ajaxInfo.GetXmlProperty("genxml/hidden/lang");
                     if (lang == "") lang = _lang;
 
@@ -2004,9 +2004,11 @@ namespace Nevoweb.DNN.NBrightMod
                             var nbi = objCtrl.Get(Convert.ToInt32(itemid));
                             if (nbi != null)
                             {
+
+
                                 // update record with ajax data
                                 nbi.UpdateAjax(ajaxData);
-                                nbi.GUIDKey = tabid;
+                                nbi.GUIDKey = tabid.ToString();
                                 nbi.SetXmlProperty("genxml/hidden/sortrecordorder", lp.ToString("0000")); // always recalc custom sort field
                                 if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                                 {
@@ -2019,8 +2021,23 @@ namespace Nevoweb.DNN.NBrightMod
 
                                 // do langauge record
                                 nbi = objCtrl.GetDataLang(Convert.ToInt32(itemid), lang, true);
-                                nbi.GUIDKey = tabid;
+                                nbi.GUIDKey = tabid.ToString();
                                 nbi.UpdateAjax(ajaxData, "", ignoresecurityfilter);
+
+                                // update url
+                                if (tabid > 0)
+                                {
+                                    var pagename = nbi.GetXmlProperty("genxml/textbox/pagename");
+                                    if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/pagename");
+                                    if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/title");
+                                    if (pagename == "") pagename = nbi.GetXmlProperty("genxml/textbox/title");
+
+                                    TabInfo tabInfo = (new TabController()).GetTab(tabid, nbi.PortalId, false);
+                                    tabInfo.CultureCode = nbi.Lang;
+                                    var url = DotNetNuke.Services.Url.FriendlyUrl.FriendlyUrlProvider.Instance().FriendlyUrl(tabInfo, "~/Default.aspx?tabid=" + tabInfo.TabID.ToString("") + "&eid=" + itemid + "&language=" + lang, Utils.UrlFriendly(pagename));
+                                    nbi.SetXmlProperty("genxml/url", url);
+                                }
+
                                 if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
                                 {
                                     LocalUtils.VersionUpdate(nbi);
