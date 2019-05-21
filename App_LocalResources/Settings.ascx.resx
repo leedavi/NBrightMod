@@ -289,7 +289,7 @@
     <value>Ignore Satelite modules</value>
   </data>
   <data name="resetlanguage.Text" xml:space="preserve">
-    <value>Reset Language</value>
+    <value>Copy Language</value>
   </data>
   <data name="download.Text" xml:space="preserve">
     <value>Download</value>
