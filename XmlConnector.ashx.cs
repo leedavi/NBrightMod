@@ -1960,7 +1960,8 @@ namespace Nevoweb.DNN.NBrightMod
                         LocalUtils.ClearRazorCache(nbilang.ModuleId.ToString(""));
                         LocalUtils.ClearRazorSateliteCache(nbilang.ModuleId.ToString(""));
                         DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
-
+                        DataCache.ClearTabsCache(PortalSettings.Current.PortalId);
+                        DataCache.ClearCache();
 
                     }
                 }
