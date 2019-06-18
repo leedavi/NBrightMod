@@ -2192,6 +2192,9 @@ namespace Nevoweb.DNN.NBrightMod
 
                         LocalUtils.ClearRazorCache(moduleid);
                         LocalUtils.ClearRazorSateliteCache(moduleid);
+                        DataCache.ClearPortalCache(PortalSettings.Current.PortalId, true);
+                        DataCache.ClearTabsCache(PortalSettings.Current.PortalId);
+                        DataCache.ClearCache();
                     }
                 }
                 return "";
