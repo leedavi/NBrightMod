@@ -653,6 +653,8 @@ namespace NBrightMod.common
             nbi.ModuleId = Convert.ToInt32(moduleid);
             nbi.ItemID = -1;
             nbi.GUIDKey = moduleref;
+            nbi.SetXmlProperty("genxml/hidden", "");
+            nbi.SetXmlProperty("genxml/hidden/sortrecordorder", "9999");            
             var itemId = objCtrl.Update(nbi);
             nbi.ItemID = itemId;
 
