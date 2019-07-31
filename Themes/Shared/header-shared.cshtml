@@ -12,17 +12,21 @@
 <div class="row headerinput">
     <div class="form dnnForm">
         <div class="form-group">
-            <div class="col-xs-12">
-                <label class="control-label">@ResourceKey("Edit.heading")</label>
-            </div>
             <div class="col-xs-12 col-sm-6">
+                <label class="control-label">@ResourceKey("Edit.heading")</label>
                 @NBrightTextBox(info, "genxml/lang/genxml/textbox/title", "width='300px' maxlength='250' ")
             </div>
             <div class="col-xs-6 col-sm-2">
+                <label class="control-label">@ResourceKey("Edit.headingstyle")</label>
                 @DropDownList(info, "genxml/dropdownlist/headingstyle", "h1,h2,h3,h4", "H1,H2,H3,H4", " class='form-control' ", "")
             </div>
-            <div class="col-xs-6 col-sm-4">
-                @CheckBox(info, "genxml/checkbox/hideheading", "ResourceKey:Settings.hideheading", " class='dnnCheckbox'")
+            <div class="col-xs-6 col-sm-2">
+                <label class="control-label">@ResourceKey("Edit.anchor")</label>
+                @NBrightTextBox(info, "genxml/textbox/anchor", "", "")
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <label class="control-label">@ResourceKey("Settings.hideheading")</label>
+                @CheckBox(info, "genxml/checkbox/hideheading", "", " class='dnnCheckbox'")
             </div>
         </div>
     </div>

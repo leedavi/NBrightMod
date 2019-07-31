@@ -51,6 +51,24 @@
 @HiddenField(info, "genxml/hidden/******","","")      
       ]]>
     </data>
+
+    <data name="HeadingOf" text="HiddenField" title="HeadingOf(string text, string headerstyle)">
+      <![CDATA[ 
+@HeadingOf(String text, String headerstyle)    
+      ]]>
+    </data>
+    <data name="HeadingOf" text="HiddenField" title="HeadingOf(string text, string headerstyle, string anchor)">
+      <![CDATA[ 
+@HeadingOf(String text, String headerstyle, string anchor)
+      ]]>
+    </data>
+    <data name="HeadingOf" text="HiddenField" title="HeadingOf(NBrightInfo info)">
+      <![CDATA[ 
+@HeadingOf(NBrightInfo info)    
+      ]]>
+    </data>
+
+
     <data name="ImageSingleUpload" text="Image Single Upload">
       <![CDATA[ 
 @RenderTemplate("/DesktopModules/NBright/NBrightMod/Themes/Shared/image1-shared.cshtml", Model)
