@@ -1152,10 +1152,10 @@ namespace NBrightMod.common
             var theme = settignInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
             if (templName.Split('.').Length == 2) templName = theme + "." + templName;
 
-            var fullTemplName = templName + moduleid; // NOTE: preprocess Needs the moduleid so any filter works correct across modules.
+            var cachemetadatakey = "preprocessmetadata*" + templName + "*" + moduleid + "*" + PortalSettings.Current.PortalId;
 
             // get cached data if there
-            var cachedlist = (Dictionary<String, String>) Utils.GetCache("preprocessmetadata" + fullTemplName);  
+            var cachedlist = (Dictionary<String, String>) Utils.GetCache(cachemetadatakey);  
             if (cachedlist != null) return cachedlist;
 
             // build cache data from template.
@@ -1172,13 +1172,13 @@ namespace NBrightMod.common
                 try
                 {
                     // do razor and cache preprocessmetadata
-                    razorTempl = RazorRender(modRazor, razorTempl, "preprocessmetadata" + fullTemplName, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
+                    razorTempl = RazorRender(modRazor, razorTempl, "render" + cachemetadatakey, settignInfo.GetXmlPropertyBool("genxml/checkbox/debugmode"));
 
                     // IMPORTANT: The AddPreProcessMetaData token will add any meta data to the cache list, we must get that list back into the cachedlist var.
-                    cachedlist = (Dictionary<String, String>)Utils.GetCache("preprocessmetadata" + fullTemplName);
+                    cachedlist = (Dictionary<String, String>)Utils.GetCache(cachemetadatakey);
 
                     // if we have no preprocess items, we don;t want to run this again, so put the empty dic into cache.
-                    if (cachedlist != null && cachedlist.Count == 0) Utils.SetCache("preprocessmetadata" + fullTemplName, cachedlist);
+                    if (cachedlist != null && cachedlist.Count == 0) Utils.SetCache(cachemetadatakey, cachedlist);
                 }
                 catch (Exception ex)
                 {

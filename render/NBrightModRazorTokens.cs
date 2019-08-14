@@ -89,7 +89,8 @@ namespace NBrightMod.render
                 {
                     // do razor and cache preprocessmetadata
                     // Use the filename to link the preprocess data in cache, this shoud have been past as the param on the @AddPreProcessMetaData razor token in hte template.
-                    var razorTempl = LocalUtils.RazorRender(model, TemplateData, "preprocessmetadata" + Path.GetFileName(templatePath), false);
+                    var cachemetadatakey = "preprocessmetadata*" + Path.GetFileName(templatePath) + "*" + model.ModuleId + "*" + PortalSettings.Current.PortalId;
+                    var razorTempl = LocalUtils.RazorRender(model, TemplateData, cachemetadatakey, false);
                 }
 
                 strOut = LocalUtils.RazorRender(model, TemplateData, model.GetSetting("themefolder") + "." + Path.GetFileName(templatePath), false);

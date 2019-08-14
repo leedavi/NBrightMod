@@ -405,4 +405,10 @@
   <data name="pagekeywords.Text" xml:space="preserve">
     <value>Balise meta Keywords (SEO)</value>
   </data>
+  <data name="anchor.Text" xml:space="preserve">
+    <value>Ancre</value>
+  </data>
+  <data name="headingstyle.Text" xml:space="preserve">
+    <value>Format</value>
+  </data>
 </root>
