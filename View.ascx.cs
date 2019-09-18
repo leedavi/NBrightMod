@@ -41,6 +41,7 @@ namespace Nevoweb.DNN.NBrightMod
     /// -----------------------------------------------------------------------------
     public partial class View : Base.NBrightModBase, IActionable
     {
+
         private bool _versionRecordExist = false;
 
         #region Event Handlers
@@ -95,9 +96,15 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var objCtrl = new NBrightDataController();
 
+            var settings = LocalUtils.GetSettings(ModuleId.ToString());
+            var activatedetail = settings.GetXmlPropertyBool("genxml/checkbox/activatedetail");
+            var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
+            // check for detail page display
+            var displayview = "view.cshtml";
+
             var eid = Utils.RequestQueryStringParam(Request, "eid");
             // check for detail page display
-            if (Utils.IsNumeric(eid))
+            if (Utils.IsNumeric(eid) && activatedetail)
             {
                 var info = objCtrl.Get(Convert.ToInt32(eid), Utils.GetCurrentCulture());
 
@@ -120,16 +127,6 @@ namespace Nevoweb.DNN.NBrightMod
                 if (pagedescription != "") tp.Description = pagedescription;
                 if (pagekeywords != "") tp.KeyWords = pagekeywords;
 
-            }
-
-            var settings = LocalUtils.GetSettings(ModuleId.ToString());
-            var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
-            var activatedetail = settings.GetXmlPropertyBool("genxml/checkbox/activatedetail");
-            // check for detail page display
-            var displayview = "view.cshtml";
-            // check for detail page display
-            if (Utils.IsNumeric(eid) && activatedetail)
-            {
                 displayview = "viewdetail.cshtml";
             }
             else
