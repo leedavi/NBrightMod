@@ -1859,7 +1859,7 @@ namespace NBrightMod.common
             foreach (var zipname in list)
             {
                 DownloadFileAndUnZip(zipname.GetXmlProperty("genxml/hidden/filename"));
-                strOut = "<h4>" + zipname + "</h4>";
+                strOut += "<h4>" + zipname + "</h4>";
             }
 
             return strOut;
