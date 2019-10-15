@@ -1631,7 +1631,7 @@ namespace NBrightMod.common
                 }
                 else
                 {
-                    ImportFileToPortalLevel(nbi, theme, oldmodref, newmodref);
+                    //ImportFileToPortalLevel(nbi, theme, oldmodref, newmodref);
                 }
 
                 objCtrl.Delete(nbi.ItemID); // remove temp import record.
