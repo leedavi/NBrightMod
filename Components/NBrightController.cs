@@ -23,7 +23,7 @@ using NBrightMod.common;
 namespace Nevoweb.DNN.NBrightMod.Components
 {
 
-    public class NBrightModController : ModuleSearchBase, IPortable
+    public class NBrightModController : ModuleSearchBase, IPortable, IUpgradeable
     {
 
         #region Optional Interfaces
@@ -377,6 +377,12 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
         #endregion
 
+        #region IUpgradeable Members
+        public string UpgradeModule(string Version)
+        {
+            return string.Empty;
+        }
+        #endregion
 
         #endregion
 
