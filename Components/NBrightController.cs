@@ -58,6 +58,52 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 {
                     nbi.GUIDKey = nbi.ItemID.ToString(""); // set the GUIDKey to the current itemid, so we can relink lang record on import.
                     xmlOut += nbi.ToXmlItem();
+
+                    //EXPORT Images
+                    var imgNodList = nbi.XMLDoc.SelectNodes("genxml/imgs/genxml");
+                    foreach (XmlNode imgNod in imgNodList)
+                    {
+                        var imgMapPath = "";
+                        var iNod = imgNod.SelectSingleNode("hidden/imagepath");
+                        if (iNod != null) imgMapPath = iNod.InnerText;
+                        if (File.Exists(imgMapPath))
+                        {
+                            var iNod2 = imgNod.SelectSingleNode("hidden/imageurl");
+                            if (iNod2 != null)
+                            {
+                                var filerelpath = iNod2.InnerText;
+                                var imgByte = File.ReadAllBytes(imgMapPath);
+                                var imgBase64 = Convert.ToBase64String(imgByte, Base64FormattingOptions.None);
+                                xmlOut += "<imgbase64 filerelpath='" + filerelpath + "'>";
+                                xmlOut += imgBase64;
+                                xmlOut += "</imgbase64>";
+                            }
+
+                        }
+                    }
+                    //EXPORT File
+                    var docsNodList = nbi.XMLDoc.SelectNodes("genxml/docs/genxml");
+                    foreach (XmlNode docsNod in docsNodList)
+                    {
+                        var docMapPath = "";
+                        var iNod = docsNod.SelectSingleNode("hidden/docpath");
+                        if (iNod != null) docMapPath = iNod.InnerText;
+                        if (File.Exists(docMapPath))
+                        {
+                            var filenameNod = docsNod.SelectSingleNode("hidden/filename");
+                            var iNod2 = docsNod.SelectSingleNode("hidden/docurl");
+                            if (iNod2 != null && filenameNod != null)
+                            {
+                                var filerelpath = iNod2.InnerText;
+                                var imgByte = File.ReadAllBytes(docMapPath);
+                                var imgBase64 = Convert.ToBase64String(imgByte, Base64FormattingOptions.None);
+                                xmlOut += "<docbase64 filerelpath='" + filenameNod.InnerText + "'>";
+                                xmlOut += imgBase64;
+                                xmlOut += "</docbase64>";
+                            }
+
+                        }
+                    }
                 }
                 //DATALANG
                 var l2 = objCtrl.GetList(portalId, ModuleId, "NBrightModDATALANG");
@@ -71,7 +117,8 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
                 // EXPORT THEME
                 var themefolder = settingsInfo.GetXmlProperty("genxml/dropdownlist/themefolder");
-                xmlOut += LocalUtils.ExportTheme(themefolder, settingsInfo.GUIDKey);
+                xmlOut += LocalUtils.ExportTheme(portalId, themefolder, settingsInfo.GUIDKey);
+                
             }
             xmlOut += "</root>";
 
@@ -106,6 +153,19 @@ namespace Nevoweb.DNN.NBrightMod.Components
                 var xmlNodList = xmlDoc.SelectNodes("root/item");
                 if (xmlNodList != null)
                 {
+                    // delete records (for multiple imports)
+                    var modList = objCtrl.GetList(objModInfo.PortalID, moduleId, "NBrightModDATA");
+                    foreach (var nbi in modList)
+                    {
+                        objCtrl.Delete(nbi.ItemID);
+                    }
+                    modList = objCtrl.GetList(objModInfo.PortalID, moduleId, "SETTINGS");
+                    foreach (var nbi in modList)
+                    {
+                        objCtrl.Delete(nbi.ItemID);
+                    }
+
+
                     foreach (XmlNode xmlNod1 in xmlNodList)
                     {
                         var nbi = new NBrightInfo();
@@ -127,7 +187,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                 foreach (XmlNode xNod in nodl)
                                 {
                                     // image url
-                                    var imgurlnod = xNod.SelectSingleNode("genxml/hidden/imageurl");
+                                    var imgurlnod = xNod.SelectSingleNode("hidden/imageurl");
                                     if (imgurlnod != null && imgurlnod.InnerText != "")
                                     {
                                         var imgurl = imgurlnod.InnerText;
@@ -135,11 +195,28 @@ namespace Nevoweb.DNN.NBrightMod.Components
                                         var imgsplit = imgurl.Split('*');
                                         if (imgsplit.Length == 2)
                                         {
-                                            imgurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + imgsplit[1];
-                                            var imgpath = System.Web.Hosting.HostingEnvironment.MapPath(imgurl);
+                                            imgurl = "/" + objPortal.HomeDirectory.TrimEnd('/').TrimStart('/') + "/NBrightUpload/" + imgsplit[1].TrimStart('/');
+                                            var imgpath = LocalUtils.GetHomePortalMapPath(objModInfo.PortalID).TrimEnd('\\') + "\\NBrightUpload\\" + imgsplit[1].Replace("/","\\").TrimStart('\\');
                                             nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", imgurl);
-                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath",
-                                                imgpath);
+                                            nbi.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgpath);
+
+                                            try
+                                            {
+                                                var base64Node = xmlDoc.SelectSingleNode("root/imgbase64[@filerelpath='" + imgurlnod.InnerText + "']");
+                                                if (base64Node != null)
+                                                {
+                                                    var base64String = base64Node.InnerText;
+                                                    if (base64String != "")
+                                                    {
+                                                        File.WriteAllBytes(imgpath, Convert.FromBase64String(base64String));
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+                                                // ignore
+                                            }
+
                                         }
                                     }
                                     lp += 1;
@@ -147,26 +224,46 @@ namespace Nevoweb.DNN.NBrightMod.Components
                             }
 
                             //realign files
-                            var nodfl = nbi.XMLDoc.SelectNodes("genxml/files/genxml");
+                            var nodfl = nbi.XMLDoc.SelectNodes("genxml/docs/genxml");
                             if (nodfl != null)
                             {
                                 var lp = 1;
                                 foreach (XmlNode xNod in nodfl)
                                 {
                                     // image url
-                                    var fileurlnod = xNod.SelectSingleNode("genxml/hidden/fileurl");
-                                    if (fileurlnod != null && fileurlnod.InnerText != "")
+                                    var fileurlnod = xNod.SelectSingleNode("hidden/docurl");
+                                    var filenamenod = xNod.SelectSingleNode("hidden/filename");
+                                    if (fileurlnod != null && fileurlnod.InnerText != "" && filenamenod != null && filenamenod.InnerText != "")
                                     {
                                         var fileurl = fileurlnod.InnerText;
                                         fileurl = fileurl.Replace("NBrightUpload", "*");
                                         var filesplit = fileurl.Split('*');
                                         if (filesplit.Length == 2)
                                         {
-                                            fileurl = objPortal.HomeDirectory.TrimEnd('/') + "/" + filesplit[1];
-                                            var filepath = System.Web.Hosting.HostingEnvironment.MapPath(fileurl);
-                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/fileurl", fileurl);
-                                            nbi.SetXmlProperty("genxml/files/genxml[" + lp + "]/hidden/filepath",
-                                                filepath);
+                                            fileurl = "/" + objPortal.HomeDirectory.TrimEnd('/').TrimStart('/') + "/NBrightUpload/" + filesplit[1].TrimStart('/');
+                                            var filepath = LocalUtils.GetHomePortalMapPath(objModInfo.PortalID).TrimEnd('\\') + "\\NBrightUpload\\" + filesplit[1].Replace("/", "\\").TrimStart('\\');
+                                            nbi.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docurl", fileurl);
+                                            nbi.SetXmlProperty("genxml/docs/genxml[" + lp + "]/hidden/docpath", filepath);
+
+                                            try
+                                            {
+                                                var base64Node = xmlDoc.SelectSingleNode("root/docbase64[@filename='" + filenamenod.InnerText + "']");
+                                                if (base64Node != null)
+                                                {
+                                                    var base64String = base64Node.InnerText;
+                                                    if (base64String != "")
+                                                    {
+                                                        File.WriteAllBytes(filepath, Convert.FromBase64String(base64String));
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+                                                // ignore
+                                            }
+
+
+
                                         }
                                     }
                                     lp += 1;
@@ -224,7 +321,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
 
                     // check if we have imported into same portal, if so reset the moduleref so it's still unique.
                     var oldmodref = settings.GUIDKey;
-                    var checklistcount = objCtrl.GetListCount(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.GUIDKey = '" + settings.GUIDKey + "' ");
+                    var checklistcount = objCtrl.GetListCount(objModInfo.PortalID, -1, "SETTINGS", " and NB1.GUIDKey = '" + settings.GUIDKey + "' ");
                     if (checklistcount >= 2)
                     {
                         // we have multiple module with this modref, so reset to a unique one.
@@ -243,7 +340,7 @@ namespace Nevoweb.DNN.NBrightMod.Components
                     var theme = settings.GetXmlProperty("genxml/dropdownlist/themefolder");
                     if (theme != "")
                     {
-                        LocalUtils.ImportTheme(theme, oldmodref, settings.GUIDKey);
+                        LocalUtils.ImportTheme(objModInfo.PortalID, theme, oldmodref, settings.GUIDKey);
                     }
 
 

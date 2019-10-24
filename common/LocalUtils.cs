@@ -836,7 +836,7 @@ namespace NBrightMod.common
             if (Utils.IsNumeric(moduleid) && Convert.ToInt32(moduleid) > 0)
             {
                 var objCtrl = new NBrightDataController();
-                var dataRecord = objCtrl.GetByType(PortalSettings.Current.PortalId, Convert.ToInt32(moduleid), "SETTINGS");
+                var dataRecord = objCtrl.GetByType(-1, Convert.ToInt32(moduleid), "SETTINGS");
                 if (dataRecord == null) dataRecord = new NBrightInfo(true);
                 if (dataRecord.TypeCode == "SETTINGS")
                 {
@@ -1270,8 +1270,8 @@ namespace NBrightMod.common
         {
             //var objPortal = PortalController.Instance.GetPortal(settings.PortalId);
 
-            var tempFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightTemp";
-            var tempFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp";
+            var tempFolder =  GetHomePortalMapPath(settings.PortalId) + "/NBrightTemp";
+            var tempFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
             
             var settingUploadFolder = settings.GetXmlProperty("genxml/textbox/settinguploadfolder");
@@ -1280,16 +1280,16 @@ namespace NBrightMod.common
                 settingUploadFolder = "images";
             }
 
-            var uploadFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/" + settingUploadFolder;
-            var uploadFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\" + settingUploadFolder;
+            var uploadFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/" + settingUploadFolder;
+            var uploadFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
 
-            var uploadDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/documents";
-            var uploadDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\documents";
+            var uploadDocFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/documents";
+            var uploadDocFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
-            var uploadSecureDocFolder = PortalSettings.Current.HomeDirectory.TrimEnd('/') + "/NBrightUpload/securedocs";
-            var uploadSecureDocFolderMapPath = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightUpload\\securedocs";
+            var uploadSecureDocFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/securedocs";
+            var uploadSecureDocFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\securedocs";
             Utils.CreateFolder(uploadSecureDocFolderMapPath);
 
             settings.SetXmlProperty("genxml/tempfolder", "/" + tempFolder.TrimStart('/'));
@@ -1529,14 +1529,16 @@ namespace NBrightMod.common
         /// <param name="themefolder">Theme folder</param>
         /// <param name="modref">Module ref is this is for a content export, so we only take hte required module level template.</param>
         /// <returns></returns>
-        public static string ExportTheme(string themefolder,string modref = "")
+        public static string ExportTheme(int portalId, string themefolder,string modref = "")
         {
             var xmlOut = "";
             if (themefolder != "")
             {
+                var objPortal = PortalController.Instance.GetPortal(portalId);
+
                 //APPTHEME
                 // get portal level AppTheme templates
-                var portalthemeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themefolder;
+                var portalthemeFolderName = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + themefolder;
                 if (Directory.Exists(portalthemeFolderName))
                 {
                     var flist = Directory.GetFiles(portalthemeFolderName, "*.*", SearchOption.AllDirectories);
@@ -1561,7 +1563,7 @@ namespace NBrightMod.common
                             nbi2.SetXmlProperty("genxml/mappath", f);
                             nbi2.SetXmlProperty("genxml/name", fname);
                             System.Uri uri1 = new Uri(f);
-                            System.Uri uri2 = new Uri(PortalSettings.Current.HomeDirectoryMapPath);
+                            System.Uri uri2 = new Uri(objPortal.HomeDirectoryMapPath);
                             Uri relativeUri = uri2.MakeRelativeUri(uri1);
                             nbi2.SetXmlProperty("genxml/relpath", "/" + relativeUri.ToString());
                             nbi2.SetXmlProperty("genxml/themefolder", themefolder);
@@ -1571,7 +1573,7 @@ namespace NBrightMod.common
 
                 }
 
-                var controlMapPath = HttpContext.Current.Server.MapPath("/DesktopModules/NBright/NBrightMod");
+                var controlMapPath = GetRootWebsiteMapPath(portalId) + "\\DesktopModules\\NBright\\NBrightMod";
                 var systhemeFolderName = controlMapPath + "\\Themes\\" + themefolder;
                 if (Directory.Exists(systhemeFolderName))
                 {
@@ -1585,7 +1587,7 @@ namespace NBrightMod.common
                         nbi2.SetXmlProperty("genxml/mappath", f);
                         nbi2.SetXmlProperty("genxml/name", Path.GetFileName(f));
                         System.Uri uri1 = new Uri(f);
-                        System.Uri uri2 = new Uri(HttpContext.Current.Server.MapPath("/"));
+                        System.Uri uri2 = new Uri(GetRootWebsiteMapPath(portalId));
                         Uri relativeUri = uri2.MakeRelativeUri(uri1);
                         nbi2.SetXmlProperty("genxml/relpath", "/" + relativeUri.ToString());
                         nbi2.SetXmlProperty("genxml/themefolder", themefolder);
@@ -1597,6 +1599,24 @@ namespace NBrightMod.common
             return xmlOut;
         }
 
+        public static string GetRootWebsiteMapPath(int portalId)
+        {
+            var objPortal = PortalController.Instance.GetPortal(portalId);
+            var s = objPortal.HomeDirectoryMapPath.Split('\\');
+            var rtnPath = "";
+            for (int i = 0; i < (s.Length - 2); i++)
+            {
+                rtnPath += s[i] + "\\";
+            }
+            return rtnPath.TrimEnd('\\');
+        }
+
+        public static string GetHomePortalMapPath(int portalId)
+        {
+            var objPortal = PortalController.Instance.GetPortal(portalId);
+            return objPortal.HomeDirectoryMapPath;
+        }
+
         /// <summary>
         /// Import zip file into portal level template area
         /// </summary>
@@ -1604,19 +1624,19 @@ namespace NBrightMod.common
         /// <param name="oldmodref">Old moduleref, if we are importing a module level and the ref has changed.</param>
         /// <param name="newmodref">New moduleref, if we are importing a module level and the ref has changed.</param>
         /// <returns></returns>
-        public static string ImportTheme(string theme, string oldmodref = "", string newmodref = "")
+        public static string ImportTheme(int portalId, string theme, string oldmodref = "", string newmodref = "")
         {
             var objCtrl = new NBrightDataController();
             // load portal theme files and process
-            var themportalfiles = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "EXPORTPORTALFILE");
+            var themportalfiles = objCtrl.GetList(portalId, -1, "EXPORTPORTALFILE");
             foreach (var nbi in themportalfiles)
             {
-                ImportFileToPortalLevel(nbi,theme,oldmodref,newmodref);
+                ImportFileToPortalLevel(portalId, nbi, theme,oldmodref,newmodref);
                 objCtrl.Delete(nbi.ItemID); // remove temp import record.
             }
 
             // load system theme files and process
-            var themsysfiles = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "EXPORTSYSFILE");
+            var themsysfiles = objCtrl.GetList(portalId, -1, "EXPORTSYSFILE");
             foreach (var nbi in themsysfiles)
             {
 
@@ -1639,16 +1659,16 @@ namespace NBrightMod.common
             return "";
         }
 
-        private static void ImportFileToPortalLevel(NBrightInfo nbi, string theme, string oldmodref = "", string newmodref = "")
+        private static void ImportFileToPortalLevel(int portalId, NBrightInfo nbi, string theme, string oldmodref = "", string newmodref = "")
         {
             var themefolder = nbi.GetXmlProperty("genxml/themefolder");
-
+            var objPortal = PortalController.Instance.GetPortal(portalId);
             // create directory for theme files 
-            var themeFolderName = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
-            if (!Directory.Exists(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
+            var themeFolderName = objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\" + theme;
+            if (!Directory.Exists(objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod"))
             {
-                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
-                Directory.CreateDirectory(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
+                Directory.CreateDirectory(objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod");
+                Directory.CreateDirectory(objPortal.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightMod\\Themes\\");
             }
             if (!Directory.Exists(themeFolderName))
             {
@@ -1656,7 +1676,7 @@ namespace NBrightMod.common
             }
 
             // save files
-            var relpath = "/" + PortalSettings.Current.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
+            var relpath = "/" + objPortal.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
             var fname = nbi.GetXmlProperty("genxml/name");
             if (oldmodref != "") fname = fname.Replace(oldmodref, newmodref);
             var filemappath = HttpContext.Current.Server.MapPath(relpath);

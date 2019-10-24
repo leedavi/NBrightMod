@@ -1796,7 +1796,7 @@ namespace Nevoweb.DNN.NBrightMod
                     Utils.CreateFolder(PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\");
                     rtnfile = PortalSettings.Current.HomeDirectoryMapPath.TrimEnd('\\') + "\\NBrightTemp\\NBrightMod_Theme_" + exportname + ".xml";
                     var xmlOut = "<root>";
-                    xmlOut += LocalUtils.ExportTheme(theme);
+                    xmlOut += LocalUtils.ExportTheme(PortalSettings.Current.PortalId, theme);
                     xmlOut += "</root>";
                     Utils.SaveFile(rtnfile, xmlOut);
                 }
@@ -1831,7 +1831,7 @@ namespace Nevoweb.DNN.NBrightMod
             var theme = Path.GetFileNameWithoutExtension(importfile);
             theme = theme.Replace("NBrightMod_Theme_", "");
 
-            return LocalUtils.ImportTheme(theme);
+            return LocalUtils.ImportTheme(PortalSettings.Current.PortalId, theme);
         }
 
 
