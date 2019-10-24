@@ -1270,7 +1270,7 @@ namespace NBrightMod.common
         {
             //var objPortal = PortalController.Instance.GetPortal(settings.PortalId);
 
-            var tempFolder =  GetHomePortalMapPath(settings.PortalId) + "/NBrightTemp";
+            var tempFolder = GetHomePortalRel(settings.PortalId) + "/NBrightTemp";
             var tempFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightTemp";
             Utils.CreateFolder(tempFolderMapPath);
             
@@ -1280,15 +1280,15 @@ namespace NBrightMod.common
                 settingUploadFolder = "images";
             }
 
-            var uploadFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/" + settingUploadFolder;
+            var uploadFolder = GetHomePortalRel(settings.PortalId) + "/NBrightUpload/" + settingUploadFolder;
             var uploadFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\" + settingUploadFolder;
             Utils.CreateFolder(uploadFolderMapPath);
 
-            var uploadDocFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/documents";
+            var uploadDocFolder = GetHomePortalRel(settings.PortalId) + "/NBrightUpload/documents";
             var uploadDocFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\documents";
             Utils.CreateFolder(uploadDocFolderMapPath);
 
-            var uploadSecureDocFolder = GetHomePortalMapPath(settings.PortalId) + "/NBrightUpload/securedocs";
+            var uploadSecureDocFolder = GetHomePortalRel(settings.PortalId) + "/NBrightUpload/securedocs";
             var uploadSecureDocFolderMapPath = GetHomePortalMapPath(settings.PortalId) + "\\NBrightUpload\\securedocs";
             Utils.CreateFolder(uploadSecureDocFolderMapPath);
 
@@ -1615,6 +1615,11 @@ namespace NBrightMod.common
         {
             var objPortal = PortalController.Instance.GetPortal(portalId);
             return objPortal.HomeDirectoryMapPath;
+        }
+        public static string GetHomePortalRel(int portalId)
+        {
+            var objPortal = PortalController.Instance.GetPortal(portalId);
+            return objPortal.HomeDirectory;
         }
 
         /// <summary>
