@@ -2262,7 +2262,7 @@ namespace Nevoweb.DNN.NBrightMod
                 var managertemplate = ajaxInfo.GetXmlProperty("genxml/hidden/managertemplate");
                 if (managertemplate == "") managertemplate = "manageremail.cshtml";
                 var emailreturnmsg = ajaxInfo.GetXmlProperty("genxml/hidden/emailreturnmsg");
-                var clientemail = ajaxInfo.GetXmlProperty("genxml/textbox/clientemail");
+                var clientemail = ajaxInfo.GetXmlProperty("genxml/textbox/clientemail").Trim();
 
                 var optionfilelist = ajaxInfo.GetXmlProperty("genxml/textbox/optionfilelist");
 
@@ -2270,6 +2270,8 @@ namespace Nevoweb.DNN.NBrightMod
 
                 if (!string.IsNullOrEmpty(clientemail.Trim()) && Utils.IsEmail(clientemail.Trim()))
                 {
+                    var replyTo = clientemail;
+
                     if (Utils.IsNumeric(moduleid))
                     {
                         var objCtrl = new NBrightDataController();
@@ -2305,7 +2307,8 @@ namespace Nevoweb.DNN.NBrightMod
                             if (!string.IsNullOrEmpty(email.Trim()) && Utils.IsEmail(emailfrom.Trim()) && Utils.IsEmail(email.Trim()))
                             {
                                 // multiple attachments as csv with "|" seperator
-                                DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "", emailsubject, emailbody, "", "HTML", "", "", "", "");
+                                string[] stringarray = new string[0];
+                                DotNetNuke.Services.Mail.Mail.SendMail(emailfrom.Trim(), email.Trim(), "","", replyTo, DotNetNuke.Services.Mail.MailPriority.Normal, emailsubject, DotNetNuke.Services.Mail.MailFormat.Html, Encoding.UTF8, emailbody, stringarray, "","","","", false);
                                 strOut = emailreturnmsg.Replace("{ItemId}", newItemId.ToString());
 
                                 if (optionfilelist != "")
