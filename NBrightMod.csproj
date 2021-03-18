@@ -34,24 +34,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetNuke">
-      <HintPath>..\..\..\bin\DotNetNuke.dll</HintPath>
+      <HintPath>..\NBrightData\_external\DotNetNuke.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke.Web.DDRMenu">
-      <HintPath>..\..\..\bin\DotNetNuke.Web.DDRMenu.dll</HintPath>
+      <HintPath>..\NBrightData\_external\DotNetNuke.Web.DDRMenu.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke.WebControls">
       <HintPath>..\..\..\bin\DotNetNuke.WebControls.dll</HintPath>
     </Reference>
-    <Reference Include="NBrightCore, Version=3.4.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\NBrightCore.dll</HintPath>
-    </Reference>
-    <Reference Include="NBrightDNN, Version=8.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\NBrightDNN.dll</HintPath>
-    </Reference>
     <Reference Include="RazorEngine">
-      <HintPath>..\..\..\bin\RazorEngine.dll</HintPath>
+      <HintPath>..\NBrightData\_external\RazorEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -144,9 +136,7 @@
     <Content Include="Edit.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <None Include="BuildScripts\build.bat" />
-    <None Include="BuildScripts\ModulePackage.targets" />
-    <None Include="BuildScripts\MSBuild.Community.Tasks.Targets" />
+    <None Include="DNNpackager.dnnpack" />
     <None Include="NBrightMod.dnn" />
     <Content Include="Themes\config\css\NBrightMod.css" />
     <Content Include="Themes\config\js\jquery.validate.min.js" />
@@ -200,6 +190,16 @@
   <ItemGroup>
     <Folder Include="Installation\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NBrightData\NBrightCore\NBrightCore.csproj">
+      <Project>{7b338113-6a9a-484d-a6c6-4d63fd5e58c6}</Project>
+      <Name>NBrightCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NBrightData\NBrightDNN.csproj">
+      <Project>{ec815d38-62cf-4b46-8177-cf40ce1aab62}</Project>
+      <Name>NBrightDNN</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <Extension>zip</Extension>
@@ -211,7 +211,9 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
-    </PostBuildEvent>
+DNNpackager.exe  $(ProjectDir) $(ProjectDir)$(OutDir) $(ConfigurationName)
+
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
