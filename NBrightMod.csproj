@@ -39,9 +39,6 @@
     <Reference Include="DotNetNuke.Web.DDRMenu">
       <HintPath>..\NBrightData\_external\DotNetNuke.Web.DDRMenu.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNuke.WebControls">
-      <HintPath>..\..\..\bin\DotNetNuke.WebControls.dll</HintPath>
-    </Reference>
     <Reference Include="RazorEngine">
       <HintPath>..\NBrightData\_external\RazorEngine.dll</HintPath>
     </Reference>
