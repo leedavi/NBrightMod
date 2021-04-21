@@ -1,7 +1,6 @@
 ﻿
 using System.Linq;
 using DotNetNuke.Entities.Portals;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections;
 using System.Collections.Generic;

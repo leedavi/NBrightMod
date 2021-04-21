@@ -1,15 +1,9 @@
-﻿
-
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Resources;
-using System.Runtime.Caching;
-using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
@@ -17,20 +11,15 @@ using System.Xml;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Services.Exceptions;
-using DotNetNuke.UI.UserControls;
 using NBrightCore.common;
 using NBrightCore.render;
-using NBrightCore.TemplateEngine;
 using NBrightDNN;
-using NBrightDNN.render;
 using NBrightMod.render;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using System.Text;
 using System.Web.UI.WebControls;
-using System.Windows.Forms;
-using DotNetNuke.Entities.Modules;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Security.Roles;
