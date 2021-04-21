@@ -1374,11 +1374,11 @@ namespace NBrightMod.common
 
 
             // realign module satelite link + plus clear import flag
-            var allSettings = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS"," and NB1.userid = -1");
+            var allSettings = objCtrl.GetList(PortalSettings.Current.PortalId, -1, "SETTINGS", " and NB1.TextData = 'NBrightMod' ");
             foreach (var nbi in allSettings)
             {
-                if (nbi.UserId == -1) // flag to indicate import of module has been done.
-                {
+                //if (nbi.UserId == -1) // flag to indicate import of module has been done.
+                //{
                     nbi.UserId = 0;
                     if (nbi.XrefItemId > 0)
                     {
@@ -1403,6 +1403,7 @@ namespace NBrightMod.common
                     var datalist = objCtrl.GetList(nbi.PortalId, nbi.ModuleId, "NBrightModDATA");
                     foreach (var datasource in datalist)
                     {
+                        var uploadfolderSettings = nbi.GetXmlProperty("genxml/uploadfolder");
                         var upd = false;
                         var imgList = datasource.XMLDoc.SelectNodes("genxml/imgs/genxml");
                         if (imgList != null)
@@ -1410,16 +1411,10 @@ namespace NBrightMod.common
                             var lp = 1;
                             foreach (var xnod in imgList)
                             {
-                                var relPath = datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl");
+                                var relPath = "/" + nbi.GetXmlProperty("genxml/uploadfolder").Trim('/') + "/" + datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/filename");
                                 if (relPath != "")
                                 {
-
-                                    if (!relPath.StartsWith(nbi.GetXmlProperty("genxml/uploadfolder")))
-                                    {
-                                        relPath = "/" + nbi.GetXmlProperty("genxml/uploadfolder").Trim('/') + "/" + datasource.GetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/filename");
-                                        datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", relPath);
-                                    }
-
+                                    datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imageurl", relPath);
                                     var imgMapPath = System.Web.Hosting.HostingEnvironment.MapPath(relPath);
                                     datasource.SetXmlProperty("genxml/imgs/genxml[" + lp + "]/hidden/imagepath", imgMapPath);
                                     upd = true;
@@ -1506,9 +1501,7 @@ namespace NBrightMod.common
 
 
                 }
-            }
-
-
+            //}
 
         }
 

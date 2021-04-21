@@ -93,9 +93,7 @@
     <Content Include="ThemeManager.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Themes\config\css\jquery.multilevelpushmenu.css" />
     <Content Include="Themes\config\default\snippets.xml" />
-    <Content Include="Themes\config\js\jquery.multilevelpushmenu.min.js" />
     <Content Include="Themes\config\js\jquery.datepick.xlang.eur.js" />
     <Content Include="Tools.ascx">
       <SubType>ASPXCodeBehind</SubType>
@@ -119,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
-    <None Include="Themes\config\default\editfields-Page-SEO.cshtml" />
     <None Include="Themes\config\default\themelist.cshtml" />
     <None Include="Themes\config\default\edittheme.cshtml" />
     <None Include="Themes\config\default\thememanager.cshtml" />
