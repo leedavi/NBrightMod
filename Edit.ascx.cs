@@ -101,13 +101,8 @@ namespace Nevoweb.DNN.NBrightMod
             }
 
 
-            // clear cache if debug mode
-            var settings = LocalUtils.GetSettings(ModuleId.ToString(""));
-            var debug = settings.GetXmlPropertyBool("genxml/checkbox/debugmode");
-            if (debug)
-            {
-                LocalUtils.ClearRazorCache(ModuleId.ToString(""));
-            }
+            // clear cache in edit.
+            LocalUtils.ClearRazorCache(ModuleId.ToString(""));
 
             //check if we have a skinsrc, if not add it and reload. NOTE: Where just asking for a infinate loop here, but DNN7.2 doesn't leave much option.
             const string skinSrcAdmin = "?SkinSrc=%2fDesktopModules%2fNBright%2fNBrightData%2fSkins%2fNBrightModAdmin%2fNormal";
