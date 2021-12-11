@@ -309,7 +309,7 @@ namespace Nevoweb.DNN.NBrightMod
 
                 actions.Add(GetNextActionID(), Localization.GetString("Refresh", this.LocalResourceFile), "", "", "action_refresh.gif", EditUrl() + "?refreshview=1", false, SecurityAccessLevel.Edit, true, false);
                 actions.Add(GetNextActionID(), Localization.GetString("Tools", this.LocalResourceFile), "", "", "action_source.gif", EditUrl("Tools") , false, SecurityAccessLevel.Admin, true, false);
-                actions.Add(GetNextActionID(), Localization.GetString("ThemeManager", this.LocalResourceFile), "", "", "manage-icn.png", EditUrl("ThemeManager"), false, SecurityAccessLevel.Admin, true, false);
+                actions.Add(GetNextActionID(), Localization.GetString("ThemeManager", this.LocalResourceFile), "", "", "manage-icn.png", EditUrl("ThemeManager"), false, SecurityAccessLevel.Host, true, false);
                 return actions;
             }
         }
