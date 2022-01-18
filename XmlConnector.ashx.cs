@@ -1900,7 +1900,7 @@ namespace Nevoweb.DNN.NBrightMod
                 {
                     // get DB record
                     var nbi = objCtrl.Get(Convert.ToInt32(itemid));
-                    nbi = LocalUtils.VersionGet(nbi);
+                    //nbi = LocalUtils.VersionGet(nbi);
                     if (nbi != null)
                     {
 
@@ -1934,25 +1934,25 @@ namespace Nevoweb.DNN.NBrightMod
                         }
 
 
-                        if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
-                        {
-                            LocalUtils.VersionUpdate(nbi);
-                        }
-                        else
-                        {
+                        //if (LocalUtils.VersionUserMustCreateVersion(nbi.ModuleId))
+                        //{
+                        //    LocalUtils.VersionUpdate(nbi);
+                        //}
+                        //else
+                        //{
                             objCtrl.Update(nbi);
-                        }
+                        //}
 
 
 
-                        if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
-                        {
-                            LocalUtils.VersionUpdate(nbilang);
-                        }
-                        else
-                        {
+                        //if (LocalUtils.VersionUserMustCreateVersion(nbilang.ModuleId))
+                        //{
+                        //    LocalUtils.VersionUpdate(nbilang);
+                        //}
+                        //else
+                        //{
                             objCtrl.Update(nbilang);
-                        }
+                        //}
 
                         objCtrl.FillEmptyLanguageFields(nbilang.ParentItemId, nbilang.Lang);
 

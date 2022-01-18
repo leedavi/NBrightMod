@@ -186,10 +186,11 @@ namespace Nevoweb.DNN.NBrightMod
 
                 var l = objCtrl.GetList(PortalSettings.Current.PortalId, sourcemodid, "NBrightModDATA", filter, orderby, returnLimit, pageNumber, pageSize, 0, Utils.GetCurrentCulture());
 
-                if (Request.IsAuthenticated && Session["nbrightmodversion"] != null && Session["nbrightmodversion"].ToString() == "1")
+                //if (Request.IsAuthenticated && Session["nbrightmodversion"] != null && Session["nbrightmodversion"].ToString() == "1")
+                if (Request.IsAuthenticated)
                 {
-                    // get any version data.
-                    var length = l.Count;
+                        // get any version data.
+                        var length = l.Count;
                     var removeList = new List<int>();
                     for (int i = 0; i < length; i++)
                     {
