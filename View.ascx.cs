@@ -30,6 +30,7 @@ using DotNetNuke.Entities.Users;
 using DotNetNuke.Security;
 using DotNetNuke.Services.Localization;
 using NBrightMod.common;
+using System.Web.UI;
 
 namespace Nevoweb.DNN.NBrightMod
 {
@@ -126,6 +127,11 @@ namespace Nevoweb.DNN.NBrightMod
                 if (pagetitle != "") tp.Title = pagetitle;
                 if (pagedescription != "") tp.Description = pagedescription;
                 if (pagekeywords != "") tp.KeyWords = pagekeywords;
+
+                if (info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl") != "")
+                {
+                    tp.Header.Controls.Add(new LiteralControl(String.Format("<meta id=\"ogimage\" property=\"og:image\" content=\"{0}\" />", "https://" + DnnUtils.GetCurrentPortalSettings().DefaultPortalAlias.TrimEnd('/') + "/" + info.GetXmlProperty("genxml/imgs/genxml[1]/hidden/imageurl").TrimStart('/'))));
+                }
 
                 displayview = "viewdetail.cshtml";
             }
