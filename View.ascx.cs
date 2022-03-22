@@ -230,7 +230,7 @@ namespace Nevoweb.DNN.NBrightMod
                         l.Add(nbi);
                     }
 
-                    if (!String.IsNullOrWhiteSpace(orderby))
+                    if (l.Count > 0 && !String.IsNullOrWhiteSpace(orderby))
                     {
                         // need to put the sort correct, but must be done at SQL level, because we have dynamic sort defined.
                         var filter2 = " and ( ";
