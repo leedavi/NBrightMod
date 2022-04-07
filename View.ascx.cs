@@ -150,8 +150,17 @@ namespace Nevoweb.DNN.NBrightMod
                 razorCacheKey += "-" + UserId;
             }
 
+            // Set cache using ecomode cookie.
+            var ecomode = "off";
+            var ecomodeCookie = HttpContext.Current.Request.Cookies["ecomode"];
+            if (ecomodeCookie != null) ecomode = ecomodeCookie.Value;
+            cacheKey += ecomode;
 
             if (!debug) strOut = (String)LocalUtils.GetRazorCache(cacheKey, ModuleId.ToString());
+
+            var hasEditAccess = false;
+            if (UserId > 0) hasEditAccess = DotNetNuke.Security.Permissions.ModulePermissionController.CanEditModuleContent(this.ModuleConfiguration);
+            if (hasEditAccess) strOut = ""; // don;t use cache in edit mode.
 
             if (String.IsNullOrWhiteSpace(strOut)) // check if we already have razor cache
             {
