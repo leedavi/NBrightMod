@@ -643,8 +643,8 @@ namespace Nevoweb.DNN.NBrightMod
         {
             var modref = Utils.GetUniqueKey(10);
             //rebuild xml
-            settings = LocalUtils.CreateRequiredUploadFolders(settings);
             settings.PortalId = PortalSettings.Current.PortalId;
+            settings = LocalUtils.CreateRequiredUploadFolders(settings);
             settings.ModuleId = Convert.ToInt32(moduleid);
             settings.TypeCode = "SETTINGS";
             settings.Lang = "";
