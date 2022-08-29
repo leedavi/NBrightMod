@@ -411,4 +411,10 @@
   <data name="headingstyle.Text" xml:space="preserve">
     <value>Format</value>
   </data>
+  <data name="alignment.Text" xml:space="preserve">
+    <value>Alignement</value>
+  </data>
+  <data name="headingalignment.Text" xml:space="preserve">
+    <value>Gauche,Centre,Droite</value>
+  </data>
 </root>

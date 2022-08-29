@@ -145,7 +145,6 @@
     <None Include="Themes\Shared\image1-shared.cshtml" />
     <None Include="Themes\Shared\imageselect-shared.cshtml" />
     <None Include="Themes\Shared\imageselect1-shared.cshtml" />
-    <None Include="Themes\Shared\links-shared-multiple.cshtml" />
     <None Include="Themes\Shared\links-shared.cshtml" />
     <None Include="Themes\Shared\linksdocs-shared.cshtml" />
     <None Include="Themes\Shared\video-shared.cshtml" />
