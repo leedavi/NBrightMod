@@ -1666,7 +1666,8 @@ namespace NBrightMod.common
             var relpath = "/" + objPortal.HomeDirectory.Trim('/') + nbi.GetXmlProperty("genxml/relpath");
             var fname = nbi.GetXmlProperty("genxml/name");
             if (oldmodref != "") fname = fname.Replace(oldmodref, newmodref);
-            var filemappath = HttpContext.Current.Server.MapPath(relpath);
+            var filemappath = MapPath(relpath);
+
             if (oldmodref != "") filemappath = filemappath.Replace(oldmodref, newmodref);
             if (theme != themefolder)
             {
@@ -1682,6 +1683,12 @@ namespace NBrightMod.common
             }
             Utils.SaveFile(filemappath, nbi.TextData);
 
+        }
+        public static string MapPath(string relpath)
+        {
+            if (String.IsNullOrWhiteSpace(relpath)) return "";
+            relpath = "/" + relpath.TrimStart('/');
+            return System.Web.Hosting.HostingEnvironment.MapPath(relpath);
         }
 
         public static void DeleteAllDataRecords(int moduleid)
